@@ -1,0 +1,102 @@
+// Package constant_type_vars
+/*
+This file contains USA states and postal codes
+
+RESTRICTIONS:
+	- Do not edit this comment section.
+
+NOTES:
+    To improve code readability, the constant names do not follow camelCase.
+	Do not remove IDE inspection directives
+
+COPYRIGHT and WARRANTY:
+	Copyright 2022
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+
+*/
+package constant_type_vars
+
+//goland:noinspection ALL
+const (
+	LBL_APPLICATION_NAME           = "APPLICATION NAME: "
+	LBL_AMOUNT                     = "AMOUNT: "
+	LBL_AWS_ACCESS_KEY_ID          = "AWS ACCESS KEY ID: "
+	LBL_AWS_ACCOUNT_INFO_FILENAME  = "AWS ACCOUNT INFO FILENAME: "
+	LBL_AWS_IDENTITY_ID            = "IDENTITY ID: "
+	LBL_AWS_PROFILE                = "AWS PROFILE: "
+	LBL_AWS_REGION                 = "AWS REGION: "
+	LBL_AWS_SECRET_ACCESS_KEY      = "AWS SECRET ACCESS KEY: "
+	LBL_AWS_SSM_PARAMETERS         = "AWS SSM PARAMETERS: "
+	LBL_AWS_USERPOOL_ID            = "AWS USERPOOL ID: "
+	LBL_AWS_USERPOOL_NAME          = "AWS USERPOOL NAME: "
+	LBL_BASE_URL                   = "BASE URL: "
+	LBL_BASE64                     = "BASE64: "
+	LBL_CURRENCY                   = "CURRENCY: "
+	LBL_DEBUG_MESSAGE              = "DEBUG MESSAGE: "
+	LBL_DIRECTORY                  = "DIRECTORY: "
+	LBL_EMAIL_BODY                 = "EMAIL BODY: "
+	LBL_EXTENSION_NAME             = "EXTENSION NAME: "
+	LBL_FILENAME                   = "FILENAME: "
+	LBL_FUNCTION_NAME              = "FUNCTION NAME: "
+	LBL_GIN_MODE                   = "GIN MODE: "
+	LBL_GEMINI_MAX_OUTPUT_TOKENS   = "GEMINI MAX OUTPUT TOKENS: "
+	LBL_GEMINI_MODEL_NAME          = "GEMINI MODEL NAME: "
+	LBL_GEMINI_OUTPUT_FORMAT       = "GEMINI OUTPUT FORMAT: "
+	LBL_GEMINI_SET_TOP_K           = "GEMINI SET TOP K: "
+	LBL_GEMINI_SET_TOP_PROBABILITY = "GEMINI SET TOP PROBABILITY: "
+	LBL_GEMINI_SYSTEM_INSTRUCTION  = "GEMINI SYSTEM INSTRUCTION: "
+	LBL_GEMINI_TEMPERATURE         = "GEMINI TEMPERATURE: "
+	LBL_GOOGLE_GEMINI_KEY_FILENAME = "GOOGLE GEMINI KEY FILENAME: "
+	LBL_GOOGLE_LOCATION            = "GOOGLE LOCATION: "
+	LBL_GOOGLE_PROJECT_ID          = "GOOGLE PROJECT ID: "
+	LBL_HEX_STRING                 = "HEX STRING: "
+	LBL_EMAIL                      = "EMAIL"
+	LBL_ENVIRONMENT                = "ENVIRONMENT: "
+	LBL_HTTP_BODY                  = "HTTP BODY: "
+	LBL_HTTP_STATUS                = "HTTP STATUS CODE: "
+	LBL_LOGIN_TYPE                 = "LOGIN TYPE: "
+	LBL_MAX_THREADS                = "MAX THREADS: "
+	LBL_MESSAGE                    = "MESSAGE: "
+	LBL_MESSAGE_HEADER             = "MESSAGE HEADER: "
+	LBL_MISSING_PARAMETER          = "MISSING PARAMETER: "
+	LBL_NATS_CONNECT_SERVER        = "NATS CONNECT SERVER: "
+	LBL_NATS_PORT                  = "NATS PORT: "
+	LBL_PASSWORD                   = "PASSWORD: "
+	LBL_PAYMENT_METHOD             = "PAYMENT METHOD: "
+	LBL_PAYMENT_METHOD_TYPE        = "PAYMENT METHOD TYPE: "
+	LBL_PROGRAM_NAME               = "PROGRAM NAME: "
+	LBL_PUBLIC_KEY                 = "PUBLIC KEY: "
+	LBL_PONG                       = "PONG: "
+	LBL_RECIPIENT_ADDRESSES        = "RECIPIENT_ADDRESSES: "
+	LBL_RECIPIENT_ADDRESS          = "RECIPIENT_ADDRESS: "
+	LBL_RECIPIENT_NAME             = "RECIPIENT_NAME: "
+	LBL_REDIRECT                   = "REDIRECT: "
+	LBL_REPLY_TYPE                 = "REPLY TYPE: "
+	LBL_SAAS_KEY                   = "SAAS KEY: "
+	LBL_SECRET_KEY                 = "SECRET KEY: "
+	LBL_SENDER_ADDRESS             = "SENDER ADDRESS: "
+	LBL_SENDER_NAME                = "SENDER NAME: "
+	LBL_SERVER_NAME                = "SERVER_NAME: "
+	LBL_SERVER_VERSION             = "SERVER VERSION: "
+	LBL_SERVICE                    = "SERVICE: "
+	LBL_SIGNAL                     = "SIGNAL: "
+	LBL_STYH_CLIENT_ID             = "STYH CLIENT_ID: "
+	LBL_STYH_USERNAME              = "STYH USERNAME: "
+	LBL_STATUS                     = "STATUS: "
+	LBL_SUBJECT                    = "SUBJECT: "
+	LBL_TOKEN_TYPE                 = "TOKEN TYPE: "
+	LBL_TOKEN                      = "TOKEN: "
+	LBL_USERNAME                   = "USERNAME: "
+	LBL_UNIQUE_SETTINGS            = "UNIQUE SETTINGS: "
+	LBL_VALUE                      = "VALUE: "
+)

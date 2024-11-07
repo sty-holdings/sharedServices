@@ -1,0 +1,921 @@
+package sty_shared
+
+import (
+	"context"
+	"crypto/rsa"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsCfg "github.com/aws/aws-sdk-go-v2/config"
+	awsCred "github.com/aws/aws-sdk-go-v2/credentials"
+	awsCI "github.com/aws/aws-sdk-go-v2/service/cognitoidentity"
+	awsCIP "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	awsCT "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
+	awsSSM "github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/golang-jwt/jwt/v5"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	"github.com/sty-holdings/sharedServices/v2024/httpServices"
+	sty_shared2 "github.com/sty-holdings/sharedServices/v2024/jwtServices"
+	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
+)
+
+// GetIdentityCredentials - will return AWS temporary credentials.
+// The variables 'identityId' is option and are only used when sessionPtr values are empty.
+// The variable 'identityIdCredentials' is only needed if sessionPtr is nil.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetIdentityCredentials(
+	STYHCognitoIdentityInfo CognitoIdentityInfo,
+	baseConfig aws.Config,
+	idToken string,
+	identityId string, // This is not the identity pool id
+) (
+	tempIdentityIdCredentials aws.Credentials,
+	errorInfo ErrorInfo,
+) {
+
+	var (
+		tClientPtr                 *awsCI.Client
+		tGetIdentityCredentialsPtr *awsCI.GetCredentialsForIdentityOutput
+		tLogins                    = make(map[string]string)
+	)
+
+	if idToken == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN_ID))
+		return
+	}
+	if identityId == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_IDENTITY_ID))
+		return
+	}
+
+	if tClientPtr = awsCI.NewFromConfig(baseConfig); tClientPtr == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		return
+	}
+
+	tLogins[fmt.Sprintf("cognito-idp.%v.amazonaws.com/%v", STYHCognitoIdentityInfo.region, STYHCognitoIdentityInfo.UserPoolId)] = idToken
+	if tGetIdentityCredentialsPtr, errorInfo.Error = tClientPtr.GetCredentialsForIdentity(
+		awsCTXToDo, &awsCI.GetCredentialsForIdentityInput{
+			IdentityId: aws.String(identityId), // This is not the identity pool id
+			Logins:     tLogins,
+		},
+	); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	tempIdentityIdCredentials.AccessKeyID = *tGetIdentityCredentialsPtr.Credentials.AccessKeyId
+	tempIdentityIdCredentials.SessionToken = *tGetIdentityCredentialsPtr.Credentials.SessionToken
+	tempIdentityIdCredentials.SecretAccessKey = *tGetIdentityCredentialsPtr.Credentials.SecretKey
+	tempIdentityIdCredentials.Expires = *tGetIdentityCredentialsPtr.Credentials.Expiration
+
+	return
+}
+
+// GetId - will return AWS Identity Id needed to get temporary credentials.
+// The variables 'region' and 'userPoolId' are optional and are only used when awsSettings values are empty.
+// The parameter identityId is not the identity pool id.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetId(
+	STYHCognitoIdentityInfo CognitoIdentityInfo,
+	baseConfig aws.Config,
+	idToken string,
+	region, userPoolId string,
+) (
+	identityId string, // This is not the identity pool id
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tClientPtr      *awsCI.Client
+		tGetIdOutputPtr *awsCI.GetIdOutput
+		tLogins         = make(map[string]string)
+		tRegion         string
+		tUserPoolId     string
+	)
+
+	if STYHCognitoIdentityInfo.region == ctv.VAL_EMPTY {
+		if userPoolId == ctv.VAL_EMPTY {
+			errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_REGION))
+			return
+		}
+		tRegion = region
+	} else {
+		tRegion = STYHCognitoIdentityInfo.region
+	}
+	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
+		if userPoolId == ctv.VAL_EMPTY {
+			errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_USERPOOL_ID))
+			return
+		}
+		tUserPoolId = userPoolId
+	} else {
+		tUserPoolId = STYHCognitoIdentityInfo.UserPoolId
+	}
+
+	if tClientPtr = awsCI.NewFromConfig(baseConfig); tClientPtr == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		return
+	}
+
+	tLogins[fmt.Sprintf("cognito-idp.%v.amazonaws.com/%v", tRegion, tUserPoolId)] = idToken
+	if tGetIdOutputPtr, errorInfo.Error = tClientPtr.GetId(
+		awsCTXToDo, &awsCI.GetIdInput{
+			IdentityPoolId: aws.String(STYHCognitoIdentityInfo.identityPoolId),
+			Logins:         tLogins,
+		},
+	); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	identityId = *tGetIdOutputPtr.IdentityId
+
+	return
+}
+
+// GetParameters - will return System Manager parameters. WithDecryption is assumed.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetParameters(
+	STYHCognitoIdentityInfo CognitoIdentityInfo,
+	baseConfig aws.Config,
+	idToken string,
+	ssmParameters ...string,
+) (
+	parametersOutput awsSSM.GetParametersOutput,
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tClientPtr                 *awsSSM.Client
+		tIdentityId                string // This is not the identity pool id
+		tParametersOutputPtr       *awsSSM.GetParametersOutput
+		tTempIdentityIdCredentials aws.Credentials
+	)
+
+	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
+		return
+	}
+
+	if len(ssmParameters) == ctv.VAL_ZERO {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ssmParameters))
+		return
+	}
+
+	if tIdentityId, errorInfo = GetId(STYHCognitoIdentityInfo, baseConfig, idToken, ctv.VAL_EMPTY, ctv.VAL_EMPTY); errorInfo.Error != nil {
+		return
+	}
+
+	if tTempIdentityIdCredentials, errorInfo = GetIdentityCredentials(STYHCognitoIdentityInfo, baseConfig, idToken, tIdentityId); errorInfo.Error != nil {
+		return
+	}
+
+	baseConfig.Credentials = awsCred.StaticCredentialsProvider{
+		Value: aws.Credentials{
+			AccessKeyID:     tTempIdentityIdCredentials.AccessKeyID,
+			SecretAccessKey: tTempIdentityIdCredentials.SecretAccessKey,
+			SessionToken:    tTempIdentityIdCredentials.SessionToken,
+			Source:          "",
+			CanExpire:       false,
+			Expires:         time.Time{},
+		},
+	}
+
+	if tClientPtr = awsSSM.NewFromConfig(baseConfig); tClientPtr == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_SYSTEM_MANAGER))
+		return
+	}
+
+	if tParametersOutputPtr, errorInfo.Error = tClientPtr.GetParameters(
+		awsCTXToDo, &awsSSM.GetParametersInput{
+			Names:          ssmParameters,
+			WithDecryption: awsTruePtr,
+		},
+	); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	if len(tParametersOutputPtr.InvalidParameters) > 0 {
+		errorInfo = pi.NewErrorInfo(pi.ErrAWSInvalidSSMParameters, fmt.Sprintf("%v%v", ctv.LBL_AWS_SSM_PARAMETERS, tParametersOutputPtr.InvalidParameters))
+		return
+	}
+
+	parametersOutput = *tParametersOutputPtr
+
+	return
+}
+
+func LoadServerAWSBaseConfig(
+	awsAccountInfoFile string,
+) (
+	styhCognitoIdentityInfo CognitoIdentityInfo,
+	baseConfig aws.Config,
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tConfigData = make(map[string]interface{})
+	)
+
+	if tConfigData, errorInfo = cfg.GetConfigFile(awsAccountInfoFile); errorInfo.Error != nil {
+		return
+	}
+
+	if value, ok := tConfigData[ctv.FN_AWS_ACCESS_KEY_ID]; ok {
+		styhCognitoIdentityInfo.credentials.AccessKeyID = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_SECRET_ACCESS_KEY]; ok {
+		styhCognitoIdentityInfo.credentials.SecretAccessKey = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_CLIENT_ID]; ok {
+		styhCognitoIdentityInfo.clientId = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_IDENTITY_POOL_ID]; ok {
+		styhCognitoIdentityInfo.identityPoolId = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_PROFILE]; ok {
+		styhCognitoIdentityInfo.profileName = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_REGION]; ok {
+		styhCognitoIdentityInfo.region = value.(string)
+	}
+	if value, ok := tConfigData[ctv.FN_AWS_USERPOOL_ID]; ok {
+		styhCognitoIdentityInfo.UserPoolId = value.(string)
+	}
+
+	baseConfig.Credentials = awsCred.StaticCredentialsProvider{
+		Value: aws.Credentials{
+			AccessKeyID:     styhCognitoIdentityInfo.credentials.AccessKeyID,
+			SecretAccessKey: styhCognitoIdentityInfo.credentials.SecretAccessKey,
+			SessionToken:    "",
+			Source:          "",
+			CanExpire:       false,
+			Expires:         time.Time{},
+		},
+	}
+
+	baseConfig, errorInfo.Error = awsCfg.LoadDefaultConfig(
+		context.TODO(),
+		awsCfg.WithRegion(styhCognitoIdentityInfo.region),
+		awsCfg.WithCredentialsProvider(baseConfig.Credentials),
+	)
+
+	return
+}
+
+// LoadAWSCustomerSettings - loads AWS settings based on the specified environment.
+// It returns the loaded AWSSettings struct or an ErrorInfo if an error occurs.
+//
+// Customer Messages: None
+// Errors: ErrEnvironmentInvalid, ErrServiceFailedAWS
+// Verifications: None
+func LoadAWSCustomerSettings(
+	environment string,
+) (
+	awsSettings AWSSettings,
+	errorInfo pi.ErrorInfo,
+) {
+
+	switch strings.ToLower(strings.Trim(environment, ctv.SPACES_ONE)) {
+	case ctv.ENVIRONMENT_PRODUCTION:
+		awsSettings.STYHCognitoIdentityInfo = styConfigProduction
+	case ctv.ENVIRONMENT_DEVELOPMENT:
+		awsSettings.STYHCognitoIdentityInfo = styConfigDevelopment
+	case ctv.ENVIRONMENT_LOCAL:
+		awsSettings.STYHCognitoIdentityInfo = styConfigLocal
+	default:
+		if environment == ctv.VAL_EMPTY {
+			errorInfo = pi.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, ctv.FN_ENVIRONMENT))
+			return
+		}
+		errorInfo = pi.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, environment))
+	}
+
+	if awsSettings.BaseConfig, errorInfo.Error = awsCfg.LoadDefaultConfig(awsCTXToDo, awsCfg.WithRegion(awsSettings.STYHCognitoIdentityInfo.region)); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, "Failed to create an AWS Session.")
+		return
+	}
+
+	awsSettings.keyInfo.keySetURL = fmt.Sprintf(
+		"https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json", awsSettings.STYHCognitoIdentityInfo.region, awsSettings.STYHCognitoIdentityInfo.UserPoolId,
+	)
+	awsSettings.keyInfo.keySet, errorInfo = getPublicKeySet(awsSettings.keyInfo.keySetURL)
+
+	return
+}
+
+// Login - authenticates user login credentials and returns access, id, and refresh tokens.
+//
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func Login(
+	loginType, username string,
+	password *string,
+	STYHCognitoIdentityInfo CognitoIdentityInfo,
+	baseConfig aws.Config,
+) (
+	accessToken string,
+	idToken string,
+	refreshToken string,
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tCognitoClientPtr             *awsCIP.Client
+		cognitoLoginPtr               *cognitoLogin
+		tInitiateAuthOutputPtr        *awsCIP.InitiateAuthOutput
+		tRespondToAuthChallengeOutput *awsCIP.RespondToAuthChallengeOutput
+		tTokens                       = make(map[string]string)
+	)
+
+	if loginType == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_LOGIN_TYPE, loginType))
+		return
+	}
+	if username == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
+		return
+	}
+	if password == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_PASSWORD, ctv.TXT_PROTECTED))
+		return
+	}
+	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
+		return
+	}
+
+	if cognitoLoginPtr, errorInfo = NewCognitoLogin(
+		username,
+		STYHCognitoIdentityInfo.UserPoolId,
+		STYHCognitoIdentityInfo.clientId,
+		password,
+		nil,
+	); errorInfo.Error != nil {
+		pi.PrintErrorInfo(errorInfo)
+		return
+	}
+
+	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		return
+	}
+
+	// initiate auth
+	if tInitiateAuthOutputPtr, errorInfo.Error = tCognitoClientPtr.InitiateAuth(
+		context.Background(), &awsCIP.InitiateAuthInput{
+			AuthFlow:       awsCT.AuthFlowType(loginType),
+			ClientId:       aws.String(cognitoLoginPtr.GetClientId()), // AWS App Integration Client Id
+			AuthParameters: cognitoLoginPtr.GetAuthParams(),
+		},
+	); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	tTokens = make(map[string]string) // This is used for either awsCT.AuthFlowTypeUserPasswordAuth or awsCT.AuthFlowTypeUserSrpAuth
+	if loginType == string(awsCT.AuthFlowTypeUserPasswordAuth) {
+		tTokens["access"] = *tInitiateAuthOutputPtr.AuthenticationResult.AccessToken
+		tTokens["id"] = *tInitiateAuthOutputPtr.AuthenticationResult.IdToken
+		tTokens["refresh"] = *tInitiateAuthOutputPtr.AuthenticationResult.RefreshToken
+	}
+
+	// respond to password verifier challenge
+	if tInitiateAuthOutputPtr.ChallengeName == awsCT.ChallengeNameTypePasswordVerifier {
+		challengeResponses, _ := cognitoLoginPtr.PasswordVerifierChallenge(tInitiateAuthOutputPtr.ChallengeParameters, time.Now())
+		if tRespondToAuthChallengeOutput, errorInfo.Error = tCognitoClientPtr.RespondToAuthChallenge(
+			context.Background(), &awsCIP.RespondToAuthChallengeInput{
+				ChallengeName:      awsCT.ChallengeNameTypePasswordVerifier,
+				ChallengeResponses: challengeResponses,
+				ClientId:           aws.String(cognitoLoginPtr.GetClientId()),
+			},
+		); errorInfo.Error != nil {
+			errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+			return
+		}
+		tTokens["access"] = *tRespondToAuthChallengeOutput.AuthenticationResult.AccessToken
+		tTokens["id"] = *tRespondToAuthChallengeOutput.AuthenticationResult.IdToken
+		tTokens["refresh"] = *tRespondToAuthChallengeOutput.AuthenticationResult.RefreshToken
+	}
+
+	accessToken = tTokens["access"]
+	idToken = tTokens["id"]
+	refreshToken = tTokens["refresh"]
+
+	return
+}
+
+// // ConfirmUser - mark the AWS user as confirmed
+// func (a *AWSHelper) ConfirmUser(userName string) (errorInfo pi.ErrorInfo) {
+//
+// 	var (
+// 		tAdminConfirmSignUpInput    cognito.AdminConfirmSignUpInput
+// 		tawsCIPPtr *cognito.awsCIP
+// 		tFunction, _, _, _          = runtime.Caller(0)
+// 		tFunctionName               = runtime.FuncForPC(tFunction).Name()
+// 	)
+//
+// 	if userName == ctv.VAL_EMPTY {
+// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 		log.Println(errorInfo.Error)
+// 	} else {
+// 		tawsCIPPtr = cognito.New(a.SessionPtr)
+// 		tAdminConfirmSignUpInput.Username = &userName
+// 		tAdminConfirmSignUpInput.UserPoolId = &a.awsCfg.UserPoolId
+// 		if _, errorInfo.Error = tawsCIPPtr.AdminConfirmSignUp(&tAdminConfirmSignUpInput); errorInfo.Error != nil {
+// 			// If the user is already confirmed, AWS will return an error, and do not care about this error.
+// 			if strings.Contains(errorInfo.Error.Error(), ctv.STATUS_CONFIRMED) {
+// 				errorInfo.Error = nil
+// 			} else {
+// 				if strings.Contains(errorInfo.Error.Error(), pi.USER_DOES_NOT_EXIST) {
+// 					errorInfo.Error = pi.ErrUserMissing
+// 				}
+// 			}
+// 		}
+// 	}
+//
+// 	return
+// }
+
+// GetRequestorEmailPhoneFromIdTokenClaims - will validate the AWS Id JWT, check to make sure the email has been verified, and return the requestor id, email, and phone number.
+// func (a *AWSHelper) GetRequestorEmailPhoneFromIdTokenClaims(
+// 	firestoreClientPtr *firestore.Client,
+// 	token string,
+// ) (
+// 	requestorId, email, phoneNumber string,
+// 	errorInfo pi.ErrorInfo,
+// ) {
+//
+// 	var (
+// 		tClaimsPtr         *Claims
+// 		tFunction, _, _, _ = runtime.Caller(0)
+// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+// 	)
+//
+// 	if token == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Token: '%v'", token))
+// 		log.Println(errorInfo.Error)
+// 	} else {
+// 		if tClaimsPtr, errorInfo = getTokenClaims(a, ctv.TOKEN_TYPE_ID, token); errorInfo.Error == nil {
+// 			if isTokenValid(firestoreClientPtr, a, ctv.TOKEN_TYPE_ID, token) {
+// 				requestorId = tClaimsPtr.Subject
+// 				email = tClaimsPtr.Email
+// 				phoneNumber = tClaimsPtr.PhoneNumber
+// 			} else {
+// 				errorInfo.Error = pi.ErrTokenInvalid
+// 				log.Println(errorInfo.Error)
+// 			}
+// 		}
+// 	}
+//
+// 	return
+// }
+
+// GetRequestorFromAccessTokenClaims - will valid the AWS Access JWT, and return the requestor id.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+// func (a *AWSHelper) GetRequestorFromAccessTokenClaims(
+// 	firestoreClientPtr *firestore.Client,
+// 	token string,
+// ) (
+// 	requestorId string,
+// 	errorInfo pi.ErrorInfo,
+// ) {
+//
+// 	var (
+// 		tClaimsPtr         *Claims
+// 		tFunction, _, _, _ = runtime.Caller(0)
+// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+// 	)
+//
+// 	pi.PrintDebugTrail(tFunctionName)
+//
+// 	if token == ctv.TEST_STRING {
+// 		requestorId = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
+// 	} else {
+// 		if token == ctv.VAL_EMPTY {
+// 			errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Token: '%v'", token))
+// 			log.Println(errorInfo.Error)
+// 		} else {
+// 			if tClaimsPtr, errorInfo = getTokenClaims(a, ctv.TOKEN_TYPE_ACCESS, token); errorInfo.Error == nil {
+// 				if isTokenValid(firestoreClientPtr, a, ctv.TOKEN_TYPE_ACCESS, token) {
+// 					requestorId = tClaimsPtr.Subject
+// 				} else {
+// 					errorInfo.Error = pi.ErrTokenInvalid
+// 					log.Println(errorInfo.Error)
+// 				}
+// 			}
+// 		}
+// 	}
+//
+// 	return
+// }
+
+// ParseAWSJWT - will return the claims, if any, or an err if the AWS JWT is invalid.
+// This will parse ID and Access tokens. Refresh token are not support and nothing is returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ParseAWSJWT(
+	awsSettings AWSSettings,
+	tokenType, token string,
+) (
+	claims jwt.Claims,
+	tokenValuePtr *jwt.Token,
+	errorInfo pi.ErrorInfo,
+) {
+
+	if len(awsSettings.keyInfo.keySet.Keys) == ctv.VAL_ZERO {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, ctv.TXT_KEY_SET_MISSING)
+		return
+	}
+	if tokenType == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN_TYPE, ctv.FN_TOKEN_TYPE))
+		return
+	}
+	if token == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
+		return
+	}
+
+	if tokenType == sty_shared2.TOKEN_TYPE_REFRESH {
+		return
+	}
+
+	for i := 0; i < len(awsSettings.keyInfo.keySet.Keys); i++ {
+		if tokenValuePtr, errorInfo.Error = jwt.ParseWithClaims(
+			token, jwt.MapClaims{}, func(token *jwt.Token) (
+				key interface{},
+				err error,
+			) {
+				key, err = convertKey(awsSettings.keyInfo.keySet.Keys[i].E, awsSettings.keyInfo.keySet.Keys[i].N) // ID
+				claims = token.Claims
+				return
+			},
+		); errorInfo.Error != nil {
+			fmt.Println(errorInfo.Error)
+			if errorInfo.Error.Error() == pi.ErrJWTTokenSignatureInvalid.Error() {
+				continue
+			} else {
+				break
+			}
+		}
+		return // No errors returned from called function
+	}
+
+	errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
+
+	return
+}
+
+// PullCognitoUserInfo - retrieves user information from AWS Cognito.
+//
+//	Customer Messages: None
+//	Errors: ErrRequiredArgumentMissing, returned from AdminGetUser
+//	Verifications: None
+func PullCognitoUserInfo(
+	baseConfig aws.Config,
+	username string,
+	userPoolId string,
+) (
+	userAttributes map[string]interface{},
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tAdminGetUserInputPtr  *awsCIP.AdminGetUserInput
+		tAdminGetUserOutputPtr *awsCIP.AdminGetUserOutput
+		tCognitoClientPtr      *awsCIP.Client
+	)
+
+	if username == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, ctv.FN_USERNAME))
+		return
+	}
+	if userPoolId == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, "userPoolId"))
+		return
+	}
+
+	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		return
+	}
+
+	tAdminGetUserInputPtr = &awsCIP.AdminGetUserInput{
+		UserPoolId: aws.String(userPoolId),
+		Username:   aws.String(username),
+	}
+
+	if tAdminGetUserOutputPtr, errorInfo.Error = tCognitoClientPtr.AdminGetUser(awsCTXToDo, tAdminGetUserInputPtr); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		return
+	}
+
+	userAttributes = make(map[string]interface{})
+	for _, attribute := range tAdminGetUserOutputPtr.UserAttributes {
+		userAttributes[*attribute.Name] = *attribute.Value
+	}
+
+	return
+}
+
+// ValidAWSJWT - will valid the AWS JWT and check to make sure either the phone or email has been verified.
+// func (a *AWSHelper) ValidAWSJWT(
+// 	firestoreClientPtr *firestore.Client,
+// 	tokenType, token string,
+// ) (
+// 	valid bool,
+// 	errorInfo pi.ErrorInfo,
+// ) {
+//
+// 	var (
+// 		tFunction, _, _, _ = runtime.Caller(0)
+// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+// 	)
+//
+// 	pi.PrintDebugTrail(tFunctionName)
+//
+// 	if token == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Token: '%v'", token))
+// 		log.Println(errorInfo.Error)
+// 	} else {
+// 		valid = isTokenValid(firestoreClientPtr, a, tokenType, token)
+// 	}
+//
+// 	return
+// }
+
+// UpdateAWSEmailVerifyFlag - will update the email_valid field for the user in the Cognito user pool.
+// func (a *AWSHelper) UpdateAWSEmailVerifyFlag(username string) (errorInfo pi.ErrorInfo) {
+//
+// 	var (
+// 		tAdminUpdateUserAttributesInput cognito.AdminUpdateUserAttributesInput
+// 		tAttributeType                  cognito.AttributeType
+// 		tAttributeTypePtrs              []*cognito.AttributeType
+// 		tawsCIPPtr     *cognito.awsCIP
+// 		tFunction, _, _, _              = runtime.Caller(0)
+// 		tFunctionName                   = runtime.FuncForPC(tFunction).Name()
+// 		tName                           string
+// 	)
+//
+// 	pi.PrintDebugTrail(tFunctionName)
+//
+// 	if username == ctv.VAL_EMPTY {
+// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	} else {
+// 		tawsCIPPtr = cognito.New(a.SessionPtr)
+// 		tName = ctv.FN_EMAIL_VERIFIED // This is required because go doesn't support pointers to ctv.
+// 		tAttributeType = cognito.AttributeType{
+// 			Name:  &tName,
+// 			Value: &tTrueString,
+// 		}
+// 		tAttributeTypePtrs = append(tAttributeTypePtrs, &tAttributeType)
+// 		tAdminUpdateUserAttributesInput.UserAttributes = tAttributeTypePtrs
+// 		tAdminUpdateUserAttributesInput.Username = &username
+// 		tAdminUpdateUserAttributesInput.UserPoolId = &a.AWSConfig.UserPoolId
+// 		req, _ := tawsCIPPtr.AdminUpdateUserAttributesRequest(&tAdminUpdateUserAttributesInput)
+// 		errorInfo.Error = req.Send()
+// 	}
+//
+// 	return
+// }
+
+// ResetUserPassword - trigger one-time code to be set to user email.
+// func (a *AWSHelper) ResetUserPassword(
+// 	userName string,
+// 	test bool,
+// ) (errorInfo pi.ErrorInfo) {
+//
+// 	var (
+// 		tAdminResetUserPasswordInput cognito.AdminResetUserPasswordInput
+// 		tawsCIPPtr  *cognito.awsCIP
+// 		tFunction, _, _, _           = runtime.Caller(0)
+// 		tFunctionName                = runtime.FuncForPC(tFunction).Name()
+// 		req                          *request.Request
+// 	)
+//
+// 	pi.PrintDebugTrail(tFunctionName)
+//
+// 	if userName == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! AWS User Name: '%v'", userName))
+// 		log.Println(errorInfo.Error)
+// 	} else {
+// 		tawsCIPPtr = cognito.New(a.SessionPtr)
+// 		tAdminResetUserPasswordInput.Username = &userName
+// 		tAdminResetUserPasswordInput.UserPoolId = &a.AWSConfig.UserPoolId
+// 		if test == false {
+// 			req, _ = tawsCIPPtr.AdminResetUserPasswordRequest(&tAdminResetUserPasswordInput)
+// 			errorInfo.Error = req.Send()
+// 		}
+// 	}
+//
+// 	return
+// }
+
+// Private functions below here
+
+// areAWSClaimsValid - Checks if email is verified and token is either an Id or Access token.
+// func areAWSClaimsValid(
+// 	FirestoreClientPtr *firestore.Client,
+// 	subject, email, username, tokenUse string,
+// 	emailVerified bool,
+// ) bool {
+//
+// 	var (
+// 		errorInfo          pi.ErrorInfo
+// 		tDocumentPtr       *firestore.DocumentSnapshot
+// 		tEmailInterface    interface{}
+// 		tSubjectInterface  interface{}
+// 		tUsernameInterface interface{}
+// 	)
+//
+// 	if _, tDocumentPtr, errorInfo = coreFirestore.FindDocument(
+// 		FirestoreClientPtr, ctv.DATASTORE_USERS, coreFirestore.NameValueQuery{
+// 			FieldName:  ctv.FN_REQUESTOR_ID,
+// 			FieldValue: subject,
+// 		},
+// 	); errorInfo.Error == nil {
+// 		switch strings.ToUpper(tokenUse) {
+// 		case ctv.TOKEN_TYPE_ID:
+// 			if tSubjectInterface, errorInfo.Error = tDocumentPtr.DataAt(ctv.FN_REQUESTOR_ID); errorInfo.Error == nil {
+// 				if tUsernameInterface, errorInfo.Error = tDocumentPtr.DataAt(ctv.FN_USERNAME); errorInfo.Error == nil {
+// 					if tEmailInterface, errorInfo.Error = tDocumentPtr.DataAt(ctv.FN_EMAIL); errorInfo.Error == nil {
+// 						if emailVerified && tSubjectInterface.(string) == subject && tEmailInterface.(string) == email && tUsernameInterface.(string) == username {
+// 							return true
+// 						}
+// 					}
+// 				}
+// 			}
+// 		case ctv.TOKEN_TYPE_ACCESS:
+// 			if tSubjectInterface, errorInfo.Error = tDocumentPtr.DataAt(ctv.FN_REQUESTOR_ID); errorInfo.Error == nil {
+// 				if tUsernameInterface, errorInfo.Error = tDocumentPtr.DataAt(ctv.FN_USERNAME); errorInfo.Error == nil {
+// 					if emailVerified && tSubjectInterface.(string) == subject && tUsernameInterface.(string) == username {
+// 						return true
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+//
+// 	return false
+// }
+
+// convertKey - decodes, processes, and returns the public key.
+// NOTE: does not follow the errorInfo format because it is called by a function
+// that only allows error to be returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func convertKey(rawE, rawN string) (
+	publicKey *rsa.PublicKey,
+	err error,
+) {
+
+	var (
+		decodedN      []byte
+		decodedBase64 []byte
+		ndata         []byte
+	)
+
+	if decodedBase64, err = base64.RawURLEncoding.DecodeString(rawE); err == nil {
+		if len(decodedBase64) < 4 {
+			ndata = make([]byte, 4)
+			copy(ndata[4-len(decodedBase64):], decodedBase64)
+			decodedBase64 = ndata
+		}
+		publicKey = &rsa.PublicKey{
+			N: &big.Int{},
+			E: int(binary.BigEndian.Uint32(decodedBase64[:])),
+		}
+		if decodedN, err = base64.RawURLEncoding.DecodeString(rawN); err == nil {
+			publicKey.N.SetBytes(decodedN)
+		}
+	}
+
+	return
+}
+
+// getPublicKeySet - gets the public keys for AWS JWTs
+//
+//	Customer Messages: None
+//	Errors: ErrRequiredArgumentMissing, ErrHTTPRequestFailed, http.Get or io.ReadAll or json.Unmarshal returned error
+//	Verifications: None
+func getPublicKeySet(keySetURL string) (
+	keySet keySet,
+	errorInfo pi.ErrorInfo,
+) {
+
+	var (
+		tJWKS              map[string]interface{}
+		tKey               key
+		tKeySetResponsePtr *http.Response
+		tKeyData           []byte
+	)
+
+	if keySetURL == ctv.VAL_EMPTY {
+		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_URL))
+		return
+	}
+
+	if tKeySetResponsePtr, errorInfo.Error = http.Get(keySetURL); errorInfo.Error != nil {
+		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+	defer func() {
+		_ = tKeySetResponsePtr.Body.Close()
+	}()
+
+	if tKeySetResponsePtr.StatusCode != sty_shared.HTTP_STATUS_200 {
+		errorInfo = pi.NewErrorInfo(pi.ErrHTTPRequestFalied, fmt.Sprintf("%v%v - %v%v", ctv.LBL_HTTP_STATUS, tKeySetResponsePtr.StatusCode, ctv.FN_KEYSET_URL, keySetURL))
+		return
+	}
+
+	if errorInfo.Error = json.NewDecoder(tKeySetResponsePtr.Body).Decode(&tJWKS); errorInfo.Error != nil {
+		return
+	}
+	if keys, ok := tJWKS["keys"].([]interface{}); ok {
+		for _, key := range keys {
+			if tKeyData, errorInfo.Error = json.Marshal(key); errorInfo.Error != nil {
+				errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, key))
+				return
+			}
+			if errorInfo.Error = json.Unmarshal(tKeyData, &tKey); errorInfo.Error != nil {
+				errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, tKeyData))
+				return
+			}
+			keySet.Keys = append(keySet.Keys, tKey) // Assuming "kid" is the key ID and "n" is the public key value
+		}
+		return
+	}
+
+	errorInfo = pi.NewErrorInfo(pi.ErrExtractKeysFailure, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, keySetURL))
+
+	return
+}
+
+// func getTokenClaims(
+// 	a *AWSHelper,
+// 	tokenType, token string,
+// ) (
+// 	claimsPtr *Claims,
+// 	errorInfo pi.ErrorInfo,
+// ) {
+//
+// 	return a.ParseAWSJWTWithClaims(tokenType, token)
+// }
+
+// func isTokenValid(
+// 	firestoreClientPtr *firestore.Client,
+// 	a *AWSHelper,
+// 	tokenType, token string,
+// ) bool {
+//
+// 	var (
+// 		errorInfo  pi.ErrorInfo
+// 		tClaimsPtr *Claims
+// 	)
+//
+// 	a.tokenType = tokenType
+// 	if tClaimsPtr, errorInfo = getTokenClaims(a, tokenType, token); errorInfo.Error == nil {
+// 		switch strings.ToUpper(tClaimsPtr.TokenUse) {
+// 		case ctv.TOKEN_TYPE_ID:
+// 			return areAWSClaimsValid(
+// 				firestoreClientPtr,
+// 				tClaimsPtr.Subject,
+// 				tClaimsPtr.Email,
+// 				tClaimsPtr.CognitoUsername,
+// 				tClaimsPtr.TokenUse,
+// 				tClaimsPtr.EmailVerified,
+// 			)
+// 		case ctv.TOKEN_TYPE_ACCESS:
+// 			return areAWSClaimsValid(firestoreClientPtr, tClaimsPtr.Subject, ctv.VAL_EMPTY, tClaimsPtr.UserName, tClaimsPtr.TokenUse, true)
+// 		}
+// 	}
+//
+// 	return false
+// }
