@@ -1,0 +1,10 @@
+package sharedServices
+
+//goland:noinspection ALL
+const (
+	POSTGRES_SSL_MODE_DISABLE  = "disable"
+	POSTGRES_SSL_MODE_ALLOW    = "allow"
+	POSTGRES_SSL_MODE_PREFER   = "prefer"
+	POSTGRES_SSL_MODE_REQUIRED = "require"
+	POSTGRES_CONN_STRING       = "dbname=%v user=%v password=%v host=%v port=%v connect_timeout=%v sslmode=%v pool_max_conns=%v"
+)

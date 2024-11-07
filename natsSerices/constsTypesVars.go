@@ -1,52 +1,10 @@
-// Package sty_shared
-/*
-General description of the purpose of the go file.
-
-RESTRICTIONS:
-    AWS functions:
-    * Program must have access to a .awsServices/credentials file in the default location.
-    * {Enter other restrictions here for AWS
-
-    {Other categories of restrictions}
-    * {List of restrictions for the categories
-
-NOTES:
-    {Enter any additional notes that you believe will help the next developer.}
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 5/6/24 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by Scott Yacko / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	https://sty-holdings.com
-
-	5/6/24
-
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"github.com/nats-io/nats.go"
 
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 //goland:noinspection GoSnakeCaseUsage,GoCommentStart
@@ -86,6 +44,6 @@ type NATSService struct {
 }
 
 type NATSReply struct {
-	Response  interface{}  `json:"response,omitempty"`
-	ErrorInfo pi.ErrorInfo `json:"error,omitempty"`
+	Response  interface{}    `json:"response,omitempty"`
+	ErrorInfo errs.ErrorInfo `json:"error,omitempty"`
 }

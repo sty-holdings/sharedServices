@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	b64 "encoding/base64"
@@ -47,7 +13,10 @@ import (
 	"strings"
 	"time"
 
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
+	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
 // Base64Decode - will decode a base64 string to a string. If there is an error,
@@ -60,7 +29,7 @@ import (
 //	Verifications: None
 func Base64Decode(base64Value string) (
 	value []byte,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if value, errorInfo.Error = b64.StdEncoding.DecodeString(base64Value); errorInfo.Error != nil {
@@ -149,7 +118,7 @@ func Base64Encode(value string) string {
 // Verifications: None
 func ConvertStructToMap(structIn interface{}) (
 	mapOut map[string]interface{},
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -193,7 +162,7 @@ func ConvertStringSliceToSliceOfPtrs(inbound []string) (outbound []*string) {
 func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 	logFileHandlerPtr *os.File,
 	logFQN string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	switch redirectTo {
@@ -204,7 +173,7 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 		logFileHandlerPtr, logFQN, errorInfo = createLogFile(logDirectory)
 		log.SetOutput(io.MultiWriter(os.Stdout, logFileHandlerPtr))
 	default:
-		errorInfo = pi.NewErrorInfo(pi.ErrServerNameMissing, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(pi.ErrServerNameMissing, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -384,6 +353,35 @@ func GetUnixTimestamp() (timestamp string) {
 	return time.Now().Local().Format(time.UnixDate)
 }
 
+// GetJSONFile - reads and unmarshal the fully qualified file into the object pointer.
+//
+//	Customer Messages: None
+//	Errors: ReadConfigFile returned error, ErrJSONInvalid
+//	Verifications: None
+func GetJSONFile(
+	jsonFileFQN string,
+	jsonFilePtr *interface{},
+) (
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tAdditionalInfo = fmt.Sprintf("%v%v", ctv.LBL_FILENAME, jsonFileFQN)
+		tJSONFileData   []byte
+	)
+
+	if tJSONFileData, errorInfo.Error = os.ReadFile(jsonFileFQN); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(pi.ErrConfigFileMissing, tAdditionalInfo)
+	}
+
+	if errorInfo.Error = json.Unmarshal(tJSONFileData, &jsonFilePtr); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
+		return
+	}
+
+	return
+}
+
 // GetAWSTimestamp - gets date/time in AWS format (Mon Jan _2 15:04:05 MST 2006)
 //
 //	Customer Messages: None
@@ -430,7 +428,7 @@ func GetUnixTimestampByte() (timestamp []byte) {
 //	Verifications: None
 func GetFieldsNames(unknownStruct interface{}) (
 	fields map[string]interface{},
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	fields = make(map[string]interface{})
@@ -537,7 +535,7 @@ func PrependWorkingDirectoryWithEndingSlash(directory string) string {
 func RedirectLogOutput(
 	inLogFileHandlerPtr *os.File,
 	redirectTo string,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
 	switch redirectTo {
 	case ctv.MODE_OUTPUT_LOG:
@@ -545,7 +543,7 @@ func RedirectLogOutput(
 	case ctv.MODE_OUTPUT_LOG_DISPLAY:
 		log.SetOutput(io.MultiWriter(os.Stdout, inLogFileHandlerPtr))
 	default:
-		errorInfo = pi.NewErrorInfo(pi.ErrRedirectModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(pi.ErrRedirectModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -556,16 +554,16 @@ func RedirectLogOutput(
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func RemoveFile(fqn string) (errorInfo pi.ErrorInfo) {
+func RemoveFile(fqn string) (errorInfo errs.ErrorInfo) {
 
 	// This doesn't use the coreValidator.DoesFileExist by design.
 	if _, err := os.Stat(fqn); err != nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrFileMissing, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(pi.ErrFileMissing, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 
 	if errorInfo.Error = os.Remove(fqn); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrFileRemovalFailed, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(pi.ErrFileRemovalFailed, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 
@@ -577,7 +575,7 @@ func RemoveFile(fqn string) (errorInfo pi.ErrorInfo) {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func RemovePidFile(pidFQN string) (errorInfo pi.ErrorInfo) {
+func RemovePidFile(pidFQN string) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = RemoveFile(pidFQN); errorInfo.Error != nil {
 		return
@@ -595,10 +593,10 @@ func WriteFile(
 	fqn string,
 	fileData []byte,
 	filePermissions os.FileMode,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo.Error = os.WriteFile(fqn, fileData, filePermissions); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v%v", pi.ErrFileCreationFailed.Error(), ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v%v", pi.ErrFileCreationFailed.Error(), ctv.LBL_FILENAME, fqn))
 	}
 
 	return
@@ -612,10 +610,10 @@ func WriteFile(
 func WritePidFile(
 	pidFQN string,
 	pid int,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = WriteFile(pidFQN, []byte(strconv.Itoa(pid)), 0766); errorInfo.Error == nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, pidFQN))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, pidFQN))
 	}
 
 	return
@@ -631,15 +629,15 @@ func WritePidFile(
 func createLogFile(logFQD string) (
 	logFileHandlerPtr *os.File,
 	logFQN string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
 		tLogFileName string
 	)
 
-	if IsDirectoryFullyQualified(logFQD) == false {
-		errorInfo = pi.NewErrorInfo(pi.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
+	if vals.IsDirectoryFullyQualified(logFQD) == false {
+		errorInfo = errs.NewErrorInfo(pi.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
 		return
 	}
 
@@ -654,7 +652,7 @@ func createLogFile(logFQD string) (
 
 	// Set log file output
 	if logFileHandlerPtr, errorInfo.Error = os.OpenFile(logFQN, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, logFQN))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, logFQN))
 		return
 	}
 

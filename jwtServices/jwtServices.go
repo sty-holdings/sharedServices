@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by Scott Yacko / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"crypto"
@@ -47,6 +13,11 @@ import (
 	"log"
 
 	"github.com/golang-jwt/jwt/v5"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
+	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 // BuildTLSTemporaryFiles - creates temporary files for TLS information.
@@ -60,30 +31,30 @@ func BuildTLSTemporaryFiles(
 	tempDirectory string,
 	tlsInfo TLSInfo,
 ) (
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if tlsInfo.TLSCABundle == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CA_BUNDLE))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CA_BUNDLE))
 		return
 	} else {
-		if errorInfo = hv.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CA_BUNDLE_FILENAME), []byte(tlsInfo.TLSCABundle), 0744); errorInfo.Error != nil {
+		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CA_BUNDLE_FILENAME), []byte(tlsInfo.TLSCABundle), 0744); errorInfo.Error != nil {
 			return
 		}
 	}
 	if tlsInfo.TLSCert == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CERTIFICATE))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CERTIFICATE))
 		return
 	} else {
-		if errorInfo = hv.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CERT_FILENAME), []byte(tlsInfo.TLSCert), 0744); errorInfo.Error != nil {
+		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CERT_FILENAME), []byte(tlsInfo.TLSCert), 0744); errorInfo.Error != nil {
 			return
 		}
 	}
 	if tlsInfo.TLSPrivateKey == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_PRIVATE_KEY))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_PRIVATE_KEY))
 		return
 	} else {
-		if errorInfo = hv.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_PRIVATE_KEY_FILENAME), []byte(tlsInfo.TLSPrivateKey), 0744); errorInfo.Error != nil {
+		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_PRIVATE_KEY_FILENAME), []byte(tlsInfo.TLSPrivateKey), 0744); errorInfo.Error != nil {
 			return
 		}
 	}
@@ -110,7 +81,7 @@ func Decrypt(
 	encryptedMessage string,
 ) (
 	decryptedMessage string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -129,21 +100,21 @@ func Decrypt(
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(key); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
 	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessage); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
@@ -151,7 +122,7 @@ func Decrypt(
 	tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
 
 	if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
@@ -171,7 +142,7 @@ func DecryptToByte(
 	encryptedMessage string,
 ) (
 	decryptedMessage []byte,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -204,7 +175,7 @@ func Encrypt(
 	message string,
 ) (
 	encryptedMessage string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -216,17 +187,17 @@ func Encrypt(
 	)
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(key); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
 		return
 	}
 
@@ -242,7 +213,7 @@ func Encrypt(
 // GenerateJWT
 // Create a new token object, specifying signing method and the claims
 // you would like it to contain.
-// func GenerateJWT(privateKey, requestorId, period string, duration int64) (jwtServices string, errorInfo pi.ErrorInfo) {
+// func GenerateJWT(privateKey, requestorId, period string, duration int64) (jwtServices string, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tDuration      time.Duration
@@ -304,7 +275,7 @@ func Encrypt(
 func GenerateRSAKey(rsaBits int) (
 	privateKey crypto.PrivateKey,
 	publicKey crypto.PublicKey,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -333,7 +304,7 @@ func GenerateRSAKey(rsaBits int) (
 // Verifications: None
 func ParsePrivateKey(tRawPrivateKey []byte) (
 	privateKey *rsa.PrivateKey,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if privateKey, errorInfo.Error = jwt.ParseRSAPrivateKeyFromPEM(tRawPrivateKey); errorInfo.Error != nil {
@@ -351,11 +322,11 @@ func ParsePrivateKey(tRawPrivateKey []byte) (
 //	Verifications: None
 func RemoveTLSTemporaryFiles(
 	tempDirectory string,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hv.RemoveFile(fmt.Sprintf("%v/tls-ca-bundle.crt", tempDirectory)); errorInfo.Error == nil {
-		if errorInfo = hv.RemoveFile(fmt.Sprintf("%v/tls-ca-cert.crt", tempDirectory)); errorInfo.Error == nil {
-			if errorInfo = hv.RemoveFile(fmt.Sprintf("%v/tls-private.key", tempDirectory)); errorInfo.Error == nil {
+	if errorInfo = hlp.RemoveFile(fmt.Sprintf("%v/tls-ca-bundle.crt", tempDirectory)); errorInfo.Error == nil {
+		if errorInfo = hlp.RemoveFile(fmt.Sprintf("%v/tls-ca-cert.crt", tempDirectory)); errorInfo.Error == nil {
+			if errorInfo = hlp.RemoveFile(fmt.Sprintf("%v/tls-private.key", tempDirectory)); errorInfo.Error == nil {
 			}
 		}
 	}

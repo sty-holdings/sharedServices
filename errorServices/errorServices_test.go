@@ -1,42 +1,10 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by Scott Yacko / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"runtime"
 	"testing"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
 )
 
 func TestNewErrorInfo(tPtr *testing.T) {
@@ -275,10 +243,10 @@ func TestNewError(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if errorInfo = newError(ErrErrorMissing); errorInfo.Error == nil {
-				tPtr.Errorf(EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 			if errorInfo = newError(nil); errorInfo.Error != nil {
-				tPtr.Errorf(EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error)
+				tPtr.Errorf(FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error)
 			}
 		},
 	)

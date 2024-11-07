@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"bytes"
@@ -40,6 +6,10 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 )
 
 var (
@@ -168,12 +138,12 @@ func TestBase64Decode(tPtr *testing.T) {
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
-			if tValue, _ = Base64Decode(TEST_BASE64_STRING); bytes.Equal(tValue, TestByteArray) {
+			if tValue, _ = hlp.Base64Decode(TEST_BASE64_STRING); bytes.Equal(tValue, TestByteArray) {
 			} else {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.VAL_EMPTY)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
-			if tValue, _ = Base64Decode(TEST_STRING); bytes.Equal(tValue, TestByteArray) {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+			if tValue, _ = hlp.Base64Decode(TEST_STRING); bytes.Equal(tValue, TestByteArray) {
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName)
 			}
 		},
 	)
@@ -189,8 +159,8 @@ func TestBase64Encode(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			// Adds working directory to file name
-			if Base64Encode(TEST_STRING) != TEST_BASE64_STRING {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.VAL_EMPTY)
+			if hlp.Base64Encode(TEST_STRING) != TEST_BASE64_STRING {
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -204,7 +174,7 @@ func TestCheckFileExistsAndReadable(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo pi.ErrorInfo
+		errorInfo errs.ErrorInfo
 		gotError  bool
 	)
 
@@ -271,7 +241,7 @@ func TestCheckFileExistsAndReadable(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo pi.ErrorInfo
+// 		errorInfo errs.ErrorInfo
 // 		gotError  bool
 // 	)
 //
@@ -332,10 +302,10 @@ func TestDoesDirectoryExist(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if DoesDirectoryExist(tWorkingDirectory) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_DIRECTORY_DOES_NOT_EXIST)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_DIRECTORY_DOES_NOT_EXIST)
 			}
 			if DoesDirectoryExist(ctv.VAL_EMPTY) {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_DIRECTORY_EXISTS)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_DIRECTORY_EXISTS)
 			}
 		},
 	)
@@ -351,10 +321,10 @@ func TestDoesFileExist(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if DoesFileExist(TEST_FILE_EXISTS_FILENAME) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_FILENAME_DOES_NOT_EXISTS)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_FILENAME_DOES_NOT_EXISTS)
 			}
 			if DoesFileExist(ctv.VAL_EMPTY) {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_FILENAME_EXISTS)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_FILENAME_EXISTS)
 			}
 		},
 	)
@@ -370,13 +340,13 @@ func TestIsBase64Encode(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if IsBase64Encode(TEST_STRING) {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 			if IsBase64Encode(TEST_BASE64_STRING) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.FALSE_SHOULD_BE_TRUE)
 			}
 			if IsBase64Encode(ctv.VAL_EMPTY) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.FALSE_SHOULD_BE_TRUE)
 			}
 		},
 	)
@@ -430,7 +400,7 @@ func TestIsDomainValid(tPtr *testing.T) {
 					gotError = true
 				}
 				if gotError != ts.wantError {
-					tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, ts.name, ctv.TXT_GOT_WRONG_BOOLEAN)
+					tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, ts.name, ctv.TXT_GOT_WRONG_BOOLEAN)
 				}
 			},
 		)
@@ -447,16 +417,16 @@ func TestIsGinModeValid(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if IsGinModeValid(ctv.MODE_DEBUG) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.FALSE_SHOULD_BE_TRUE)
 			}
 			if IsGinModeValid(ctv.MODE_RELEASE) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.FALSE_SHOULD_BE_TRUE)
 			}
 			if IsGinModeValid(ctv.TXT_EMPTY) {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.TRUE_SHOULD_BE_FALSE)
 			}
 			if IsGinModeValid(ctv.VAL_EMPTY) {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errs.TRUE_SHOULD_BE_FALSE)
 			}
 		},
 	)
@@ -537,7 +507,7 @@ func TestIsEnvironmentValid(tPtr *testing.T) {
 					gotError = true
 				}
 				if gotError != ts.wantError {
-					tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, ts.name, ctv.TXT_GOT_WRONG_BOOLEAN)
+					tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, ts.name, ctv.TXT_GOT_WRONG_BOOLEAN)
 				}
 			},
 		)
@@ -554,13 +524,13 @@ func TestIsFileReadable(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if IsFileReadable(TEST_FILE_UNREADABLE) == true {
-				tPtr.Error(pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Error(errs.TRUE_SHOULD_BE_FALSE)
 			}
 			if IsFileReadable(TEST_FILE_EXISTS_FILENAME) == false {
-				tPtr.Error(pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Error(errs.FALSE_SHOULD_BE_TRUE)
 			}
 			if IsFileReadable(ctv.VAL_EMPTY) == true {
-				tPtr.Error(pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Error(errs.TRUE_SHOULD_BE_FALSE)
 			}
 		},
 	)
@@ -576,13 +546,13 @@ func TestIsJSONValid(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if IsJSONValid(testValidJson) == false {
-				tPtr.Error(pi.FALSE_SHOULD_BE_TRUE)
+				tPtr.Error(errs.FALSE_SHOULD_BE_TRUE)
 			}
 			if IsJSONValid([]byte(ctv.VAL_EMPTY)) == true {
-				tPtr.Error(pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Error(errs.TRUE_SHOULD_BE_FALSE)
 			}
 			if IsJSONValid([]byte(ctv.TXT_EMPTY)) == true {
-				tPtr.Error(pi.TRUE_SHOULD_BE_FALSE)
+				tPtr.Error(errs.TRUE_SHOULD_BE_FALSE)
 			}
 		},
 	)
@@ -629,7 +599,7 @@ func TestIsJSONValid(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo pi.ErrorInfo
+// 		errorInfo errs.ErrorInfo
 // 		gotError  bool
 // 	)
 //
@@ -680,7 +650,7 @@ func TestIsJSONValid(tPtr *testing.T) {
 func TestValidateDirectory(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
@@ -707,7 +677,7 @@ func TestValidateDirectory(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo pi.ErrorInfo
+// 		errorInfo errs.ErrorInfo
 // 		gotError  bool
 // 	)
 //

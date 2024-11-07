@@ -3,7 +3,16 @@ module github.com/sty-holdings/sharedServices/v2024
 go 1.22.3
 
 require (
-	cel.dev/expr v0.16.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.32.4
+	github.com/aws/aws-sdk-go-v2/config v1.28.2
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.43
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentity v1.23.13
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.35.1
+	github.com/aws/aws-sdk-go-v2/service/ssm v1.49.2
+)
+
+require (
+	cel.dev/expr v0.18.0 // indirect
 	cloud.google.com/go v0.116.0 // indirect
 	cloud.google.com/go/auth v0.10.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.5 // indirect
@@ -17,9 +26,6 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.24.1 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.48.1 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.48.1 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.32.4 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.28.2 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.43 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.19 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.23 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.23 // indirect

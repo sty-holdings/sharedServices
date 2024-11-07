@@ -1,4 +1,4 @@
-package sty_shared
+package sharedServices
 
 import (
 	"context"

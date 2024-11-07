@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"encoding/json"
@@ -45,6 +11,9 @@ import (
 
 	"github.com/nats-io/nats.go"
 
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
@@ -59,7 +28,7 @@ func BuildInstanceName(
 	nodes ...string,
 ) (
 	instanceName string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if len(nodes) == 1 {
@@ -88,7 +57,7 @@ func GetConnection(
 	config NATSConfiguration,
 ) (
 	connPtr *nats.Conn,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -109,7 +78,7 @@ func GetConnection(
 		return
 	}
 	if connPtr, errorInfo.Error = nats.Connect(tURL, opts...); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v: %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v: %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
@@ -139,7 +108,7 @@ func RequestWithHeader(
 	timeOut time.Duration,
 ) (
 	responsePtr *nats.Msg,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if timeOut < 2*time.Second {
@@ -150,7 +119,7 @@ func RequestWithHeader(
 	}
 	if responsePtr, errorInfo.Error = connectionPtr.RequestMsg(messagePtr, timeOut); errorInfo.Error != nil {
 		log.Printf("%v: RequestWithHeader failed on %v %v for %v: %v", instanceName, ctv.LBL_SUBJECT, messagePtr.Subject, ctv.FN_CLIENT_ID, messagePtr.Header.Get(ctv.FN_CLIENT_ID))
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
@@ -165,19 +134,19 @@ func RequestWithHeader(
 func SendReply(
 	reply interface{},
 	msg *nats.Msg,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
 	var (
 		tJSONReply []byte
 	)
 
 	if tJSONReply, errorInfo = buildJSONReply(reply); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
 		return
 	}
 
 	if errorInfo.Error = msg.Respond(tJSONReply); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
 	}
 
 	return
@@ -194,7 +163,7 @@ func Subscribe(
 	handler nats.MsgHandler,
 ) (
 	subscriptionPtr *nats.Subscription,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if subscriptionPtr, errorInfo.Error = connectionPtr.Subscribe(subject, handler); errorInfo.Error != nil {
@@ -215,15 +184,15 @@ func UnmarshalMessageData(
 	functionName string,
 	msg *nats.Msg,
 	requestPtr any,
-) (errorInfo pi.ErrorInfo) {
+) (errorInfo errs.ErrorInfo) {
 
 	if string(msg.Data) == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(msg.Data, requestPtr); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 	}
 
 	return
@@ -241,11 +210,11 @@ func buildInstanceName(
 	nodes ...string,
 ) (
 	instanceName string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if len(nodes) == ctv.VAL_ZERO {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.TXT_AT_LEAST_ONE))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.TXT_AT_LEAST_ONE))
 		return
 	}
 	for index, node := range nodes {
@@ -266,11 +235,11 @@ func buildInstanceName(
 //	Verifications: None
 func buildJSONReply(reply interface{}) (
 	jsonReply []byte,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if jsonReply, errorInfo.Error = json.Marshal(reply); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_REPLY_TYPE, reflect.ValueOf(reply).Type().String()))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_REPLY_TYPE, reflect.ValueOf(reply).Type().String()))
 		return
 	}
 
@@ -288,14 +257,14 @@ func BuildTemporaryFiles(
 	tempDirectory string,
 	config NATSConfiguration,
 ) (
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if config.NATSToken == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
 		return
 	} else {
-		if errorInfo = hv.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSToken), 0744); errorInfo.Error != nil {
+		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSToken), 0744); errorInfo.Error != nil {
 			return
 		}
 	}
@@ -313,7 +282,7 @@ func buildURLPort(
 	port string,
 ) (
 	natsURL string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -321,13 +290,13 @@ func buildURLPort(
 	)
 
 	if url == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.FN_URL))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.FN_URL))
 		return
 	}
 	if tNATSPort == ctv.VAL_ZERO {
-		errorInfo = pi.NewErrorInfo(pi.ErrGreatThanZero, fmt.Sprint(ctv.FN_PORT))
+		errorInfo = errs.NewErrorInfo(pi.ErrGreatThanZero, fmt.Sprint(ctv.FN_PORT))
 		return
 	}
 
-	return fmt.Sprintf("%v:%d", url, tNATSPort), pi.ErrorInfo{}
+	return fmt.Sprintf("%v:%d", url, tNATSPort), errs.ErrorInfo{}
 }

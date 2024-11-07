@@ -1,30 +1,4 @@
-// Package constant_type_vars
-/*
-This file contains USA states and postal codes
-
-RESTRICTIONS:
-	- Do not edit this comment section.
-
-NOTES:
-    To improve code readability, the constant names do not follow camelCase.
-	Do not remove IDE inspection directives
-
-COPYRIGHT and WARRANTY:
-	Copyright 2022
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-
-*/
-package constant_type_vars
+package sharedServices
 
 //goland:noinspection ALL
 const (
@@ -39,7 +13,7 @@ const (
 	FN_AMOUNT_IN_PENNIES                  = "amount_in_pennies"
 	FN_AREA_CODE                          = "area_code"
 	FN_AREA_CODE_CUSTOM                   = "custom:areaCode"
-	FN_AUDIENCE                           = "AUDIENCE"
+	FN_AUDIENCE_CAP                       = "AUDIENCE"
 	FN_AVAILABLE_FUNDS                    = "available_funds"
 	FN_AWS_ACCESS_KEY_ID                  = "aws_access_key_id"
 	FN_AWS_ACCESS_KEY_ID_CAP              = "AWS_ACCESS_KEY_ID"
@@ -54,7 +28,7 @@ const (
 	FN_AWS_SECRET_ACCESS_KEY              = "aws_secret_access_key"
 	FN_AWS_SECRET_ACCESS_KEY_CAP          = "AWS_SECRET_ACCESS_KEY"
 	FN_AWS_USERPOOL_ID                    = "userpool_id"
-	FN_AWS_USERPOOL_ID_CAPO               = "USERPOOL_ID"
+	FN_AWS_USERPOOL_ID_CAP                = "USERPOOL_ID"
 	FN_AWS_USERPOOL_NAME                  = "userpool_name"
 	FN_AWS_USERPOOL_NAME_CAP              = "USERPOOL_NAME"
 	FN_BALANCE                            = "Balance"
@@ -214,15 +188,4 @@ const (
 	FN_WEB_ASSETS_URL                     = "Web_Assets_URL"
 	FN_ZELLE_REQUEST_METHOD               = "zelle_request_method"
 	FN_ZIPCODE                            = "zip_code"
-)
-
-//goland:noinspection ALL
-const (
-	PAYLOAD_SUBJECT_FN      = "SUBJECT"
-	PAYLOAD_CLAIMS_FN       = "CLAIMS"
-	PAYLOAD_AUDIENCE_FN     = "AUDIENCE"
-	PAYLOAD_REQUESTOR_ID_FN = "REQUESTOR_ID"
-	PAYLOAD_EXPIRES_FN      = "EXPIRES"
-	PAYLOAD_ISSUER_FN       = "ISSUER"
-	PAYLOAD_ISSUED_AT_FN    = "ISSUED_AT"
 )

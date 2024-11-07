@@ -1,49 +1,18 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"context"
 	"io/ioutil"
 	"log"
 	"os"
-	"runtime"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 var (
@@ -60,18 +29,11 @@ func CreateStorageClient(
 	test bool,
 ) (
 	client *storage.Client,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
-	var (
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-	)
-
-	pi.PrintDebugTrail(tFunctionName)
-
 	if client, errorInfo.Error = storage.NewClient(ctx, option.WithCredentialsJSON(getGCPKey(credentialsFile, test))); errorInfo.Error != nil {
-		log.Println(errorInfo.Error.Error(), ctv.ENDING_EXECUTION)
+		log.Println(errorInfo.Error.Error(), ctv.TXT_ENDING_EXECUTION)
 	}
 
 	return
@@ -87,10 +49,10 @@ func getBucket(
 	bucketName string,
 ) (
 	bucketPtr *storage.BucketHandle,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
-	if storageClientPtr == nil || bucketName == ctv.EMPTY {
+	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY {
 		errorInfo.Error = pi.ErrRequiredArgumentMissing
 	} else {
 		// Create a bucket object for the specified bucket.
@@ -111,12 +73,8 @@ func getGCPKey(
 ) (GCPCredentials []byte) {
 
 	var (
-		errorInfo          pi.ErrorInfo
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		errorInfo errs.ErrorInfo
 	)
-
-	pi.PrintDebugTrail(tFunctionName)
 
 	if GCPCredentials, errorInfo.Error = os.ReadFile(GCPCredentialsFQN); errorInfo.Error != nil {
 		errorInfo.Error = pi.ErrUnableReadFile
@@ -130,7 +88,7 @@ func getGCPKey(
 	return
 }
 
-// ListFilesInBucket - return all the object names in a bucket, folders and files
+// ListObjectsInBucket - return all the object names in a bucket, folders and files
 //
 //	Customer Messages: None
 //	Errors: ErrRequiredArgumentMissing
@@ -140,7 +98,7 @@ func ListObjectsInBucket(
 	bucketName string,
 ) (
 	bucketList []string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -149,7 +107,7 @@ func ListObjectsInBucket(
 		tObjectIterator   *storage.ObjectIterator
 	)
 
-	if storageClientPtr == nil || bucketName == ctv.EMPTY {
+	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY {
 		errorInfo.Error = pi.ErrRequiredArgumentMissing
 	} else {
 		tBucketPtr, errorInfo = getBucket(storageClientPtr, bucketName)
@@ -184,7 +142,7 @@ func ReadBucketObject(
 	fileName string,
 ) (
 	contents []byte,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -192,7 +150,7 @@ func ReadBucketObject(
 		tReader    *storage.Reader
 	)
 
-	if storageClientPtr == nil || bucketName == ctv.EMPTY || fileName == ctv.EMPTY {
+	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY || fileName == ctv.VAL_EMPTY {
 		errorInfo.Error = pi.ErrRequiredArgumentMissing
 	} else {
 		if tBucketPtr, errorInfo = getBucket(storageClientPtr, bucketName); errorInfo.Error == nil {

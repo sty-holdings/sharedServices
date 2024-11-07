@@ -1,38 +1,4 @@
-// Package coreFirebase
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package coreFirebase
+package sharedServices
 
 import (
 	"runtime"
@@ -40,6 +6,10 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 //goland:noinspection ALL
@@ -57,7 +27,7 @@ var (
 func TestFindFirebaseAuthUser(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tAuthPtr           *auth.Client
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
@@ -184,7 +154,7 @@ func TestNewFirebaseApp(tPtr *testing.T) {
 func TestGetFirebaseAuthConnection(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tAppPtr            *firebase.App
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()

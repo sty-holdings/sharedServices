@@ -1,4 +1,4 @@
-package sty_shared
+package sharedServices
 
 import (
 	"context"
@@ -22,8 +22,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
-	"github.com/sty-holdings/sharedServices/v2024/httpServices"
-	sty_shared2 "github.com/sty-holdings/sharedServices/v2024/jwtServices"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
@@ -41,7 +41,7 @@ func GetIdentityCredentials(
 	identityId string, // This is not the identity pool id
 ) (
 	tempIdentityIdCredentials aws.Credentials,
-	errorInfo ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -51,16 +51,16 @@ func GetIdentityCredentials(
 	)
 
 	if idToken == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN_ID))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN_ID))
 		return
 	}
 	if identityId == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_IDENTITY_ID))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v or AWSSession Access Token", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_IDENTITY_ID))
 		return
 	}
 
 	if tClientPtr = awsCI.NewFromConfig(baseConfig); tClientPtr == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -71,7 +71,7 @@ func GetIdentityCredentials(
 			Logins:     tLogins,
 		},
 	); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
@@ -97,7 +97,7 @@ func GetId(
 	region, userPoolId string,
 ) (
 	identityId string, // This is not the identity pool id
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -110,7 +110,7 @@ func GetId(
 
 	if STYHCognitoIdentityInfo.region == ctv.VAL_EMPTY {
 		if userPoolId == ctv.VAL_EMPTY {
-			errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_REGION))
+			errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_REGION))
 			return
 		}
 		tRegion = region
@@ -119,7 +119,7 @@ func GetId(
 	}
 	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
 		if userPoolId == ctv.VAL_EMPTY {
-			errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_USERPOOL_ID))
+			errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v as a passed value or from AWSSettings", ctv.LBL_MISSING_PARAMETER, ctv.FN_AWS_USERPOOL_ID))
 			return
 		}
 		tUserPoolId = userPoolId
@@ -128,7 +128,7 @@ func GetId(
 	}
 
 	if tClientPtr = awsCI.NewFromConfig(baseConfig); tClientPtr == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -139,7 +139,7 @@ func GetId(
 			Logins:         tLogins,
 		},
 	); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
@@ -160,7 +160,7 @@ func GetParameters(
 	ssmParameters ...string,
 ) (
 	parametersOutput awsSSM.GetParametersOutput,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -171,12 +171,12 @@ func GetParameters(
 	)
 
 	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
 		return
 	}
 
 	if len(ssmParameters) == ctv.VAL_ZERO {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ssmParameters))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ssmParameters))
 		return
 	}
 
@@ -200,7 +200,7 @@ func GetParameters(
 	}
 
 	if tClientPtr = awsSSM.NewFromConfig(baseConfig); tClientPtr == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_SYSTEM_MANAGER))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_SYSTEM_MANAGER))
 		return
 	}
 
@@ -210,12 +210,12 @@ func GetParameters(
 			WithDecryption: awsTruePtr,
 		},
 	); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
 	if len(tParametersOutputPtr.InvalidParameters) > 0 {
-		errorInfo = pi.NewErrorInfo(pi.ErrAWSInvalidSSMParameters, fmt.Sprintf("%v%v", ctv.LBL_AWS_SSM_PARAMETERS, tParametersOutputPtr.InvalidParameters))
+		errorInfo = errs.NewErrorInfo(errs.ErrAWSInvalidSSMParameters, fmt.Sprintf("%v%v", ctv.LBL_AWS_SSM_PARAMETERS, tParametersOutputPtr.InvalidParameters))
 		return
 	}
 
@@ -229,14 +229,14 @@ func LoadServerAWSBaseConfig(
 ) (
 	styhCognitoIdentityInfo CognitoIdentityInfo,
 	baseConfig aws.Config,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
 		tConfigData = make(map[string]interface{})
 	)
 
-	if tConfigData, errorInfo = cfg.GetConfigFile(awsAccountInfoFile); errorInfo.Error != nil {
+	if tConfigData, errorInfo = hlp.GetJSONFile(awsAccountInfoFile); errorInfo.Error != nil {
 		return
 	}
 
@@ -292,7 +292,7 @@ func LoadAWSCustomerSettings(
 	environment string,
 ) (
 	awsSettings AWSSettings,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	switch strings.ToLower(strings.Trim(environment, ctv.SPACES_ONE)) {
@@ -304,14 +304,14 @@ func LoadAWSCustomerSettings(
 		awsSettings.STYHCognitoIdentityInfo = styConfigLocal
 	default:
 		if environment == ctv.VAL_EMPTY {
-			errorInfo = pi.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, ctv.FN_ENVIRONMENT))
+			errorInfo = errs.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, ctv.FN_ENVIRONMENT))
 			return
 		}
-		errorInfo = pi.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, environment))
+		errorInfo = errs.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, environment))
 	}
 
 	if awsSettings.BaseConfig, errorInfo.Error = awsCfg.LoadDefaultConfig(awsCTXToDo, awsCfg.WithRegion(awsSettings.STYHCognitoIdentityInfo.region)); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, "Failed to create an AWS Session.")
+		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, "Failed to create an AWS Session.")
 		return
 	}
 
@@ -337,7 +337,7 @@ func Login(
 	accessToken string,
 	idToken string,
 	refreshToken string,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -349,19 +349,19 @@ func Login(
 	)
 
 	if loginType == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_LOGIN_TYPE, loginType))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_LOGIN_TYPE, loginType))
 		return
 	}
 	if username == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
 	if password == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_PASSWORD, ctv.TXT_PROTECTED))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_PASSWORD, ctv.TXT_PROTECTED))
 		return
 	}
 	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
 		return
 	}
 
@@ -372,12 +372,12 @@ func Login(
 		password,
 		nil,
 	); errorInfo.Error != nil {
-		pi.PrintErrorInfo(errorInfo)
+		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 
 	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -389,7 +389,7 @@ func Login(
 			AuthParameters: cognitoLoginPtr.GetAuthParams(),
 		},
 	); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
@@ -410,7 +410,7 @@ func Login(
 				ClientId:           aws.String(cognitoLoginPtr.GetClientId()),
 			},
 		); errorInfo.Error != nil {
-			errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 			return
 		}
 		tTokens["access"] = *tRespondToAuthChallengeOutput.AuthenticationResult.AccessToken
@@ -545,19 +545,19 @@ func ParseAWSJWT(
 ) (
 	claims jwt.Claims,
 	tokenValuePtr *jwt.Token,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	if len(awsSettings.keyInfo.keySet.Keys) == ctv.VAL_ZERO {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, ctv.TXT_KEY_SET_MISSING)
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, ctv.TXT_KEY_SET_MISSING)
 		return
 	}
 	if tokenType == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN_TYPE, ctv.FN_TOKEN_TYPE))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN_TYPE, ctv.FN_TOKEN_TYPE))
 		return
 	}
 	if token == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
 		return
 	}
 
@@ -586,7 +586,7 @@ func ParseAWSJWT(
 		return // No errors returned from called function
 	}
 
-	errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
+	errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
 
 	return
 }
@@ -602,7 +602,7 @@ func PullCognitoUserInfo(
 	userPoolId string,
 ) (
 	userAttributes map[string]interface{},
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -612,16 +612,16 @@ func PullCognitoUserInfo(
 	)
 
 	if username == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, ctv.FN_USERNAME))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, ctv.FN_USERNAME))
 		return
 	}
 	if userPoolId == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, "userPoolId"))
+		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, "userPoolId"))
 		return
 	}
 
 	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -631,7 +631,7 @@ func PullCognitoUserInfo(
 	}
 
 	if tAdminGetUserOutputPtr, errorInfo.Error = tCognitoClientPtr.AdminGetUser(awsCTXToDo, tAdminGetUserInputPtr); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -827,7 +827,7 @@ func convertKey(rawE, rawN string) (
 //	Verifications: None
 func getPublicKeySet(keySetURL string) (
 	keySet keySet,
-	errorInfo pi.ErrorInfo,
+	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
@@ -838,12 +838,12 @@ func getPublicKeySet(keySetURL string) (
 	)
 
 	if keySetURL == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_URL))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_URL))
 		return
 	}
 
 	if tKeySetResponsePtr, errorInfo.Error = http.Get(keySetURL); errorInfo.Error != nil {
-		errorInfo = pi.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 	defer func() {
@@ -851,7 +851,7 @@ func getPublicKeySet(keySetURL string) (
 	}()
 
 	if tKeySetResponsePtr.StatusCode != sty_shared.HTTP_STATUS_200 {
-		errorInfo = pi.NewErrorInfo(pi.ErrHTTPRequestFalied, fmt.Sprintf("%v%v - %v%v", ctv.LBL_HTTP_STATUS, tKeySetResponsePtr.StatusCode, ctv.FN_KEYSET_URL, keySetURL))
+		errorInfo = errs.NewErrorInfo(errs.ErrHTTPRequestFalied, fmt.Sprintf("%v%v - %v%v", ctv.LBL_HTTP_STATUS, tKeySetResponsePtr.StatusCode, ctv.FN_KEYSET_URL, keySetURL))
 		return
 	}
 
@@ -861,11 +861,11 @@ func getPublicKeySet(keySetURL string) (
 	if keys, ok := tJWKS["keys"].([]interface{}); ok {
 		for _, key := range keys {
 			if tKeyData, errorInfo.Error = json.Marshal(key); errorInfo.Error != nil {
-				errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, key))
+				errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, key))
 				return
 			}
 			if errorInfo.Error = json.Unmarshal(tKeyData, &tKey); errorInfo.Error != nil {
-				errorInfo = pi.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, tKeyData))
+				errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, tKeyData))
 				return
 			}
 			keySet.Keys = append(keySet.Keys, tKey) // Assuming "kid" is the key ID and "n" is the public key value
@@ -873,7 +873,7 @@ func getPublicKeySet(keySetURL string) (
 		return
 	}
 
-	errorInfo = pi.NewErrorInfo(pi.ErrExtractKeysFailure, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, keySetURL))
+	errorInfo = errs.NewErrorInfo(errs.ErrExtractKeysFailure, fmt.Sprintf("%v%v", ctv.LBL_PUBLIC_KEY, keySetURL))
 
 	return
 }

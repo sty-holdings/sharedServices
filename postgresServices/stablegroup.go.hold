@@ -1,16 +1,3 @@
-/*
-This will process a set of tables that belong together
-
-RESTRICTIONS:
-    AWS functions:
-    * Program must have access to a .aws/credentials file in the default location.
-    * This will only access system parameters that start with '/sote' (ROOTPATH).
-
-    * A fully qualified table group json file must be provided and exist.
-
-NOTES:
-    None
-*/
 package sDatabase
 
 import (

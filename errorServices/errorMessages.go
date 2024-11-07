@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by Scott Yacko / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	// Add imports here
@@ -42,15 +8,6 @@ import (
 
 //goland:noinspection ALL
 const (
-	ERROR    = "error"
-	NO_ERROR = "no error"
-	//
-	//
-	FORMAT_EXPECTED_ERROR     = "%s Failed: Was expecting an err. Additional Info: %s"
-	FORMAT_EXPECTING_NO_ERROR = "%s Failed: Wasn't expecting an err. ERROR: %s"
-	FORMAT_UNEXPECTED_ERROR   = "%s Failed: Unexpected err. ERROR: %s"
-	//
-	// Messages
 	ACCESS_TOKEN_MISSING               = "No access token was provided."
 	ADDRESS_STREET_MISSING             = "The profile address is missing information. Please review the street, city, state, and zip code."
 	ADDRESS_CITY_MISSING               = "The profile address is missing information. Please review the street, city, state, and zip code."
@@ -191,16 +148,6 @@ const (
 	VERSION_INVALID                    = "The software version is invalid. Use @env GOOS=linux GOARCH=amd64 go build -ldflags \"-X main.version=$(" +
 		"VERSION)\" -o ${ROOT_DIRECTORY}/servers/${SERVER_NAME}/bin/${SERVER_NAME} ${ROOT_DIRECTORY}/servers/${SERVER_NAME}/main.go"
 	ZERO_INVALID = "A value of zero is invalid."
-	//
-	// String that are used to determine third party error messages
-	USER_DOES_NOT_EXIST           = "User does not exist."
-	NOT_FOUND                     = "not found"
-	UNKNOWN                       = "UNKNOWN"
-	JWT_TOKEN_SIGNATURE_INVALID   = "token signature is invalid: crypto/rsa: verification error"
-	FIREBASE_AUTH_BAD_CREDENTIALS = "cannot read credentials"
-	//
-	// Testing Strings
-	TEST_STRING = "TEST STRING"
 )
 
 //goland:noinspection ALL

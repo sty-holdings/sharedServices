@@ -1,48 +1,36 @@
-// Package sty-shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"crypto"
 )
 
-//goland:noinspection GoSnakeCaseUsage,GoCommentStart
+//goland:noinspection ALL
 const (
+	CERT_ED25519             = "ED25519"
+	CERT_RSA                 = "RSA"
+	CERT_RS265               = "RS256"
+	CERT_ECDSACURVE          = "ECDSACURVE"
+	CERT_ECDSACURVE_P224     = "P224"
+	CERT_ECDSACURVE_P256     = "P256"
+	CERT_ECDSACURVE_P384     = "P384"
+	CERT_ECDSACURVE_P521     = "P521"
+	CERT_PRIVATE_KEY         = "RSA PRIVATE KEY"
+	CERT_PUBLIC_KEY          = "PUBLIC KEY"
+	CERTIFICATE              = "CERTIFICATE"
 	TLS_CA_BUNDLE_FILENAME   = "tls-ca-bundle.crt"
 	TLS_CERT_FILENAME        = "tls-cert.crt"
 	TLS_PRIVATE_KEY_FILENAME = "tls-private.key"
+	// Parameters
+	PARAMETER_TLS_CERT            = "tls-certificate"
+	PARAMETER_TLS_CERT_FQN        = "tls-certificate-fqn"
+	PARAMETER_TLS_PRIVATE_KEY     = "tls-private-key"
+	PARAMETER_TLS_PRIVATE_KEY_FQM = "tls-private-key-fqn"
+	PARAMETER_TLS_CA_BUNDLE       = "tls-ca-bundle"
+	PARAMETER_TLS_CA_BUNDLE_FQN   = "tls-ca-bundle-fqn"
+	// Toekn
+	TOKEN_TYPE_ID      = "id"
+	TOKEN_TYPE_ACCESS  = "access"
+	TOKEN_TYPE_REFRESH = "refresh"
 )
 
 type GenerateCertificate struct {

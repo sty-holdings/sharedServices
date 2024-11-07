@@ -1,38 +1,4 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"encoding/json"
@@ -44,8 +10,9 @@ import (
 	"regexp"
 	"strings"
 
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 // AreMapKeysPopulated - will test to make sure all map keys are set to anything other than nil or empty.
@@ -119,7 +86,7 @@ func AreMapKeysValuesPopulated(myMap map[any]interface{}) (finding string) {
 //	Customer Messages: None
 //	Errors: ErrFileMissing, ErrFileUnreadable
 //	Verifications: None
-func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo pi.ErrorInfo) {
+func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		fqn = hlp.PrependWorkingDirectory(filename)
@@ -131,22 +98,22 @@ func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo pi.ErrorIn
 	errorInfo.AdditionalInfo = fmt.Sprintf("File: %v  Config File Label: %v", filename, fileLabel)
 
 	if filename == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrFileMissing, errorInfo.AdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errorInfo.AdditionalInfo)
 		return
 	}
 	if DoesFileExist(fqn) == false {
-		errorInfo = pi.NewErrorInfo(pi.ErrFileMissing, errorInfo.AdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errorInfo.AdditionalInfo)
 		return
 	}
 	if IsFileReadable(fqn) == false { // File is not readable
-		errorInfo = pi.NewErrorInfo(pi.ErrFileUnreadable, errorInfo.AdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrFileUnreadable, errorInfo.AdditionalInfo)
 	}
 
 	return
 }
 
 // CheckFileValidJSON - reads the file and checks the contents
-// func CheckFileValidJSON(FQN, fileLabel string) (errorInfo pi.ErrorInfo) {
+// func CheckFileValidJSON(FQN, fileLabel string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		jsonData           []byte
@@ -205,7 +172,7 @@ func DoesFileExist(fileName string) bool {
 func IsBase64Encode(base64Value string) bool {
 
 	var (
-		errorInfo pi.ErrorInfo
+		errorInfo errs.ErrorInfo
 	)
 
 	if _, errorInfo = hlp.Base64Decode(base64Value); errorInfo.Error == nil {
@@ -242,7 +209,7 @@ func IsDirectoryFullyQualified(directory string) bool {
 func IsDirectoryValid(directory string) bool {
 
 	var (
-		errorInfo pi.ErrorInfo
+		errorInfo errs.ErrorInfo
 	)
 
 	if errorInfo = ValidateDirectory(directory); errorInfo.Error == nil {
@@ -280,7 +247,7 @@ func IsDomainValid(domain string) bool {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func IsEmailAddressValid(emailAddress string) (errorInfo pi.ErrorInfo) {
+func IsEmailAddressValid(emailAddress string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		mx []*net.MX
@@ -537,7 +504,7 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 // }
 
 // ValidateAuthenticatorService - Firebase is not support at this time
-// func ValidateAuthenticatorService(authenticatorService string) (errorInfo pi.ErrorInfo) {
+// func ValidateAuthenticatorService(authenticatorService string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)
@@ -567,21 +534,21 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ValidateDirectory(directory string) (errorInfo pi.ErrorInfo) {
+func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 
 	if directory == ctv.VAL_EMPTY {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, ctv.TXT_DIRECTORY_PARAM_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, ctv.TXT_DIRECTORY_PARAM_EMPTY)
 		return
 	}
 	if DoesDirectoryExist(directory) == false {
-		errorInfo = pi.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, directory))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, directory))
 	}
 
 	return
 }
 
 // ValidateTransferMethod
-// func ValidateTransferMethod(transferMethod string) (errorInfo pi.ErrorInfo) {
+// func ValidateTransferMethod(transferMethod string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)

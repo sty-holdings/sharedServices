@@ -1,44 +1,14 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"errors"
 	"fmt"
 	"runtime"
 	"testing"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
 )
 
 func TestGetNATSConnection(tPtr *testing.T) {
@@ -49,7 +19,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		gotError           bool
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
@@ -66,7 +36,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -83,7 +53,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: ctv.VAL_EMPTY,
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -100,7 +70,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: ctv.VAL_EMPTY,
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -117,7 +87,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                0,
+					NATSPort:                "0",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -134,7 +104,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       ctv.VAL_EMPTY,
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -151,7 +121,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: ctv.VAL_EMPTY,
@@ -168,7 +138,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -185,7 +155,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 				instanceName: "scott-test-connection",
 				config: NATSConfiguration{
 					NATSCredentialsFilename: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key",
-					NATSPort:                4222,
+					NATSPort:                "4222",
 					NATSTLSInfo: jwts.TLSInfo{
 						TLSCert:       "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/STAR_savup_com.crt",
 						TLSPrivateKey: "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/savup/STAR_savup_com/savup.com.key",
@@ -203,7 +173,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 			ts.name, func(t *testing.T) {
 				if _, errorInfo = GetConnection(ts.arguments.instanceName, ts.arguments.config); errorInfo.Error != nil {
 					gotError = true
-					errorInfo = pi.ErrorInfo{
+					errorInfo = errs.ErrorInfo{
 						Error: errors.New(fmt.Sprintf("Failed - NATS connection was not created for Test: %v", tFunctionName)),
 					}
 				} else {

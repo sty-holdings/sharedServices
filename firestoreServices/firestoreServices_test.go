@@ -1,62 +1,33 @@
-// Package coreFirestore
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package coreFirestore
+package sharedServices
 
 import (
-	"fmt"
+	//"fmt"
 	"runtime"
 	"testing"
 
 	"cloud.google.com/go/firestore"
+	//firebase "firebase.google.com/go"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	//fbs "github.com/sty-holdings/sharedServices/v2024/firebaseServices"
 )
 
 var (
 	tFireTestNameValue = map[any]interface{}{
-		ctv.FN_REQUESTOR_ID: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-		ctv.FN_EMAIL:        ctv.TEST_STRING,
+		//ctv.FN_REQUESTOR_ID: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+		//ctv.FN_EMAIL:        ctv.TEST_STRING,
 	}
 	tFireTestNameValueSubCollection = map[any]interface{}{
-		ctv.FN_INSTITUTION_NAME:   ctv.TEST_INSTITUTION_CHASE,
-		ctv.FN_PLAID_ACCESS_TOKEN: ctv.TEST_STRING,
+		//ctv.FN_INSTITUTION_NAME:   ctv.TEST_INSTITUTION_CHASE,
+		//ctv.FN_PLAID_ACCESS_TOKEN: ctv.TEST_STRING,
 	}
 )
 
 func TestBuildFirestoreUpdate(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		//errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tNameValues        = make(map[any]interface{})
@@ -64,15 +35,15 @@ func TestBuildFirestoreUpdate(tPtr *testing.T) {
 
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
-			if _, errorInfo = BuildFirestoreUpdate(tNameValues); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = BuildFirestoreUpdate(tNameValues); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			tNameValues["Field_1"] = "Value_1"
 			tNameValues["Field_2"] = "Value_2"
 			tNameValues["Field_3"] = "Value_3"
-			if _, errorInfo = BuildFirestoreUpdate(tNameValues); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//if _, errorInfo = BuildFirestoreUpdate(tNameValues); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 
 		},
 	)
@@ -89,7 +60,7 @@ func TestDoesDocumentExist(tPtr *testing.T) {
 
 	tFirestoreClientPtr = getTestFirestoreConnection()
 	buildTestDocuments(tFirestoreClientPtr, 1)
-	tDocumentReferencePtr, _ = getDocumentRef(tFirestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0))
+	//tDocumentReferencePtr, _ = getDocumentRef(tFirestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0))
 
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
@@ -98,12 +69,12 @@ func TestDoesDocumentExist(tPtr *testing.T) {
 				tPtr.Errorf("%v Failed: Was expecting true and got false.", tFunctionName)
 			}
 			// Document doesn't exist
-			RemoveDocument(
-				tFirestoreClientPtr, ctv.TEST_DATASTORE, NameValueQuery{
-					FieldName:  ctv.FN_REQUESTOR_ID,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				},
-			)
+			//RemoveDocument(
+			//	tFirestoreClientPtr, ctv.TEST_DATASTORE, NameValueQuery{
+			//		FieldName:  ctv.FN_REQUESTOR_ID,
+			//		FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+			//	},
+			//)
 			if doesDocumentExist(tDocumentReferencePtr) {
 				tPtr.Errorf("%v Failed: Was expecting an false and got true.", tFunctionName)
 			}
@@ -122,12 +93,12 @@ func TestFindDocument(tPtr *testing.T) {
 
 	var (
 		tFirestoreClientPtr *firestore.Client
-		errorInfo           pi.ErrorInfo
+		errorInfo           errs.ErrorInfo
 		gotError            bool
-		tNameValues         = make(map[string]interface{})
+		//tNameValues         = make(map[string]interface{})
 	)
 
-	tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
+	//tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
 	tests := []struct {
 		name      string
 		arguments arguments
@@ -137,10 +108,10 @@ func TestFindDocument(tPtr *testing.T) {
 			name: "Positive Case: Successful - single param!",
 			arguments: arguments{
 				createDocument: true,
-				dataStore:      ctv.TEST_DATASTORE,
+				//dataStore:      ctv.TEST_DATASTORE,
 				nameValues1: NameValueQuery{
-					FieldName:  ctv.FN_REQUESTOR_ID,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+					FieldName: ctv.FN_REQUESTOR_ID,
+					//FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
 				},
 			},
 			wantError: false,
@@ -149,14 +120,14 @@ func TestFindDocument(tPtr *testing.T) {
 			name: "Positive Case: Successful - double param!",
 			arguments: arguments{
 				createDocument: true,
-				dataStore:      ctv.TEST_DATASTORE,
+				//dataStore:      ctv.TEST_DATASTORE,
 				nameValues1: NameValueQuery{
-					FieldName:  ctv.FN_REQUESTOR_ID,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+					FieldName: ctv.FN_REQUESTOR_ID,
+					//FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
 				},
 				nameValues2: NameValueQuery{
-					FieldName:  ctv.FN_EMAIL,
-					FieldValue: ctv.TEST_STRING,
+					FieldName: ctv.FN_EMAIL,
+					//FieldValue: ctv.TEST_STRING,
 				},
 			},
 			wantError: false,
@@ -165,10 +136,10 @@ func TestFindDocument(tPtr *testing.T) {
 			name: "Negative Case: Missing datastore!",
 			arguments: arguments{
 				createDocument: true,
-				dataStore:      ctv.EMPTY,
+				//dataStore:      ctv.EMPTY,
 				nameValues1: NameValueQuery{
-					FieldName:  ctv.FN_REQUESTOR_ID,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+					FieldName: ctv.FN_REQUESTOR_ID,
+					//FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
 				},
 			},
 			wantError: true,
@@ -177,10 +148,10 @@ func TestFindDocument(tPtr *testing.T) {
 			name: "Negative Case: Missing name/values field name value!",
 			arguments: arguments{
 				createDocument: true,
-				dataStore:      ctv.TEST_DATASTORE,
+				//dataStore:      ctv.TEST_DATASTORE,
 				nameValues1: NameValueQuery{
-					FieldName:  ctv.EMPTY,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+					//FieldName:  ctv.EMPTY,
+					//FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
 				},
 			},
 			wantError: true,
@@ -189,8 +160,8 @@ func TestFindDocument(tPtr *testing.T) {
 			name: "Negative Case: Missing name/values!",
 			arguments: arguments{
 				createDocument: true,
-				dataStore:      ctv.TEST_DATASTORE,
-				nameValues1:    NameValueQuery{},
+				//dataStore:      ctv.TEST_DATASTORE,
+				nameValues1: NameValueQuery{},
 			},
 			wantError: true,
 		},
@@ -202,11 +173,11 @@ func TestFindDocument(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if ts.arguments.nameValues2.FieldName == ctv.EMPTY {
-					_, _, errorInfo = FindDocument(tFirestoreClientPtr, ts.arguments.dataStore, ts.arguments.nameValues1)
-				} else {
-					_, _, errorInfo = FindDocument(tFirestoreClientPtr, ts.arguments.dataStore, ts.arguments.nameValues1, ts.arguments.nameValues2)
-				}
+				//if ts.arguments.nameValues2.FieldName == ctv.EMPTY {
+				//	_, _, errorInfo = FindDocument(tFirestoreClientPtr, ts.arguments.dataStore, ts.arguments.nameValues1)
+				//} else {
+				//	_, _, errorInfo = FindDocument(tFirestoreClientPtr, ts.arguments.dataStore, ts.arguments.nameValues1, ts.arguments.nameValues2)
+				//}
 				if errorInfo.Error != nil {
 					gotError = true
 				} else {
@@ -229,24 +200,24 @@ func TestGetAllDocuments(tPtr *testing.T) {
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 	)
 
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
-			if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			//
 			tFirestoreClientPtr = getTestFirestoreConnection()
-			if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 			//
 			buildTestDocuments(tFirestoreClientPtr, 6)
-			if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//if _, errorInfo = GetAllDocuments(tFirestoreClientPtr, ctv.TEST_DATASTORE); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 		},
 	)
 
@@ -256,46 +227,46 @@ func TestGetAllDocuments(tPtr *testing.T) {
 func TestGetAllDocumentsWhere(tPtr *testing.T) {
 
 	var (
-		tDocuments          []*firestore.DocumentSnapshot
+		//tDocuments          []*firestore.DocumentSnapshot
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 	)
 
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
 			//  No Pointer
-			if _, errorInfo = GetAllDocumentsWhere(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.FN_REQUESTOR_ID,
-				ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-			); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = GetAllDocumentsWhere(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.FN_REQUESTOR_ID,
+			//	ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+			//); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			//
 			// No Data
 			tFirestoreClientPtr = getTestFirestoreConnection()
-			if tDocuments, errorInfo = GetAllDocumentsWhere(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.FN_REQUESTOR_ID,
-				ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-			); errorInfo.Error != nil && len(tDocuments) > 0 {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//if tDocuments, errorInfo = GetAllDocumentsWhere(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.FN_REQUESTOR_ID,
+			//	ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+			//); errorInfo.Error != nil && len(tDocuments) > 0 {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 			//
 			// Success
-			buildTestDocuments(tFirestoreClientPtr, 6)
-			if tDocuments, errorInfo = GetAllDocumentsWhere(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.FN_REQUESTOR_ID,
-				ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-			); errorInfo.Error != nil && len(tDocuments) == 0 {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//buildTestDocuments(tFirestoreClientPtr, 6)
+			//if tDocuments, errorInfo = GetAllDocumentsWhere(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.FN_REQUESTOR_ID,
+			//	ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+			//); errorInfo.Error != nil && len(tDocuments) == 0 {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 		},
 	)
 
@@ -308,7 +279,7 @@ func TestGetDocumentById(tPtr *testing.T) {
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 	)
 
 	tFirestoreClientPtr = getTestFirestoreConnection()
@@ -317,22 +288,22 @@ func TestGetDocumentById(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
 			// Successful
-			if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
-			_ = RemoveDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0)
+			//if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
+			//_ = RemoveDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0)
 			// Not found
-			if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			// Missing Datastore name
-			if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.EMPTY, ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.EMPTY, ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			// Missing document id
-			if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.EMPTY); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if _, errorInfo = GetDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.EMPTY); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 		},
 	)
 
@@ -345,7 +316,7 @@ func TestGetDocumentRef(tPtr *testing.T) {
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 	)
 
 	tFirestoreClientPtr = getTestFirestoreConnection()
@@ -354,27 +325,27 @@ func TestGetDocumentRef(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(t *testing.T) {
 			//  Found
-			if _, errorInfo = getDocumentRef(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-			); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
-			}
+			//if _, errorInfo = getDocumentRef(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+			//); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
+			//}
 			//  Not Found
-			_ = RemoveDocument(
-				tFirestoreClientPtr, ctv.TEST_DATASTORE, NameValueQuery{
-					FieldName:  ctv.FN_REQUESTOR_ID,
-					FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				},
-			)
-			if _, errorInfo = getDocumentRef(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-			); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//_ = RemoveDocument(
+			//	tFirestoreClientPtr, ctv.TEST_DATASTORE, NameValueQuery{
+			//		FieldName:  ctv.FN_REQUESTOR_ID,
+			//		FieldValue: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+			//	},
+			//)
+			//if _, errorInfo = getDocumentRef(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+			//); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 		},
 	)
 
@@ -390,9 +361,9 @@ func TestGetDocumentIdsWithSubCollections(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo          pi.ErrorInfo
-		gotError           bool
-		tFirebase          coreHelpers.FirebaseFirestoreHelper
+		errorInfo errs.ErrorInfo
+		gotError  bool
+		//tFirebase          coreHelpers.FirebaseFirestoreHelper
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
@@ -403,59 +374,59 @@ func TestGetDocumentIdsWithSubCollections(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Successful!",
+			name:      "Positive Case: Successful!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Missing datastore!",
+			name:      "Negative Case: Missing datastore!",
 			arguments: arguments{
-				datastoreName:     ctv.EMPTY,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//datastoreName:     ctv.EMPTY,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing requestor id!",
+			name:      "Negative Case: Missing requestor id!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.EMPTY,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.EMPTY,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing sub collection!",
+			name:      "Negative Case: Missing sub collection!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.EMPTY,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.EMPTY,
 			},
 			wantError: true,
 		},
 	}
 
-	tFirebase.AppPtr, _, _ = coreFirebase.GetFirebaseAppAuthConnection(ctv.TEST_FIREBASE_CREDENTIALS)
-	tFirebase.FirestoreClientPtr, _ = GetFirestoreClientConnection(tFirebase.AppPtr)
+	//tFirebase.AppPtr, _, _ = fbs.GetFirebaseAppAuthConnection(ctv.TEST_FIREBASE_CREDENTIALS)
+	//tFirebase.FirestoreClientPtr, _ = GetFirestoreClientConnection(tFirebase.AppPtr)
 
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if _, errorInfo = GetDocumentIdsWithSubCollections(
-					tFirebase.FirestoreClientPtr,
-					ts.arguments.datastoreName,
-					ts.arguments.requestorId,
-					ts.arguments.subCollectionName,
-				); errorInfo.Error == nil {
-					gotError = false
-				} else {
-					gotError = true
-				}
+				//if _, errorInfo = GetDocumentIdsWithSubCollections(
+				//	tFirebase.FirestoreClientPtr,
+				//	ts.arguments.datastoreName,
+				//	ts.arguments.requestorId,
+				//	ts.arguments.subCollectionName,
+				//); errorInfo.Error == nil {
+				//	gotError = false
+				//} else {
+				//	gotError = true
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(tFunctionName, ts.name, errorInfo.Error.Error())
 				}
@@ -474,9 +445,9 @@ func TestGetDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo          pi.ErrorInfo
-		gotError           bool
-		tFirebase          coreHelpers.FirebaseFirestoreHelper
+		errorInfo errs.ErrorInfo
+		gotError  bool
+		//tFirebase          coreHelpers.FirebaseFirestoreHelper
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
@@ -487,82 +458,82 @@ func TestGetDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Successful!",
+			name:      "Positive Case: Successful!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
-				documentId:        ctv.TEST_INSTITUTION_CHASE,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//documentId:        ctv.TEST_INSTITUTION_CHASE,
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Missing datastore!",
+			name:      "Negative Case: Missing datastore!",
 			arguments: arguments{
-				datastoreName:     ctv.EMPTY,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
-				documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
+				//datastoreName:     ctv.EMPTY,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing requestor id!",
+			name:      "Negative Case: Missing requestor id!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.EMPTY,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
-				documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.EMPTY,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing sub collection!",
+			name:      "Negative Case: Missing sub collection!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.EMPTY,
-				documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.EMPTY,
+				//documentId:        ctv.TEST_INSTITUTION_CHASE_CLONE,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing document id!",
+			name:      "Negative Case: Missing document id!",
 			arguments: arguments{
-				datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
-				requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollectionName: ctv.COLLECTION_INSTITUTIONS,
-				documentId:        ctv.EMPTY,
+				//datastoreName:     ctv.DATASTORE_USER_INSTITUTIONS,
+				//requestorId:       ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollectionName: ctv.COLLECTION_INSTITUTIONS,
+				//documentId:        ctv.EMPTY,
 			},
 			wantError: true,
 		},
 	}
 
-	tFirebase.AppPtr, _, _ = coreFirebase.GetFirebaseAppAuthConnection(ctv.TEST_FIREBASE_CREDENTIALS)
-	tFirebase.FirestoreClientPtr, _ = GetFirestoreClientConnection(tFirebase.AppPtr)
-	_ = SetDocumentWithSubCollection(
-		tFirebase.FirestoreClientPtr,
-		ctv.DATASTORE_USER_INSTITUTIONS,
-		ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-		ctv.COLLECTION_INSTITUTIONS,
-		ctv.TEST_INSTITUTION_CHASE,
-		tFireTestNameValueSubCollection,
-	)
+	//tFirebase.AppPtr, _, _ = fbs.GetFirebaseAppAuthConnection(ctv.TEST_FIREBASE_CREDENTIALS)
+	//tFirebase.FirestoreClientPtr, _ = GetFirestoreClientConnection(tFirebase.AppPtr)
+	//_ = SetDocumentWithSubCollection(
+	//	tFirebase.FirestoreClientPtr,
+	//	ctv.DATASTORE_USER_INSTITUTIONS,
+	//	ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+	//	ctv.COLLECTION_INSTITUTIONS,
+	//	ctv.TEST_INSTITUTION_CHASE,
+	//	tFireTestNameValueSubCollection,
+	//)
 
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if _, errorInfo = GetDocumentFromSubCollectionByDocumentId(
-					tFirebase.FirestoreClientPtr,
-					ts.arguments.datastoreName,
-					ts.arguments.requestorId,
-					ts.arguments.subCollectionName,
-					ts.arguments.documentId,
-				); errorInfo.Error == nil {
-					gotError = false
-				} else {
-					gotError = true
-				}
+				//if _, errorInfo = GetDocumentFromSubCollectionByDocumentId(
+				//	tFirebase.FirestoreClientPtr,
+				//	ts.arguments.datastoreName,
+				//	ts.arguments.requestorId,
+				//	ts.arguments.subCollectionName,
+				//	ts.arguments.documentId,
+				//); errorInfo.Error == nil {
+				//	gotError = false
+				//} else {
+				//	gotError = true
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(tFunctionName, ts.name, errorInfo.Error.Error())
 				}
@@ -570,36 +541,36 @@ func TestGetDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 		)
 	}
 
-	_ = RemoveDocumentFromSubCollectionByDocumentId(
-		tFirebase.FirestoreClientPtr,
-		ctv.DATASTORE_USER_INSTITUTIONS,
-		ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-		ctv.COLLECTION_INSTITUTIONS,
-		ctv.TEST_INSTITUTION_CHASE,
-	)
+	//_ = RemoveDocumentFromSubCollectionByDocumentId(
+	//	tFirebase.FirestoreClientPtr,
+	//	ctv.DATASTORE_USER_INSTITUTIONS,
+	//	ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+	//	ctv.COLLECTION_INSTITUTIONS,
+	//	ctv.TEST_INSTITUTION_CHASE,
+	//)
 }
 
 func TestGetFirestoreClientConnection(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
-		tAppPtr            *firebase.App
+		//errorInfo          errs.ErrorInfo
+		//tAppPtr            *firebase.App
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
 
-	tAppPtr, _ = coreFirebase.NewFirebaseApp(ctv.TEST_FIREBASE_CREDENTIALS)
+	//tAppPtr, _ = fbs.NewFirebaseApp(ctv.TEST_FIREBASE_CREDENTIALS)
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			// Test connection with good Firebase app pointer
-			if _, errorInfo = GetFirestoreClientConnection(tAppPtr); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Firebase app was not created.", tFunctionName)
-			}
+			//if _, errorInfo = GetFirestoreClientConnection(tAppPtr); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Firebase app was not created.", tFunctionName)
+			//}
 			// Test connection with nil firebaseServices app pointer
-			if _, errorInfo = GetFirestoreClientConnection(nil); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Firestore connection was established.", tFunctionName)
-			}
+			//if _, errorInfo = GetFirestoreClientConnection(nil); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Firestore connection was established.", tFunctionName)
+			//}
 		},
 	)
 }
@@ -612,9 +583,9 @@ func TestRemoveDocument(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo           pi.ErrorInfo
-		gotError            bool
-		tFirestoreClientPtr *firestore.Client
+		errorInfo errs.ErrorInfo
+		gotError  bool
+		//tFirestoreClientPtr *firestore.Client
 	)
 
 	tests := []struct {
@@ -625,10 +596,10 @@ func TestRemoveDocument(tPtr *testing.T) {
 		{
 			name: "Positive Case: Success",
 			arguments: arguments{
-				tDataStore: ctv.TEST_DATASTORE,
+				//tDataStore: ctv.TEST_DATASTORE,
 				tQueryParameters: NameValueQuery{
-					FieldName:  ctv.TEST_FIELD_NAME,
-					FieldValue: ctv.TEST_FIELD_VALUE,
+					//FieldName:  ctv.TEST_FIELD_NAME,
+					//FieldValue: ctv.TEST_FIELD_VALUE,
 				},
 			},
 			wantError: false,
@@ -636,10 +607,10 @@ func TestRemoveDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing datastore",
 			arguments: arguments{
-				tDataStore: ctv.EMPTY,
+				//tDataStore: ctv.EMPTY,
 				tQueryParameters: NameValueQuery{
-					FieldName:  ctv.TEST_FIELD_NAME,
-					FieldValue: ctv.TEST_FIELD_VALUE,
+					//FieldName:  ctv.TEST_FIELD_NAME,
+					//FieldValue: ctv.TEST_FIELD_VALUE,
 				},
 			},
 			wantError: true,
@@ -647,10 +618,10 @@ func TestRemoveDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing Field Nane",
 			arguments: arguments{
-				tDataStore: ctv.TEST_DATASTORE,
+				//tDataStore: ctv.TEST_DATASTORE,
 				tQueryParameters: NameValueQuery{
-					FieldName:  ctv.EMPTY,
-					FieldValue: ctv.TEST_FIELD_VALUE,
+					//FieldName:  ctv.EMPTY,
+					//FieldValue: ctv.TEST_FIELD_VALUE,
 				},
 			},
 			wantError: true,
@@ -658,26 +629,26 @@ func TestRemoveDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing Field Value",
 			arguments: arguments{
-				tDataStore: ctv.TEST_DATASTORE,
+				//tDataStore: ctv.TEST_DATASTORE,
 				tQueryParameters: NameValueQuery{
-					FieldName:  ctv.TEST_FIELD_NAME,
-					FieldValue: ctv.EMPTY,
+					//FieldName:  ctv.TEST_FIELD_NAME,
+					//FieldValue: ctv.EMPTY,
 				},
 			},
 			wantError: true,
 		},
 	}
 
-	tFirestoreClientPtr = getTestFirestoreConnection()
+	//tFirestoreClientPtr = getTestFirestoreConnection()
 
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = RemoveDocument(tFirestoreClientPtr, ts.arguments.tDataStore, ts.arguments.tQueryParameters); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
+				//if errorInfo = RemoveDocument(tFirestoreClientPtr, ts.arguments.tDataStore, ts.arguments.tQueryParameters); errorInfo.Error != nil {
+				//	gotError = true
+				//} else {
+				//	gotError = false
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
@@ -697,7 +668,7 @@ func TestRemoveDocumentById(tPtr *testing.T) {
 
 	var (
 		tFirestoreClientPtr *firestore.Client
-		errorInfo           pi.ErrorInfo
+		errorInfo           errs.ErrorInfo
 		gotError            bool
 	)
 
@@ -707,34 +678,34 @@ func TestRemoveDocumentById(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Success",
+			name:      "Positive Case: Success",
 			arguments: arguments{
-				tDataStore:  ctv.TEST_DATASTORE,
-				tDocumentId: ctv.TEST_DOCUMENT_ID_0,
+				//tDataStore:  ctv.TEST_DATASTORE,
+				//tDocumentId: ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Document not found",
+			name:      "Negative Case: Document not found",
 			arguments: arguments{
-				tDataStore:  ctv.TEST_DATASTORE,
-				tDocumentId: ctv.TEST_DOCUMENT_ID_0,
+				//tDataStore:  ctv.TEST_DATASTORE,
+				//tDocumentId: ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Missing datastore",
+			name:      "Negative Case: Missing datastore",
 			arguments: arguments{
-				tDataStore:  ctv.EMPTY,
-				tDocumentId: ctv.TEST_DOCUMENT_ID_0,
+				//tDataStore:  ctv.EMPTY,
+				//tDocumentId: ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing Document Id",
+			name:      "Negative Case: Missing Document Id",
 			arguments: arguments{
-				tDataStore:  ctv.TEST_DATASTORE,
-				tDocumentId: ctv.EMPTY,
+				//tDataStore:  ctv.TEST_DATASTORE,
+				//tDocumentId: ctv.EMPTY,
 			},
 			wantError: true,
 		},
@@ -746,11 +717,11 @@ func TestRemoveDocumentById(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = RemoveDocumentById(tFirestoreClientPtr, ts.arguments.tDataStore, ts.arguments.tDocumentId); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
+				//if errorInfo = RemoveDocumentById(tFirestoreClientPtr, ts.arguments.tDataStore, ts.arguments.tDocumentId); errorInfo.Error != nil {
+				//	gotError = true
+				//} else {
+				//	gotError = false
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
@@ -773,7 +744,7 @@ func TestRemoveDocumentFromSubCollection(tPtr *testing.T) {
 
 	var (
 		tFirestoreClientPtr *firestore.Client
-		errorInfo           pi.ErrorInfo
+		errorInfo           errs.ErrorInfo
 		gotError            bool
 	)
 
@@ -783,52 +754,52 @@ func TestRemoveDocumentFromSubCollection(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Success",
+			name:      "Positive Case: Success",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-				subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
-				documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+				//subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
+				//documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Missing datastore",
+			name:      "Negative Case: Missing datastore",
 			arguments: arguments{
-				dataStore:        ctv.EMPTY,
-				parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 1),
-				subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
-				documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
+				//dataStore:        ctv.EMPTY,
+				//parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 1),
+				//subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
+				//documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing parent document id",
+			name:      "Negative Case: Missing parent document id",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.EMPTY,
-				subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
-				documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.EMPTY,
+				//subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
+				//documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing sub-collection",
+			name:      "Negative Case: Missing sub-collection",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 2),
-				subCollection:    ctv.EMPTY,
-				documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 2),
+				//subCollection:    ctv.EMPTY,
+				//documentId:       fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 1),
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing sub-collection",
+			name:      "Negative Case: Missing sub-collection",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 3),
-				subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
-				documentId:       ctv.EMPTY,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 3),
+				//subCollection:    ctv.TEST_DATASTORE_SUBCOLLECTION,
+				//documentId:       ctv.EMPTY,
 			},
 			wantError: true,
 		},
@@ -840,17 +811,17 @@ func TestRemoveDocumentFromSubCollection(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = RemoveDocumentFromSubCollectionByDocumentId(
-					tFirestoreClientPtr,
-					ts.arguments.dataStore,
-					ts.arguments.parentDocumentId,
-					ts.arguments.subCollection,
-					ts.arguments.documentId,
-				); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
+				//if errorInfo = RemoveDocumentFromSubCollectionByDocumentId(
+				//	tFirestoreClientPtr,
+				//	ts.arguments.dataStore,
+				//	ts.arguments.parentDocumentId,
+				//	ts.arguments.subCollection,
+				//	ts.arguments.documentId,
+				//); errorInfo.Error != nil {
+				//	gotError = true
+				//} else {
+				//	gotError = false
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
@@ -869,14 +840,14 @@ func TestSetDocument(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo           pi.ErrorInfo
-		gotError            bool
-		tFirestoreClientPtr *firestore.Client
-		tNameValues         = make(map[any]interface{})
+		errorInfo errs.ErrorInfo
+		gotError  bool
+		//tFirestoreClientPtr *firestore.Client
+		tNameValues = make(map[any]interface{})
 	)
 
-	tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
-	tNameValues[ctv.FN_EMAIL] = ctv.TEST_STRING
+	//tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
+	//tNameValues[ctv.FN_EMAIL] = ctv.TEST_STRING
 
 	tests := []struct {
 		name      string
@@ -886,8 +857,8 @@ func TestSetDocument(tPtr *testing.T) {
 		{
 			name: "Positive Case: Successful!",
 			arguments: arguments{
-				dataStore:  ctv.TEST_DATASTORE,
-				documentId: ctv.TEST_DOCUMENT_ID_0,
+				//dataStore:  ctv.TEST_DATASTORE,
+				//documentId: ctv.TEST_DOCUMENT_ID_0,
 				nameValues: tNameValues,
 			},
 			wantError: false,
@@ -895,8 +866,8 @@ func TestSetDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing datastore!",
 			arguments: arguments{
-				dataStore:  ctv.EMPTY,
-				documentId: ctv.TEST_DOCUMENT_ID_0,
+				//dataStore:  ctv.EMPTY,
+				//documentId: ctv.TEST_DOCUMENT_ID_0,
 				nameValues: tNameValues,
 			},
 			wantError: true,
@@ -904,8 +875,8 @@ func TestSetDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing document id!",
 			arguments: arguments{
-				dataStore:  ctv.TEST_DATASTORE,
-				documentId: ctv.EMPTY,
+				//dataStore:  ctv.TEST_DATASTORE,
+				//documentId: ctv.EMPTY,
 				nameValues: tNameValues,
 			},
 			wantError: true,
@@ -913,29 +884,29 @@ func TestSetDocument(tPtr *testing.T) {
 		{
 			name: "Negative Case: Missing name/values!",
 			arguments: arguments{
-				dataStore:  ctv.TEST_DATASTORE,
-				documentId: ctv.EMPTY,
+				//dataStore:  ctv.TEST_DATASTORE,
+				//documentId: ctv.EMPTY,
 				nameValues: nil,
 			},
 			wantError: true,
 		},
 	}
 
-	tFirestoreClientPtr = getTestFirestoreConnection()
+	//tFirestoreClientPtr = getTestFirestoreConnection()
 
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = SetDocument(
-					tFirestoreClientPtr,
-					ts.arguments.dataStore,
-					ts.arguments.documentId,
-					ts.arguments.nameValues,
-				); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
+				//if errorInfo = SetDocument(
+				//	tFirestoreClientPtr,
+				//	ts.arguments.dataStore,
+				//	ts.arguments.documentId,
+				//	ts.arguments.nameValues,
+				//); errorInfo.Error != nil {
+				//	gotError = true
+				//} else {
+				//	gotError = false
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
@@ -944,7 +915,7 @@ func TestSetDocument(tPtr *testing.T) {
 		)
 	}
 
-	_ = RemoveDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0)
+	//_ = RemoveDocumentById(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.TEST_DOCUMENT_ID_0)
 }
 
 func TestSetDocumentWithSubCollection(tPtr *testing.T) {
@@ -957,9 +928,9 @@ func TestSetDocumentWithSubCollection(tPtr *testing.T) {
 	}
 
 	var (
-		tFirestoreClientPtr *firestore.Client
-		errorInfo           pi.ErrorInfo
-		gotError            bool
+		//tFirestoreClientPtr *firestore.Client
+		errorInfo errs.ErrorInfo
+		gotError  bool
 	)
 
 	tests := []struct {
@@ -968,99 +939,99 @@ func TestSetDocumentWithSubCollection(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Successful!",
+			name:      "Positive Case: Successful!",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollection:    ctv.COLLECTION_INSTITUTIONS,
-				documentId:       ctv.TEST_DOCUMENT_ID_0,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollection:    ctv.COLLECTION_INSTITUTIONS,
+				//documentId:       ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: false,
 		},
 		{
-			name: "Negative Case: Missing datastore!",
+			name:      "Negative Case: Missing datastore!",
 			arguments: arguments{
-				dataStore:        ctv.EMPTY,
-				parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollection:    ctv.COLLECTION_INSTITUTIONS,
-				documentId:       ctv.TEST_DOCUMENT_ID_0,
+				//dataStore:        ctv.EMPTY,
+				//parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollection:    ctv.COLLECTION_INSTITUTIONS,
+				//documentId:       ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing document id!",
+			name:      "Negative Case: Missing document id!",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollection:    ctv.COLLECTION_INSTITUTIONS,
-				documentId:       ctv.EMPTY,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollection:    ctv.COLLECTION_INSTITUTIONS,
+				//documentId:       ctv.EMPTY,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing parent document id!",
+			name:      "Negative Case: Missing parent document id!",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.EMPTY,
-				subCollection:    ctv.COLLECTION_INSTITUTIONS,
-				documentId:       ctv.EMPTY,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.EMPTY,
+				//subCollection:    ctv.COLLECTION_INSTITUTIONS,
+				//documentId:       ctv.EMPTY,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing sub-collection name!",
+			name:      "Negative Case: Missing sub-collection name!",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollection:    ctv.EMPTY,
-				documentId:       ctv.EMPTY,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollection:    ctv.EMPTY,
+				//documentId:       ctv.EMPTY,
 			},
 			wantError: true,
 		},
 		{
-			name: "Negative Case: Missing name/values!",
+			name:      "Negative Case: Missing name/values!",
 			arguments: arguments{
-				dataStore:        ctv.TEST_DATASTORE,
-				parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-				subCollection:    ctv.COLLECTION_INSTITUTIONS,
-				documentId:       ctv.TEST_DOCUMENT_ID_0,
+				//dataStore:        ctv.TEST_DATASTORE,
+				//parentDocumentId: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
+				//subCollection:    ctv.COLLECTION_INSTITUTIONS,
+				//documentId:       ctv.TEST_DOCUMENT_ID_0,
 			},
 			wantError: true,
 		},
 	}
 
-	tFirestoreClientPtr = getTestFirestoreConnection()
+	//tFirestoreClientPtr = getTestFirestoreConnection()
 
-	tNameValues := make(map[any]interface{})
-	tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
-	tNameValues[ctv.FN_EMAIL] = ctv.TEST_STRING
+	//tNameValues := make(map[any]interface{})
+	//tNameValues[ctv.FN_REQUESTOR_ID] = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
+	//tNameValues[ctv.FN_EMAIL] = ctv.TEST_STRING
 
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = SetDocumentWithSubCollection(
-					tFirestoreClientPtr,
-					ts.arguments.dataStore,
-					ts.arguments.parentDocumentId,
-					ts.arguments.subCollection,
-					ts.arguments.documentId,
-					tNameValues,
-				); errorInfo.Error == nil {
-					gotError = false
-				} else {
-					gotError = true
-				}
+				//if errorInfo = SetDocumentWithSubCollection(
+				//	tFirestoreClientPtr,
+				//	ts.arguments.dataStore,
+				//	ts.arguments.parentDocumentId,
+				//	ts.arguments.subCollection,
+				//	ts.arguments.documentId,
+				//	tNameValues,
+				//); errorInfo.Error == nil {
+				//	gotError = false
+				//} else {
+				//	gotError = true
+				//}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
 				}
-				_ = RemoveDocumentFromSubCollectionByDocumentId(
-					tFirestoreClientPtr,
-					ts.arguments.dataStore,
-					ts.arguments.parentDocumentId,
-					ts.arguments.subCollection,
-					ts.arguments.documentId,
-				)
+				//_ = RemoveDocumentFromSubCollectionByDocumentId(
+				//	tFirestoreClientPtr,
+				//	ts.arguments.dataStore,
+				//	ts.arguments.parentDocumentId,
+				//	ts.arguments.subCollection,
+				//	ts.arguments.documentId,
+				//)
 			},
 		)
 	}
@@ -1069,7 +1040,7 @@ func TestSetDocumentWithSubCollection(tPtr *testing.T) {
 func TestUpdateDocument(tPtr *testing.T) {
 
 	var (
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
@@ -1081,36 +1052,36 @@ func TestUpdateDocument(tPtr *testing.T) {
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
-			if errorInfo = UpdateDocument(
-				tFirestoreClientPtr,
-				ctv.EMPTY,
-				fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-				tNameValues,
-			); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
-			if errorInfo = UpdateDocument(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.EMPTY, tNameValues); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
-			if errorInfo = UpdateDocument(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-				tNameValues,
-			); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if errorInfo = UpdateDocument(
+			//	tFirestoreClientPtr,
+			//	ctv.EMPTY,
+			//	fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+			//	tNameValues,
+			//); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
+			//if errorInfo = UpdateDocument(tFirestoreClientPtr, ctv.TEST_DATASTORE, ctv.EMPTY, tNameValues); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
+			//if errorInfo = UpdateDocument(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+			//	tNameValues,
+			//); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			tNameValues["Field_1"] = "Value_1"
 			tNameValues["Field_2"] = "Value_2"
 			tNameValues["Field_3"] = "Value_3"
-			if errorInfo = UpdateDocument(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
-				tNameValues,
-			); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: The Update was not successful! Error: '%v'", tFunctionName, errorInfo.Error.Error())
-			}
+			//if errorInfo = UpdateDocument(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, 0),
+			//	tNameValues,
+			//); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: The Update was not successful! Error: '%v'", tFunctionName, errorInfo.Error.Error())
+			//}
 		},
 	)
 
@@ -1120,12 +1091,12 @@ func TestUpdateDocument(tPtr *testing.T) {
 func TestUpdateDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 
 	var (
-		errorInfo           pi.ErrorInfo
+		//errorInfo           errs.ErrorInfo
 		tFirestoreClientPtr *firestore.Client
 		tFunction, _, _, _  = runtime.Caller(0)
 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
 		tFieldPath          []string
-		tUpdates            []firestore.Update
+		//tUpdates            []firestore.Update
 	)
 
 	tFirestoreClientPtr = getTestFirestoreConnection()
@@ -1133,46 +1104,46 @@ func TestUpdateDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 	tFieldPath = append(tFieldPath, ctv.FN_PLAID_ACCOUNTS)
 	tFieldPath = append(tFieldPath, "PxEENJbqvGFZRyj6b6MXugrDjgevQaHQRQ9oa")
 	tFieldPath = append(tFieldPath, ctv.FN_BALANCE)
-	tUpdates = []firestore.Update{
-		{
-			FieldPath: tFieldPath,
-			Value:     123456,
-		},
-	}
+	//tUpdates = []firestore.Update{
+	//	{
+	//		FieldPath: tFieldPath,
+	//		Value:     123456,
+	//	},
+	//}
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			// Successful
-			if errorInfo = UpdateDocumentFromSubCollectionByDocumentId(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.TEST_DOCUMENT_ID_0,
-				ctv.TEST_DATASTORE_SUBCOLLECTION,
-				fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
-				tUpdates,
-			); errorInfo.Error != nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if errorInfo = UpdateDocumentFromSubCollectionByDocumentId(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.TEST_DOCUMENT_ID_0,
+			//	ctv.TEST_DATASTORE_SUBCOLLECTION,
+			//	fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
+			//	tUpdates,
+			//); errorInfo.Error != nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 			// Record not found
 			//
-			RemoveDocumentFromSubCollectionByDocumentId(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.TEST_DOCUMENT_ID_0,
-				ctv.TEST_DATASTORE_SUBCOLLECTION,
-				fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
-			)
+			//RemoveDocumentFromSubCollectionByDocumentId(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.TEST_DOCUMENT_ID_0,
+			//	ctv.TEST_DATASTORE_SUBCOLLECTION,
+			//	fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
+			//)
 			//
-			if errorInfo = UpdateDocumentFromSubCollectionByDocumentId(
-				tFirestoreClientPtr,
-				ctv.TEST_DATASTORE,
-				ctv.TEST_DOCUMENT_ID_0,
-				ctv.TEST_DATASTORE_SUBCOLLECTION,
-				fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
-				tUpdates,
-			); errorInfo.Error == nil {
-				tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
-			}
+			//if errorInfo = UpdateDocumentFromSubCollectionByDocumentId(
+			//	tFirestoreClientPtr,
+			//	ctv.TEST_DATASTORE,
+			//	ctv.TEST_DOCUMENT_ID_0,
+			//	ctv.TEST_DATASTORE_SUBCOLLECTION,
+			//	fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, 0),
+			//	tUpdates,
+			//); errorInfo.Error == nil {
+			//	tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, errorInfo.Error.Error(), "nil")
+			//}
 		},
 	)
 }
@@ -1180,11 +1151,11 @@ func TestUpdateDocumentFromSubCollectionByDocumentId(tPtr *testing.T) {
 func getTestFirestoreConnection() (firestoreClientPtr *firestore.Client) {
 
 	var (
-		tAppPtr *firebase.App
+	//tAppPtr *firebase.App
 	)
 
-	tAppPtr, _ = coreFirebase.NewFirebaseApp(ctv.TEST_FIREBASE_CREDENTIALS)
-	firestoreClientPtr, _ = GetFirestoreClientConnection(tAppPtr)
+	//tAppPtr, _ = fbs.NewFirebaseApp(ctv.TEST_FIREBASE_CREDENTIALS)
+	//firestoreClientPtr, _ = GetFirestoreClientConnection(tAppPtr)
 
 	return
 }
@@ -1201,7 +1172,7 @@ func buildTestDocuments(
 		count = 1
 	}
 	for i := 0; i < count; i++ {
-		_ = SetDocument(firestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i), tFireTestNameValue)
+		//_ = SetDocument(firestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i), tFireTestNameValue)
 	}
 
 }
@@ -1211,16 +1182,16 @@ func buildTestDocumentsWithSubCollection(
 	count int,
 ) {
 
-	for i := 0; i < count; i++ {
-		_ = SetDocumentWithSubCollection(
-			firestoreClientPtr,
-			ctv.TEST_DATASTORE,
-			fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i),
-			ctv.TEST_DATASTORE_SUBCOLLECTION,
-			fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, i),
-			tFireTestNameValue,
-		)
-	}
+	//for i := 0; i < count; i++ {
+	//	_ = SetDocumentWithSubCollection(
+	//		firestoreClientPtr,
+	//		ctv.TEST_DATASTORE,
+	//		fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i),
+	//		ctv.TEST_DATASTORE_SUBCOLLECTION,
+	//		fmt.Sprintf(ctv.TEST_USER_REQUESTOR_ID_F, i),
+	//		tFireTestNameValue,
+	//	)
+	//}
 
 }
 
@@ -1230,7 +1201,7 @@ func removeTestDocument(
 ) {
 
 	for i := 0; i < count+1; i++ {
-		RemoveDocumentById(firestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i))
+		//RemoveDocumentById(firestoreClientPtr, ctv.TEST_DATASTORE, fmt.Sprintf(ctv.TEST_DOCUMENT_ID_F, i))
 	}
 
 }

@@ -1,44 +1,14 @@
-// Package sty_shared
-/*
-This is the STY-Holdings shared services
-
-NOTES:
-
-	None
-
-COPYRIGHT & WARRANTY:
-
-	Copyright (c) 2022 STY-Holdings, inc
-	All rights reserved.
-
-	This software is the confidential and proprietary information of STY-Holdings, Inc.
-	Use is subject to license terms.
-
-	Unauthorized copying of this file, via any medium is strictly prohibited.
-
-	Proprietary and confidential
-
-	Written by <Replace with FULL_NAME> / syacko
-	STY-Holdings, Inc.
-	support@sty-holdings.com
-	www.sty-holdings.com
-
-	01-2024
-	USA
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-package sty_shared
+package sharedServices
 
 import (
 	"fmt"
 	"os"
 	"runtime"
 	"testing"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
 var (
@@ -59,7 +29,7 @@ var (
 // 	}
 //
 // 	var (
-// 		errorInfo  pi.ErrorInfo
+// 		errorInfo  errs.ErrorInfo
 // 		gotError   bool
 // 		tJSONReply []byte
 // 	)
@@ -145,8 +115,8 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 	)
 
 	// Append the constants to the slice
-	paymentMethods = append(paymentMethods, ctv.PAYMENT_METHOD_TYPE_CARD)
-	paymentMethods = append(paymentMethods, ctv.PAYMENT_METHOD_TYPE_PAYNOW)
+	paymentMethods = append(paymentMethods, ctv.TEST_NEGATIVE_SUCCESS)
+	paymentMethods = append(paymentMethods, ctv.TEST_POSITIVE_SUCCESS)
 
 	tests := []struct {
 		name      string
@@ -244,7 +214,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo          pi.ErrorInfo
+// 		errorInfo          errs.ErrorInfo
 // 		gotError           bool
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
@@ -779,7 +749,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo          pi.ErrorInfo
+// 		errorInfo          errs.ErrorInfo
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 		tTestStruct        = testStruct{
@@ -808,7 +778,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo pi.ErrorInfo
+// 		errorInfo errs.ErrorInfo
 // 		gotError  bool
 // 	)
 //
@@ -859,7 +829,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // func TestValidateDirectory(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo          pi.ErrorInfo
+// 		errorInfo          errs.ErrorInfo
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
@@ -881,7 +851,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo pi.ErrorInfo
+// 		errorInfo errs.ErrorInfo
 // 		gotError  bool
 // 	)
 //
@@ -946,7 +916,7 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // func TestWritePidFile(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo          pi.ErrorInfo
+// 		errorInfo          errs.ErrorInfo
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
@@ -980,12 +950,12 @@ func TestIsDirectoryFullyQualified(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			// Adds working directory to file name
-			if IsDirectoryFullyQualified(TEST_DIRECTORY_ENDING_SLASH) == false {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
+			if vals.IsDirectoryFullyQualified(TEST_DIRECTORY_ENDING_SLASH) == false {
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
 			}
 			// Pass working directory and get back working directory
-			if IsDirectoryFullyQualified(TEST_DIRECTORY) {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
+			if vals.IsDirectoryFullyQualified(TEST_DIRECTORY) {
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
 			}
 		},
 	)
@@ -1008,11 +978,11 @@ func TestPrependWorkingDirectory(tPtr *testing.T) {
 		tFunctionName, func(tPtr *testing.T) {
 			// Adds working directory to file name
 			if tPrependedFileName = PrependWorkingDirectory(TEST_FILE_NAME); tPrependedFileName != tTestFileName {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_DID_NOT_MATCH)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_DID_NOT_MATCH)
 			}
 			// Pass working directory and get back working directory
 			if tPrependedFileName = PrependWorkingDirectory(tWorkingDirectory); tPrependedFileName != tWorkingDirectory {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, ctv.TXT_DID_NOT_MATCH)
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_DID_NOT_MATCH)
 			}
 		},
 	)
@@ -1059,7 +1029,7 @@ func TestPrependWorkingDirectoryWithEndingSlash(tPtr *testing.T) {
 				tPtr.Run(
 					tt.name, func(t *testing.T) {
 						if output := PrependWorkingDirectoryWithEndingSlash(tt.input); output != tt.expected {
-							t.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tt.name, ctv.TXT_DID_NOT_MATCH)
+							t.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tt.name, ctv.TXT_DID_NOT_MATCH)
 						}
 					},
 				)
@@ -1071,7 +1041,7 @@ func TestPrependWorkingDirectoryWithEndingSlash(tPtr *testing.T) {
 func TestRedirectLogOutput(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tLogFileHandlerPtr *os.File
@@ -1083,13 +1053,13 @@ func TestRedirectLogOutput(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if errorInfo = RedirectLogOutput(tLogFileHandlerPtr, ctv.MODE_OUTPUT_LOG); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			if errorInfo = RedirectLogOutput(tLogFileHandlerPtr, ctv.MODE_OUTPUT_LOG_DISPLAY); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			if errorInfo = RedirectLogOutput(tLogFileHandlerPtr, ctv.VAL_EMPTY); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_UNEXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -1100,7 +1070,7 @@ func TestRedirectLogOutput(tPtr *testing.T) {
 func TestRemovePidFile(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tTestFQN           = TEST_DIRECTORY_ENDING_SLASH + TEST_FILE_NAME
@@ -1110,10 +1080,10 @@ func TestRemovePidFile(tPtr *testing.T) {
 		tFunctionName, func(tPtr *testing.T) {
 			_ = WritePidFile(tTestFQN, 777)
 			if errorInfo = RemovePidFile(tTestFQN); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			if errorInfo = RemovePidFile(ctv.VAL_EMPTY); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -1122,7 +1092,7 @@ func TestRemovePidFile(tPtr *testing.T) {
 func TestWriteFile(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tTestFQN           = TEST_DIRECTORY_ENDING_SLASH + TEST_FILE_NAME
@@ -1131,11 +1101,11 @@ func TestWriteFile(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if errorInfo = WriteFile(tTestFQN, []byte(ctv.TXT_EMPTY), 0777); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			_ = os.Remove(tTestFQN)
 			if errorInfo = WriteFile(ctv.VAL_EMPTY, []byte(ctv.TXT_EMPTY), 0777); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -1144,7 +1114,7 @@ func TestWriteFile(tPtr *testing.T) {
 func TestWritePidFile(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tTestFQN           = TEST_DIRECTORY_ENDING_SLASH + TEST_FILE_NAME
@@ -1153,11 +1123,11 @@ func TestWritePidFile(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if errorInfo = WritePidFile(tTestFQN, 777); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			_ = os.Remove(tTestFQN)
 			if errorInfo = WritePidFile(ctv.VAL_EMPTY, 777); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -1167,7 +1137,7 @@ func TestWritePidFile(tPtr *testing.T) {
 func TestCreateAndRedirectLogOutput(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tLogFQN            string
@@ -1176,15 +1146,15 @@ func TestCreateAndRedirectLogOutput(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if _, tLogFQN, errorInfo = CreateAndRedirectLogOutput(TEST_DIRECTORY_ENDING_SLASH, ctv.MODE_OUTPUT_LOG); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			fmt.Println(os.Remove(tLogFQN))
 			if _, tLogFQN, errorInfo = CreateAndRedirectLogOutput(TEST_DIRECTORY_ENDING_SLASH, ctv.MODE_OUTPUT_LOG_DISPLAY); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			fmt.Println(os.Remove(tLogFQN))
 			if _, tLogFQN, errorInfo = CreateAndRedirectLogOutput(TEST_DIRECTORY_ENDING_SLASH, ctv.VAL_EMPTY); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
@@ -1194,7 +1164,7 @@ func TestCreateAndRedirectLogOutput(tPtr *testing.T) {
 func TestCreateLogFile(tPtr *testing.T) {
 
 	var (
-		errorInfo          pi.ErrorInfo
+		errorInfo          errs.ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tLogFQN            string
@@ -1203,11 +1173,11 @@ func TestCreateLogFile(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			if _, tLogFQN, errorInfo = createLogFile(TEST_DIRECTORY_ENDING_SLASH); errorInfo.Error != nil {
-				tPtr.Errorf(pi.EXPECTING_NO_ERROR_FORMAT, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 			_ = os.Remove(tLogFQN)
 			if _, _, errorInfo = createLogFile(TEST_DIRECTORY); errorInfo.Error == nil {
-				tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 		},
 	)
