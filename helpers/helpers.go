@@ -355,7 +355,7 @@ func GetUnixTimestamp() (timestamp string) {
 // GetJSONFile - reads and unmarshal the fully qualified file into the object pointer.
 //
 //	Customer Messages: None
-//	Errors: ReadConfigFile returned error, ErrJSONInvalid
+//	Errors: ErrJSONInvalid
 //	Verifications: None
 func GetJSONFile(
 	jsonFileFQN string,
@@ -457,6 +457,26 @@ func GetFieldsNames(unknownStruct interface{}) (
 // 	os.Exit(1)
 //
 // }
+
+// PrependWorkingDirectory - will add the working directory.
+// if the filename first character is a /, the passed value will be returned
+// unmodified.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func PrependWorkingDirectory(filename string) string {
+
+	var (
+		tWorkingDirectory, _ = os.Getwd()
+	)
+
+	if filepath.IsAbs(filename) {
+		return filename
+	}
+
+	return fmt.Sprintf("%v/%v", tWorkingDirectory, filename)
+}
 
 // PrependWorkingDirectoryWithEndingSlash - will add the working directory, a slash, the directory
 // provided, and an ending slash. If the directory first character is a slash, the passed value will
