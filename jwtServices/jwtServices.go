@@ -17,7 +17,6 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 // BuildTLSTemporaryFiles - creates temporary files for TLS information.
@@ -35,7 +34,7 @@ func BuildTLSTemporaryFiles(
 ) {
 
 	if tlsInfo.TLSCABundle == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CA_BUNDLE))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CA_BUNDLE))
 		return
 	} else {
 		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CA_BUNDLE_FILENAME), []byte(tlsInfo.TLSCABundle), 0744); errorInfo.Error != nil {
@@ -43,7 +42,7 @@ func BuildTLSTemporaryFiles(
 		}
 	}
 	if tlsInfo.TLSCert == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CERTIFICATE))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CERTIFICATE))
 		return
 	} else {
 		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CERT_FILENAME), []byte(tlsInfo.TLSCert), 0744); errorInfo.Error != nil {
@@ -51,7 +50,7 @@ func BuildTLSTemporaryFiles(
 		}
 	}
 	if tlsInfo.TLSPrivateKey == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_PRIVATE_KEY))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_PRIVATE_KEY))
 		return
 	} else {
 		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_PRIVATE_KEY_FILENAME), []byte(tlsInfo.TLSPrivateKey), 0744); errorInfo.Error != nil {
