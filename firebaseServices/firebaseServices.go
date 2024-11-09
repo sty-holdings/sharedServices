@@ -11,7 +11,7 @@ import (
 	"firebase.google.com/go/auth"
 	"google.golang.org/api/option"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )

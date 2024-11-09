@@ -13,9 +13,8 @@ import (
 	"strings"
 	"time"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
@@ -173,7 +172,7 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 		logFileHandlerPtr, logFQN, errorInfo = createLogFile(logDirectory)
 		log.SetOutput(io.MultiWriter(os.Stdout, logFileHandlerPtr))
 	default:
-		errorInfo = errs.NewErrorInfo(pi.ErrServerNameMissing, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(errs.ErrServerNameMissing, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -371,7 +370,7 @@ func GetJSONFile(
 	)
 
 	if tJSONFileData, errorInfo.Error = os.ReadFile(jsonFileFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrConfigFileMissing, tAdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrConfigFileMissing, tAdditionalInfo)
 	}
 
 	if errorInfo.Error = json.Unmarshal(tJSONFileData, &jsonFilePtr); errorInfo.Error != nil {
@@ -459,26 +458,6 @@ func GetFieldsNames(unknownStruct interface{}) (
 //
 // }
 
-// PrependWorkingDirectory - will add the working directory.
-// if the filename first character is a /, the passed value will be returned
-// unmodified.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func PrependWorkingDirectory(filename string) string {
-
-	var (
-		tWorkingDirectory, _ = os.Getwd()
-	)
-
-	if filepath.IsAbs(filename) {
-		return filename
-	}
-
-	return fmt.Sprintf("%v/%v", tWorkingDirectory, filename)
-}
-
 // PrependWorkingDirectoryWithEndingSlash - will add the working directory, a slash, the directory
 // provided, and an ending slash. If the directory first character is a slash, the passed value will
 // be returned unmodified. The last character is not checked, so you could end up with two slashes.
@@ -543,7 +522,7 @@ func RedirectLogOutput(
 	case ctv.MODE_OUTPUT_LOG_DISPLAY:
 		log.SetOutput(io.MultiWriter(os.Stdout, inLogFileHandlerPtr))
 	default:
-		errorInfo = errs.NewErrorInfo(pi.ErrRedirectModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(errs.ErrRedirectModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -558,12 +537,12 @@ func RemoveFile(fqn string) (errorInfo errs.ErrorInfo) {
 
 	// This doesn't use the coreValidator.DoesFileExist by design.
 	if _, err := os.Stat(fqn); err != nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrFileMissing, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 
 	if errorInfo.Error = os.Remove(fqn); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrFileRemovalFailed, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileRemovalFailed, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 
@@ -596,7 +575,7 @@ func WriteFile(
 ) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo.Error = os.WriteFile(fqn, fileData, filePermissions); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v%v", pi.ErrFileCreationFailed.Error(), ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v%v", errs.ErrFileCreationFailed.Error(), ctv.LBL_FILENAME, fqn))
 	}
 
 	return
@@ -637,7 +616,7 @@ func createLogFile(logFQD string) (
 	)
 
 	if vals.IsDirectoryFullyQualified(logFQD) == false {
-		errorInfo = errs.NewErrorInfo(pi.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
+		errorInfo = errs.NewErrorInfo(errs.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
 		return
 	}
 

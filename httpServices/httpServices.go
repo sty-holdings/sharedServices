@@ -9,7 +9,7 @@ import (
 	// "os"
 	// "time"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"

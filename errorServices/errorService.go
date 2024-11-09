@@ -6,7 +6,7 @@ import (
 	"log"
 	"runtime"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 )
 
 type ErrorInfo struct {

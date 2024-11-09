@@ -10,9 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 )
 
 // AreMapKeysPopulated - will test to make sure all map keys are set to anything other than nil or empty.
@@ -89,7 +88,7 @@ func AreMapKeysValuesPopulated(myMap map[any]interface{}) (finding string) {
 func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.ErrorInfo) {
 
 	var (
-		fqn = hlp.PrependWorkingDirectory(filename)
+		fqn = PrependWorkingDirectory(filename)
 	)
 
 	if fileLabel == ctv.VAL_EMPTY {
@@ -175,7 +174,7 @@ func IsBase64Encode(base64Value string) bool {
 		errorInfo errs.ErrorInfo
 	)
 
-	if _, errorInfo = hlp.Base64Decode(base64Value); errorInfo.Error == nil {
+	if _, errorInfo = Base64Decode(base64Value); errorInfo.Error == nil {
 		return true
 	}
 

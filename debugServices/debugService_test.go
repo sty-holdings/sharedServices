@@ -4,7 +4,7 @@ import (
 	"runtime"
 	"testing"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 )
 
 func TestPrintDebugFunctionInfo(tPtr *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 )
 
 //goland:noinspection GoSnakeCaseUsage
