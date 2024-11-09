@@ -14,7 +14,6 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 // BuildInstanceName - will create the NATS connection name with dashes, underscores between nodes or as provided.
@@ -187,7 +186,7 @@ func UnmarshalMessageData(
 ) (errorInfo errs.ErrorInfo) {
 
 	if string(msg.Data) == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 		return
 	}
 
@@ -214,7 +213,7 @@ func buildInstanceName(
 ) {
 
 	if len(nodes) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.TXT_AT_LEAST_ONE))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprint(ctv.TXT_AT_LEAST_ONE))
 		return
 	}
 	for index, node := range nodes {
@@ -261,7 +260,7 @@ func BuildTemporaryFiles(
 ) {
 
 	if config.NATSToken == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
 		return
 	} else {
 		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSToken), 0744); errorInfo.Error != nil {
@@ -290,11 +289,11 @@ func buildURLPort(
 	)
 
 	if url == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprint(ctv.FN_URL))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprint(ctv.FN_URL))
 		return
 	}
 	if tNATSPort == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(pi.ErrGreatThanZero, fmt.Sprint(ctv.FN_PORT))
+		errorInfo = errs.NewErrorInfo(errs.ErrGreatThanZero, fmt.Sprint(ctv.FN_PORT))
 		return
 	}
 
