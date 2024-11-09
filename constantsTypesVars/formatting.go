@@ -14,6 +14,7 @@ const (
 	SPACES_EIGHT           = "        "
 	SPACES_FOUR            = "    "
 	SPACES_ONE             = " "
+	SPACES_FIVE            = "     "
 	SPACES_SIX             = "      "
 	SPACES_THREE           = "   "
 	SPACES_TWO             = "  "
