@@ -3,6 +3,8 @@ package sharedServices
 import (
 	"fmt"
 	"strings"
+
+	"github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
 )
 
 //goland:noinspection ALL
@@ -26,7 +28,7 @@ var (
 //	Verifications: None
 func GetParameterName(programName, environment, parameterType string) string {
 
-	switch strings.ToLower(strings.Trim(parameterType, SPACES_ONE)) {
+	switch strings.ToLower(strings.Trim(parameterType, sharedServices.SPACES_ONE)) {
 	case PARAMETER_NATS_TOKEN:
 		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_NATS_TOKEN)
 	case PARAMETER_NATS_WEBSOCKET_HOST:
@@ -35,19 +37,19 @@ func GetParameterName(programName, environment, parameterType string) string {
 		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_NATS_PORT)
 	case PARAMETER_NATS_URL:
 		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_NATS_URL)
-	case sty_shared.PARAMETER_TLS_CERT:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_CERT)
-	case sty_shared.PARAMETER_TLS_CERT_FQN:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_CERT_FQN)
-	case sty_shared.PARAMETER_TLS_PRIVATE_KEY:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_PRIVATE_KEY)
-	case sty_shared.PARAMETER_TLS_PRIVATE_KEY_FQM:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_PRIVATE_KEY_FQM)
-	case sty_shared.PARAMETER_TLS_CA_BUNDLE:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_CA_BUNDLE)
-	case sty_shared.PARAMETER_TLS_CA_BUNDLE_FQN:
-		return fmt.Sprintf(ParameterNameFormat, programName, environment, sty_shared.PARAMETER_TLS_CA_BUNDLE_FQN)
+	case PARAMETER_TLS_CERT:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_CERT)
+	case PARAMETER_TLS_CERT_FQN:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_CERT_FQN)
+	case PARAMETER_TLS_PRIVATE_KEY:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_PRIVATE_KEY)
+	case PARAMETER_TLS_PRIVATE_KEY_FQM:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_PRIVATE_KEY_FQM)
+	case PARAMETER_TLS_CA_BUNDLE:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_CA_BUNDLE)
+	case PARAMETER_TLS_CA_BUNDLE_FQN:
+		return fmt.Sprintf(ParameterNameFormat, programName, environment, PARAMETER_TLS_CA_BUNDLE_FQN)
 	default:
-		return fmt.Sprintf("%v%v", LBL_MISSING_PARAMETER, FN_PARAMETER_TYPE)
+		return fmt.Sprintf("%v%v", sharedServices.LBL_MISSING_PARAMETER, sharedServices.FN_PARAMETER_TYPE)
 	}
 }
