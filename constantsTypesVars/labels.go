@@ -44,6 +44,7 @@ const (
 	LBL_HTTP_BODY                  = "HTTP BODY: "
 	LBL_HTTP_STATUS                = "HTTP STATUS CODE: "
 	LBL_LOG_DIRECTORY              = "LOG DIRECTORY: "
+	LBL_LOG_FULL_QUALIFIED_NAME    = "LOG FULL QUALIFIED NAME: "
 	LBL_LOGIN_TYPE                 = "LOGIN TYPE: "
 	LBL_MAX_THREADS                = "MAX THREADS: "
 	LBL_MESSAGE                    = "MESSAGE: "
