@@ -46,6 +46,7 @@ const (
 	NAME_LAST_MISSING                  = "The last name is missing."
 	NAME_FIRST_LAST_MISSING            = "Either the first or the last name is missing."
 	GIN_MODE_INVALID                   = "The Gin mode is invalid."
+	GIN_URL_PORT_MISSING               = "The Gin URL & PORT is missing."
 	GREATER_THAN_ZERO                  = "The value must be greater than zero."
 	HTTP_REQUEST_FALIED                = "The HTTP request failed with a non-200 status code."
 	HTTP_SECURE_SERVER_FAILED          = "The HTTP services secure server failed."
@@ -190,6 +191,7 @@ var (
 	ErrFirebaseProjectMissing         = errors.New(FIREBASE_GC_PROJECT_ID_MISSING)
 	ErrFloatInvalid                   = errors.New(FLOAT_INVALID)
 	ErrGinModeInvalid                 = errors.New(GIN_MODE_INVALID)
+	ErrGinURLPortMissing              = errors.New(GIN_URL_PORT_MISSING)
 	ErrGreatThanZero                  = errors.New(GREATER_THAN_ZERO)
 	ErrHTTPRequestFalied              = errors.New(HTTP_REQUEST_FALIED)
 	ErrHTTPSecureServerFailed         = errors.New(HTTP_SECURE_SERVER_FAILED)

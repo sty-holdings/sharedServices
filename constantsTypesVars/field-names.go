@@ -82,6 +82,7 @@ const (
 	FN_GEMINI_SYSTEM_INSTRUCTION          = "gemini_system_instruction"
 	FN_GEMINI_TEMPERATURE                 = "gemini_temperature"
 	FN_GIN_MODE                           = "gin_mode"
+	FN_GIN_URL_PORT                       = "gin_url_port"
 	FN_GOOGLE_LOCATION                    = "google_location"
 	FN_GOOGLE_PROJECT_ID                  = "google_project_id"
 	FN_HTTP_TLS_INFO                      = "http_tls_info"
