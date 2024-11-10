@@ -85,6 +85,7 @@ const (
 	PROGRAM_NAME_MISSING               = "The program name in main.go is empty."
 	SERVER_CONFIGURATION_INVALID       = "The setting in the configuration file are inconsistant."
 	SERVER_NAME_MISSING                = "The server name in main.go is empty."
+	SERVER_INSTANCE_NUMBER_MISSING     = "The server instance number is missing."
 	SERVICE_FAILED_AWS                 = "AWS service has failed. Investigate right away!"
 	SERVICE_FAILED_COGNITO             = "Cognito service has failed. Investigate right away!"
 	SERVICE_FAILED_FIREBASE            = "FIREBASE service has failed. Investigate right away!"
@@ -118,10 +119,10 @@ const (
 	STYH_CLIENT_ID_EMPTY               = "An empty STYH Client Id is not allowed."
 	STYH_USERNAME_EMPTY                = "An empty STYH Username is not allowed."
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
+	SUBJECT_INVALID                    = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED        = "Unable to subscribe to the subject."
 	SYNADIA_BASE_URL_EMPTY             = "An empty base URL is not allowed."
 	SYNADIA_KEY_INVALID                = "The Synadia access token is invalid. See https://docs.synadia.com/platform or https://cloud.synadia.com/profile/personal-access-tokens"
-	SUBJECT_INVALID                    = "The subject is invalid."
 	TLS_FILES_MISSING                  = "TLS files are missing."
 	TOKEN_CLAIMS_INVALID               = "The token claims are invalid."
 	TOKEN_EXPIRED                      = "The token has expired."
@@ -232,6 +233,7 @@ var (
 	ErrRequiredFileMissing            = errors.New(REQUIRED_FILE_MISSING)
 	ErrRetryLimitHit                  = errors.New(RETRY_LIMIT_HIT)
 	ErrServerConfigurationInvalid     = errors.New(SERVER_CONFIGURATION_INVALID)
+	ErrServerInstanceNumberMissing    = errors.New(SERVER_INSTANCE_NUMBER_MISSING)
 	ErrServerNameMissing              = errors.New(SERVER_NAME_MISSING)
 	ErrServiceFailedAWS               = errors.New(SERVICE_FAILED_AWS)
 	ErrServiceFailedCognito           = errors.New(SERVICE_FAILED_COGNITO)
