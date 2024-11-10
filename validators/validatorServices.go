@@ -356,8 +356,8 @@ func IsPopulated(value interface{}) bool {
 func IsIdentityProviderValid(identityProvider string) bool {
 
 	switch identityProvider {
-	case ctv.GOOGLE:
-	case ctv.COGNITO:
+	case ctv.IDP_FIREBASE:
+	case ctv.IDP_COGNITO:
 	default:
 		return false
 	}
