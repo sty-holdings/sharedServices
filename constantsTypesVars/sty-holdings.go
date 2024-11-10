@@ -46,12 +46,12 @@ const (
 //goland:noinspection All
 const (
 	// Extensions
-	EXTENSION_GEMINI    = "gemini"
-	EXTENSION_HTTP_NATS = "http-nats"
-	NC_INTERNAL         = "nc-internal"
-	EXTENSION_STRIPE    = "stripe"
-	EXTENSION_SENDGRID  = "sendgrid"
-	EXTENSION_SYNADIA   = "synadia"
+	EXTENSION_GEMINI     = "gemini"
+	EXTENSION_HTTPS_NATS = "https-nats"
+	NC_INTERNAL          = "nc-internal"
+	EXTENSION_STRIPE     = "stripe"
+	EXTENSION_SENDGRID   = "sendgrid"
+	EXTENSION_SYNADIA    = "synadia"
 )
 
 //goland:noinspection All
