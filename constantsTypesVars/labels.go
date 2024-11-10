@@ -80,4 +80,5 @@ const (
 	LBL_USERNAME                   = "USERNAME: "
 	LBL_UNIQUE_SETTINGS            = "UNIQUE SETTINGS: "
 	LBL_VALUE                      = "VALUE: "
+	LBL_WORKING_DIRECTORY          = "WORK DIRECTORY: "
 )
