@@ -77,6 +77,7 @@ const (
 	LBL_STYH_USERNAME              = "STYH USERNAME: "
 	LBL_STATUS                     = "STATUS: "
 	LBL_SUBJECT                    = "SUBJECT: "
+	LBL_SYSTEM_SETTINGS            = "SYSTEM SETTINGS: "
 	LBL_TOKEN_TYPE                 = "TOKEN TYPE: "
 	LBL_TOKEN                      = "TOKEN: "
 	LBL_USERNAME                   = "USERNAME: "
