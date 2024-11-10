@@ -22,6 +22,7 @@ const (
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "
 	LBL_DIRECTORY                  = "DIRECTORY: "
 	LBL_EMAIL_BODY                 = "EMAIL BODY: "
+	LBL_EXTENSIONS                 = "EXTENSIONS: "
 	LBL_EXTENSION_NAME             = "EXTENSION NAME: "
 	LBL_FILENAME                   = "FILENAME: "
 	LBL_FUNCTION_NAME              = "FUNCTION NAME: "
