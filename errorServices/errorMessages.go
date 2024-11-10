@@ -1,8 +1,6 @@
 package sharedServices
 
 import (
-	// Add imports here
-
 	"errors"
 )
 
@@ -51,6 +49,7 @@ const (
 	GREATER_THAN_ZERO                  = "The value must be greater than zero."
 	HTTP_REQUEST_FALIED                = "The HTTP request failed with a non-200 status code."
 	HTTP_SECURE_SERVER_FAILED          = "The HTTP services secure server failed."
+	IDENTITY_PROVIDER_INVALID          = "The identity provider is invalid."
 	JSON_GENERATION_FAILED             = "Failed to generate JSON payload"
 	JSON_INVALID                       = "The JSON provided is invalid"
 	JWT_MISSING                        = "JWT token is missing."
@@ -193,6 +192,7 @@ var (
 	ErrGreatThanZero                  = errors.New(GREATER_THAN_ZERO)
 	ErrHTTPRequestFalied              = errors.New(HTTP_REQUEST_FALIED)
 	ErrHTTPSecureServerFailed         = errors.New(HTTP_SECURE_SERVER_FAILED)
+	ErrIdentityProviderInvalid        = errors.New(IDENTITY_PROVIDER_INVALID)
 	ErrIntegerInvalid                 = errors.New(INTEGER_INVALID)
 	ErrJSONGenerationFailed           = errors.New(JSON_GENERATION_FAILED)
 	ErrJSONInvalid                    = errors.New(JSON_INVALID)
