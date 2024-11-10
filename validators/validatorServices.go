@@ -348,6 +348,23 @@ func IsPopulated(value interface{}) bool {
 	return true
 }
 
+// IsIdentityProviderValid - checks if the identity provider setting is valid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsIdentityProviderValid(identityProvider string) bool {
+
+	switch identityProvider {
+	case ctv.GOOGLE:
+	case ctv.COGNITO:
+	default:
+		return false
+	}
+
+	return true
+}
+
 // IsIPAddressValid - checks if the data provide is a valid IP address
 //
 //	Customer Messages: None
