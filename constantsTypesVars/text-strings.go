@@ -40,7 +40,6 @@ const (
 	TXT_FALSE                        = "false"
 	TXT_FILENAME_DOES_NOT_EXISTS     = "Filename doesn'ts exist"
 	TXT_FILENAME_EXISTS              = "Filename exists"
-	TXT_GNLP_KEY_FILENAME            = "GOOGLE NLP KEY FILENAME"
 	TXT_GOOD                         = "good"
 	TXT_GOT_WRONG_BOOLEAN            = "Got wrong boolean value."
 	TXT_INTO                         = "into"
