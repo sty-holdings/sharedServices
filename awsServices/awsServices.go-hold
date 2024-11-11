@@ -303,14 +303,14 @@ func LoadAWSCustomerSettings(
 		awsSettings.STYHCognitoIdentityInfo = styConfigLocal
 	default:
 		if environment == ctv.VAL_EMPTY {
-			errorInfo = errs.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, ctv.FN_ENVIRONMENT))
+			errorInfo = errs.NewErrorInfo(errs.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, ctv.FN_ENVIRONMENT))
 			return
 		}
-		errorInfo = errs.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, environment))
+		errorInfo = errs.NewErrorInfo(errs.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, environment))
 	}
 
 	if awsSettings.BaseConfig, errorInfo.Error = awsCfg.LoadDefaultConfig(awsCTXToDo, awsCfg.WithRegion(awsSettings.STYHCognitoIdentityInfo.region)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, "Failed to create an AWS Session.")
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, "Failed to create an AWS Session.")
 		return
 	}
 
@@ -348,19 +348,19 @@ func Login(
 	)
 
 	if loginType == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_LOGIN_TYPE, loginType))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_LOGIN_TYPE, loginType))
 		return
 	}
 	if username == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
 	if password == nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_PASSWORD, ctv.TXT_PROTECTED))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_PASSWORD, ctv.TXT_PROTECTED))
 		return
 	}
 	if STYHCognitoIdentityInfo.UserPoolId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, STYHCognitoIdentityInfo.UserPoolId))
 		return
 	}
 
@@ -376,7 +376,7 @@ func Login(
 	}
 
 	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -425,7 +425,7 @@ func Login(
 }
 
 // // ConfirmUser - mark the AWS user as confirmed
-// func (a *AWSHelper) ConfirmUser(userName string) (errorInfo pi.ErrorInfo) {
+// func (a *AWSHelper) ConfirmUser(userName string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tAdminConfirmSignUpInput    cognito.AdminConfirmSignUpInput
@@ -435,7 +435,7 @@ func Login(
 // 	)
 //
 // 	if userName == ctv.VAL_EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tawsCIPPtr = cognito.New(a.SessionPtr)
@@ -446,8 +446,8 @@ func Login(
 // 			if strings.Contains(errorInfo.Error.Error(), ctv.STATUS_CONFIRMED) {
 // 				errorInfo.Error = nil
 // 			} else {
-// 				if strings.Contains(errorInfo.Error.Error(), pi.USER_DOES_NOT_EXIST) {
-// 					errorInfo.Error = pi.ErrUserMissing
+// 				if strings.Contains(errorInfo.Error.Error(), errs.USER_DOES_NOT_EXIST) {
+// 					errorInfo.Error = errs.ErrUserMissing
 // 				}
 // 			}
 // 		}
@@ -462,7 +462,7 @@ func Login(
 // 	token string,
 // ) (
 // 	requestorId, email, phoneNumber string,
-// 	errorInfo pi.ErrorInfo,
+// 	errorInfo errs.ErrorInfo,
 // ) {
 //
 // 	var (
@@ -481,7 +481,7 @@ func Login(
 // 				email = tClaimsPtr.Email
 // 				phoneNumber = tClaimsPtr.PhoneNumber
 // 			} else {
-// 				errorInfo.Error = pi.ErrTokenInvalid
+// 				errorInfo.Error = errs.ErrTokenInvalid
 // 				log.Println(errorInfo.Error)
 // 			}
 // 		}
@@ -500,7 +500,7 @@ func Login(
 // 	token string,
 // ) (
 // 	requestorId string,
-// 	errorInfo pi.ErrorInfo,
+// 	errorInfo errs.ErrorInfo,
 // ) {
 //
 // 	var (
@@ -509,7 +509,7 @@ func Login(
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if token == ctv.TEST_STRING {
 // 		requestorId = ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID
@@ -522,7 +522,7 @@ func Login(
 // 				if isTokenValid(firestoreClientPtr, a, ctv.TOKEN_TYPE_ACCESS, token) {
 // 					requestorId = tClaimsPtr.Subject
 // 				} else {
-// 					errorInfo.Error = pi.ErrTokenInvalid
+// 					errorInfo.Error = errs.ErrTokenInvalid
 // 					log.Println(errorInfo.Error)
 // 				}
 // 			}
@@ -548,15 +548,15 @@ func ParseAWSJWT(
 ) {
 
 	if len(awsSettings.keyInfo.keySet.Keys) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, ctv.TXT_KEY_SET_MISSING)
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, ctv.TXT_KEY_SET_MISSING)
 		return
 	}
 	if tokenType == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN_TYPE, ctv.FN_TOKEN_TYPE))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN_TYPE, ctv.FN_TOKEN_TYPE))
 		return
 	}
 	if token == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_TOKEN, ctv.FN_TOKEN))
 		return
 	}
 
@@ -576,7 +576,7 @@ func ParseAWSJWT(
 			},
 		); errorInfo.Error != nil {
 			fmt.Println(errorInfo.Error)
-			if errorInfo.Error.Error() == pi.ErrJWTTokenSignatureInvalid.Error() {
+			if errorInfo.Error.Error() == errs.ErrJWTTokenSignatureInvalid.Error() {
 				continue
 			} else {
 				break
@@ -611,16 +611,16 @@ func PullCognitoUserInfo(
 	)
 
 	if username == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, ctv.FN_USERNAME))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, ctv.FN_USERNAME))
 		return
 	}
 	if userPoolId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(pi.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, "userPoolId"))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_AWS_USERPOOL_ID, "userPoolId"))
 		return
 	}
 
 	if tCognitoClientPtr = awsCIP.NewFromConfig(baseConfig); tCognitoClientPtr == nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -630,7 +630,7 @@ func PullCognitoUserInfo(
 	}
 
 	if tAdminGetUserOutputPtr, errorInfo.Error = tCognitoClientPtr.AdminGetUser(awsCTXToDo, tAdminGetUserInputPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(pi.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedAWS, fmt.Sprintf("%v%v", ctv.LBL_SERVICE, ctv.TXT_AWS_COGNITO))
 		return
 	}
 
@@ -648,7 +648,7 @@ func PullCognitoUserInfo(
 // 	tokenType, token string,
 // ) (
 // 	valid bool,
-// 	errorInfo pi.ErrorInfo,
+// 	errorInfo errs.ErrorInfo,
 // ) {
 //
 // 	var (
@@ -656,7 +656,7 @@ func PullCognitoUserInfo(
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if token == ctv.VAL_EMPTY {
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Token: '%v'", token))
@@ -669,7 +669,7 @@ func PullCognitoUserInfo(
 // }
 
 // UpdateAWSEmailVerifyFlag - will update the email_valid field for the user in the Cognito user pool.
-// func (a *AWSHelper) UpdateAWSEmailVerifyFlag(username string) (errorInfo pi.ErrorInfo) {
+// func (a *AWSHelper) UpdateAWSEmailVerifyFlag(username string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tAdminUpdateUserAttributesInput cognito.AdminUpdateUserAttributesInput
@@ -681,10 +681,10 @@ func PullCognitoUserInfo(
 // 		tName                           string
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if username == ctv.VAL_EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 	} else {
 // 		tawsCIPPtr = cognito.New(a.SessionPtr)
 // 		tName = ctv.FN_EMAIL_VERIFIED // This is required because go doesn't support pointers to ctv.
@@ -707,7 +707,7 @@ func PullCognitoUserInfo(
 // func (a *AWSHelper) ResetUserPassword(
 // 	userName string,
 // 	test bool,
-// ) (errorInfo pi.ErrorInfo) {
+// ) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tAdminResetUserPasswordInput cognito.AdminResetUserPasswordInput
@@ -717,7 +717,7 @@ func PullCognitoUserInfo(
 // 		req                          *request.Request
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if userName == ctv.VAL_EMPTY {
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! AWS User Name: '%v'", userName))
@@ -745,7 +745,7 @@ func PullCognitoUserInfo(
 // ) bool {
 //
 // 	var (
-// 		errorInfo          pi.ErrorInfo
+// 		errorInfo          errs.ErrorInfo
 // 		tDocumentPtr       *firestore.DocumentSnapshot
 // 		tEmailInterface    interface{}
 // 		tSubjectInterface  interface{}
@@ -882,7 +882,7 @@ func getPublicKeySet(keySetURL string) (
 // 	tokenType, token string,
 // ) (
 // 	claimsPtr *Claims,
-// 	errorInfo pi.ErrorInfo,
+// 	errorInfo errs.ErrorInfo,
 // ) {
 //
 // 	return a.ParseAWSJWTWithClaims(tokenType, token)
@@ -895,7 +895,7 @@ func getPublicKeySet(keySetURL string) (
 // ) bool {
 //
 // 	var (
-// 		errorInfo  pi.ErrorInfo
+// 		errorInfo  errs.ErrorInfo
 // 		tClaimsPtr *Claims
 // 	)
 //

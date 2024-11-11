@@ -9,7 +9,6 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 //goland:noinspection ALL
@@ -39,10 +38,10 @@ func TestFindFirebaseAuthUser(tPtr *testing.T) {
 				tPtr.Fatal(errorInfo.Error.Error())
 			}
 			if _, errorInfo = FindFirebaseAuthUser(tAuthPtr, TEST_BAD_LOCAL_USERNAME); errorInfo.Error == nil {
-				tPtr.Errorf(pi.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.STATUS_COMPLETED)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.STATUS_COMPLETED)
 			}
 			if _, errorInfo = FindFirebaseAuthUser(tAuthPtr, TEST_LOCAL_USERNAME); errorInfo.Error != nil {
-				tPtr.Errorf(pi.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 		},
 	)
@@ -52,7 +51,7 @@ func TestFindFirebaseAuthUser(tPtr *testing.T) {
 func TestGetIdTokenPayload(tPtr *testing.T) {
 
 	var (
-	//errorInfo          pi.ErrorInfo
+	//errorInfo          errs.ErrorInfo
 	//tFileData          []byte
 	//tAuthPtr           *auth.Client
 	//tFunction, _, _, _ = runtime.Caller(0)
@@ -78,7 +77,7 @@ func TestGetIdTokenPayload(tPtr *testing.T) {
 func TestGetIdTokenPtr(tPtr *testing.T) {
 
 	var (
-	//errorInfo          pi.ErrorInfo
+	//errorInfo          errs.ErrorInfo
 	//tAuthPtr           *auth.Client
 	//tFileData          []byte
 	//tFunction, _, _, _ = runtime.Caller(0)
@@ -104,7 +103,7 @@ func TestGetIdTokenPtr(tPtr *testing.T) {
 func TestIsFirebaseIdTokenValid(tPtr *testing.T) {
 
 	var (
-	//errorInfo          pi.ErrorInfo
+	//errorInfo          errs.ErrorInfo
 	//tAuthPtr           *auth.Client
 	//tFileData          []byte
 	//tFunction, _, _, _ = runtime.Caller(0)
@@ -143,7 +142,7 @@ func TestNewFirebaseApp(tPtr *testing.T) {
 			// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
 			// Case 10319546 has been filed with Firebase Support
 			//if tAppPtr, errorInfo = NewFirebaseApp(BAD_FIREBASE_CREDENTIALS_FILENAME); errorInfo.Error == nil {
-			//	tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+			//	tPtr.Errorf(errs.EXPECTED_ERROR_FORMAT, tFunctionName)
 			//}
 			// END DO NOT DELETE
 			NewFirebaseApp(FIREBASE_CREDENTIALS_FILENAME)
@@ -166,16 +165,16 @@ func TestGetFirebaseAuthConnection(tPtr *testing.T) {
 			// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
 			// Case 10319546 has been filed with Firebase Support
 			//if tAppPtr, errorInfo = NewFirebaseApp(BAD_FIREBASE_CREDENTIALS_FILENAME); errorInfo.Error == nil {
-			//	tPtr.Errorf(pi.EXPECTED_ERROR_FORMAT, tFunctionName)
+			//	tPtr.Errorf(errs.EXPECTED_ERROR_FORMAT, tFunctionName)
 			//}
 			// END DO NOT DELETE
 			tAppPtr, _ = NewFirebaseApp(BAD_FIREBASE_CREDENTIALS_FILENAME)
 			if _, errorInfo = GetFirebaseAuthConnection(tAppPtr); errorInfo.Error == nil {
-				tPtr.Errorf(pi.FORMAT_EXPECTED_ERROR, tFunctionName, pi.FIREBASE_AUTH_BAD_CREDENTIALS)
+				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, errs.FIREBASE_AUTH_BAD_CREDENTIALS)
 			}
 			tAppPtr, _ = NewFirebaseApp(FIREBASE_CREDENTIALS_FILENAME)
 			if _, errorInfo = GetFirebaseAuthConnection(tAppPtr); errorInfo.Error != nil {
-				tPtr.Errorf(pi.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
+				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error.Error())
 			}
 		},
 	)
@@ -184,7 +183,7 @@ func TestGetFirebaseAuthConnection(tPtr *testing.T) {
 func TestValidateFirebaseJWTPayload(tPtr *testing.T) {
 
 	var (
-	//errorInfo          pi.ErrorInfo
+	//errorInfo          errs.ErrorInfo
 	//tAuthPtr           *auth.Client
 	//tFileData          []byte
 	//tFunction, _, _, _ = runtime.Caller(0)

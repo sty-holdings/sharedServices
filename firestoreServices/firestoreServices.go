@@ -2,8 +2,16 @@ package sharedServices
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"log"
+	"strings"
 
-	"cloud.google.com/go/firestore"
+	fss "cloud.google.com/go/firestore"
+	"google.golang.org/api/iterator"
+
+	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 )
 
 const (
@@ -20,7 +28,7 @@ var (
 )
 
 // BuildFirestoreUpdate - while the nameValues is a map[any], the function using a string assertion on the key.
-// func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestoreServices.Update, errorInfo pi.ErrorInfo) {
+// func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestoreServices.Update, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFinding           string
@@ -29,7 +37,7 @@ var (
 // 		tUpdate            firestoreServices.Update
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding == ctv.GOOD {
 // 		for field, value := range nameValues {
@@ -38,14 +46,18 @@ var (
 // 			firestoreUpdateFields = append(firestoreUpdateFields, tUpdate)
 // 		}
 // 	} else {
-// 		errorInfo.Error = pi.GetMapKeyPopulatedError(tFinding)
+// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
 // 	}
 //
 // 	return
 // }
 
-// DoesDocumentExist
-func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
+// DoesDocumentExist - checks the document Reference pointer exists
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func doesDocumentExist(documentReferencePtr *fss.DocumentRef) bool {
 
 	if _, err := documentReferencePtr.Get(CTXBackground); err == nil {
 		return true
@@ -57,70 +69,58 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // FindDocument - Returns an error for documents not found, but it doesn't print the error to the log.
 //
 //	Customer Messages: None
-//	Errors: pi.ErrRequiredArgumentMissing, pi.ErrDocumentNotFound, pi.ErrServiceFailedFIRESTORE
+//	Errors: errs.ErrRequiredArgumentMissing, errs.ErrDocumentNotFound, errs.ErrServiceFailedFIRESTORE
 //	Verifications: None
-// func FindDocument(firestoreClientPtr *firestoreServices.Client, datastore string, queryParameters ...NameValueQuery) (found bool, documentSnapshotPtr *firestoreServices.DocumentSnapshot, errorInfo pi.ErrorInfo) {
-//
-// 	var (
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 		tQuery             firestoreServices.Query
-// 	)
-//
-// 	pi.PrintDebugTrail(tFunctionName)
-//
-// 	if datastore == ctv.EMPTY || len(queryParameters) < 1 {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
-// 	} else {
-// 		tQuery = firestoreClientPtr.Collection(datastore).Query
-// 		for _, parameter := range queryParameters {
-// 			if parameter.FieldName == ctv.EMPTY || parameter.FieldValue == ctv.EMPTY {
-// 				errorInfo.FileName, errorInfo.ErrorLineNumber = pi.GetFileLineNumber()
-// 				errorInfo.Error = pi.ErrRequiredArgumentMissing
-// 				pi.PrintError(errorInfo)
-// 				break
-// 			} else {
-// 				tQuery = tQuery.Where(parameter.FieldName, ctv.EQUALS, parameter.FieldValue)
-// 			}
-// 		}
-// 	}
-//
-// 	if errorInfo.Error == nil {
-// 		tDocuments := tQuery.Documents(CTXBackground)
-// 		for {
-// 			documentSnapshotPtr, errorInfo.Error = tDocuments.Next()
-// 			if errorInfo.Error != nil {
-// 				if errors.Is(errorInfo.Error, iterator.Done) {
-// 					errorInfo.FileName, errorInfo.ErrorLineNumber = pi.GetFileLineNumber()
-// 					errorInfo.Error = pi.ErrDocumentNotFound
-// 					errorInfo.AdditionalInfo = NOT_FOUND_MAYBE_CORRECT
-// 					pi.PrintError(errorInfo)
-// 					break
-// 				} else {
-// 					errorInfo.FileName, errorInfo.ErrorLineNumber = pi.GetFileLineNumber()
-// 					errorInfo.Error = pi.ErrServiceFailedFIRESTORE
-// 					pi.PrintError(errorInfo)
-// 					// todo handle error & notification
-// 					break
-// 				}
-// 			}
-// 			if len(documentSnapshotPtr.Data()) > 0 {
-// 				found = true
-// 				break
-// 			}
-// 		}
-// 	}
-//
-// 	return
-// }
+func FindDocument(firestoreClientPtr *fss.Client, datastore string, queryParameters ...NameValueQuery) (found bool, documentSnapshotPtr *fss.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+
+	var (
+		tQuery fss.Query
+	)
+
+	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
+		errorInfo.Error = errs.ErrRequiredArgumentMissing
+	} else {
+		tQuery = firestoreClientPtr.Collection(datastore).Query
+		for _, parameter := range queryParameters {
+			if parameter.FieldName == ctv.VAL_EMPTY || parameter.FieldValue == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, ctv.VAL_EMPTY)
+				break
+			} else {
+				tQuery = tQuery.Where(parameter.FieldName, ctv.OPER_EQUAL_SIGN, parameter.FieldValue)
+			}
+		}
+	}
+
+	if errorInfo.Error == nil {
+		tDocuments := tQuery.Documents(CTXBackground)
+		for {
+			documentSnapshotPtr, errorInfo.Error = tDocuments.Next()
+			if errorInfo.Error != nil {
+				if errors.Is(errorInfo.Error, iterator.Done) {
+					errorInfo = errs.NewErrorInfo(errs.ErrDocumentNotFound, NOT_FOUND_MAYBE_CORRECT)
+					break
+				} else {
+					errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedFIRESTORE, ctv.VAL_EMPTY)
+					break
+				}
+			}
+			if len(documentSnapshotPtr.Data()) > 0 {
+				found = true
+				break
+			}
+		}
+	}
+
+	return
+}
 
 // GetAllDocuments will return snapshot pointers to each document in the datastore.
 // If no documents are found, the documents will have a count of zero.
 //
 //	Customer Messages: None
-//	Errors: pi.ErrRequiredArgumentMissing
+//	Errors: errs.ErrRequiredArgumentMissing
 //	Verifications: None
-// func GetAllDocuments(firestoreClientPtr *firestoreServices.Client, datastore string) (documents []*firestoreServices.DocumentSnapshot, errorInfo pi.ErrorInfo) {
+// func GetAllDocuments(firestoreClientPtr *firestoreServices.Client, datastore string) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tCollectionReferencePtr *firestoreServices.CollectionRef
@@ -128,17 +128,17 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName           = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if firestoreClientPtr == nil || datastore == ctv.EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v", firestoreClientPtr, datastore)
-// 		pi.PrintError(errorInfo)
+// 		errs.PrintError(errorInfo)
 // 	} else {
 // 		tCollectionReferencePtr = firestoreClientPtr.Collection(datastore)
 // 		documents, errorInfo.Error = tCollectionReferencePtr.Documents(CTXBackground).GetAll()
 // 		if documents == nil && errorInfo.Error == nil {
-// 			errorInfo.Error = pi.ErrDocumentsNoneFound
+// 			errorInfo.Error = errs.ErrDocumentsNoneFound
 // 		}
 // 	}
 //
@@ -149,9 +149,9 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // If no documents are found, the documents will have a count of zero.
 //
 //	Customer Messages: None
-//	Errors: pi.ErrRequiredArgumentMissing, pi.ErrDocumentsNoneFound, pi.ErrServiceFailedFIRESTORE
+//	Errors: errs.ErrRequiredArgumentMissing, errs.ErrDocumentsNoneFound, errs.ErrServiceFailedFIRESTORE
 //	Verifications: None
-// func GetAllDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}) (documents []*firestoreServices.DocumentSnapshot, errorInfo pi.ErrorInfo) {
+// func GetAllDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tQuery             firestoreServices.Query
@@ -159,23 +159,23 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if firestoreClientPtr == nil || datastore == ctv.EMPTY || fieldName == ctv.EMPTY || fieldValue == nil {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || fieldName == ctv.VAL_EMPTY || fieldValue == nil {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v Field Name: %v Field Value: %v", firestoreClientPtr, datastore, fieldName, fieldValue)
-// 		pi.PrintError(errorInfo)
+// 		errs.PrintError(errorInfo)
 // 	} else {
 // 		tQuery = firestoreClientPtr.Collection(datastore).Where(fieldName, "==", fieldValue)
 // 		if documents, errorInfo.Error = tQuery.Documents(CTXBackground).GetAll(); len(documents) == 0 {
 // 			if errorInfo.Error == nil {
 // 				errorInfo.AdditionalInfo = ctv.NOT_FOUND + ctv.IS_OK
-// 				errorInfo.Error = pi.ErrDocumentsNoneFound
-// 				pi.PrintError(errorInfo)
+// 				errorInfo.Error = errs.ErrDocumentsNoneFound
+// 				errs.PrintError(errorInfo)
 // 			} else {
 // 				errorInfo.AdditionalInfo = errorInfo.Error.Error()
-// 				errorInfo.Error = pi.ErrServiceFailedFIRESTORE
-// 				pi.PrintError(errorInfo)
+// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+// 				errs.PrintError(errorInfo)
 // 			}
 // 		}
 // 	}
@@ -187,9 +187,9 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // If no documents are found, the documents variable will have a zero length.
 //
 //	Customer Messages: None
-//	Errors: pi.ErrRequiredArgumentMissing
+//	Errors: errs.ErrRequiredArgumentMissing
 //	Verifications: None
-// func GetSomeDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}, offset, recordCount int) (documents []*firestoreServices.DocumentSnapshot, errorInfo pi.ErrorInfo) {
+// func GetSomeDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}, offset, recordCount int) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tQuery             firestoreServices.Query
@@ -197,12 +197,12 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if firestoreClientPtr == nil || datastore == ctv.EMPTY || fieldName == ctv.EMPTY || fieldValue == nil {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || fieldName == ctv.VAL_EMPTY || fieldValue == nil {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v Field Name: %v Field Value: %v", firestoreClientPtr, datastore, fieldName, fieldValue)
-// 		pi.PrintError(errorInfo)
+// 		errs.PrintError(errorInfo)
 // 	} else {
 // 		tQuery = firestoreClientPtr.Collection(datastore).Where(fieldName, ctv.EQUALS, fieldValue).Offset(offset).Limit(recordCount)
 // 		documents, errorInfo.Error = tQuery.Documents(CTXBackground).GetAll()
@@ -212,56 +212,50 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // GetDocumentById - will return a non-nil documentSnapshotPtr if the document is found.
-// func GetDocumentById(firestoreClientPtr *firestoreServices.Client, datastore string, documentId string) (documentSnapshotPtr *firestoreServices.DocumentSnapshot, errorInfo pi.ErrorInfo) {
 //
-// 	var (
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 	)
-//
-// 	pi.PrintDebugTrail(tFunctionName)
-//
-// 	if firestoreClientPtr == nil || datastore == ctv.EMPTY || documentId == ctv.EMPTY {
-// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Firestore Client Pointer or Datastore: '%v' Document Id: '%v'", datastore, documentId))
-// 	} else {
-// 		if documentSnapshotPtr, errorInfo.Error = firestoreClientPtr.Doc(datastore + "/" + documentId).Get(CTXBackground); documentSnapshotPtr == nil || errorInfo.Error != nil {
-// 			if strings.Contains(errorInfo.Error.Error(), ctv.NOT_FOUND) {
-// 				errorInfo.Error = pi.ErrDocumentNotFound
-// 			}
-// 			documentSnapshotPtr = nil
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetDocumentById(firestoreClientPtr *fss.Client, datastore string, documentId string) (documentSnapshotPtr *fss.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+
+	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+		errorInfo.Error = errors.New(fmt.Sprintf(errs.FORMAT_FIRESTORE_ARGUMENTS_MISSING, datastore, documentId))
+	} else {
+		if documentSnapshotPtr, errorInfo.Error = firestoreClientPtr.Doc(datastore + "/" + documentId).Get(CTXBackground); documentSnapshotPtr == nil || errorInfo.Error != nil {
+			if strings.Contains(errorInfo.Error.Error(), ctv.TXT_NOT_FOUND) {
+				errorInfo.Error = errs.ErrDocumentNotFound
+			}
+			documentSnapshotPtr = nil
+		}
+	}
+
+	return
+}
 
 // getDocumentRef
-// func getDocumentRef(firestoreClientPtr *firestoreServices.Client, datastore, documentId string) (documentReferencePtr *firestoreServices.DocumentRef, errorInfo pi.ErrorInfo) {
 //
-// 	var (
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 	)
-//
-// 	pi.PrintDebugTrail(tFunctionName)
-//
-// 	if datastore == ctv.EMPTY || documentId == ctv.EMPTY {
-// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' Document Id: '%v'", datastore, documentId))
-// 		log.Println(errorInfo.Error.Error())
-// 	} else {
-// 		documentReferencePtr = firestoreClientPtr.Collection(datastore).Doc(documentId)
-// 		if doesDocumentExist(documentReferencePtr) == false {
-// 			errorInfo.Error = errors.New(fmt.Sprintf("The document was not found. %v: '%v'", ctv.FN_DOCUMENT_ID, documentId))
-// 			log.Println(errorInfo.Error.Error())
-// 			documentReferencePtr = nil
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getDocumentRef(firestoreClientPtr *fss.Client, datastore, documentId string) (documentReferencePtr *fss.DocumentRef, errorInfo errs.ErrorInfo) {
+
+	if datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+		errorInfo.Error = errors.New(fmt.Sprintf(errs.FORMAT_FIRESTORE_ARGUMENTS_MISSING, datastore, documentId))
+		log.Println(errorInfo.Error.Error())
+	} else {
+		documentReferencePtr = firestoreClientPtr.Collection(datastore).Doc(documentId)
+		if doesDocumentExist(documentReferencePtr) == false {
+			errorInfo.Error = errors.New(fmt.Sprintf("The document was not found. %v: '%v'", ctv.FN_DOCUMENT_ID, documentId))
+			log.Println(errorInfo.Error.Error())
+			documentReferencePtr = nil
+		}
+	}
+
+	return
+}
 
 // GetDocumentIdsWithSubCollections
-// func GetDocumentIdsWithSubCollections(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName string) (documentRefIds []string, errorInfo pi.ErrorInfo) {
+// func GetDocumentIdsWithSubCollections(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName string) (documentRefIds []string, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tPath              string
@@ -270,10 +264,10 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v", datastore, parentDocumentId, subCollectionName)
@@ -289,7 +283,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // GetDocumentFromSubCollectionByDocumentId
 //
 //	If the document is not found, an error will be returned.
-// func GetDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string) (data map[string]interface{}, errorInfo pi.ErrorInfo) {
+// func GetDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string) (data map[string]interface{}, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tDocumentRefPtr    *firestoreServices.DocumentRef
@@ -299,10 +293,10 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tPath              string
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY || documentId == ctv.EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v/%v", datastore, parentDocumentId, subCollectionName, documentId)
@@ -317,14 +311,14 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // GetFirestoreClientConnection
-// func GetFirestoreClientConnection(appPtr *firebaseServices.App) (firestoreClientPtr *firestoreServices.Client, errorInfo pi.ErrorInfo) {
+// func GetFirestoreClientConnection(appPtr *firebaseServices.App) (firestoreClientPtr *firestoreServices.Client, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if appPtr == nil {
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! %v: '%v'", "appPtr", appPtr))
@@ -341,7 +335,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // RemoveDocument
-// func RemoveDocument(firestoreClientPtr *firestoreServices.Client, datastore string, queryParameters ...NameValueQuery) (errorInfo pi.ErrorInfo) {
+// func RemoveDocument(firestoreClientPtr *firestoreServices.Client, datastore string, queryParameters ...NameValueQuery) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tDocument          *firestoreServices.DocumentSnapshot
@@ -350,15 +344,15 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tQuery             firestoreServices.Query
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || len(queryParameters) < 1 {
-// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery argument is '%v'", datastore, ctv.EMPTY))
+// 	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
+// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery argument is '%v'", datastore, ctv.VAL_EMPTY))
 // 	} else {
 // 		tQuery = firestoreClientPtr.Collection(datastore).Query
 // 		for _, parameter := range queryParameters {
-// 			if parameter.FieldName == ctv.EMPTY || parameter.FieldValue == ctv.EMPTY {
-// 				errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery parameter is '%v' Field Name: %v, Field Value: %v", datastore, ctv.EMPTY,
+// 			if parameter.FieldName == ctv.VAL_EMPTY || parameter.FieldValue == ctv.VAL_EMPTY {
+// 				errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery parameter is '%v' Field Name: %v, Field Value: %v", datastore, ctv.VAL_EMPTY,
 // 					parameter.FieldName, parameter.FieldValue))
 // 				break
 // 			} else {
@@ -377,14 +371,14 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 			}
 // 			if errorInfo.Error != nil {
 // 				errorInfo.AdditionalInfo = fmt.Sprintf("An error occurred trying to remove a document. Error: %v", errorInfo.Error)
-// 				errorInfo.Error = pi.ErrServiceFailedFIRESTORE
-// 				pi.PrintError(errorInfo)
+// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+// 				errs.PrintError(errorInfo)
 // 				// todo handle error & notification
 // 			}
 // 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(tDocument.Ref.ID).Delete(CTXBackground); errorInfo.Error != nil {
 // 				errorInfo.AdditionalInfo = fmt.Sprintf("%v Failed: Investigate, there is something wrong! Error: %v", tFunctionName, errorInfo.Error.Error())
-// 				errorInfo.Error = pi.ErrServiceFailedFIRESTORE
-// 				pi.PrintError(errorInfo)
+// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+// 				errs.PrintError(errorInfo)
 // 				// todo Handle error and Notification
 // 			}
 // 		}
@@ -394,16 +388,16 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // RemoveDocumentById
-// func RemoveDocumentById(firestoreClientPtr *firestoreServices.Client, datastore, documentId string) (errorInfo pi.ErrorInfo) {
+// func RemoveDocumentById(firestoreClientPtr *firestoreServices.Client, datastore, documentId string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || documentId == ctv.EMPTY {
+// 	if datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' Document Id: '%v'", datastore, documentId))
 // 	} else {
 // 		_, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Delete(CTXBackground)
@@ -413,16 +407,16 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // RemoveDocumentFromSubCollectionByDocumentId
-// func RemoveDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string) (errorInfo pi.ErrorInfo) {
+// func RemoveDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY || documentId == ctv.EMPTY {
+// 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' Parent Document Id: '%v' Sub-Collection Name: '%v' Document Id: '%v'", datastore, parentDocumentId,
 // 			subCollectionName, documentId))
 // 	} else {
@@ -439,9 +433,9 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // RemoveDocumentFromSubCollection
 //
 //	Customer Messages: None
-//	Errors: pi.ErrRequiredArgumentMissing
+//	Errors: errs.ErrRequiredArgumentMissing
 //	Verification: Check datastore, parentDocumentId, and subCollectionName are populated
-// func RemoveDocumentFromSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName string) (errorInfo pi.ErrorInfo) {
+// func RemoveDocumentFromSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName string) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tDocumentRefIterPtr *firestoreServices.DocumentRefIterator
@@ -450,10 +444,10 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName       = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 	} else {
 // 		tDocumentRefIterPtr = firestoreClientPtr.Collection(datastore).Doc(parentDocumentId).Collection(subCollectionName).DocumentRefs(CTXBackground)
 // 		for {
@@ -477,7 +471,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-// func SetDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo pi.ErrorInfo) {
+// func SetDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFinding           string
@@ -485,19 +479,19 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if coreValidators.AreMapKeysPopulated(nameValues) == false {
-// 		errorInfo.Error = pi.GetMapKeyPopulatedError(tFinding)
+// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
 // 	} else {
-// 		if firestoreClientPtr == nil || datastore == ctv.EMPTY || documentId == ctv.EMPTY {
-// 			errorInfo.Error = pi.ErrRequiredArgumentMissing
-// 			pi.PrintError(errorInfo)
+// 		if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+// 			errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 			errs.PrintError(errorInfo)
 // 			// todo Handle errors and Notifications
 // 		} else {
 // 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, coreHelpers.ConvertMapAnyToMapString(nameValues)); errorInfo.Error != nil {
-// 				errorInfo.Error = pi.ErrServiceFailedFIRESTORE
-// 				pi.PrintError(errorInfo)
+// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+// 				errs.PrintError(errorInfo)
 // 				// todo Handle errors and Notifications
 // 			}
 // 		}
@@ -507,7 +501,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // SetDocumentWithSubCollection - This will create or overwrite the existing record that is in a sub-collection. While nameValues is a map[any], this function will apply a string assertion on the key.
-// func SetDocumentWithSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, nameValues map[any]interface{}) (errorInfo pi.ErrorInfo) {
+// func SetDocumentWithSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFinding           string
@@ -515,13 +509,13 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.GOOD {
-// 		errorInfo.Error = pi.GetMapKeyPopulatedError(tFinding)
+// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
 // 	} else {
-// 		// if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY || documentId == ctv.EMPTY {
-// 		if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY || documentId == ctv.EMPTY {
+// 		// if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+// 		if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 // 			errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' Parent Document Id: '%v' Sub-collection Name: '%v' Document Id: '%v' Function Name: %v", datastore, parentDocumentId, subCollectionName, documentId, tFunctionName))
 // 			log.Println(errorInfo.Error.Error())
 // 			// todo Handle errors and Notifications
@@ -539,7 +533,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // }
 
 // UpdateDocument- will return an error of nil when successful. If the document is not found, shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
-// func UpdateDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo pi.ErrorInfo) {
+// func UpdateDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFinding           string
@@ -548,22 +542,22 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tUpdateFields      []firestoreServices.Update
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 //
 // 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.GOOD {
-// 		errorInfo.Error = pi.GetMapKeyPopulatedError(tFinding)
-// 		pi.PrintError(errorInfo)
+// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
+// 		errs.PrintError(errorInfo)
 // 	} else {
-// 		if datastore == ctv.EMPTY || documentId == ctv.EMPTY {
-// 			errorInfo.Error = pi.ErrRequiredArgumentMissing
-// 			pi.PrintError(errorInfo)
+// 		if datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+// 			errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 			errs.PrintError(errorInfo)
 // 			// todo Handle errors and Notifications
 // 		} else {
 // 			if tUpdateFields, errorInfo = BuildFirestoreUpdate(nameValues); errorInfo.Error == nil {
 // 				if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(CTXBackground, tUpdateFields); errorInfo.Error != nil {
-// 					pi.PrintError(errorInfo)
+// 					errs.PrintError(errorInfo)
 // 				}
 // 			}
 // 		}
@@ -577,7 +571,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 //	Customer Messages: None
 //	Errors: ErrRequiredArgumentMissing, Any error from Firestore
 //	Verifications: None
-// func UpdateDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, updateFields []firestoreServices.Update) (errorInfo pi.ErrorInfo) {
+// func UpdateDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, updateFields []firestoreServices.Update) (errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tFunction, _, _, _ = runtime.Caller(0)
@@ -585,10 +579,10 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // 		tPath              string
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
-// 	if datastore == ctv.EMPTY || parentDocumentId == ctv.EMPTY || subCollectionName == ctv.EMPTY || documentId == ctv.EMPTY {
-// 		errorInfo.Error = pi.ErrRequiredArgumentMissing
+// 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
+// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v/%v", datastore, parentDocumentId, subCollectionName, documentId)

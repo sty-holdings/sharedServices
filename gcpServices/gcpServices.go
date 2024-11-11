@@ -12,7 +12,6 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 var (
@@ -53,7 +52,7 @@ func getBucket(
 ) {
 
 	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY {
-		errorInfo.Error = pi.ErrRequiredArgumentMissing
+		errorInfo.Error = errs.ErrRequiredArgumentMissing
 	} else {
 		// Create a bucket object for the specified bucket.
 		bucketPtr = storageClientPtr.Bucket(bucketName)
@@ -77,7 +76,7 @@ func getGCPKey(
 	)
 
 	if GCPCredentials, errorInfo.Error = os.ReadFile(GCPCredentialsFQN); errorInfo.Error != nil {
-		errorInfo.Error = pi.ErrUnableReadFile
+		errorInfo.Error = errs.ErrUnableReadFile
 		log.Println(errorInfo.Error.Error())
 	}
 
@@ -108,7 +107,7 @@ func ListObjectsInBucket(
 	)
 
 	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY {
-		errorInfo.Error = pi.ErrRequiredArgumentMissing
+		errorInfo.Error = errs.ErrRequiredArgumentMissing
 	} else {
 		tBucketPtr, errorInfo = getBucket(storageClientPtr, bucketName)
 
@@ -151,7 +150,7 @@ func ReadBucketObject(
 	)
 
 	if storageClientPtr == nil || bucketName == ctv.VAL_EMPTY || fileName == ctv.VAL_EMPTY {
-		errorInfo.Error = pi.ErrRequiredArgumentMissing
+		errorInfo.Error = errs.ErrRequiredArgumentMissing
 	} else {
 		if tBucketPtr, errorInfo = getBucket(storageClientPtr, bucketName); errorInfo.Error == nil {
 			// Create an object for the specified file.

@@ -27,7 +27,7 @@ func NewCognitoLogin(
 	clientSecret *string,
 ) (
 	*cognitoLogin,
-	pi.ErrorInfo,
+	errs.ErrorInfo,
 ) {
 	c := &cognitoLogin{
 		username:     username,
@@ -38,7 +38,7 @@ func NewCognitoLogin(
 	}
 
 	if !strings.Contains(userPoolId, "_") {
-		return nil, pi.NewErrorInfo(pi.ErrCognitoUserpoolIdInvalid, userPoolId)
+		return nil, errs.NewErrorInfo(errs.ErrCognitoUserpoolIdInvalid, userPoolId)
 	}
 	c.userPoolName = strings.Split(userPoolId, "_")[1]
 
@@ -48,7 +48,7 @@ func NewCognitoLogin(
 	c.a = c.generateRandomSmallA()
 	c.bigA = c.calculateA()
 
-	return c, pi.ErrorInfo{}
+	return c, errs.ErrorInfo{}
 }
 
 // GetUsername - returns the configured Cognito user username
@@ -116,12 +116,12 @@ func (csrp *cognitoLogin) GetAuthParams() map[string]string {
 //	Verifications: None
 func (csrp *cognitoLogin) GetSecretHash(username string) (
 	string,
-	pi.ErrorInfo,
+	errs.ErrorInfo,
 ) {
 
 	// ToDo add support to output the error
 	if csrp.clientSecret == nil {
-		return ctv.VAL_EMPTY, pi.NewErrorInfo(pi.ErrClientSecretMissing, ctv.VAL_EMPTY)
+		return ctv.VAL_EMPTY, errs.NewErrorInfo(errs.ErrClientSecretMissing, ctv.VAL_EMPTY)
 	}
 
 	var (
@@ -134,7 +134,7 @@ func (csrp *cognitoLogin) GetSecretHash(username string) (
 
 	sh := base64.StdEncoding.EncodeToString(h.Sum(nil))
 
-	return sh, pi.ErrorInfo{}
+	return sh, errs.ErrorInfo{}
 }
 
 // PasswordVerifierChallenge - returns the ChallengeResponses map to be used
@@ -149,7 +149,7 @@ func (csrp *cognitoLogin) PasswordVerifierChallenge(
 	ts time.Time,
 ) (
 	map[string]string,
-	pi.ErrorInfo,
+	errs.ErrorInfo,
 ) {
 	var (
 		internalUsername = challengeParms["USERNAME"]
@@ -164,7 +164,7 @@ func (csrp *cognitoLogin) PasswordVerifierChallenge(
 
 	secretBlockBytes, err := base64.StdEncoding.DecodeString(secretBlockB64)
 	if err != nil {
-		return nil, pi.NewErrorInfo(pi.ErrClientSecretBlockInvalid, ctv.VAL_EMPTY)
+		return nil, errs.NewErrorInfo(errs.ErrClientSecretBlockInvalid, ctv.VAL_EMPTY)
 	}
 
 	msg := csrp.userPoolName + userId + string(secretBlockBytes) + timestamp
@@ -184,7 +184,7 @@ func (csrp *cognitoLogin) PasswordVerifierChallenge(
 		response["SECRET_HASH"] = secret
 	}
 
-	return response, pi.ErrorInfo{}
+	return response, errs.ErrorInfo{}
 }
 
 // generateRandomSmallA - creates the smallA needed for cryptographic security.
@@ -208,7 +208,7 @@ func (csrp *cognitoLogin) calculateA() *big.Int {
 
 	bigA := big.NewInt(0).Exp(csrp.g, csrp.a, csrp.bigN)
 	if big.NewInt(0).Mod(bigA, csrp.bigN).Cmp(big.NewInt(0)) == 0 {
-		pi.PrintErrorInfo(pi.NewErrorInfo(pi.ErrNotDivisibleN, ctv.VAL_EMPTY))
+		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrNotDivisibleN, ctv.VAL_EMPTY))
 	}
 
 	return bigA
@@ -260,12 +260,12 @@ func hashSha256(buf []byte) string {
 func hexHash(hexStr string) string {
 
 	var (
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		tHexStrByte []byte
 	)
 
 	if tHexStrByte, errorInfo.Error = hex.DecodeString(hexStr); errorInfo.Error != nil {
-		pi.PrintErrorInfo(pi.NewErrorInfo(pi.ErrDecodeStringFailed, fmt.Sprintf("%v%v", ctv.LBL_HEX_STRING, hexStr)))
+		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrDecodeStringFailed, fmt.Sprintf("%v%v", ctv.LBL_HEX_STRING, hexStr)))
 	}
 
 	return hashSha256(tHexStrByte)
@@ -284,7 +284,7 @@ func hexToBig(hexStr string) *big.Int {
 	)
 
 	if i, ok = big.NewInt(0).SetString(hexStr, 16); ok == false {
-		pi.PrintErrorInfo(pi.NewErrorInfo(pi.ErrSetStringFailed, fmt.Sprintf("%v%v", ctv.LBL_HEX_STRING, hexStr)))
+		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrSetStringFailed, fmt.Sprintf("%v%v", ctv.LBL_HEX_STRING, hexStr)))
 	}
 
 	return i

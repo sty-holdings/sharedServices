@@ -13,7 +13,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// }
 	//
 	// var (
-	// 	errorInfo pi.ErrorInfo
+	// 	errorInfo errs.ErrorInfo
 	// 	gotError  bool
 	// )
 	//

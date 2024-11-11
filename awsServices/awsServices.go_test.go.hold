@@ -21,7 +21,7 @@ func TestGetIdentityCredentials(tPtr *testing.T) {
 
 	var (
 		environment = ctv.ENVIRONMENT_LOCAL
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 		identityId  string
 		idToken     string
@@ -92,7 +92,7 @@ func TestGetId(tPtr *testing.T) {
 
 	var (
 		environment = ctv.ENVIRONMENT_LOCAL
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 		idToken     string
 		password    = "Aa1234567!"
@@ -162,7 +162,7 @@ func TestGetParameters(tPtr *testing.T) {
 
 	var (
 		environment = ctv.ENVIRONMENT_LOCAL
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 		idToken     string
 		password    = "Aa1234567!"
@@ -227,7 +227,7 @@ func TestLoadAccountInfo(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo pi.ErrorInfo
+		errorInfo errs.ErrorInfo
 		gotError  bool
 	)
 
@@ -279,7 +279,7 @@ func TestLogin(tPtr *testing.T) {
 
 	var (
 		environment = ctv.ENVIRONMENT_LOCAL
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 		password    = "Aa1234567!"
 		awsSettings AWSSettings
@@ -339,7 +339,7 @@ func TestLogin(tPtr *testing.T) {
 // func TestAWSHelper_ConfirmUser(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		tAWSHelper        AWSHelper
 // 		function, _, _, _ = runtime.Caller(0)
 // 		tFunctionName     = runtime.FuncForPC(function).Name()
@@ -364,7 +364,7 @@ func TestLogin(tPtr *testing.T) {
 // func TestAWSHelper_GetRequestorEmailPhoneFromIdTokenClaims(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
@@ -402,7 +402,7 @@ func TestLogin(tPtr *testing.T) {
 // func TestAWSHelper_GetRequestorFromAccessTokenClaims(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
@@ -440,7 +440,7 @@ func TestLoadAWSCustomerSettings(tPtr *testing.T) {
 	}
 
 	var (
-		errorInfo pi.ErrorInfo
+		errorInfo errs.ErrorInfo
 		gotError  bool
 	)
 
@@ -506,7 +506,7 @@ func TestParseAWSJWT(tPtr *testing.T) {
 
 	var (
 		environment = ctv.ENVIRONMENT_LOCAL
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 		idToken     string
 		password    = "Aa1234567!"
@@ -569,7 +569,7 @@ func TestParseAWSJWT(tPtr *testing.T) {
 // func TestAWSHelper_ParseJWT(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
@@ -606,7 +606,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 
 	var (
 		awsSettings AWSSettings
-		errorInfo   pi.ErrorInfo
+		errorInfo   errs.ErrorInfo
 		gotError    bool
 	)
 
@@ -675,7 +675,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // func TestAWSHelper_ResetUserPassword(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		resetByPass       = true
@@ -688,8 +688,8 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // 	tPtr.Run(
 // 		tFunctionName, func(tPtr *testing.T) {
 // 			if errorInfo = myAWS.ResetUserPassword(ctv.TEST_USERNAME_SAVUP_TEST_DO_NOT_DELETE, resetByPass); errorInfo.Error != nil {
-// 				if errorInfo.Error.Error() == pi.ATTEMPTS_EXCEEDED {
-// 					fmt.Println(pi.ATTEMPTS_EXCEEDED)
+// 				if errorInfo.Error.Error() == errs.ATTEMPTS_EXCEEDED {
+// 					fmt.Println(errs.ATTEMPTS_EXCEEDED)
 // 				} else {
 // 					tPtr.Errorf("%v Failed: Was expecting an err of %v but got %v.", tFunctionName, "nil", errorInfo.Error.Error())
 // 				}
@@ -711,7 +711,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // 	//
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
@@ -745,7 +745,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myAWS             AWSHelper
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
@@ -829,7 +829,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // func TestGetPublicKeySet(tPtr *testing.T) {
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		function, _, _, _ = runtime.Caller(0)
 // 		tFunctionName     = runtime.FuncForPC(function).Name()
 // 		tKeySetURL        = fmt.Sprintf(ctv.TEST_AWS_KEYSET_URL, ctv.TEST_USER_POOL_ID)
@@ -863,7 +863,7 @@ func TestPullCognitoUserInfo(tPtr *testing.T) {
 // 	}
 //
 // 	var (
-// 		errorInfo         pi.ErrorInfo
+// 		errorInfo         errs.ErrorInfo
 // 		myFireBase        coreHelpers.FirebaseFirestoreHelper
 // 		function, _, _, _ = runtime.Caller(0)
 // 		tFunctionName     = runtime.FuncForPC(function).Name()

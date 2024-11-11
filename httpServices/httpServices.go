@@ -13,7 +13,6 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
@@ -98,21 +97,21 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		return
 	}
 	if vals.IsBase64Encode(config.CredentialsFilename) == false {
-		errs.NewErrorInfo(pi.ErrBase64Invalid, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
+		errs.NewErrorInfo(errs.ErrBase64Invalid, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) == false {
-		errs.NewErrorInfo(pi.ErrBase64Invalid, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
+		errs.NewErrorInfo(errs.ErrBase64Invalid, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
 		return
 	}
 	if vals.IsEnvironmentValid(config.MessageEnvironment) == false {
-		errorInfo = errs.NewErrorInfo(pi.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, config.MessageEnvironment))
+		errorInfo = errs.NewErrorInfo(errs.ErrEnvironmentInvalid, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, config.MessageEnvironment))
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) {
 		config.GinMode = strings.ToLower(config.GinMode)
 	} else {
-		errorInfo = errs.NewErrorInfo(pi.ErrGinModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_GIN_MODE, config.GinMode))
+		errorInfo = errs.NewErrorInfo(errs.ErrGinModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_GIN_MODE, config.GinMode))
 		return
 	}
 	if config.TLSInfo.TLSCert != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKey != ctv.VAL_EMPTY && config.TLSInfo.TLSCABundle != ctv.VAL_EMPTY {
@@ -130,7 +129,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		}
 	}
 	if len(config.RouteRegistry) == ctv.VAL_ZERO {
-		errs.NewErrorInfo(pi.ErrSubjectsMissing, ctv.VAL_EMPTY)
+		errs.NewErrorInfo(errs.ErrSubjectsMissing, ctv.VAL_EMPTY)
 	}
 
 	return

@@ -120,19 +120,19 @@ func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.Error
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
-// 	errorInfo = pi.GetFunctionInfo()
+// 	errs.PrintDebugTrail(tFunctionName)
+// 	errorInfo = errs.GetFunctionInfo()
 // 	errorInfo.AdditionalInfo = fmt.Sprintf("File: %v  Config File Label: %v", FQN, fileLabel)
 //
 // 	if jsonData, errorInfo.Error = os.ReadFile(FQN); errorInfo.Error != nil {
-// 		errorInfo.Error = pi.ErrFileUnreadable
+// 		errorInfo.Error = errs.ErrFileUnreadable
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("FQN: %v File Label: %v", FQN, fileLabel)
-// 		pi.PrintError(errorInfo)
+// 		errs.PrintError(errorInfo)
 // 	} else {
 // 		if _isJSON := IsJSONValid(jsonData); _isJSON == false {
-// 			errorInfo.Error = pi.ErrFileUnreadable
+// 			errorInfo.Error = errs.ErrFileUnreadable
 // 			errorInfo.AdditionalInfo = fmt.Sprintf("FQN: %v File Label: %v", FQN, fileLabel)
-// 			pi.PrintError(errorInfo)
+// 			errs.PrintError(errorInfo)
 // 		}
 // 	}
 //
@@ -527,7 +527,7 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	switch strings.ToUpper(authenticatorService) {
 // 	case ctv.AUTH_COGNITO:
@@ -571,7 +571,7 @@ func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 // 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 // 	)
 //
-// 	pi.PrintDebugTrail(tFunctionName)
+// 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	switch strings.ToUpper(transferMethod) {
 // 	case ctv.TRANFER_STRIPE:
@@ -579,7 +579,7 @@ func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 // 	case ctv.TRANFER_CHECK:
 // 	case ctv.TRANFER_ZELLE:
 // 	default:
-// 		errorInfo.Error = pi.ErrTransferMethodInvalid
+// 		errorInfo.Error = errs.ErrTransferMethodInvalid
 // 		if transferMethod == ctv.VAL_EMPTY {
 // 			errorInfo.AdditionalInfo = "Transfer Method parameter is empty"
 // 		} else {
