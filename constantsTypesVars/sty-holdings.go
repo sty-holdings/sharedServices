@@ -57,13 +57,12 @@ const (
 //goland:noinspection All
 const (
 	// Fully qualified filenames
-	FQN_CERTIFICATE          = "CertificateFQN"
-	FQN_FIREBASE_CREDENTIALS = "FirebaseCredentialsFQN"
-	FQN_GCP_CREDENTIALS      = "GCPCredentialsFQN"
-	FQN_NATS_CREDENTIALS     = "NATSCredsFQN"
-	FQN_TLS_CABUNDLE         = "TLS:TLSCABundle"
-	FQN_TLS_CERTIFICATE      = "TLS:TLSCert"
-	FQN_TLS_PRIVATE_KEY      = "TLS:TLSKey"
+	FQN_CERTIFICATE      = "CertificateFQN"
+	FQN_GCP_CREDENTIALS  = "GCPCredentialsFQN"
+	FQN_NATS_CREDENTIALS = "NATSCredsFQN"
+	FQN_TLS_CABUNDLE     = "TLS:TLSCABundle"
+	FQN_TLS_CERTIFICATE  = "TLS:TLSCert"
+	FQN_TLS_PRIVATE_KEY  = "TLS:TLSKey"
 )
 
 //goland:noinspection All
@@ -100,4 +99,12 @@ const (
 const (
 	// Special values used to trigger requests
 	PAYMENT_METHOD_LIST = "list"
+)
+
+//goland:noinspection All
+const (
+	DATASTORE_USERS                = "users"
+	DATASTORE_QUESTIONS_ANSWERS    = "questions_answers"
+	DATASTORE_SOURCE_DATA          = "source_data"
+	DATASTORE_USERS_SAAS_PROVIDERS = "users_saas_providers"
 )
