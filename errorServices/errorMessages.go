@@ -41,7 +41,10 @@ const (
 	FILE_MISSING                       = "The file doesn't exist."
 	FILE_REMOVAL_FAILED                = "The file was not deleted."
 	FILE_UNREADABLE                    = "[ERROR} The file is not readable."
-	FIREBASE_GC_PROJECT_ID_MISSING     = "No Firebase project id was not provided."
+	FIREBASE_APP_CONNECTION_FAILED     = "The Firebase App connection failed and is empty."
+	FIREBASE_AUTH_CONNECTION_FAILED    = "The Firebase Auth connection failed and is empty."
+	FIRESTORE_CLIENT_FAILED            = "The Firestore client failed."
+	FIREBASE_PROJECT_ID_MISSING        = "No Firebase project id was not provided."
 	NAME_FIRST_MISSING                 = "The first name is missing."
 	NAME_LAST_MISSING                  = "The last name is missing."
 	NAME_FIRST_LAST_MISSING            = "Either the first or the last name is missing."
@@ -188,7 +191,10 @@ var (
 	ErrFileMissing                    = errors.New(FILE_MISSING)
 	ErrFileRemovalFailed              = errors.New(FILE_REMOVAL_FAILED)
 	ErrFileUnreadable                 = errors.New(FILE_UNREADABLE)
-	ErrFirebaseProjectMissing         = errors.New(FIREBASE_GC_PROJECT_ID_MISSING)
+	ErrFirebaseAuthConnectionFailed   = errors.New(FIREBASE_AUTH_CONNECTION_FAILED)
+	ErrFirestoreClientFailed          = errors.New(FIRESTORE_CLIENT_FAILED)
+	ErrFirebaseAppConnectionFailed    = errors.New(FIREBASE_APP_CONNECTION_FAILED)
+	ErrFirebaseProjectMissing         = errors.New(FIREBASE_PROJECT_ID_MISSING)
 	ErrFloatInvalid                   = errors.New(FLOAT_INVALID)
 	ErrGinModeInvalid                 = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing              = errors.New(GIN_URL_PORT_MISSING)
