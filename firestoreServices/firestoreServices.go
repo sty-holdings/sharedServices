@@ -7,12 +7,15 @@ import (
 	"log"
 	"strings"
 
-	fss "cloud.google.com/go/firestore"
+	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go"
 	"google.golang.org/api/iterator"
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 )
+
+//goland:noinspection ALL
 
 const (
 	NOT_FOUND_MAYBE_CORRECT = "Getting the 'The document was found ' error maybe correct. Review code logic."
@@ -57,7 +60,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func doesDocumentExist(documentReferencePtr *fss.DocumentRef) bool {
+func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 
 	if _, err := documentReferencePtr.Get(CTXBackground); err == nil {
 		return true
@@ -71,10 +74,10 @@ func doesDocumentExist(documentReferencePtr *fss.DocumentRef) bool {
 //	Customer Messages: None
 //	Errors: errs.ErrRequiredArgumentMissing, errs.ErrDocumentNotFound, errs.ErrServiceFailedFIRESTORE
 //	Verifications: None
-func FindDocument(firestoreClientPtr *fss.Client, datastore string, queryParameters ...NameValueQuery) (found bool, documentSnapshotPtr *fss.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryParameters ...NameValueQuery) (found bool, documentSnapshotPtr *firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 
 	var (
-		tQuery fss.Query
+		tQuery firestore.Query
 	)
 
 	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
@@ -216,7 +219,7 @@ func FindDocument(firestoreClientPtr *fss.Client, datastore string, queryParamet
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetDocumentById(firestoreClientPtr *fss.Client, datastore string, documentId string) (documentSnapshotPtr *fss.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+func GetDocumentById(firestoreClientPtr *firestore.Client, datastore string, documentId string) (documentSnapshotPtr *firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 
 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 		errorInfo.Error = errors.New(fmt.Sprintf(errs.FORMAT_FIRESTORE_ARGUMENTS_MISSING, datastore, documentId))
@@ -237,7 +240,7 @@ func GetDocumentById(firestoreClientPtr *fss.Client, datastore string, documentI
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func getDocumentRef(firestoreClientPtr *fss.Client, datastore, documentId string) (documentReferencePtr *fss.DocumentRef, errorInfo errs.ErrorInfo) {
+func getDocumentRef(firestoreClientPtr *firestore.Client, datastore, documentId string) (documentReferencePtr *firestore.DocumentRef, errorInfo errs.ErrorInfo) {
 
 	if datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 		errorInfo.Error = errors.New(fmt.Sprintf(errs.FORMAT_FIRESTORE_ARGUMENTS_MISSING, datastore, documentId))
@@ -310,29 +313,28 @@ func getDocumentRef(firestoreClientPtr *fss.Client, datastore, documentId string
 // 	return
 // }
 
-// GetFirestoreClientConnection
-// func GetFirestoreClientConnection(appPtr *firebaseServices.App) (firestoreClientPtr *firestoreServices.Client, errorInfo errs.ErrorInfo) {
+// GetFirestoreClientConnection - will connect to Firestore service using Firebase Auth.
 //
-// 	var (
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	if appPtr == nil {
-// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! %v: '%v'", "appPtr", appPtr))
-// 	} else {
-// 		// firestoreClientPtr is in the function definition because error is passed up the stack by Firebase/Firestore
-// 		if firestoreClientPtr, errorInfo.Error = appPtr.Firestore(context.Background()); errorInfo.Error != nil {
-// 			log.Println(errorInfo.Error.Error() + ctv.ENDING_EXECUTION)
-// 		} else {
-// 			log.Printf("The Firebase app connection has been established along with the Firestore Client.")
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: ErrServiceFailedFIREBASE,
+//	Verifications: None
+func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *firestore.Client, errorInfo errs.ErrorInfo) {
+
+	if appPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFirebaseAppConnectionFailed, "Firebase appPtr is nil.")
+		return
+	}
+
+	// firestoreClientPtr is in the function definition because error is passed up the stack by Firebase/Firestore
+	if firestoreClientPtr, errorInfo.Error = appPtr.Firestore(context.Background()); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFirestoreClientFailed, ctv.VAL_EMPTY)
+		return
+	}
+
+	log.Printf("The Firestore client has been created successfully.")
+
+	return
+}
 
 // RemoveDocument
 // func RemoveDocument(firestoreClientPtr *firestoreServices.Client, datastore string, queryParameters ...NameValueQuery) (errorInfo errs.ErrorInfo) {
