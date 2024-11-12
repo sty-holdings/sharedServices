@@ -92,6 +92,8 @@ const (
 	SERVER_INSTANCE_NUMBER_MISSING     = "The server instance number is missing."
 	SERVICE_FAILED_AWS                 = "AWS service has failed. Investigate right away!"
 	SERVICE_FAILED_COGNITO             = "Cognito service has failed. Investigate right away!"
+	SERVICE_FAILED_DECRYPTION          = "Decryption service failed."
+	SERVICE_FAILED_ENCRYPTION          = "Encryptioin service failed."
 	SERVICE_FAILED_FIREBASE            = "FIREBASE service has failed. Investigate right away!"
 	SERVICE_FAILED_FIRESTORE           = "FIRESTORE service has failed. Investigate right away!"
 	SERVICE_FAILED_NATSCONNECT         = "NATS Connect service has failed. Investigate right away!"
@@ -245,6 +247,8 @@ var (
 	ErrServerNameMissing              = errors.New(SERVER_NAME_MISSING)
 	ErrServiceFailedAWS               = errors.New(SERVICE_FAILED_AWS)
 	ErrServiceFailedCognito           = errors.New(SERVICE_FAILED_COGNITO)
+	ErrServiceFailedDecryption        = errors.New(SERVICE_FAILED_DECRYPTION)
+	ErrServiceFailedEncryption        = errors.New(SERVICE_FAILED_ENCRYPTION)
 	ErrServiceFailedFIREBASE          = errors.New(SERVICE_FAILED_FIREBASE)
 	ErrServiceFailedFIRESTORE         = errors.New(SERVICE_FAILED_FIRESTORE)
 	ErrServiceFailedNATSCONNECT       = errors.New(SERVICE_FAILED_NATSCONNECT)
