@@ -130,6 +130,15 @@ func Decrypt(
 	return
 }
 
+func DecryptFromByte(key string, encryptedMessage []byte) (decryptedMessage string, errorInfo errs.ErrorInfo) {
+
+	if decryptedMessage, errorInfo = Decrypt(ctv.LBL_STYH_CLIENT_ID, key, string(encryptedMessage)); errorInfo.Error != nil {
+		return
+	}
+
+	return
+}
+
 // DecryptToByte - will call decrypt and convert the return string to []byte
 //
 //	Customer Messages: None
