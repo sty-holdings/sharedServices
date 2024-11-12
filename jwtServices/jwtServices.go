@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -88,7 +87,8 @@ func Decrypt(
 		aesGCM cipher.AEAD
 		//tBlock      cipher.Block
 		//tCiphertext []byte
-		tDecodedKey []byte
+		tDecodedKey     []byte
+		tDecodedMessage []byte
 		//tNonce      []byte
 		//tNonceSize  int
 		tPlaintext []byte
@@ -112,9 +112,9 @@ func Decrypt(
 		return
 	}
 
-	eMessage, err := base64.StdEncoding.DecodeString(encryptedMessageB64)
-	if err != nil {
-		os.Exit(1)
+	if tDecodedMessage, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessageB64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
+		return
 	}
 
 	block, err := aes.NewCipher(tDecodedKey)
@@ -131,9 +131,9 @@ func Decrypt(
 	// Extract nonce, ciphertext, and tag
 	nonceSize := 12
 	tagSize := 16
-	nonce := eMessage[:nonceSize]
-	ciphertext := eMessage[nonceSize : len(eMessage)-tagSize]
-	tag := eMessage[len(eMessage)-tagSize:]
+	nonce := tDecodedMessage[:nonceSize]
+	ciphertext := tDecodedMessage[nonceSize : len(tDecodedMessage)-tagSize]
+	tag := tDecodedMessage[len(tDecodedMessage)-tagSize:]
 
 	// Decrypt the data
 	if tPlaintext, errorInfo.Error = aesGCM.Open(nil, nonce, append(ciphertext, tag...), nil); errorInfo.Error != nil {
