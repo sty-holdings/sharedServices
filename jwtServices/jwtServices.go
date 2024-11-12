@@ -75,35 +75,26 @@ func BuildTLSTemporaryFiles(
 // - ErrDecryption: If the ciphertext could not be decrypted.
 // Verifications: None
 func Decrypt(
-	encryptedMessageB64 string,
-	key string,
 	username string,
+	key string,
+	encryptedMessage string,
 ) (
 	decryptedMessage string,
 	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
-		aesGCM cipher.AEAD
-		//tBlock      cipher.Block
-		//tCiphertext []byte
-		tDecodedKey     []byte
-		tDecodedMessage []byte
-		//tNonce      []byte
-		//tNonceSize  int
-		tPlaintext []byte
+		tAESGCM     cipher.AEAD
+		tBlock      cipher.Block
+		tCiphertext []byte
+		tDecodedKey []byte
+		tNonce      []byte
+		tNonceSize  int
+		tPlaintext  []byte
 	)
 
-	if len(encryptedMessageB64) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
-		return
-	}
-	if len(key) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_SECRET_KEY, ctv.TXT_IS_MISSING))
-		return
-	}
-	if len(username) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, ctv.TXT_IS_MISSING))
+	if len(encryptedMessage) == ctv.VAL_ZERO {
+		decryptedMessage = encryptedMessage
 		return
 	}
 
@@ -112,75 +103,29 @@ func Decrypt(
 		return
 	}
 
-	if tDecodedMessage, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessageB64); errorInfo.Error != nil {
+	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessage); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
+		return
+	}
+	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
 
-	block, err := aes.NewCipher(tDecodedKey)
-	if err != nil {
-		fmt.Println(err)
+	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
 
-	if aesGCM, errorInfo.Error = cipher.NewGCM(block); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_SERVICE, errs.SERVICE_FAILED_DECRYPTION))
+	tNonceSize = tAESGCM.NonceSize()
+	tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
+
+	if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
-
-	// Extract nonce, ciphertext, and tag
-	nonceSize := 12
-	tagSize := 16
-	nonce := tDecodedMessage[:nonceSize]
-	ciphertext := tDecodedMessage[nonceSize : len(tDecodedMessage)-tagSize]
-	tag := tDecodedMessage[len(tDecodedMessage)-tagSize:]
-
-	// Decrypt the data
-	if tPlaintext, errorInfo.Error = aesGCM.Open(nil, nonce, append(ciphertext, tag...), nil); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_SERVICE, errs.SERVICE_FAILED_DECRYPTION))
-		return
-	}
-
-	//decrypted, err := decrypt(block, eMessage)
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
 
 	decryptedMessage = string(tPlaintext)
-
-	//if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessage); errorInfo.Error != nil {
-	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
-	//	return
-	//}
-	//if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
-	//	return
-	//}
-	//
-	//if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
-	//	return
-	//}
-	//
-	//tNonceSize = tAESGCM.NonceSize()
-	//tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
-	//
-	//if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
-	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
-	//	return
-	//}
-
-	decryptedMessage = string(tPlaintext)
-
-	return
-}
-
-func DecryptFromByte(key string, encryptedMessage []byte) (decryptedMessage string, errorInfo errs.ErrorInfo) {
-
-	if decryptedMessage, errorInfo = Decrypt(ctv.LBL_STYH_CLIENT_ID, key, string(encryptedMessage)); errorInfo.Error != nil {
-		return
-	}
 
 	return
 }
@@ -191,7 +136,7 @@ func DecryptFromByte(key string, encryptedMessage []byte) (decryptedMessage stri
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptToByte(
-	clientId string,
+	username string,
 	key string,
 	encryptedMessage string,
 ) (
@@ -203,7 +148,7 @@ func DecryptToByte(
 		tDecryptedMessage string
 	)
 
-	if tDecryptedMessage, errorInfo = Decrypt(clientId, key, encryptedMessage); errorInfo.Error == nil {
+	if tDecryptedMessage, errorInfo = Decrypt(username, key, encryptedMessage); errorInfo.Error == nil {
 		decryptedMessage = []byte(tDecryptedMessage)
 	}
 
@@ -224,7 +169,7 @@ func DecryptToByte(
 // // - ErrDecryption: If the ciphertext could not be decrypted.
 // // Verifications: None
 func Encrypt(
-	clientId string,
+	username string,
 	key string,
 	message string,
 ) (
@@ -241,17 +186,17 @@ func Encrypt(
 	)
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(key); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CLIENT_ID, clientId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
 

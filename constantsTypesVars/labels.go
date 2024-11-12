@@ -17,6 +17,8 @@ const (
 	LBL_BASE64                     = "BASE64: "
 	LBL_BASE_CONFIG_FILENAME       = "BASE CONFIG FILENAME: "
 	LBL_BASE_URL                   = "BASE URL: "
+	LBL_CIPHER_MAC                 = "CIPHER MAC: "
+	LBL_CIPHER_NONCE               = "CIPHER NONCE: "
 	LBL_CURRENCY                   = "CURRENCY: "
 	LBL_DEBUG_MESSAGE              = "DEBUG MESSAGE: "
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "

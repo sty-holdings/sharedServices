@@ -36,6 +36,8 @@ const (
 	FN_BUNDLE_ID                          = "bundle_id"
 	FN_BUNDLE_TITLE                       = "bundle_title"
 	FN_CERT_KID                           = "kid"
+	FN_CIPHER_MAC                         = "mac"
+	FN_CIPHER_NONCE                       = "nonce"
 	FN_CITY                               = "city"
 	FN_CLIENT_ID                          = "client_id"
 	FN_COGNITO_USERNAME                   = "cognito:username"
