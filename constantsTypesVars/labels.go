@@ -70,6 +70,7 @@ const (
 	LBL_REPLY_TYPE                 = "REPLY TYPE: "
 	LBL_SAAS_KEY                   = "SAAS KEY: "
 	LBL_SECRET_KEY                 = "SECRET KEY: "
+	LBL_SYMMETRIC_KEY              = "SYMMETRIC KEY: "
 	LBL_SENDER_ADDRESS             = "SENDER ADDRESS: "
 	LBL_SENDER_NAME                = "SENDER NAME: "
 	LBL_SERVER_INSTANCE_NUMBER     = "SERVER INSTANCE NUMBER: "

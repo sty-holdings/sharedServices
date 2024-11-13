@@ -38,7 +38,23 @@ func TestEncryptDecryptMessage(tPtr *testing.T) {
 			fmt.Println(tEncryptedMessage)
 		},
 	)
+}
 
+func TestGenerateSymmetricKey(tPtr *testing.T) {
+
+	var (
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		errorInfo          errs.ErrorInfo
+	)
+
+	tPtr.Run(
+		tFunctionName, func(t *testing.T) {
+			if _ = GenerateSymmetricKey(); errorInfo.Error != nil {
+				tPtr.Errorf("%v Failed: returned an error: %s", tFunctionName, errorInfo.Error)
+			}
+		},
+	)
 }
 
 // func TestGenerateJWT(tPtr *testing.T) {

@@ -67,6 +67,7 @@ const (
 	TXT_PROCESS_MANUALLY             = "Process transfer manually."
 	TXT_PROTECTED                    = "PROTECTED"
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
+	TXT_SERVICE_FAILED               = " service failed."
 	TXT_TRUE                         = "true"
 	TXT_YES                          = "yes"
 )

@@ -7,10 +7,13 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
 	"log"
+	"runtime"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -93,8 +96,16 @@ func Decrypt(
 		tPlaintext  []byte
 	)
 
-	if len(encryptedMessage) == ctv.VAL_ZERO {
-		decryptedMessage = encryptedMessage
+	if encryptedMessage == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if key == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_SECRET_KEY, ctv.TXT_IS_MISSING))
+		return
+	}
+	if username == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, ctv.TXT_IS_MISSING))
 		return
 	}
 
@@ -186,17 +197,17 @@ func Encrypt(
 	)
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(key); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
 
@@ -290,6 +301,38 @@ func GenerateRSAKey(rsaBits int) (
 		publicKey = _PrivateKey.Public()
 		privateKey = _PrivateKey
 	}
+
+	return
+}
+
+// GenerateSymmetricKey - generates a Symmetric key with 32 bytes.
+//
+// Returns:
+// - SymmetricKey: The generated symmetric key base64 encoded
+//
+// Customer Messages: None
+// Errors: Any error during key generation.
+// Verifications: None
+func GenerateSymmetricKey() (
+	SymmetricKey string,
+) {
+
+	var (
+		errorInfo errs.ErrorInfo
+		seed      int64
+		tKey      []byte
+	)
+
+	seed = time.Now().UnixNano() + int64(runtime.NumCPU())
+
+	tKey = make([]byte, 32)
+	binary.LittleEndian.PutUint64(tKey, uint64(seed))
+	if _, errorInfo.Error = rand.Reader.Read(tKey); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_SYMMETRIC_KEY, ctv.TXT_SERVICE_FAILED))
+		errs.PrintErrorInfo(errorInfo)
+	}
+
+	SymmetricKey = base64.StdEncoding.EncodeToString(tKey)
 
 	return
 }
