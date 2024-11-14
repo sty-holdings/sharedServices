@@ -17,7 +17,7 @@ import (
 )
 
 // BuildInstanceName - will create the NATS connection name with dashes, underscores between nodes or as provided.
-// The method can be cn.METHOD_DASHES, cn.METHOD_UNDERSCORES, ctv.VAL_EMPTY, "dashes", "underscores" or ""
+// The method can be natsServices.METHOD_DASHES, natsServices.METHOD_UNDERSCORES, ctv.VAL_EMPTY, "dashes", "underscores" or ""
 //
 //	Customer Messages: None
 //	Errors: error returned by natsServices.Connect
@@ -46,7 +46,9 @@ func BuildInstanceName(
 }
 
 // GetConnection - will connect to a NATS leaf server with either a ssl or non-ssl connection.
-// This connection function requires the user credentials file be provided.
+// This connection function requires natsServices.NATSConfiguration be populated. The following fields
+// do not have to be at this time: TLSCert, TLSPrivateKey, TLSCABundle. The fields TLSCertFQN, TLSPrivateKeyFQN,
+// TLSCABundleFQN must be populated.
 //
 //	Customer Messages: None
 //	Errors: error returned by natsSerices.Connect
@@ -110,6 +112,9 @@ func RequestWithHeader(
 	errorInfo errs.ErrorInfo,
 ) {
 
+	if connectionPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
+	}
 	if timeOut < 2*time.Second {
 		timeOut = 2 * time.Second
 	}
@@ -165,6 +170,10 @@ func Subscribe(
 	errorInfo errs.ErrorInfo,
 ) {
 
+	if connectionPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
+	}
+
 	if subscriptionPtr, errorInfo.Error = connectionPtr.Subscribe(subject, handler); errorInfo.Error != nil {
 		log.Printf("%v: Subscribe failed on subject: %v", instanceName, subject)
 		return
@@ -188,6 +197,10 @@ func UnmarshalMessageData(
 	if string(msg.Data) == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 		return
+	}
+
+	if requestPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
 	}
 
 	if errorInfo.Error = json.Unmarshal(msg.Data, requestPtr); errorInfo.Error != nil {
@@ -259,11 +272,11 @@ func BuildTemporaryFiles(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	if config.NATSToken == ctv.VAL_EMPTY {
+	if config.NATSCredentialsFilename == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
 		return
 	} else {
-		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSToken), 0744); errorInfo.Error != nil {
+		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSCredentialsFilename), 0744); errorInfo.Error != nil {
 			return
 		}
 	}
