@@ -123,30 +123,26 @@ func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryP
 //	Customer Messages: None
 //	Errors: errs.ErrRequiredArgumentMissing
 //	Verifications: None
-// func GetAllDocuments(firestoreClientPtr *firestoreServices.Client, datastore string) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
-//
-// 	var (
-// 		tCollectionReferencePtr *firestoreServices.CollectionRef
-// 		tFunction, _, _, _      = runtime.Caller(0)
-// 		tFunctionName           = runtime.FuncForPC(tFunction).Name()
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
-// 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v", firestoreClientPtr, datastore)
-// 		errs.PrintError(errorInfo)
-// 	} else {
-// 		tCollectionReferencePtr = firestoreClientPtr.Collection(datastore)
-// 		documents, errorInfo.Error = tCollectionReferencePtr.Documents(CTXBackground).GetAll()
-// 		if documents == nil && errorInfo.Error == nil {
-// 			errorInfo.Error = errs.ErrDocumentsNoneFound
-// 		}
-// 	}
-//
-// 	return
-// }
+func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (documents []*firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+
+	var (
+		tCollectionReferencePtr *firestore.CollectionRef
+	)
+
+	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY {
+		errorInfo.Error = errs.ErrRequiredArgumentMissing
+		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v", firestoreClientPtr, datastore)
+		errs.PrintErrorInfo(errorInfo)
+	} else {
+		tCollectionReferencePtr = firestoreClientPtr.Collection(datastore)
+		documents, errorInfo.Error = tCollectionReferencePtr.Documents(CTXBackground).GetAll()
+		if documents == nil && errorInfo.Error == nil {
+			errorInfo.Error = errs.ErrDocumentsNoneFound
+		}
+	}
+
+	return
+}
 
 // GetAllDocumentsWhere will return snapshot pointers to each document in the datastore that meet the where condition.
 // If no documents are found, the documents will have a count of zero.
