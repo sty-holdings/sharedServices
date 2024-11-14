@@ -107,4 +107,6 @@ const (
 	DATASTORE_QUESTIONS_ANSWERS    = "questions_answers"
 	DATASTORE_SOURCE_DATA          = "source_data"
 	DATASTORE_USERS_SAAS_PROVIDERS = "users_saas_providers"
+	DATASTORE_TRAINING_QUESTIONS   = "training_questions"
+	DATASTORE_QUESTION_ANALYSIS    = "question_analysis"
 )
