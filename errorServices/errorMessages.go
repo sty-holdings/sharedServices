@@ -34,7 +34,7 @@ const (
 	DOMAIN_INVALID                     = "The domain value is invalid."
 	ENVIRNOMENT_INVALID                = "The environment value is invalid."
 	ERROR_MISSING                      = "ERROR MISSING"
-	EXTENSION_INVALID                  = "The extensioin name is invalid."
+	EXTENSION_INVALID                  = "The extension name is invalid."
 	EXTRACT_KEY_FAILED                 = "Extracting the key has failed."
 	FALSE_SHOULD_BE_TRUE               = "The result should have been true."
 	FILE_CREATION_FAILED               = "Create the file failed."

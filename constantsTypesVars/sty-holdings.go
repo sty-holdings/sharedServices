@@ -9,7 +9,7 @@ const (
 //goland:noinspection All
 const (
 	// Extensions
-	EXTENSION_ANALYZE_QUESTION = "analyze_question"
+	EXTENSION_ANALYZE_QUESTION = "analyze-question"
 	EXTENSION_HTTPS_NATS       = "https-nats"
 	NC_INTERNAL                = "nc-internal"
 	EXTENSION_STRIPE           = "stripe"
