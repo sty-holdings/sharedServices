@@ -114,7 +114,7 @@ func GetFirebaseUserInfo(
 ) {
 
 	var (
-		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot,
+		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
 	)
 
 	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
