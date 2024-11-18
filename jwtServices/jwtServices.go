@@ -64,11 +64,7 @@ func BuildTLSTemporaryFiles(
 	return
 }
 
-// Decrypt - decrypts an encrypted string using AES-GCM mode of operation.
-// The function decodes the encryptedMessage from base64 and initializes the AES cipher
-// with the provided key. It then creates an AEAD object using the AES cipher and extracts
-// the nonce and ciphertext from the decoded message. Finally, it decrypts the ciphertext
-// using the AEAD object and returns the decrypted message.
+// Decrypt - decrypts an encrypted base64 string using AES-GCM mode of operation.
 //
 // Customer Messages: None
 // Errors:
@@ -167,18 +163,19 @@ func DecryptToByte(
 }
 
 // Encrypt - encrypts a message using AES-GCM mode of operation.
-// // The function decodes the encryptedMessage from base64 and initializes the AES cipher
-// // with the provided key. It then creates an AEAD object using the AES cipher and extracts
-// // the nonce and ciphertext from the decoded message. Finally, it decrypts the ciphertext
-// // using the AEAD object and returns the decrypted message.
-// //
-// // Customer Messages: None
-// // Errors:
-// // - ErrInvalidBase64: If the encryptedMessage could not be decoded from base64.
-// // - ErrCipherInitialization: If the AES cipher could not be initialized with the provided key.
-// // - ErrAEADInitialization: If the AEAD object could not be created.
-// // - ErrDecryption: If the ciphertext could not be decrypted.
-// // Verifications: None
+// The function encrypts message and initializes the AES cipher
+// with the provided key.
+//
+// Returns:
+// - encryptedMessage: base64 encoded string
+//
+// Customer Messages: None
+// Errors:
+// - ErrInvalidBase64: If the encryptedMessage could not be decoded from base64.
+// - ErrCipherInitialization: If the AES cipher could not be initialized with the provided key.
+// - ErrAEADInitialization: If the AEAD object could not be created.
+// - ErrDecryption: If the ciphertext could not be decrypted.
+// Verifications: None
 func Encrypt(
 	username string,
 	key string,
