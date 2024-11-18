@@ -26,10 +26,6 @@ type NameValueQuery struct {
 	FieldValue interface{}
 }
 
-var (
-	CTXBackground = context.Background()
-)
-
 // BuildFirestoreUpdate - while the nameValues is a map[any], the function using a string assertion on the key.
 // func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestoreServices.Update, errorInfo errs.ErrorInfo) {
 //

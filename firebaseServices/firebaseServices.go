@@ -7,6 +7,7 @@ import (
 	"log"
 	"strings"
 
+	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
 	"google.golang.org/api/option"
@@ -66,6 +67,10 @@ func GetFirebaseAppAuthConnection(credentialsFQN string) (
 }
 
 // GetFirebaseIdTokenPayload
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func GetFirebaseIdTokenPayload(
 	authPtr *auth.Client,
 	idToken string,
@@ -94,7 +99,37 @@ func GetFirebaseIdTokenPayload(
 	return
 }
 
+// GetFirebaseUserInfo - checks if the use exists and returns the user database record when found.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetFirebaseUserInfo(
+	authPtr *auth.Client,
+	firestoreClientPtr *firestore.Client,
+	username string,
+) (
+	tUserDocumentSnapshotPtr *firestore.DocumentSnapshot,
+	errorInfo errs.ErrorInfo,
+) {
+
+	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, username))
+		return
+	}
+
+	if tUserDocumentSnapshotPtr, errorInfo = GetDocumentById(firestoreClientPtr, ctv.DATASTORE_USERS, username); errorInfo.Error != nil {
+		return
+	}
+
+	return
+}
+
 // GetIdTokenPtr
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func GetIdTokenPtr(
 	authPtr *auth.Client,
 	idToken string,
@@ -111,6 +146,10 @@ func GetIdTokenPtr(
 }
 
 // IsFirebaseIdTokenValid
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func IsFirebaseIdTokenValid(
 	authPtr *auth.Client,
 	idToken string,
@@ -166,6 +205,10 @@ func GetFirebaseAuthConnection(appPtr *firebase.App) (
 }
 
 // SetFirebaseAuthEmailVerified - This will set the Firebase Auth email verify flag to true
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func SetFirebaseAuthEmailVerified(
 	authPtr *auth.Client,
 	username string,
@@ -193,6 +236,10 @@ func SetFirebaseAuthEmailVerified(
 }
 
 // ValidateFirebaseJWTPayload - Firebase ID Token that is returned when a user logs on successfully
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func ValidateFirebaseJWTPayload(
 	tokenPayload map[any]interface{},
 	audience, issuer string,
