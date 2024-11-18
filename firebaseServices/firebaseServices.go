@@ -109,9 +109,13 @@ func GetFirebaseUserInfo(
 	firestoreClientPtr *firestore.Client,
 	username string,
 ) (
-	tUserDocumentSnapshotPtr *firestore.DocumentSnapshot,
+	userInfo map[string]interface{},
 	errorInfo errs.ErrorInfo,
 ) {
+
+	var (
+		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot,
+	)
 
 	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, username))
@@ -121,6 +125,8 @@ func GetFirebaseUserInfo(
 	if tUserDocumentSnapshotPtr, errorInfo = GetDocumentById(firestoreClientPtr, ctv.DATASTORE_USERS, username); errorInfo.Error != nil {
 		return
 	}
+
+	userInfo = tUserDocumentSnapshotPtr.Data()
 
 	return
 }
