@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
@@ -285,31 +287,40 @@ func FloatToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
-// GenerateUUIDType1
-// func GenerateUUIDType1(removeDashes bool) (myUUID string) {
+// GenerateUUIDType1 - provides the high level of uniqueness for UUIDs.
 //
-// 	_UUID, _ := uuid.NewUUID()
-// 	myUUID = fmt.Sprintf("%v", _UUID)
-//
-// 	if removeDashes {
-// 		myUUID = strings.Replace(myUUID, "-", "", -1)
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GenerateUUIDType1(removeDashes bool) (myUUID string) {
 
-// GenerateUUIDType4
-// func GenerateUUIDType4(removeDashes bool) (myUUID string) {
+	_UUID, _ := uuid.NewUUID()
+	myUUID = fmt.Sprintf("%v", _UUID)
+
+	if removeDashes {
+		myUUID = strings.Replace(myUUID, "-", "", -1)
+	}
+
+	return
+}
+
+// GenerateUUIDType4 - generates a 128-bit random UUID. It is highly likely to be unique but not guaranteed. If uniqueness is needed
+// used UUID type 1 (GenerateUUIDType1)
 //
-// 	_UUID, _ := uuid.NewRandom()
-// 	myUUID = fmt.Sprintf("%v", _UUID)
-//
-// 	if removeDashes {
-// 		myUUID = strings.Replace(myUUID, "-", "", -1)
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GenerateUUIDType4(removeDashes bool) (myUUID string) {
+
+	_UUID, _ := uuid.NewRandom()
+	myUUID = fmt.Sprintf("%v", _UUID)
+
+	if removeDashes {
+		myUUID = strings.Replace(myUUID, "-", "", -1)
+	}
+
+	return
+}
 
 // GenerateVerifyEmailURLWithUUID - return the url and uuid for the Verify Email.
 // func GenerateVerifyEmailURLWithUUID(environment string, secure bool) (url, uuid string) {
