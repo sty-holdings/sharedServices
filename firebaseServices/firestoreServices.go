@@ -462,7 +462,7 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 // 	return
 // }
 
-// SetDocument - This will create or overwrite the record. While nameValues is a map[any], this function will apply a string assertion on the key.
+// SetDocument - This will create or overwrite the record with the document id. While nameValues is a map[any], this function will apply a string assertion on the key.
 //
 //	Customer Messages: None
 //	Errors: None
