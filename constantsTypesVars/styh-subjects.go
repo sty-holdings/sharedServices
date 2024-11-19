@@ -7,6 +7,7 @@ const (
 	NCI_TURN_DEBUG_OFF = "turn-debug-off"
 	NCI_TURN_DEBUG_ON  = "turn-debug-on"
 	//
+	SUB_GEMINI_GET_MY_ANSWER    = "gemini.get-my-answer"
 	SUB_GEMINI_ANALYZE_QUESTION = "gemini.analyze-question"
 	SUB_GEMINI_SUMMARIZE_ANSWER = "gemini.analyze-answer"
 	//
