@@ -22,6 +22,8 @@ const (
 	LBL_CIPHER_MAC                 = "CIPHER MAC: "
 	LBL_CIPHER_NONCE               = "CIPHER NONCE: "
 	LBL_CURRENCY                   = "CURRENCY: "
+	LBL_DATASTORE                  = "DATASTORE: "
+	LBL_DOCUMENT_ID                = "DOCUMENT ID: "
 	LBL_DEBUG_MESSAGE              = "DEBUG MESSAGE: "
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "
 	LBL_DIRECTORY                  = "DIRECTORY: "
