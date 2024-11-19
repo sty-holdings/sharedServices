@@ -15,7 +15,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	vals "github.com/sty-holdings/sharedServices/v2024/validators"
+	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
 // Base64Decode - will decode a base64 string to a string. If there is an error,
@@ -96,18 +96,22 @@ func Base64Encode(value string) string {
 // }
 
 // ConvertMapAnyToMapString
-// func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]interface{}) {
 //
-// 	mapOut = make(map[string]interface{})
-//
-// 	if coreValidators.IsMapPopulated(mapIn) {
-// 		for key, value := range mapIn {
-// 			mapOut[key.(string)] = value
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]interface{}) {
+
+	mapOut = make(map[string]interface{})
+
+	if vlds.IsMapPopulated(mapIn) {
+		for key, value := range mapIn {
+			mapOut[key.(string)] = value
+		}
+	}
+
+	return
+}
 
 // ConvertStructToMap - converts a given struct to a map by marshaling it into JSON and then unmarshaling it into a map.
 // If there is an error during the marshaling or unmarshaling process, the error information is returned.
@@ -635,7 +639,7 @@ func createLogFile(logFQD string) (
 		tLogFileName string
 	)
 
-	if vals.IsDirectoryFullyQualified(logFQD) == false {
+	if vlds.IsDirectoryFullyQualified(logFQD) == false {
 		errorInfo = errs.NewErrorInfo(errs.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
 		return
 	}

@@ -12,6 +12,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
 )
 
 // AreMapKeysPopulated - will test to make sure all map keys are set to anything other than nil or empty.
@@ -610,4 +611,29 @@ func isEmptyPointer(value interface{}) bool {
 		return v.IsNil()
 	}
 	return false
+}
+
+// GetMapKeyPopulatedError - builds ...
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetMapKeyPopulatedError(finding string) (errorInfo errs.ErrorInfo) {
+
+	pi.GetFunctionInfo(1)
+
+	switch strings.ToLower(finding) {
+	case ctv.TXT_EMPTY:
+		errorInfo = errs.NewErrorInfo(errs.ErrMapIsEmpty, ctv.VAL_EMPTY)
+	case ctv.TXT_MISSING_KEY:
+		errorInfo = errs.NewErrorInfo(errs.ErrMapIsMissingKey, ctv.VAL_EMPTY)
+	case ctv.TXT_MISSING_VALUE:
+		errorInfo = errs.NewErrorInfo(errs.ErrMapIsMissingValue, ctv.VAL_EMPTY)
+	case ctv.VAL_EMPTY:
+		fallthrough
+	default:
+		errs.NewErrorInfo(errs.ErrMapIsMissingValue, "The 'finding' argument is empty.")
+	}
+
+	return
 }
