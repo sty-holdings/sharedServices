@@ -129,35 +129,3 @@ func getErrorFunctionFileNameLineNumber(level int) (errorInfo ErrorInfo) {
 //			PrintError(info)
 //		}
 //	}
-
-// ToDo move to validation which should return the errors
-// func GetMapKeyPopulatedError(finding string) (errorInfo ErrorInfo) {
-//
-// 	GetFunctionInfo(1)
-//
-// 	switch strings.ToLower(finding) {
-// 	case ctv.TXT_EMPTY:
-// 		errorInfo = ErrorInfo{
-// 			Error:   ErrMapIsEmpty,
-// 			Message: ErrMapIsEmpty.Error(),
-// 		}
-// 	case ctv.TXT_MISSING_KEY:
-// 		errorInfo = ErrorInfo{
-// 			Error:   ErrMapIsMissingKey,
-// 			Message: ErrMapIsMissingKey.Error(),
-// 		}
-// 	case ctv.TXT_MISSING_VALUE:
-// 		errorInfo = ErrorInfo{
-// 			Error:   ErrMapIsMissingValue,
-// 			Message: ErrMapIsMissingValue.Error(),
-// 		}
-// 	case ctv.VAL_EMPTY:
-// 		fallthrough
-// 	default:
-// 		errorInfo.Error = ErrRequiredArgumentMissing
-// 		errorInfo.Message = ErrRequiredArgumentMissing.Error()
-// 		errorInfo.AdditionalInfo = "The 'finding' argument is empty."
-// 	}
-//
-// 	return
-// }
