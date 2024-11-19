@@ -68,8 +68,8 @@ const (
 const (
 	DATASTORE_USERS                = "users"
 	DATASTORE_QUESTIONS_ANSWERS    = "questions_answers"
-	DATASTORE_SOURCE_DATA          = "source_data"
+	DATASTORE_ANSWER_SOURCE_DATA   = "answer_source_data"
 	DATASTORE_USERS_SAAS_PROVIDERS = "users_saas_providers"
 	DATASTORE_TRAINING_QUESTIONS   = "training_questions"
-	DATASTORE_QUESTION_ANALYSIS    = "question_analysis"
+	DATASTORE_ANALYZED_QUESTIONS   = "analyzed_questions"
 )
