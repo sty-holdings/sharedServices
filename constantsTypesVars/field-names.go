@@ -11,6 +11,7 @@ const (
 	FN_AGG_TOTAL_LOAN_AMOUNT              = "agg_total_loan_amount"
 	FN_AGG_TWI_SCORE                      = "agg_twi_score"
 	FN_AMOUNT_IN_PENNIES                  = "amount_in_pennies"
+	FN_ANAYLSYS                           = "analysis"
 	FN_AREA_CODE                          = "area_code"
 	FN_AREA_CODE_CUSTOM                   = "custom:areaCode"
 	FN_AUDIENCE_CAP                       = "AUDIENCE"
