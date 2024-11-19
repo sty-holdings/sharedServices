@@ -13,6 +13,8 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
+	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
 //goland:noinspection ALL
@@ -27,29 +29,29 @@ type NameValueQuery struct {
 }
 
 // BuildFirestoreUpdate - while the nameValues is a map[any], the function using a string assertion on the key.
-// func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestoreServices.Update, errorInfo errs.ErrorInfo) {
 //
-// 	var (
-// 		tFinding           string
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 		tUpdate            firestoreServices.Update
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding == ctv.GOOD {
-// 		for field, value := range nameValues {
-// 			tUpdate.Path = field.(string)
-// 			tUpdate.Value = value
-// 			firestoreUpdateFields = append(firestoreUpdateFields, tUpdate)
-// 		}
-// 	} else {
-// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestore.Update, errorInfo errs.ErrorInfo) {
+
+	var (
+		tFinding string
+		tUpdate  firestore.Update
+	)
+
+	if tFinding = vlds.AreMapKeysValuesPopulated(nameValues); tFinding == ctv.TXT_GOOD {
+		for field, value := range nameValues {
+			tUpdate.Path = field.(string)
+			tUpdate.Value = value
+			firestoreUpdateFields = append(firestoreUpdateFields, tUpdate)
+		}
+	} else {
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+	}
+
+	return
+}
 
 // DoesDocumentExist - checks the document Reference pointer exists
 //
@@ -465,34 +467,36 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-// func SetDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
-//
-// 	var (
-// 		tFinding           string
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	if coreValidators.AreMapKeysPopulated(nameValues) == false {
-// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
-// 	} else {
-// 		if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
-// 			errorInfo.Error = errs.ErrRequiredArgumentMissing
-// 			errs.PrintError(errorInfo)
-// 			// todo Handle errors and Notifications
-// 		} else {
-// 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, coreHelpers.ConvertMapAnyToMapString(nameValues)); errorInfo.Error != nil {
-// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
-// 				errs.PrintError(errorInfo)
-// 				// todo Handle errors and Notifications
-// 			}
-// 		}
-// 	}
-//
-// 	return
-// }
+func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tFinding string
+	)
+
+	if vlds.AreMapKeysPopulated(nameValues) == false {
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+		return
+	}
+	if firestoreClientPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		return
+	}
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+
+	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, hlp.ConvertMapAnyToMapString(nameValues)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedFIRESTORE, ctv.VAL_EMPTY)
+		return
+	}
+
+	return
+}
 
 // SetDocumentWithSubCollection - This will create or overwrite the existing record that is in a sub-collection. While nameValues is a map[any], this function will apply a string assertion on the key.
 // func SetDocumentWithSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
@@ -526,39 +530,42 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 // 	return
 // }
 
-// UpdateDocument- will return an error of nil when successful. If the document is not found, shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
-// func UpdateDocument(firestoreClientPtr *firestoreServices.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
+// UpdateDocument - will return an error of nil when successful. If the document is not found,
+// shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
 //
-// 	var (
-// 		tFinding           string
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 		tUpdateFields      []firestoreServices.Update
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
-//
-// 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.GOOD {
-// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
-// 		errs.PrintError(errorInfo)
-// 	} else {
-// 		if datastore == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
-// 			errorInfo.Error = errs.ErrRequiredArgumentMissing
-// 			errs.PrintError(errorInfo)
-// 			// todo Handle errors and Notifications
-// 		} else {
-// 			if tUpdateFields, errorInfo = BuildFirestoreUpdate(nameValues); errorInfo.Error == nil {
-// 				if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(CTXBackground, tUpdateFields); errorInfo.Error != nil {
-// 					errs.PrintError(errorInfo)
-// 				}
-// 			}
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func UpdateDocument(firestoreClientPtr *firestore.Client, datastore, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tFinding      string
+		tUpdateFields []firestore.Update
+	)
+
+	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
+
+	if tFinding = vlds.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.TXT_GOOD {
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+		return
+	}
+
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+	if tUpdateFields, errorInfo = BuildFirestoreUpdate(nameValues); errorInfo.Error == nil {
+		if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(CTXBackground, tUpdateFields); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		}
+	}
+
+	return
+}
 
 // UpdateDocumentFromSubCollectionByDocumentId
 //
