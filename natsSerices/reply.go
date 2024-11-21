@@ -4,6 +4,24 @@ import (
 	"time"
 )
 
+type AnalyzeQuestionReply struct {
+	SentenceType string `json:"sentence_type"`
+	Dissect      struct {
+		Subject   string `json:"subject"`
+		Verb      string `json:"verb"`
+		Object    string `json:"object"`
+		Adverbial string `json:"adverbial"`
+	} `json:"dissect"`
+	PrepositionalPhrase struct {
+		Preposition string `json:"preposition"`
+		Object      string `json:"object"`
+	} `json:"prepositional_phrase"`
+	PointInTime string      `json:"point_in_time"`
+	TimeRange   interface{} `json:"time_range"`
+	Category    interface{} `json:"category"`
+	SubCategory interface{} `json:"sub_category"`
+}
+
 type GetPersonalAccessTokenReply struct {
 	Error struct {
 		ErrorAdditionalInfo string `json:"error_additional_info"`
