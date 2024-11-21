@@ -1,7 +1,7 @@
 package sharedServices
 
 //==============================
-// Google Gemini
+// Analyze Question
 //==============================
 
 type AnalyzeQuestionRequest struct {

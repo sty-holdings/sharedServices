@@ -12,8 +12,9 @@ const (
 	EXTENSION_ANALYZE_QUESTION = "analyze-question"
 	EXTENSION_HTTPS_NATS       = "https-nats"
 	NC_INTERNAL                = "nc-internal"
-	EXTENSION_STRIPE           = "stripe"
+	EXTENSION_SAAS_PROFILE     = "saas-profile"
 	EXTENSION_SENDGRID         = "sendgrid"
+	EXTENSION_STRIPE           = "stripe"
 	EXTENSION_SYNADIA          = "synadia"
 )
 
@@ -62,14 +63,4 @@ const (
 const (
 	// Special values used to trigger requests
 	PAYMENT_METHOD_LIST = "list"
-)
-
-//goland:noinspection All
-const (
-	DATASTORE_USERS                = "users"
-	DATASTORE_QUESTIONS_ANSWERS    = "questions_answers"
-	DATASTORE_ANSWER_SOURCE_DATA   = "answer_source_data"
-	DATASTORE_USERS_SAAS_PROVIDERS = "users_saas_providers"
-	DATASTORE_TRAINING_QUESTIONS   = "training_questions"
-	DATASTORE_ANALYZED_QUESTIONS   = "analyzed_questions"
 )
