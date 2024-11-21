@@ -203,7 +203,7 @@ func UnmarshalMessageData(
 		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
 	}
 
-	if errorInfo.Error = json.Unmarshal(msg.Data, requestPtr); errorInfo.Error != nil {
+	if errorInfo.Error = json.Unmarshal(msg.Data, &requestPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 	}
 
