@@ -183,7 +183,8 @@ func Subscribe(
 	return
 }
 
-// UnmarshalMessageData - reads the message data into the pointer. The second argument must be a pointer. If you pass something else, the unmarshal will fail.
+// UnmarshalMessageData - reads the message data into the pointer (requestPtr). The requestPtr argument must be the address to the pointer.
+// If you pass something else, the unmarshal will fail. Example: ns.UnmarshalMessageData("sendRequest", tReplyPtr, &tResponsePtr)
 //
 //	Customer Messages: None
 //	Errors: None
