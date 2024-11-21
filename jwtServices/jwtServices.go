@@ -76,7 +76,7 @@ func BuildTLSTemporaryFiles(
 func Decrypt(
 	username string,
 	key string,
-	encryptedMessage string,
+	encryptedMessageB64 string,
 ) (
 	decryptedMessage string,
 	errorInfo errs.ErrorInfo,
@@ -92,7 +92,7 @@ func Decrypt(
 		tPlaintext  []byte
 	)
 
-	if encryptedMessage == ctv.VAL_EMPTY {
+	if encryptedMessageB64 == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
 		return
 	}
@@ -110,7 +110,7 @@ func Decrypt(
 		return
 	}
 
-	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessage); errorInfo.Error != nil {
+	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessageB64); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_USERNAME, username))
 		return
 	}
@@ -145,7 +145,7 @@ func Decrypt(
 func DecryptToByte(
 	username string,
 	key string,
-	encryptedMessage string,
+	encryptedMessageB64 string,
 ) (
 	decryptedMessage []byte,
 	errorInfo errs.ErrorInfo,
@@ -155,7 +155,7 @@ func DecryptToByte(
 		tDecryptedMessage string
 	)
 
-	if tDecryptedMessage, errorInfo = Decrypt(username, key, encryptedMessage); errorInfo.Error == nil {
+	if tDecryptedMessage, errorInfo = Decrypt(username, key, encryptedMessageB64); errorInfo.Error == nil {
 		decryptedMessage = []byte(tDecryptedMessage)
 	}
 
@@ -181,7 +181,7 @@ func Encrypt(
 	key string,
 	message string,
 ) (
-	encryptedMessage string,
+	encryptedMessageB64 string,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -212,7 +212,7 @@ func Encrypt(
 	io.ReadFull(rand.Reader, tNonce) // Use a cryptographically secure RNG
 
 	tCiphertext = tAESGCM.Seal(tNonce, tNonce, []byte(message), nil)
-	encryptedMessage = base64.StdEncoding.EncodeToString(tCiphertext)
+	encryptedMessageB64 = base64.StdEncoding.EncodeToString(tCiphertext)
 
 	return
 }
