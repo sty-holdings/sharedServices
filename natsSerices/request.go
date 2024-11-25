@@ -13,9 +13,14 @@ type AnalyzeQuestionRequest struct {
 //==============================
 
 type SaaSProfileRequest struct {
-	Provider string   `json:"provider"`
-	Action   string   `json:"action"`
-	Fields   []string `json:"fields"`
+	Provider string              `json:"provider"`
+	Action   string              `json:"action"`
+	Fields   []SaasProfileAPIKey `json:"fields"`
+}
+
+type SaasProfileAPIKey struct {
+	KeyName  string `json:"key_name"`
+	KeyValue string `json:"key_value"`
 }
 
 //==============================
