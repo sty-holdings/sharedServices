@@ -11,10 +11,9 @@ const (
 	SUB_GEMINI_ANALYZE_QUESTION = "gemini.analyze-question"
 	SUB_GEMINI_SUMMARIZE_ANSWER = "gemini.analyze-answer"
 	//
-	SUB_SAAS_PROVIDER_ADD     = "saas-provider.add"
-	SUB_SAAS_PROVIDER_DELETE  = "saas-provider.delete"
-	SUB_SAAS_PROVIDER_GET_ALL = "saas-provider.get-all"
-	SUB_SAAS_PROVIDER_UPDATE  = "saas-provider.update"
+	SUB_SAAS_PROFILE_ADD    = "saas-profile.add"
+	SUB_SAAS_PROFILE_DELETE = "saas-profile.delete"
+	SUB_SAAS_PROFILE_UPDATE = "saas-profile.update"
 	//
 	SUB_STRIPE_CANCEL_PAYMENT_INTENT  = "stripe.cancel-payment-intent"
 	SUB_STRIPE_CONFIRM_PAYMENT_INTENT = "stripe.confirm-payment-intent"
