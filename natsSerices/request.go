@@ -13,10 +13,9 @@ type AnalyzeQuestionRequest struct {
 //==============================
 
 type SaaSProfileRequest struct {
-	Provider string `json:"provider"`
-	Action   string `json:"action"`
-	Field1   string `json:"field_1"`
-	Field2   string `json:"field_2"`
+	Provider string   `json:"provider"`
+	Action   string   `json:"action"`
+	Fields   []string `json:"fields"`
 }
 
 //==============================
