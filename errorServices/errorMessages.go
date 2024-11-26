@@ -246,6 +246,8 @@ var (
 	ErrRequiredArgumentMissing        = errors.New(REQUIRED_ARGUMENT_MISSING)
 	ErrRequiredFileMissing            = errors.New(REQUIRED_FILE_MISSING)
 	ErrRetryLimitHit                  = errors.New(RETRY_LIMIT_HIT)
+	ErrSaasProviderExists             = errors.New(SAAS_PROVIDER_EXISTS)
+	ErrSaasProviderMissing            = errors.New(SAAS_PROVIDER_MISSING)
 	ErrServerConfigurationInvalid     = errors.New(SERVER_CONFIGURATION_INVALID)
 	ErrServerInstanceNumberMissing    = errors.New(SERVER_INSTANCE_NUMBER_MISSING)
 	ErrServerNameMissing              = errors.New(SERVER_NAME_MISSING)
