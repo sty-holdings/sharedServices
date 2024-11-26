@@ -405,11 +405,6 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
-	if vlds.IsStruct(arrayElement) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
-		return
-	}
-
 	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(
 		CTXBackground, []firestore.Update{
 			{Path: "saas_profile", Value: firestore.ArrayRemove(arrayElement)},
