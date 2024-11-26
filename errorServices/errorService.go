@@ -11,7 +11,7 @@ import (
 
 type ErrorInfo struct {
 	AdditionalInfo string `json:"error_additional_info"`
-	Error          error  `json:"-"`
+	Error          error  `json:"raw_error"`
 	FileName       string `json:"error_filename"`
 	FunctionName   string `json:"error_function_name"`
 	LineNumber     int    `json:"error_line_number"`
