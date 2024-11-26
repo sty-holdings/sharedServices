@@ -383,6 +383,44 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 // 	return
 // }
 
+// RemoveDocumentArrayField - will return an error of nil when successful. If the document is not found,
+// shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, documentId string, arrayElement string) (errorInfo errs.ErrorInfo) {
+
+	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
+
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+	if arrayElement == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+	if vlds.IsStruct(arrayElement) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+
+	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(
+		CTXBackground, []firestore.Update{
+			{Path: "saas_profile", Value: firestore.ArrayRemove(arrayElement)},
+		},
+	); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+	}
+
+	return
+}
+
 // RemoveDocumentById
 // func RemoveDocumentById(firestoreClientPtr *firestoreServices.Client, datastore, documentId string) (errorInfo errs.ErrorInfo) {
 //
