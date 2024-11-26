@@ -115,6 +115,22 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 	return
 }
 
+// ConvertMapStringToMapAny
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertMapStringToMapAny(mapIn map[string]interface{}) (mapOut map[any]interface{}) {
+
+	mapOut = make(map[any]interface{})
+
+	for key, value := range mapIn {
+		mapOut[interface{}(key)] = value
+	}
+
+	return
+}
+
 // ConvertStructToMap - converts a given struct to a map by marshaling it into JSON and then unmarshaling it into a map.
 // If there is an error during the marshaling or unmarshaling process, the error information is returned.
 //
