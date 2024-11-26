@@ -389,7 +389,7 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, documentId string, arrayElement string) (errorInfo errs.ErrorInfo) {
+func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, documentId string, arrayElement interface{}) (errorInfo errs.ErrorInfo) {
 
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
@@ -402,6 +402,10 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 		return
 	}
 	if arrayElement == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+	if vlds.IsStruct(arrayElement) == false {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
