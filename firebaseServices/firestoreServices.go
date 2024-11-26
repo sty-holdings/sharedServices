@@ -28,12 +28,12 @@ type NameValueQuery struct {
 	FieldValue interface{}
 }
 
-// BuildFirestoreUpdate - while the nameValues is a map[any], the function using a string assertion on the key.
+// buildFirestoreUpdate - while the nameValues is a map[any], the function using a string assertion on the key.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestore.Update, errorInfo errs.ErrorInfo) {
+func buildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields []firestore.Update, errorInfo errs.ErrorInfo) {
 
 	var (
 		tFinding string
@@ -558,10 +558,48 @@ func UpdateDocument(firestoreClientPtr *firestore.Client, datastore, documentId 
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
-	if tUpdateFields, errorInfo = BuildFirestoreUpdate(nameValues); errorInfo.Error == nil {
+	if tUpdateFields, errorInfo = buildFirestoreUpdate(nameValues); errorInfo.Error == nil {
 		if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(CTXBackground, tUpdateFields); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 		}
+	}
+
+	return
+}
+
+// UpdateDocumentArrayField - will return an error of nil when successful. If the document is not found,
+// shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, documentId string, arrayElement interface{}) (errorInfo errs.ErrorInfo) {
+
+	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
+
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+	if arrayElement == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+	if vlds.IsStruct(arrayElement) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+
+	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(
+		CTXBackground, []firestore.Update{
+			{Path: "saas_profile", Value: firestore.ArrayUnion(arrayElement)},
+		},
+	); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 	}
 
 	return

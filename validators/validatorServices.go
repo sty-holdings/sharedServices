@@ -440,11 +440,17 @@ func IsJSONValid(jsonIn []byte) bool {
 //	Verifications: None
 func IsMapPopulated(myMap map[any]interface{}) bool {
 
-	if len(myMap) > 0 {
-		return true
-	}
+	return len(myMap) > 0
+}
 
-	return false
+// IsStruct - will determine if the variable is a struct.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsStruct(v interface{}) bool {
+
+	return reflect.TypeOf(v).Kind() == reflect.Struct
 }
 
 // IsMessagePrefixValid - is case-insensitive

@@ -4,6 +4,7 @@ package sharedServices
 const (
 	LBL_AMOUNT                     = "AMOUNT: "
 	LBL_APPLICATION_NAME           = "APPLICATION NAME: "
+	LBL_ARRAY_ELEMENT              = "ARRAY_ELEMENT: "
 	LBL_AUTHENICATION_SERVICES     = "AUTHENTICATION_SERVICES: "
 	LBL_AUTHOR                     = "AUTHOR: "
 	LBL_AWS_ACCESS_KEY_ID          = "AWS ACCESS KEY ID: "
