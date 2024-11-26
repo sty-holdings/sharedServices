@@ -88,6 +88,8 @@ const (
 	REQUIRED_ARGUMENT_MISSING          = "A required argument is empty."
 	REQUIRED_FILE_MISSING              = "A required file is missing."
 	RETRY_LIMIT_HIT                    = "You have tried too many times. Please try again in 15 mins or contact support@sty-holdings.com."
+	SAAS_PROVIDER_EXISTS               = "The provider you are trying to add already exists."
+	SAAS_PROVIDER_MISSING              = "The provider was not found."
 	SERVER_CONFIGURATION_INVALID       = "The setting in the configuration file are inconsistant."
 	SERVER_NAME_MISSING                = "The server name in main.go is empty."
 	SERVER_INSTANCE_NUMBER_MISSING     = "The server instance number is missing."
