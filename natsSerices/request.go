@@ -9,6 +9,14 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
+// Brain
+//==============================
+
+type GetMyAnswerRequest struct {
+	Question string `json:"question"`
+}
+
+//==============================
 // SaaS Profile
 //==============================
 
