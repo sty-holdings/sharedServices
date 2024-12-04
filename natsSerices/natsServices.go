@@ -123,7 +123,7 @@ func RequestWithHeader(
 	}
 	if responsePtr, errorInfo.Error = connectionPtr.RequestMsg(messagePtr, timeOut); errorInfo.Error != nil {
 		log.Printf("%v: RequestWithHeader failed on %v %v for %v: %v", instanceName, ctv.LBL_SUBJECT, messagePtr.Subject, ctv.FN_CLIENT_ID, messagePtr.Header.Get(ctv.FN_CLIENT_ID))
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
