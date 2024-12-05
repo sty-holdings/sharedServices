@@ -70,6 +70,7 @@ const (
 	FN_DESCRIPTION                        = "description"
 	FN_DOCUMENT_ID                        = "document_id"
 	FN_DURATION                           = "Duration"
+	FN_ELASPE_TIME_SECONDS                = "elaspe_time_seconds"
 	FN_EMAIL                              = "email"
 	FN_EMAIL_VERIFIED                     = "email_verified"
 	FN_ENVIRONMENT                        = "environment"

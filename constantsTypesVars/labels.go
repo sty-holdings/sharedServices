@@ -28,6 +28,7 @@ const (
 	LBL_DEBUG_MESSAGE              = "DEBUG MESSAGE: "
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "
 	LBL_DIRECTORY                  = "DIRECTORY: "
+	LBL_ELASPE_TIME_SECONDS        = "ELASPE TIME SECONDS: "
 	LBL_EMAIL                      = "EMAIL"
 	LBL_EMAIL_BODY                 = "EMAIL BODY: "
 	LBL_ENVIRONMENT                = "ENVIRONMENT: "
