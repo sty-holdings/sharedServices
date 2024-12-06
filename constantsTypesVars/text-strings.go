@@ -67,6 +67,7 @@ const (
 	TXT_NON_SECURE_CONNECTION_FAILED = "Non-secure connection request failed."
 	TXT_NOT_FOUND                    = "not found"
 	TXT_NO_LABEL_PROVIDED            = "no label provided"
+	TXT_ONBOARDING_INCOMPLETE        = "onboarding is incomplete."
 	TXT_OUTOF                        = "out of"
 	TXT_PHONE                        = "phone"
 	TXT_PONG                         = "PONG: "
