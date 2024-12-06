@@ -44,6 +44,6 @@ type NATSService struct {
 }
 
 type NATSReply struct {
-	Response  interface{}    `json:"response,omitempty"`
+	Response  interface{}    `json:"response"`
 	ErrorInfo errs.ErrorInfo `json:"error,omitempty"`
 }
