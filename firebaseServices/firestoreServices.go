@@ -642,6 +642,36 @@ func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 	return
 }
 
+// UpdateDocumentMergeAll - will return an error of nil when successful. If the document is not found,
+// shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, documentId string, mapElements map[string]interface{}) (errorInfo errs.ErrorInfo) {
+
+	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
+
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+	if len(mapElements) == ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		return
+	}
+
+	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, mapElements, firestore.MergeAll); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+	}
+
+	return
+}
+
 // UpdateDocumentFromSubCollectionByDocumentId
 //
 //	Customer Messages: None
