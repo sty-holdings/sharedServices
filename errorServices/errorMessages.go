@@ -80,6 +80,7 @@ const (
 	POSTGRES_CONN_FALIED               = "No database connection has been established"
 	POSTGRES_CONN_EMPTY                = "Database connection is empty"
 	PROGRAM_NAME_MISSING               = "The program name in main.go is empty."
+	QUESTION_NOT_SUPPORT               = "The question is not supported at this time."
 	RECIPIENTTYPEINVALID               = "Recipient type is invalid."
 	REDIRECT_MODE_MISSING              = "The redirect mode is missing."
 	REDIRECT_MODE_INVALID              = "The redirect mode is invalid."
@@ -238,6 +239,7 @@ var (
 	ErrPostgresConnFailed             = errors.New(POSTGRES_CONN_FALIED)
 	ErrPostgresSSLMode                = errors.New(POSTGRES_SSL_MODE)
 	ErrProgramNameMissing             = errors.New(PROGRAM_NAME_MISSING)
+	ErrQuestionNotSupported           = errors.New(QUESTION_NOT_SUPPORT)
 	ErrRecipientTypeInvalid           = errors.New(RECIPIENTTYPEINVALID)
 	ErrRedirectModeInvalid            = errors.New(REDIRECT_MODE_INVALID)
 	ErrRedirectModeMissing            = errors.New(REDIRECT_MODE_MISSING)
