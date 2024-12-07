@@ -202,7 +202,7 @@ const (
 	FN_UID                                = "uid"
 	FN_UUID                               = "uuid"
 	FN_SERVER_VERSION                     = "server_version"
-	FN_SUB_CATEORY                        = "sub_category"
+	FN_SUB_CATEGORY                       = "sub_category"
 	FN_WEB_ASSETS_URL                     = "Web_Assets_URL"
 	FN_ZELLE_REQUEST_METHOD               = "zelle_request_method"
 	FN_ZIPCODE                            = "zip_code"
