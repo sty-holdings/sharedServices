@@ -199,6 +199,7 @@ const (
 	FN_USER_CONFIRMED_PHONEL              = "confirmed_phone"
 	FN_USERNAME                           = "username"
 	FN_URL                                = "url"
+	FN_UID                                = "uid"
 	FN_UUID                               = "uuid"
 	FN_SERVER_VERSION                     = "server_version"
 	FN_WEB_ASSETS_URL                     = "Web_Assets_URL"
