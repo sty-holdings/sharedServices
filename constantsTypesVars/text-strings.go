@@ -77,5 +77,6 @@ const (
 	TXT_SERVER                       = "server"
 	TXT_SERVICE_FAILED               = " service failed."
 	TXT_TRUE                         = "true"
+	TXT_UNKNOWN                      = "unknown"
 	TXT_YES                          = "yes"
 )
