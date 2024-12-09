@@ -20,6 +20,7 @@ const (
 	BUFFER_EMPTY                       = "The buffer is empty"
 	BUNDLE_ALREADY_EXISTS              = "The bundle already exists in the system."
 	BUNDLE_MISSING                     = "The bundle is not in the system."
+	CATEGORY_NOT_SUPPORTED             = "The category is not supported."
 	CLIENT_SECRET_MISSING              = "The client secret has not been provided.)"
 	COGNITO_SECRET_BLOCK_INVALID       = "Unable to decode challenge parameter 'SECRET_BLOCK'."
 	COGNITO_USER_NAME_MISSING          = "Username is not in the Cognito user pool."
@@ -128,6 +129,7 @@ const (
 	STRUCT_INVALID                     = "Provided object is not a struct."
 	STYH_CLIENT_ID_EMPTY               = "An empty STYH Client Id is not allowed."
 	STYH_USERNAME_EMPTY                = "An empty STYH Username is not allowed."
+	SUB_CATEGORY_NOT_SUPPORTED         = "The sub-category is not supported."
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                    = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED        = "Unable to subscribe to the subject."
@@ -176,6 +178,7 @@ var (
 	ErrBufferEmpty                    = errors.New(BUFFER_EMPTY)
 	ErrBundleAlreadyExists            = errors.New(BUNDLE_ALREADY_EXISTS)
 	ErrBundleMissing                  = errors.New(BUNDLE_MISSING)
+	ErrCategoryNotSupported           = errors.New(CATEGORY_NOT_SUPPORTED)
 	ErrClientSecretBlockInvalid       = errors.New(COGNITO_SECRET_BLOCK_INVALID)
 	ErrClientSecretMissing            = errors.New(CLIENT_SECRET_MISSING)
 	ErrCognitoUsernameMissing         = errors.New(COGNITO_USER_NAME_MISSING)
@@ -291,6 +294,7 @@ var (
 	ErrSynadiaKeyInvalid              = errors.New(SYNADIA_KEY_INVALID)
 	ErrSYTHClientIdEmpty              = errors.New(STYH_CLIENT_ID_EMPTY)
 	ErrSYTHUserNameEmpty              = errors.New(STYH_USERNAME_EMPTY)
+	ErrSubCategoryNotSupported        = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
 	ErrTLSFilesMissing                = errors.New(TLS_FILES_MISSING)
 	ErrTokenClaimsInvalid             = errors.New(TOKEN_CLAIMS_INVALID)
 	ErrTokenExpired                   = errors.New(TOKEN_EXPIRED)
