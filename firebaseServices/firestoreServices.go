@@ -535,6 +535,38 @@ func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId str
 	return
 }
 
+// SetDocumentWithInterface - This will create or overwrite the record with the document id.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func SetDocumentWithInterface(firestoreClientPtr *firestore.Client, datastore, documentId string, data interface{}) (errorInfo errs.ErrorInfo) {
+
+	if data == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		return
+	}
+	if firestoreClientPtr == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		return
+	}
+	if datastore == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		return
+	}
+	if documentId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		return
+	}
+
+	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, data); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedFIRESTORE, ctv.VAL_EMPTY)
+		return
+	}
+
+	return
+}
+
 // SetDocumentWithSubCollection - This will create or overwrite the existing record that is in a sub-collection. While nameValues is a map[any], this function will apply a string assertion on the key.
 // func SetDocumentWithSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, nameValues map[any]interface{}) (errorInfo errs.ErrorInfo) {
 //
