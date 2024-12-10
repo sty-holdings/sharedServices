@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"runtime"
 	"strings"
 
 	"cloud.google.com/go/firestore"
@@ -331,57 +332,63 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 }
 
 // RemoveDocument
-// func RemoveDocument(firestoreClientPtr *firestoreServices.Client, datastore string, queryParameters ...NameValueQuery) (errorInfo errs.ErrorInfo) {
 //
-// 	var (
-// 		tDocument          *firestoreServices.DocumentSnapshot
-// 		tFunction, _, _, _ = runtime.Caller(0)
-// 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-// 		tQuery             firestoreServices.Query
-// 	)
-//
-// 	errs.PrintDebugTrail(tFunctionName)
-//
-// 	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
-// 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery argument is '%v'", datastore, ctv.VAL_EMPTY))
-// 	} else {
-// 		tQuery = firestoreClientPtr.Collection(datastore).Query
-// 		for _, parameter := range queryParameters {
-// 			if parameter.FieldName == ctv.VAL_EMPTY || parameter.FieldValue == ctv.VAL_EMPTY {
-// 				errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery parameter is '%v' Field Name: %v, Field Value: %v", datastore, ctv.VAL_EMPTY,
-// 					parameter.FieldName, parameter.FieldValue))
-// 				break
-// 			} else {
-// 				tQuery = tQuery.Where(parameter.FieldName, ctv.EQUALS, parameter.FieldValue)
-// 			}
-// 		}
-// 	}
-//
-// 	if errorInfo.Error == nil {
-// 		tDocuments := tQuery.Documents(CTXBackground)
-// 		for {
-// 			tDocument, errorInfo.Error = tDocuments.Next()
-// 			if errors.Is(errorInfo.Error, iterator.Done) {
-// 				errorInfo.Error = nil
-// 				break
-// 			}
-// 			if errorInfo.Error != nil {
-// 				errorInfo.AdditionalInfo = fmt.Sprintf("An error occurred trying to remove a document. Error: %v", errorInfo.Error)
-// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
-// 				errs.PrintError(errorInfo)
-// 				// todo handle error & notification
-// 			}
-// 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(tDocument.Ref.ID).Delete(CTXBackground); errorInfo.Error != nil {
-// 				errorInfo.AdditionalInfo = fmt.Sprintf("%v Failed: Investigate, there is something wrong! Error: %v", tFunctionName, errorInfo.Error.Error())
-// 				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
-// 				errs.PrintError(errorInfo)
-// 				// todo Handle error and Notification
-// 			}
-// 		}
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func RemoveDocument(firestoreClientPtr *firestore.Client, datastore string, queryParameters ...NameValueQuery) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tDocument          *firestore.DocumentSnapshot
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		tQuery             firestore.Query
+	)
+
+	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
+		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! Datastore: '%v' nameValueQuery argument is '%v'", datastore, ctv.VAL_EMPTY))
+	} else {
+		tQuery = firestoreClientPtr.Collection(datastore).Query
+		for _, parameter := range queryParameters {
+			if parameter.FieldName == ctv.VAL_EMPTY || parameter.FieldValue == ctv.VAL_EMPTY {
+				errorInfo.Error = errors.New(
+					fmt.Sprintf(
+						"Require information is missing! Datastore: '%v' nameValueQuery parameter is '%v' Field Name: %v, Field Value: %v", datastore, ctv.VAL_EMPTY,
+						parameter.FieldName, parameter.FieldValue,
+					),
+				)
+				break
+			} else {
+				tQuery = tQuery.Where(parameter.FieldName, ctv.OPER_DOUBE_EQUAL_SIGN, parameter.FieldValue)
+			}
+		}
+	}
+
+	if errorInfo.Error == nil {
+		tDocuments := tQuery.Documents(CTXBackground)
+		for {
+			tDocument, errorInfo.Error = tDocuments.Next()
+			if errors.Is(errorInfo.Error, iterator.Done) {
+				errorInfo.Error = nil
+				break
+			}
+			if errorInfo.Error != nil {
+				errorInfo.AdditionalInfo = fmt.Sprintf("An error occurred trying to remove a document. Error: %v", errorInfo.Error)
+				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+				//errs.PrintError(errorInfo)
+				// todo handle error & notification
+			}
+			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(tDocument.Ref.ID).Delete(CTXBackground); errorInfo.Error != nil {
+				errorInfo.AdditionalInfo = fmt.Sprintf("%v Failed: Investigate, there is something wrong! Error: %v", tFunctionName, errorInfo.Error.Error())
+				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+				//errs.PrintError(errorInfo)
+				// todo Handle error and Notification
+			}
+		}
+	}
+
+	return
+}
 
 // RemoveDocumentArrayField - will return an error of nil when successful. If the document is not found,
 // shared_services.ErrDocumentNotFound will be returned, otherwise the error from Firestore will be returned.
@@ -680,7 +687,7 @@ func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, documentId string, mapElements map[string]interface{}) (errorInfo errs.ErrorInfo) {
+func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, documentId string, mapElements interface{}) (errorInfo errs.ErrorInfo) {
 
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
@@ -690,10 +697,6 @@ func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, doc
 	}
 	if documentId == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
-		return
-	}
-	if len(mapElements) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
 
