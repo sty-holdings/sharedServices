@@ -99,6 +99,7 @@ const (
 	FN_INSTITUTION_ACCOUNT                = "institution_account"
 	FN_IS_BUNDLE_LOCKED                   = "is_bundle_locked"
 	FN_ISSUER                             = "issuer"
+	FN_JSON_STRING                        = "json_string"
 	FN_JWT                                = "JWT"
 	FN_KEY                                = "key"
 	FN_KEY_DATA                           = "keyData"
