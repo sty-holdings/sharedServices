@@ -9,3 +9,7 @@ const (
 	DATASTORE_TRAINING_QUESTIONS = "training_questions"
 	DATASTORE_USERS              = "users"
 )
+
+const (
+	REF_SUPPORT_SAAS_PROVIDERS = "support_saas_providers"
+)
