@@ -3,7 +3,6 @@ package sharedServices
 import (
 	b64 "encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -573,9 +572,6 @@ func PullSupportSaaSProviders(tFSClientPtr *firestore.Client) (saasProviders map
 	)
 
 	if tDocumentSnapshotPtr, errorInfo = fbs.GetDocumentById(tFSClientPtr, ctv.DATASTORE_REFERENCE_DATA, ctv.REF_SUPPORT_SAAS_PROVIDERS); errorInfo.Error != nil {
-		if errors.Is(errorInfo.Error, errs.ErrDocumentNotFound) {
-			return
-		}
 		return
 	}
 
