@@ -3,6 +3,7 @@ package sharedServices
 import (
 	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -13,10 +14,12 @@ import (
 	"strings"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"github.com/google/uuid"
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	fbs "github.com/sty-holdings/sharedServices/v2024/firebaseServices"
 	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
@@ -556,6 +559,34 @@ func PrependWorkingDirectoryWithEndingSlash(directory string) string {
 // 	printDashLines(lines, outputMode)
 //
 // }
+
+// PullSupportSaaSProviders - will read the Firestore datastore and run the data as a tri-map structure.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func PullSupportSaaSProviders(tFSClientPtr *firestore.Client) (saasProviders map[string]map[string]map[string]string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tData                interface{}
+		tDocumentSnapshotPtr *firestore.DocumentSnapshot
+	)
+
+	if tDocumentSnapshotPtr, errorInfo = fbs.GetDocumentById(tFSClientPtr, ctv.DATASTORE_REFERENCE_DATA, ctv.REF_SUPPORT_SAAS_PROVIDERS); errorInfo.Error != nil {
+		if errors.Is(errorInfo.Error, errs.ErrDocumentNotFound) {
+			return
+		}
+		return
+	}
+
+	if tData, errorInfo.Error = tDocumentSnapshotPtr.DataAt(ctv.FN_JSON_STRING); errorInfo.Error != nil {
+		return
+	}
+	saasProviders = make(map[string]map[string]map[string]string)
+	errorInfo.Error = json.Unmarshal([]byte(tData.(string)), &saasProviders)
+
+	return
+}
 
 // RedirectLogOutput - will redirect log output based on the redirectTo value, [MODE_OUTPUT_LOG | MODE_OUTPUT_LOG_DISPLAY].
 //
