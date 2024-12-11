@@ -4,7 +4,7 @@ package sharedServices
 const (
 	// Extensions
 	EXTENSION_ANALYZE_QUESTION = "analyze-question"
-	EXTENSION_BRAIN            = "brain"
+	EXTENSION_HAL              = "hal"
 	EXTENSION_HTTPS_NATS       = "https-nats"
 	NC_INTERNAL                = "nc-internal"
 	EXTENSION_SAAS_PROFILE     = "saas-profile"

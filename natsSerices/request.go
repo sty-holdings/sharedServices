@@ -9,7 +9,7 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
-// Brain
+// HAL
 //==============================
 
 type GetMyAnswerRequest struct {

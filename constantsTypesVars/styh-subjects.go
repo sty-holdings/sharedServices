@@ -7,7 +7,7 @@ const (
 	NCI_TURN_DEBUG_OFF = "turn-debug-off"
 	NCI_TURN_DEBUG_ON  = "turn-debug-on"
 	//
-	SUB_BRAIN_GET_MY_ANSWER = "brain.get-my-answer"
+	SUB_HAL_GET_MY_ANSWER = "hal.get-my-answer"
 	//
 	SUB_GEMINI_ANALYZE_QUESTION = "gemini.analyze-question"
 	SUB_GEMINI_SUMMARIZE_ANSWER = "gemini.analyze-answer"
