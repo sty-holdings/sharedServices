@@ -9,6 +9,14 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
+// Summarize Answer
+//==============================
+
+type SummarizeAnswerRequest struct {
+	JSONString string `json:"json_string"`
+}
+
+//==============================
 // HAL
 //==============================
 
