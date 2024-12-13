@@ -9,14 +9,6 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
-// Summarize Answer
-//==============================
-
-type GenerateAnswerRequest struct {
-	JSONString string `json:"json_string"`
-}
-
-//==============================
 // HAL
 //==============================
 
@@ -97,6 +89,18 @@ type ConfirmPaymentIntentRequest struct {
 	ReceiptEmail    string `json:"receipt_email,omitempty"`
 	ReturnURL       string `json:"return_url,omitempty,omitempty"`
 	SaaSKey         string `json:"saas_key"`
+}
+
+//==============================
+// Generate Answer
+//==============================
+
+type GenerateAnswerRequest struct {
+	Question       string `json:"question"`
+	PointInTime    string `json:"point_in_time,omitempty"`
+	TimeRangeStart string `json:"time_range_start,omitempty"`
+	TimeRangeEnd   string `json:"time_range_end,omitempty"`
+	StripeData     string `json:"stripe_data,omitempty"`
 }
 
 //==============================
