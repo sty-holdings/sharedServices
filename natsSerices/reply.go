@@ -22,6 +22,14 @@ type AnalyzeQuestionReply struct {
 	SubCategory interface{} `json:"sub_category"`
 }
 
+//==============================
+// HAL
+//==============================
+
+type GetMyAnswerReply struct {
+	Answer string `json:"answer"`
+}
+
 type GetPersonalAccessTokenReply struct {
 	Error struct {
 		ErrorAdditionalInfo string `json:"error_additional_info"`
