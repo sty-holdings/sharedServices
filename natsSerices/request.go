@@ -12,7 +12,7 @@ type AnalyzeQuestionRequest struct {
 // Summarize Answer
 //==============================
 
-type SummarizeAnswerRequest struct {
+type GenerateAnswerRequest struct {
 	JSONString string `json:"json_string"`
 }
 
