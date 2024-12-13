@@ -96,11 +96,7 @@ type ConfirmPaymentIntentRequest struct {
 //==============================
 
 type GenerateAnswerRequest struct {
-	Question       string `json:"question"`
-	PointInTime    string `json:"point_in_time,omitempty"`
-	TimeRangeStart string `json:"time_range_start,omitempty"`
-	TimeRangeEnd   string `json:"time_range_end,omitempty"`
-	StripeData     string `json:"stripe_data,omitempty"`
+	Prompt string
 }
 
 //==============================
