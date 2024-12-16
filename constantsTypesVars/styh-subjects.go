@@ -16,13 +16,16 @@ const (
 	SUB_SAAS_PROFILE_DELETE = "saas-profile.delete"
 	SUB_SAAS_PROFILE_UPDATE = "saas-profile.update"
 	//
-	SUB_STRIPE_CANCEL_PAYMENT_INTENT  = "stripe.cancel-payment-intent"
-	SUB_STRIPE_CONFIRM_PAYMENT_INTENT = "stripe.confirm-payment-intent"
-	SUB_STRIPE_CREATE_PAYMENT_INTENT  = "stripe.create-payment-intent"
-	SUB_STRIPE_LIST_PAYMENT_INTENTS   = "stripe.list-payment-intents"
-	SUB_STRIPE_LIST_PAYMENT_METHODS   = "stripe.list-payment-methods"
-	SUB_STRIPE_BALANCE                = "stripe.balance"
-	SUB_STRIPE_CUSTOMERS              = "stripe.customers"
+	SUB_STRIPE_LIST_ALL_CHARGES           = "stripe.list-all-charges"
+	SUB_STRIPE_LIST_ALL_CHECKOUT_SESSIONS = "stripe.list-all-checkout-sessions"
+	SUB_STRIPE_LIST_ALL_DISPUTES          = "stripe.list-all-disputes"
+	SUB_STRIPE_LIST_ALL_INVOICES          = "stripe.list-all-invoices"
+	SUB_STRIPE_LIST_ALL_PAYOUTS           = "stripe.list-all-payouts"
+	SUB_STRIPE_LIST_ALL_REFUNDS           = "stripe.list-all-refunds"
+	SUB_STRIPE_LIST_PAYMENT_INTENTS       = "stripe.list-payment-intents"
+	SUB_STRIPE_LIST_PAYMENT_METHODS       = "stripe.list-payment-methods"
+	SUB_STRIPE_BALANCE                    = "stripe.balance"
+	SUB_STRIPE_CUSTOMERS                  = "stripe.customers"
 	//
 	SUB_SENDGRID_SEND_EMAIL = "sendgrid.send-email"
 	//
