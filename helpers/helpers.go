@@ -157,6 +157,18 @@ func ConvertStructToMap(structIn interface{}) (
 	return
 }
 
+// ConvertDateHourMinuteToTimestamp - converts a date, hour, and minutes string (2024-01-01 00:00) to timestamp.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertDateHourMinuteToTimestamp(dateString string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
+
+	timestamp, errorInfo.Error = time.Parse("2006-01-02 15:04", dateString)
+
+	return
+}
+
 // ConvertSliceToSliceOfPtrs - takes a slice and returns a slice of pointers to the items in the slice.
 //
 //	Customer Messages: None

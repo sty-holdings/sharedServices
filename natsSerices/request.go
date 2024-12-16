@@ -62,9 +62,9 @@ type BalanceRequest struct {
 }
 
 type ListAllChargeRequest struct {
-	SaaSKey    string `json:"saas_key"`
-	StartAfter string `json:"start_after"`
-	EndBefore  string `json:"end_before"`
+	SaaSKey string `json:"saas_key"`
+	StartAt string `json:"start_at"`
+	EndBy   string `json:"end_by"`
 }
 
 type ListPaymentMethodRequest struct {
