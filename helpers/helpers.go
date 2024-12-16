@@ -488,10 +488,14 @@ func GetFieldsNames(unknownStruct interface{}) (
 }
 
 // PenniesToFloat
-// func PenniesToFloat(pennies int64) float64 {
 //
-// 	return float64(pennies) / 100
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func PenniesToFloat(pennies int64) float64 {
+
+	return float64(pennies) / 100
+}
 
 // PrintAndDie - is exported for access in other packages. Not going to test
 // func PrintAndDie(msg string) {
