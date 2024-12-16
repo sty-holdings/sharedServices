@@ -24,6 +24,7 @@ const (
 	LBL_CIPHER_NONCE               = "CIPHER NONCE: "
 	LBL_CURRENCY                   = "CURRENCY: "
 	LBL_DATASTORE                  = "DATASTORE: "
+	LBL_DATE_TIME                  = "DATE/TIME: "
 	LBL_DOCUMENT_ID                = "DOCUMENT ID: "
 	LBL_DEBUG_MESSAGE              = "DEBUG MESSAGE: "
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "
