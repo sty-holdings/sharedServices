@@ -9,6 +9,14 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
+// Generate Answer
+//==============================
+
+type GenerateAnswerRequest struct {
+	Prompt string
+}
+
+//==============================
 // HAL
 //==============================
 
@@ -53,6 +61,12 @@ type BalanceRequest struct {
 	SaaSKey string `json:"saas_key"`
 }
 
+type ListAllChargeRequest struct {
+	SaaSKey    string `json:"saas_key"`
+	StartAfter string `json:"start_after"`
+	EndBefore  string `json:"end_before"`
+}
+
 type ListPaymentMethodRequest struct {
 	SaaSKey string `json:"saas_key"`
 }
@@ -74,29 +88,6 @@ type PaymentIntentRequest struct {
 	SaaSKey                 string  `json:"saas_key"`
 	// Confirm            bool     `json:"confirm,omitempty"`
 	// PaymentMethodTypes []string `json:"payment_method_types,omitempty"`
-}
-
-type CancelPaymentIntentRequest struct {
-	CancellationReason string `json:"cancellation_reason"`
-	PaymentIntentId    string `json:"id"`
-	SaaSKey            string `json:"saas_key"`
-}
-
-type ConfirmPaymentIntentRequest struct {
-	CaptureMethod   string `json:"capture_method,omitempty"`
-	PaymentIntentId string `json:"id"`
-	PaymentMethod   string `json:"payment_method,omitempty"`
-	ReceiptEmail    string `json:"receipt_email,omitempty"`
-	ReturnURL       string `json:"return_url,omitempty,omitempty"`
-	SaaSKey         string `json:"saas_key"`
-}
-
-//==============================
-// Generate Answer
-//==============================
-
-type GenerateAnswerRequest struct {
-	Prompt string
 }
 
 //==============================
