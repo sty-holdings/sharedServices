@@ -14,6 +14,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
+	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
 )
 
 // BuildInstanceName - will create the NATS connection name with dashes, underscores between nodes or as provided.
@@ -183,6 +184,32 @@ func Subscribe(
 	return
 }
 
+// UnmarshalEncryptedMessageData - will decrypt the message data and then unmarshal
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func UnmarshalEncryptedMessageData(
+	functionName string,
+	msg *nats.Msg,
+	requestPtr any,
+	userSecretKey string,
+) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tDecryptedMessageData []byte
+	)
+
+	if tDecryptedMessageData, errorInfo = jwts.DecryptToByte(msg.Header[ctv.FN_USERNAME][0], userSecretKey, string(msg.Data)); errorInfo.Error != nil {
+		return
+	}
+
+	if errorInfo = UnmarshalMessageData(functionName, tDecryptedMessageData, &requestPtr); errorInfo.Error != nil {
+	}
+
+	return
+}
+
 // UnmarshalMessageData - reads the message data into the pointer (requestPtr). The requestPtr argument must be the address to the pointer.
 // If you pass something else, the unmarshal will fail. Example: ns.UnmarshalMessageData("sendRequest", tReplyPtr, &tResponsePtr)
 //
@@ -191,11 +218,11 @@ func Subscribe(
 //	Verifications: None
 func UnmarshalMessageData(
 	functionName string,
-	msg *nats.Msg,
+	msgData []byte,
 	requestPtr any,
 ) (errorInfo errs.ErrorInfo) {
 
-	if string(msg.Data) == ctv.VAL_EMPTY {
+	if string(msgData) == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 		return
 	}
@@ -204,7 +231,7 @@ func UnmarshalMessageData(
 		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
 	}
 
-	if errorInfo.Error = json.Unmarshal(msg.Data, requestPtr); errorInfo.Error != nil {
+	if errorInfo.Error = json.Unmarshal(msgData, requestPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
 	}
 
