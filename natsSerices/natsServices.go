@@ -131,6 +131,43 @@ func RequestWithHeader(
 	return
 }
 
+// EncryptedDataReply - takes a structure, marshals to a []byte, encrypts the data and responses.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func EncryptedDataReply(
+	response interface{},
+	msg *nats.Msg,
+	keyB64 string,
+	uId string,
+) (errorInfo errs.ErrorInfo) {
+
+	var (
+		eMessageB64 []byte
+		tDKReply    DKReply
+		tJSON       []byte
+	)
+
+	if tJSON, errorInfo.Error = json.Marshal(response); errorInfo.Error != nil {
+		// todo correct error handling
+		return
+	}
+
+	if eMessageB64, errorInfo = jwts.EncryptToByte(uId, keyB64, string(tJSON)); errorInfo.Error != nil {
+		// todo add error handling
+		return
+	}
+
+	tDKReply.Response = eMessageB64
+
+	if errorInfo.Error = msg.Respond(eMessageB64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
+	}
+
+	return
+}
+
 // SendReply - will take in an object, build a json object out of it, and send out the reply
 //
 //	Customer Messages: None
@@ -200,7 +237,7 @@ func UnmarshalEncryptedMessageData(
 		tDecryptedMessageData []byte
 	)
 
-	if tDecryptedMessageData, errorInfo = jwts.DecryptToByte(msg.Header[ctv.FN_USERNAME][0], userSecretKey, string(msg.Data)); errorInfo.Error != nil {
+	if tDecryptedMessageData, errorInfo = jwts.DecryptToByte(msg.Header[ctv.FN_UID][0], userSecretKey, string(msg.Data)); errorInfo.Error != nil {
 		return
 	}
 

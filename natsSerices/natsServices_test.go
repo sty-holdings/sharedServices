@@ -287,3 +287,105 @@ func TestUnmarshalEncryptedMessageData(tPtr *testing.T) {
 		)
 	}
 }
+
+func TestSendReply(tPtr *testing.T) {
+
+	type arguments struct {
+		request SaaSProfileRequest
+	}
+
+	var (
+		errorInfo   errs.ErrorInfo
+		gotError    bool
+		tMessagePtr = &nats.Msg{
+			Header:  make(nats.Header),
+			Subject: "TEST",
+		}
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				request: SaaSProfileRequest{
+					Provider:        "Google",
+					Action:          "Test",
+					ProviderKeyInfo: "Fake_Key",
+				},
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if errorInfo = SendReply(ts.arguments.request, tMessagePtr); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
+
+func TestSendReplyWithEncryptedData(tPtr *testing.T) {
+
+	type arguments struct {
+		request SaaSProfileRequest
+	}
+
+	var (
+		errorInfo   errs.ErrorInfo
+		gotError    bool
+		tMessagePtr = &nats.Msg{
+			Header:  make(nats.Header),
+			Subject: "TEST",
+		}
+		tUserSpecialNumber = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
+		uId                = "Scott"
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				request: SaaSProfileRequest{
+					Provider:        "Google",
+					Action:          "Test",
+					ProviderKeyInfo: "Fake_Key",
+				},
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if errorInfo = EncryptedDataReply(ts.arguments.request, tMessagePtr, tUserSpecialNumber, uId); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}

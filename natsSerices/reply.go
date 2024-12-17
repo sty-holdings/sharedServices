@@ -2,7 +2,22 @@ package sharedServices
 
 import (
 	"time"
+
+	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 )
+
+//==============================
+// DK Generic
+//==============================
+
+type DKReply struct {
+	Response  interface{}    `json:"response"`
+	ErrorInfo errs.ErrorInfo `json:"error,omitempty"`
+}
+
+//==============================
+// Analyze Question
+//==============================
 
 type AnalyzeQuestionReply struct {
 	SentenceType string `json:"sentence_type"`
@@ -44,6 +59,10 @@ type GetPersonalAccessTokenReply struct {
 		Name    string    `json:"name"`
 	} `json:"response"`
 }
+
+//==============================
+// DK System
+//==============================
 
 type GetSystemReply struct {
 	Error struct {

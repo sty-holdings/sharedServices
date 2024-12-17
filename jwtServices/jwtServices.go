@@ -178,7 +178,7 @@ func DecryptToByte(
 // Verifications: None
 func Encrypt(
 	username string,
-	key string,
+	keyB64 string,
 	message string,
 ) (
 	encryptedMessageB64 string,
@@ -193,7 +193,7 @@ func Encrypt(
 		tNonce      []byte
 	)
 
-	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(key); errorInfo.Error != nil {
+	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, username))
 		return
 	}
@@ -224,7 +224,7 @@ func Encrypt(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptToByte(
-	username string,
+	uId string,
 	key string,
 	message string,
 ) (
@@ -236,7 +236,7 @@ func EncryptToByte(
 		tEncryptedMessageB64 string
 	)
 
-	if tEncryptedMessageB64, errorInfo = Encrypt(username, key, message); errorInfo.Error == nil {
+	if tEncryptedMessageB64, errorInfo = Encrypt(uId, key, message); errorInfo.Error == nil {
 		encryptedMessageB64 = []byte(tEncryptedMessageB64)
 	}
 

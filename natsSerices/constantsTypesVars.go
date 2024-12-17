@@ -3,7 +3,6 @@ package sharedServices
 import (
 	"github.com/nats-io/nats.go"
 
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
 )
 
@@ -41,9 +40,4 @@ type NATSService struct {
 	InstanceName string
 	Secure       bool
 	URL          string
-}
-
-type NATSReply struct {
-	Response  interface{}    `json:"response"`
-	ErrorInfo errs.ErrorInfo `json:"error,omitempty"`
 }
