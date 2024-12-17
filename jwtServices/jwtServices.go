@@ -209,10 +209,36 @@ func Encrypt(
 	}
 
 	tNonce = make([]byte, tAESGCM.NonceSize())
+	//goland:noinspection GoUnhandledErrorResult
 	io.ReadFull(rand.Reader, tNonce) // Use a cryptographically secure RNG
 
 	tCiphertext = tAESGCM.Seal(tNonce, tNonce, []byte(message), nil)
 	encryptedMessageB64 = base64.StdEncoding.EncodeToString(tCiphertext)
+
+	return
+}
+
+// EncryptToByte - will call encrypt and convert the return base 64 string to []byte
+//
+//	Customer Messages: None
+//	Errors: returned by Decrypt
+//	Verifications: None
+func EncryptToByte(
+	username string,
+	key string,
+	message string,
+) (
+	encryptedMessageB64 []byte,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tEncryptedMessageB64 string
+	)
+
+	if tEncryptedMessageB64, errorInfo = Encrypt(username, key, message); errorInfo.Error == nil {
+		encryptedMessageB64 = []byte(tEncryptedMessageB64)
+	}
 
 	return
 }
