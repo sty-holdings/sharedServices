@@ -243,10 +243,29 @@ func EncryptToByte(
 	return
 }
 
+// EncryptFromByteToByte - will call encrypt the []byte and return a base 64 []byte
+//
+//	Customer Messages: None
+//	Errors: returned by Decrypt
+//	Verifications: None
+func EncryptFromByteToByte(
+	uId string,
+	keyB64 string,
+	message []byte,
+) (
+	encryptedMessageB64 []byte,
+	errorInfo errs.ErrorInfo,
+) {
+
+	encryptedMessageB64, errorInfo = EncryptToByte(uId, keyB64, string(message))
+
+	return
+}
+
 // GenerateJWT
 // Create a new token object, specifying signing method and the claims
 // you would like it to contain.
-// func GenerateJWT(privateKey, requestorId, period string, duration int64) (jwtServices string, errorInfo errs.ErrorInfo) {
+// func GenerateJWT(privateKey, requesterId, period string, duration int64) (jwtServices string, errorInfo errs.ErrorInfo) {
 //
 // 	var (
 // 		tDuration      time.Duration
@@ -258,8 +277,8 @@ func EncryptToByte(
 // 		errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! %v: '%v'", ctv.FN_PRIVATE_KEY, ctv.VAL_EMPTY))
 // 		log.Println(errorInfo.Error)
 // 	} else {
-// 		if requestorId == ctv.VAL_EMPTY || period == ctv.VAL_EMPTY || duration < 1 {
-// 			errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! %v: '%v' %v: '%v' %v: '%v'", ctv.FN_REQUESTOR_ID, requestorId, ctv.FN_PERIOD, period, ctv.FN_DURATION, duration))
+// 		if requesterId == ctv.VAL_EMPTY || period == ctv.VAL_EMPTY || duration < 1 {
+// 			errorInfo.Error = errors.New(fmt.Sprintf("Require information is missing! %v: '%v' %v: '%v' %v: '%v'", ctv.FN_REQUESTER_ID, requesterId, ctv.FN_PERIOD, period, ctv.FN_DURATION, duration))
 // 			log.Println(errorInfo.Error)
 // 		} else {
 // 			if cv.IsPeriodValid(period) && duration > 0 {
@@ -276,9 +295,9 @@ func EncryptToByte(
 // 						tDuration = time.Hour * time.Duration(duration)
 // 					}
 // 					jwtServices, errorInfo.Error = jwt2.NewWithClaims(jwt2.SigningMethodRS512, jwt2.MapClaims{
-// 						"requestorId": requestorId,
+// 						"requesterId": requesterId,
 // 						"Issuer":      ctv.CERT_ISSUER,
-// 						"Subject":     requestorId,
+// 						"Subject":     requesterId,
 // 						"ExpiresAt":   time.Now().Add(tDuration).String(),
 // 						"NotBefore":   time.Now(),
 // 					}).SignedString(tPrivateKey)
