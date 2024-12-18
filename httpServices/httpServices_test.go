@@ -26,7 +26,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: false,
 	// 	},
@@ -34,7 +34,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_POSITIVE_SUCCESS + "Bad URL.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: true,
 	// 	},
@@ -42,7 +42,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_NEGATIVE_SUCCESS + "Missing credentials location.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: true,
 	// 	},
@@ -50,7 +50,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_NEGATIVE_SUCCESS + "Missing certificate FQN.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: true,
 	// 	},
@@ -58,7 +58,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_NEGATIVE_SUCCESS + "Missing private key FQN.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: true,
 	// 	},
@@ -66,7 +66,7 @@ func TestNewHTTP(tPtr *testing.T) {
 	// 		name: ctv.TEST_NEGATIVE_SUCCESS + "Missing CA bundle FQN.",
 	// 		arguments: arguments{
 	// 			hostname:       "localhost",
-	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsSerices-connect/config/local/httpServices-inbound-config.json",
+	// 			configFilename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/natsServices-connect/config/local/httpServices-inbound-config.json",
 	// 		},
 	// 		wantError: true,
 	// 	},

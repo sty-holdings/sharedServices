@@ -2,7 +2,7 @@ package sharedServices
 
 //goland:noinspection GoSnakeCaseUsage
 const (
-	TEST_CREDENTIALS_FILENAME = "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsSerices-savup-backend.key"
+	TEST_CREDENTIALS_FILENAME = "/Users/syacko/workspace/styh-dev/src/albert/keys/local/.keys/natsServices-savup-backend.key"
 	TEST_MESSAGE_ENVIRONMENT  = "local"
 	TEST_MESSAGE_NAMESPACE    = "nci"
 	TEST_URL                  = "savup-local-0030.savup.com"

@@ -53,7 +53,7 @@ func BuildInstanceName(
 // TLSCABundleFQN must be populated.
 //
 //	Customer Messages: None
-//	Errors: error returned by natsSerices.Connect
+//	Errors: error returned by natsServices.Connect
 //	Verifications: None
 func GetConnection(
 	instanceName string,
@@ -295,65 +295,12 @@ func Subscribe(
 	return
 }
 
-// UnmarshalEncryptedMessageData - will decrypt the message data and then unmarshal
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func UnmarshalEncryptedMessageData(
-	functionName string,
-	msg *nats.Msg,
-	requestPtr *any,
-	userSecretKey string,
-) (errorInfo errs.ErrorInfo) {
-
-	var (
-		tDecryptedMessageData []byte
-	)
-
-	if tDecryptedMessageData, errorInfo = jwts.DecryptToByte(msg.Header[ctv.FN_UID][0], userSecretKey, string(msg.Data)); errorInfo.Error != nil {
-		return
-	}
-
-	errorInfo = UnmarshalMessageData(functionName, tDecryptedMessageData, &requestPtr)
-
-	return
-}
-
-// UnmarshalMessageData - reads the message data into the pointer (requestPtr). The requestPtr argument must be the address to the pointer.
-// If you pass something else, the unmarshal will fail. Example: ns.UnmarshalMessageData("sendRequest", tReplyPtr, &tResponsePtr)
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func UnmarshalMessageData(
-	functionName string,
-	msgData []byte,
-	requestPtr any,
-) (errorInfo errs.ErrorInfo) {
-
-	if string(msgData) == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
-		return
-	}
-
-	if requestPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
-	}
-
-	if errorInfo.Error = json.Unmarshal(msgData, requestPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FUNCTION_NAME, functionName))
-	}
-
-	return
-}
-
 //  Private Functions
 
 // buildInstanceName - will create the NATS connection name with the delimiter between nodes.
 //
 //	Customer Messages: None
-//	Errors: error returned by natsSerices.Connect
+//	Errors: error returned by natsServices.Connect
 //	Verifications: None
 func buildInstanceName(
 	delimiter string,
