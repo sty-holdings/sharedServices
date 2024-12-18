@@ -162,9 +162,15 @@ func ConvertStructToMap(structIn interface{}) (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ConvertDateHourMinuteToTimestamp(dateString string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
+func ConvertDateHourMinuteToTimestamp(fieldName string, dateString string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
 
-	timestamp, errorInfo.Error = time.Parse("2006-01-02 15:04", dateString)
+	if timestamp, errorInfo.Error = time.Parse("2006-01-02 15:04", dateString); errorInfo.Error == nil {
+		return
+	}
+
+	if timestamp, errorInfo.Error = time.Parse("2006-01-02", dateString); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(fieldName, ctv.TXT_IS_INVALID))
+	}
 
 	return
 }
