@@ -418,7 +418,7 @@ func TestUnmarshalEncryptedMessageData(tPtr *testing.T) {
 			Header:  make(nats.Header),
 			Subject: "TEST",
 		}
-		tRequestPtr        *SaaSProfileRequest
+		tRequestPtr        any
 		tUserSpecialNumber = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
 		tUID               = "Scott"
 	)
@@ -450,6 +450,7 @@ func TestUnmarshalEncryptedMessageData(tPtr *testing.T) {
 					gotError = true
 				} else {
 					gotError = false
+					fmt.Println(tRequestPtr)
 				}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)

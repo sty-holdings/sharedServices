@@ -301,7 +301,7 @@ func Subscribe(
 func UnmarshalEncryptedMessageData(
 	functionName string,
 	msg *nats.Msg,
-	requestPtr any,
+	requestPtr *any,
 	userSecretKey string,
 ) (errorInfo errs.ErrorInfo) {
 
@@ -313,8 +313,7 @@ func UnmarshalEncryptedMessageData(
 		return
 	}
 
-	if errorInfo = UnmarshalMessageData(functionName, tDecryptedMessageData, &requestPtr); errorInfo.Error != nil {
-	}
+	errorInfo = UnmarshalMessageData(functionName, tDecryptedMessageData, &requestPtr)
 
 	return
 }

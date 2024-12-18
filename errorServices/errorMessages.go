@@ -130,6 +130,7 @@ const (
 	STRUCT_INVALID                     = "Provided object is not a struct."
 	STYH_CLIENT_ID_EMPTY               = "An empty STYH Client Id is not allowed."
 	STYH_USERNAME_EMPTY                = "An empty STYH Username is not allowed."
+	STYH_UID_EMPTY                     = "An empty STYH UID is not allowed."
 	SUB_CATEGORY_NOT_SUPPORTED         = "The sub-category is not supported."
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                    = "The subject is invalid."
@@ -296,6 +297,7 @@ var (
 	ErrSynadiaKeyInvalid              = errors.New(SYNADIA_KEY_INVALID)
 	ErrSYTHClientIdEmpty              = errors.New(STYH_CLIENT_ID_EMPTY)
 	ErrSYTHUserNameEmpty              = errors.New(STYH_USERNAME_EMPTY)
+	ErrSYTHUIDEmpty                   = errors.New(STYH_UID_EMPTY)
 	ErrSubCategoryNotSupported        = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
 	ErrTLSFilesMissing                = errors.New(TLS_FILES_MISSING)
 	ErrTokenClaimsInvalid             = errors.New(TOKEN_CLAIMS_INVALID)
