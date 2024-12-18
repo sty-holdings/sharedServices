@@ -29,19 +29,4 @@ const (
 	//
 	SUB_SENDGRID_SEND_EMAIL = "sendgrid.send-email"
 	//
-	SUB_SYNADIA_GET_PERSONAL_ACCESS_TOKEN   = "synadia.get-personal-access-token"
-	SUB_SYNADIA_GET_SYSTEM                  = "synadia.get-system"
-	SUB_SYNADIA_GET_SYSTEM_LIMITS           = "synadia.get-system-limits"
-	SUB_SYNADIA_GET_TEAM                    = "synadia.get-team"
-	SUB_SYNADIA_GET_TEAM_LIMITS             = "synadia.get-team-limits"
-	SUB_SYNADIA_GET_VERSION                 = "synadia.get-version"
-	SUB_SYNADIA_LIST_ACCOUNT                = "synadia.list-account"
-	SUB_SYNADIA_LIST_INFO_APP_USERS_TEAM    = "synadia.list-info-app-users-team"
-	SUB_SYNADIA_LIST_NATS_USERS             = "synadia.list-nats-users"
-	SUB_SYNADIA_LIST_PERSONAL_ACCESS_TOKENS = "synadia.list-personal-access-tokens"
-	SUB_SYNADIA_LIST_SYSTEMS                = "synadia.list-systems"
-	SUB_SYNADIA_LIST_SYSTEM_ACCOUN_TINFO    = "synadia.list-system-account-info"
-	SUB_SYNADIA_LIST_SYSTEM_SERVER_INFO     = "synadia.list-system-server-info"
-	SUB_SYNADIA_LIST_TEAMS                  = "synadia.list-teams"
-	SUB_SYNADIA_LIST_TEAM_SERVER_ACCOUNTS   = "synadia.list-team-server-accounts"
 )

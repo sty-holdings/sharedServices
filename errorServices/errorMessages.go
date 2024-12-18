@@ -107,7 +107,6 @@ const (
 	SERVICE_FAILED_POSTGRES            = "POSTGRES service has failed. Investigate right away!"
 	SERVICE_FAILED_SENDGRID            = "SENDGRID service has failed. Investigate right away!"
 	SERVICE_FAILED_STRIPE              = "STRIPE service has failed. Investigate right away!"
-	SERVICE_FAILED_SYNADIA             = "SYNADIA service has failed. Investigate right away!"
 	SET_STRING_FAILED                  = "Unable to process value using SetString."
 	SHORT_URL_ALREADY_EXISTS           = "The short URL already exists in the system."
 	SHORT_URL_MISSING                  = "The short URL is not in the system."
@@ -135,8 +134,6 @@ const (
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                    = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED        = "Unable to subscribe to the subject."
-	SYNADIA_BASE_URL_EMPTY             = "An empty base URL is not allowed."
-	SYNADIA_KEY_INVALID                = "The Synadia access token is invalid. See https://docs.synadia.com/platform or https://cloud.synadia.com/profile/personal-access-tokens"
 	TLS_FILES_MISSING                  = "TLS files are missing."
 	TOKEN_CLAIMS_INVALID               = "The token claims are invalid."
 	TOKEN_EXPIRED                      = "The token has expired."
@@ -270,7 +267,6 @@ var (
 	ErrServiceFailedPOSTGRES          = errors.New(SERVICE_FAILED_POSTGRES)
 	ErrServiceFailedSENDGRID          = errors.New(SERVICE_FAILED_SENDGRID)
 	ErrServiceFailedSTRIPE            = errors.New(SERVICE_FAILED_STRIPE)
-	ErrServiceFailedSYNADIA           = errors.New(SERVICE_FAILED_SYNADIA)
 	ErrSetStringFailed                = errors.New(SET_STRING_FAILED)
 	ErrShortURLMissing                = errors.New(SHORT_URL_MISSING)
 	ErrSignalUnknown                  = errors.New(SIGNAL_UNKNOWN)
@@ -293,8 +289,6 @@ var (
 	ErrSubjectInvalid                 = errors.New(SUBJECT_INVALID)
 	ErrSubjectsMissing                = errors.New(SUBJECTS_MISSING)
 	ErrSubjectSubscriptionFailed      = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
-	ErrSynadiaBaseURLEmpty            = errors.New(SYNADIA_BASE_URL_EMPTY)
-	ErrSynadiaKeyInvalid              = errors.New(SYNADIA_KEY_INVALID)
 	ErrSYTHClientIdEmpty              = errors.New(STYH_CLIENT_ID_EMPTY)
 	ErrSYTHUserNameEmpty              = errors.New(STYH_USERNAME_EMPTY)
 	ErrSYTHUIDEmpty                   = errors.New(STYH_UID_EMPTY)

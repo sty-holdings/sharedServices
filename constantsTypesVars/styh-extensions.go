@@ -11,5 +11,4 @@ const (
 	EXTENSION_SAAS_PROFILE     = "saas-profile"
 	EXTENSION_SENDGRID         = "sendgrid"
 	EXTENSION_STRIPE           = "stripe"
-	EXTENSION_SYNADIA          = "synadia"
 )
