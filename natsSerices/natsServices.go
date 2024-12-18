@@ -129,6 +129,8 @@ func RequestWithHeader(
 		return
 	}
 
+	responsePtr.Header = messagePtr.Header
+
 	return
 }
 
