@@ -88,6 +88,7 @@ const (
 	REFRESH_TOO_SOON                   = "Too soon to refresh balances."
 	REQUESTOR_ID_MISSING               = "The requestor id is missing."
 	REQUIRED_ARGUMENT_MISSING          = "A required argument is empty."
+	REQUIRED_PARAMETER_MISSING         = "A required parameter is empty."
 	REQUIRED_FILE_MISSING              = "A required file is missing."
 	RETRY_LIMIT_HIT                    = "You have tried too many times. Please try again in 15 mins or contact support@sty-holdings.com."
 	SAAS_PROVIDER_EXISTS               = "The provider you are trying to add already exists."
@@ -249,6 +250,7 @@ var (
 	ErrRefreshTooSoon                 = errors.New(REFRESH_TOO_SOON)
 	ErrRequestorIdMissing             = errors.New(REQUESTOR_ID_MISSING)
 	ErrRequiredArgumentMissing        = errors.New(REQUIRED_ARGUMENT_MISSING)
+	ErrRequiredParameterMissing       = errors.New(REQUIRED_PARAMETER_MISSING)
 	ErrRequiredFileMissing            = errors.New(REQUIRED_FILE_MISSING)
 	ErrRetryLimitHit                  = errors.New(RETRY_LIMIT_HIT)
 	ErrSaasProviderExists             = errors.New(SAAS_PROVIDER_EXISTS)

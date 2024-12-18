@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -131,7 +132,7 @@ func RequestWithHeader(
 	return
 }
 
-// EncryptedDataReply - takes a structure, marshals to a []byte, encrypts the data and responses.
+// EncryptedDataReply - takes a structure, marshals to a []byte, encrypts the data and responds.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -163,6 +164,77 @@ func EncryptedDataReply(
 
 	if errorInfo.Error = msg.Respond(eMessageB64); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
+	}
+
+	return
+}
+
+// EncryptedMessageDataRequest - takes a structure, marshals to a []byte, encrypts the data and makes a request.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func EncryptedMessageDataRequest(
+	functionName string,
+	natsConnectionPtr *nats.Conn,
+	instanceName string,
+	keyB64 string,
+	msg *nats.Msg,
+	request interface{},
+	timeOutInSecs int,
+	uId string,
+	testingOn bool,
+) (
+	replyMsgPtr *nats.Msg,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		eMessageDataB64    []byte
+		tAdditionalInfo    string
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		tJSON              []byte
+	)
+
+	if functionName == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_FUNCTION_NAME, ctv.TXT_IS_MISSING))
+	}
+	if natsConnectionPtr == nil && testingOn == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_NATS_CONNECT_SERVER, ctv.TXT_IS_MISSING))
+	}
+	if instanceName == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_INSTANCE_NAME, ctv.TXT_IS_MISSING))
+	}
+	if keyB64 == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_SECRET_KEY, ctv.TXT_IS_MISSING))
+	}
+	if msg == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
+	}
+	if request == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_REQUEST, ctv.TXT_IS_MISSING))
+	}
+	if uId == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_UID, ctv.TXT_IS_MISSING))
+	}
+
+	tAdditionalInfo = fmt.Sprintf("%s%s %s @ %s", ctv.LBL_FUNCTION_NAME, functionName, ctv.TXT_FAILED, tFunctionName)
+
+	if tJSON, errorInfo.Error = json.Marshal(request); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
+		return
+	}
+
+	if eMessageDataB64, errorInfo = jwts.EncryptToByte(uId, keyB64, string(tJSON)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
+		return
+	}
+
+	msg.Data = eMessageDataB64
+
+	if replyMsgPtr, errorInfo = RequestWithHeader(natsConnectionPtr, instanceName, msg, validateAdjustTimeOut(timeOutInSecs)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
 	}
 
 	return
@@ -376,4 +448,26 @@ func buildURLPort(
 	}
 
 	return fmt.Sprintf("%v:%d", url, tNATSPort), errs.ErrorInfo{}
+}
+
+// validateAdjustTimeOut - will check the timeout (Seconds) is between 2 and 5. If not it, will adjust the value
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func validateAdjustTimeOut(timeOutInSeconds int) (actualTimeOut time.Duration) {
+
+	if timeOutInSeconds < 2 {
+		actualTimeOut = 2 * time.Second
+		return
+	}
+
+	if timeOutInSeconds > 5 {
+		actualTimeOut = 5 * time.Second
+		return
+	}
+
+	actualTimeOut = time.Duration(timeOutInSeconds) * time.Second
+
+	return
 }

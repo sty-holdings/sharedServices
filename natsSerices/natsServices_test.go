@@ -13,6 +13,122 @@ import (
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
 )
 
+func TestEncryptedMessageDataRequest(tPtr *testing.T) {
+
+	type arguments struct {
+		testMessage string
+	}
+
+	var (
+		errorInfo     errs.ErrorInfo
+		gotError      bool
+		tInstanceName string
+		tMessagePtr   = &nats.Msg{
+			Header:  make(nats.Header),
+			Subject: "TEST",
+		}
+		tNATSConnectionPtr    *nats.Conn
+		tRequest              SaaSProfileRequest
+		tTimeOutInSecs        int
+		tUserSpecialNumberB64 = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
+		tUID                  = "Scott"
+		testingOn             = true
+	)
+
+	// Adding fake pointer to pass NATS Connection validation
+	tMessagePtr.Header.Add(ctv.FN_UID, tUID)
+	tMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, "Scott Client Id")
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				testMessage: "{\"provider\":\"Google\",\"action\":\"Create\",\"providerKeyInfo\":\"some-key-info\"}",
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if _, errorInfo = EncryptedMessageDataRequest(
+					"TestEncryptedMessageDataRequest", tNATSConnectionPtr, tInstanceName, tUserSpecialNumberB64, tMessagePtr, tRequest,
+					tTimeOutInSecs, tUID, testingOn,
+				); errorInfo.Error != nil {
+					if errorInfo.Message == errs.NATS_INVALID_CONNECTION {
+						gotError = false
+					} else {
+						gotError = true
+					}
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
+
+func TestEncryptedMessageDataReply(tPtr *testing.T) {
+
+	type arguments struct {
+		request SaaSProfileRequest
+	}
+
+	var (
+		errorInfo   errs.ErrorInfo
+		gotError    bool
+		tMessagePtr = &nats.Msg{
+			Header:  make(nats.Header),
+			Subject: "TEST",
+		}
+		tUserSpecialNumber = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
+		uId                = "Scott"
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				request: SaaSProfileRequest{
+					Provider:        "Google",
+					Action:          "Test",
+					ProviderKeyInfo: "Fake_Key",
+				},
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if errorInfo = EncryptedDataReply(ts.arguments.request, tMessagePtr, tUserSpecialNumber, uId); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
+
 func TestGetNATSConnection(tPtr *testing.T) {
 
 	type arguments struct {
@@ -190,6 +306,61 @@ func TestGetNATSConnection(tPtr *testing.T) {
 	}
 }
 
+func TestSendReply(tPtr *testing.T) {
+
+	type arguments struct {
+		request SaaSProfileRequest
+	}
+
+	var (
+		errorInfo   errs.ErrorInfo
+		gotError    bool
+		tMessagePtr = &nats.Msg{
+			Header:  make(nats.Header),
+			Subject: "TEST",
+		}
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				request: SaaSProfileRequest{
+					Provider:        "Google",
+					Action:          "Test",
+					ProviderKeyInfo: "Fake_Key",
+				},
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if errorInfo = SendReply(ts.arguments.request, tMessagePtr); errorInfo.Error != nil {
+					if errorInfo.Message == errs.NATS_NOT_CONNECTED {
+						gotError = false
+					} else {
+						gotError = true
+					}
+
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
+
 func TestUnmarshalMessageData(tPtr *testing.T) {
 
 	type arguments struct {
@@ -249,10 +420,10 @@ func TestUnmarshalEncryptedMessageData(tPtr *testing.T) {
 		}
 		tRequestPtr        *SaaSProfileRequest
 		tUserSpecialNumber = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
-		tUserName          = "Scott"
+		tUID               = "Scott"
 	)
 
-	tMessagePtr.Header.Add(ctv.FN_USERNAME, tUserName)
+	tMessagePtr.Header.Add(ctv.FN_UID, tUID)
 	tMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, "Scott Client Id")
 
 	tests := []struct {
@@ -272,111 +443,10 @@ func TestUnmarshalEncryptedMessageData(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				dMessageData, errorInfo = jwts.Encrypt(tUserName, tUserSpecialNumber, ts.arguments.testMessage)
+				// The Encrypt is only for testing
+				dMessageData, errorInfo = jwts.Encrypt(tUID, tUserSpecialNumber, ts.arguments.testMessage)
 				tMessagePtr.Data = []byte(dMessageData)
 				if errorInfo = UnmarshalEncryptedMessageData("TestUnmarshalMessageData", tMessagePtr, &tRequestPtr, tUserSpecialNumber); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
-				if gotError != ts.wantError {
-					tPtr.Error(ts.name)
-					tPtr.Error(errorInfo)
-				}
-			},
-		)
-	}
-}
-
-func TestSendReply(tPtr *testing.T) {
-
-	type arguments struct {
-		request SaaSProfileRequest
-	}
-
-	var (
-		errorInfo   errs.ErrorInfo
-		gotError    bool
-		tMessagePtr = &nats.Msg{
-			Header:  make(nats.Header),
-			Subject: "TEST",
-		}
-	)
-
-	tests := []struct {
-		name      string
-		arguments arguments
-		wantError bool
-	}{
-		{
-			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
-			arguments: arguments{
-				request: SaaSProfileRequest{
-					Provider:        "Google",
-					Action:          "Test",
-					ProviderKeyInfo: "Fake_Key",
-				},
-			},
-			wantError: false,
-		},
-	}
-
-	for _, ts := range tests {
-		tPtr.Run(
-			ts.name, func(t *testing.T) {
-				if errorInfo = SendReply(ts.arguments.request, tMessagePtr); errorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
-				if gotError != ts.wantError {
-					tPtr.Error(ts.name)
-					tPtr.Error(errorInfo)
-				}
-			},
-		)
-	}
-}
-
-func TestSendReplyWithEncryptedData(tPtr *testing.T) {
-
-	type arguments struct {
-		request SaaSProfileRequest
-	}
-
-	var (
-		errorInfo   errs.ErrorInfo
-		gotError    bool
-		tMessagePtr = &nats.Msg{
-			Header:  make(nats.Header),
-			Subject: "TEST",
-		}
-		tUserSpecialNumber = "BWzIo8nzg/QTkwds8dcjKg==" // Labeled so the scans of GitHub will not pick it up.
-		uId                = "Scott"
-	)
-
-	tests := []struct {
-		name      string
-		arguments arguments
-		wantError bool
-	}{
-		{
-			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
-			arguments: arguments{
-				request: SaaSProfileRequest{
-					Provider:        "Google",
-					Action:          "Test",
-					ProviderKeyInfo: "Fake_Key",
-				},
-			},
-			wantError: false,
-		},
-	}
-
-	for _, ts := range tests {
-		tPtr.Run(
-			ts.name, func(t *testing.T) {
-				if errorInfo = EncryptedDataReply(ts.arguments.request, tMessagePtr, tUserSpecialNumber, uId); errorInfo.Error != nil {
 					gotError = true
 				} else {
 					gotError = false

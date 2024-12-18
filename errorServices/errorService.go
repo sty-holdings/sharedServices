@@ -3,6 +3,7 @@ package sharedServices
 import (
 	// Add imports here
 
+	"fmt"
 	"log"
 	"runtime"
 
@@ -42,6 +43,16 @@ func NewErrorInfo(
 	errorInfo.Message = myError.Error()
 
 	return
+}
+
+// BuildAdditionalInfo - builds the additional information parameter using fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildAdditionalInfo(label string, value string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s%s", label, value)
 }
 
 // PrintError - will output error information using this format:
