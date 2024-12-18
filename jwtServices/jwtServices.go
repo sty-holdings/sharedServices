@@ -162,6 +162,25 @@ func DecryptToByte(
 	return
 }
 
+// DecryptFromByteToByte - will call encrypt the []byte and return a base 64 []byte
+//
+//	Customer Messages: None
+//	Errors: returned by Decrypt
+//	Verifications: None
+func DecryptFromByteToByte(
+	uId string,
+	keyB64 string,
+	encryptedMessageB64 []byte,
+) (
+	decryptedMessage []byte,
+	errorInfo errs.ErrorInfo,
+) {
+
+	decryptedMessage, errorInfo = DecryptToByte(uId, keyB64, string(encryptedMessageB64))
+
+	return
+}
+
 // Encrypt - encrypts a message using AES-GCM mode of operation.
 // The function encrypts message and initializes the AES cipher
 // with the provided key.
