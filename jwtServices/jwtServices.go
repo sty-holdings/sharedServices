@@ -64,7 +64,7 @@ func BuildTLSTemporaryFiles(
 	return
 }
 
-// Decrypt - decrypts an encrypted base64 string using AES-GCM mode of operation and returns a string.
+// Decrypt - decrypts a base64 string using AES-GCM mode of operation and returns a string.
 //
 // Customer Messages: None
 // Errors:
@@ -137,7 +137,7 @@ func Decrypt(
 	return
 }
 
-// DecryptToByte - will call decrypt and return a []byte
+// DecryptToByte - will call decrypt using a base64 string and returns a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -162,7 +162,7 @@ func DecryptToByte(
 	return
 }
 
-// DecryptFromByteToByte - will call encrypt the []byte and return a []byte
+// DecryptFromByteToByte - will call decrypt using a base64 []byte and returns a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -181,7 +181,7 @@ func DecryptFromByteToByte(
 	return
 }
 
-// DecryptFromByteToString - will call encrypt the []byte and return a string
+// DecryptFromByteToString - will call decrypt using a base64 []byte and return a string
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -200,7 +200,7 @@ func DecryptFromByteToString(
 	return
 }
 
-// Encrypt - encrypts a message using AES-GCM mode of operation.
+// Encrypt - encrypts a message using AES-GCM mode of operation and returns a base64 string
 // The function encrypts message and initializes the AES cipher
 // with the provided key.
 //
@@ -256,7 +256,7 @@ func Encrypt(
 	return
 }
 
-// EncryptToByte - will call encrypt and convert the return base 64 string to []byte
+// EncryptToByte - will call encrypt using a string and returns a base64 []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -281,7 +281,7 @@ func EncryptToByte(
 	return
 }
 
-// EncryptFromByteToByte - will call encrypt the []byte and return a base 64 []byte
+// EncryptFromByteToByte - will call encrypt using a []byte and returns a base 64 []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -296,6 +296,25 @@ func EncryptFromByteToByte(
 ) {
 
 	encryptedMessageB64, errorInfo = EncryptToByte(uId, keyB64, string(message))
+
+	return
+}
+
+// EncryptFromByteToString - will call encrypt the []byte and return a string
+//
+//	Customer Messages: None
+//	Errors: returned by Decrypt
+//	Verifications: None
+func EncryptFromByteToString(
+	uId string,
+	keyB64 string,
+	encryptedMessageB64 []byte,
+) (
+	decryptedMessage string,
+	errorInfo errs.ErrorInfo,
+) {
+
+	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(encryptedMessageB64))
 
 	return
 }
