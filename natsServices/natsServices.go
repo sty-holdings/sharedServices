@@ -148,7 +148,6 @@ func EncryptedDataReply(
 
 	var (
 		eMessageB64 []byte
-		tDKReply    DKReply
 		tJSON       []byte
 	)
 
@@ -157,12 +156,10 @@ func EncryptedDataReply(
 		return
 	}
 
-	if eMessageB64, errorInfo = jwts.EncryptToByte(uId, keyB64, string(tJSON)); errorInfo.Error != nil {
+	if eMessageB64, errorInfo = jwts.EncryptFromByteToByte(uId, keyB64, tJSON); errorInfo.Error != nil {
 		// todo add error handling
 		return
 	}
-
-	tDKReply.Response = eMessageB64
 
 	if errorInfo.Error = msg.Respond(eMessageB64); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
