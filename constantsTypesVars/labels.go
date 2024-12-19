@@ -77,6 +77,7 @@ const (
 	LBL_POINTER                    = "POINTER: "
 	LBL_PONG                       = "PONG: "
 	LBL_PROGRAM_NAME               = "PROGRAM NAME: "
+	LBL_PROMPT                     = "PROMPT"
 	LBL_PUBLIC_KEY                 = "PUBLIC KEY: "
 	LBL_QUESTION                   = "QUESTION: "
 	LBL_QUESTION_ANALYSIS_ID       = "QUESTION ANALYSIS ID: "
