@@ -87,6 +87,7 @@ const (
 	LBL_REDIRECT                   = "REDIRECT: "
 	LBL_REPLY_TYPE                 = "REPLY TYPE: "
 	LBL_REQUEST                    = "REQUEST: "
+	LBL_RESPONSE                   = "RESPONSE: "
 	LBL_SAAS_KEY                   = "SAAS KEY: "
 	LBL_SAAS_PROFILE               = "SAAS PROFILE: "
 	LBL_SAAS_PROVIDER              = "SAAS PROVIDER: "
