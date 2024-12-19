@@ -314,7 +314,7 @@ func EncryptFromByteToString(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(encryptedMessageB64))
+	decryptedMessage, errorInfo = Encrypt(uId, keyB64, string(encryptedMessageB64))
 
 	return
 }
