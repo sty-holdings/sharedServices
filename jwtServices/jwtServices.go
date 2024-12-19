@@ -64,7 +64,7 @@ func BuildTLSTemporaryFiles(
 	return
 }
 
-// Decrypt - decrypts an encrypted base64 string using AES-GCM mode of operation.
+// Decrypt - decrypts an encrypted base64 string using AES-GCM mode of operation and returns a string.
 //
 // Customer Messages: None
 // Errors:
@@ -137,7 +137,7 @@ func Decrypt(
 	return
 }
 
-// DecryptToByte - will call decrypt and convert the return string to []byte
+// DecryptToByte - will call decrypt and return a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -162,7 +162,7 @@ func DecryptToByte(
 	return
 }
 
-// DecryptFromByteToByte - will call encrypt the []byte and return a base 64 []byte
+// DecryptFromByteToByte - will call encrypt the []byte and return a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -177,6 +177,25 @@ func DecryptFromByteToByte(
 ) {
 
 	decryptedMessage, errorInfo = DecryptToByte(uId, keyB64, string(encryptedMessageB64))
+
+	return
+}
+
+// DecryptFromByteToString - will call encrypt the []byte and return a string
+//
+//	Customer Messages: None
+//	Errors: returned by Decrypt
+//	Verifications: None
+func DecryptFromByteToString(
+	uId string,
+	keyB64 string,
+	encryptedMessageB64 []byte,
+) (
+	decryptedMessage string,
+	errorInfo errs.ErrorInfo,
+) {
+
+	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(encryptedMessageB64))
 
 	return
 }
