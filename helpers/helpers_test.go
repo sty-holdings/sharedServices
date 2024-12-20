@@ -148,6 +148,636 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 	}
 }
 
+func TestDeterminePointInTimeStartEndTime(tPtr *testing.T) {
+
+	type arguments struct {
+		timezone    string
+		pointInTime string
+	}
+
+	var (
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		errorInfo          errs.ErrorInfo
+		gotError           bool
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: "Positive Case: Asia/Shanghai, FN_TODAY",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_TODAY",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Arizona, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Arizona",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/East-Indiana, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/East-Indiana",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Hawaii, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Hawaii",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Pacific, FN_TODAY",
+			arguments: arguments{
+				timezone:    "US/Pacific",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_TODAY",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_TODAY,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_START_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_START_OF_BUSINESS,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_START_OF_WEEK",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_START_OF_WEEK,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_START_OF_MONTH",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_START_OF_MONTH,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_START_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_START_OF_QUARTER,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_CLOSE_OF_BUSINESS",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_CLOSE_OF_BUSINESS,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_END_OF_WEEK",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_END_OF_WEEK,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_END_OF_MONTH",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_END_OF_MONTH,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_END_OF_QUARTER",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_END_OF_QUARTER,
+			},
+			wantError: true,
+		},
+		{
+			name: "Positive Case: Asia/Shanghai, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "Asia/Shanghai",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Alaska, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "US/Alaska",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: America/Los_Angeles, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "America/Los_Angeles",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Central, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "US/Central",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Eastern, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "US/Eastern",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: US/Mountain, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "US/Mountain",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST, FN_END_OF_YEAR",
+			arguments: arguments{
+				timezone:    "TEST",
+				pointInTime: ctv.FN_END_OF_YEAR,
+			},
+			wantError: true,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if _, _, errorInfo = DeterminePointInTimeStartEndTime(ts.arguments.timezone, ts.arguments.pointInTime); errorInfo.Error == nil {
+					gotError = false
+				} else {
+					gotError = true
+					errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, ts.arguments.timezone)))
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+				}
+			},
+		)
+	}
+}
+
 // This is needed, because GIT must have read access for push,
 // and it must be the first test in this file.
 // func TestCreateUnreadableFile(tPtr *testing.T) {
@@ -683,6 +1313,88 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 //			})
 //		}
 //	}
+
+func TestGetUTCOffsetSeconds(tPtr *testing.T) {
+
+	type arguments struct {
+		UTCOffSet string
+	}
+
+	type testStruct struct {
+	}
+
+	var (
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		errorInfo          errs.ErrorInfo
+		gotError           bool
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: "Positive Case: +05:00",
+			arguments: arguments{
+				UTCOffSet: "+05:00",
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: -08:00",
+			arguments: arguments{
+				UTCOffSet: "-08:00",
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: -08:30",
+			arguments: arguments{
+				UTCOffSet: "-08:30",
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: -00:00",
+			arguments: arguments{
+				UTCOffSet: "-00:00",
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: +00:00",
+			arguments: arguments{
+				UTCOffSet: "+00:00",
+			},
+			wantError: false,
+		},
+		{
+			name: "Positive Case: TEST",
+			arguments: arguments{
+				UTCOffSet: "",
+			},
+			wantError: true,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if _, errorInfo = getUTCOffsetSeconds(ts.arguments.UTCOffSet); errorInfo.Error == nil {
+					gotError = false
+				} else {
+					gotError = true
+					errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, errs.BuildAdditionalInfo(ctv.LBL_UTC_OFFSET, ts.arguments.UTCOffSet)))
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+				}
+			},
+		)
+	}
+}
 
 // func TestIsFileReadable(tPtr *testing.T) {
 //

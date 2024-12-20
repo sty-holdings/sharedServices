@@ -80,6 +80,7 @@ const (
 	LBL_NATS                       = "NATS"
 	LBL_NATS_CONNECT_SERVER        = "NATS CONNECT SERVER: "
 	LBL_NATS_PORT                  = "NATS PORT: "
+	LBL_UTC_OFFSET                 = "UTC OFFSET: "
 	LBL_PASSWORD                   = "PASSWORD: "
 	LBL_PAYMENT_METHOD             = "PAYMENT METHOD: "
 	LBL_PAYMENT_METHOD_TYPE        = "PAYMENT METHOD TYPE: "

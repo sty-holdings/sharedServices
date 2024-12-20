@@ -218,6 +218,105 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 	return
 }
 
+// DeterminePointInTimeStartEndTime - will set the start and end time for a point in time
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (startAt string, endBy string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tDaysSinceSunday         int
+		tDaysToEndWeek           int
+		tEndOfQuarter            time.Time
+		tEndOfYear               time.Time
+		tFirstDayOfNextMonth     time.Time
+		tFirstDayOfNextQuarter   time.Time
+		tLastDayOfMonth          time.Time
+		tLocationPtr             *time.Location
+		tNextMonth               time.Time
+		tNow                     time.Time
+		tQuarter                 int
+		tStartMonth              time.Month
+		tStartMonthOfNextQuarter time.Month
+		tStartOfQuarter          time.Time
+		tStartOfYear             time.Time
+		tWeek                    time.Time
+	)
+
+	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
+		return
+	}
+	tNow = time.Now().In(tLocationPtr)
+	fmt.Println(timezone, tNow)
+
+	switch pointInTime {
+	case ctv.FN_TODAY, ctv.FN_CLOSE_OF_BUSINESS:
+		startAt = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+	case ctv.FN_START_OF_BUSINESS:
+		startAt = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_WEEK:
+		tDaysSinceSunday = int(tNow.Weekday())
+		tWeek = tNow.AddDate(0, 0, -tDaysSinceSunday)
+		startAt = fmt.Sprintf("%s %s", tWeek.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_MONTH:
+		startAt = fmt.Sprintf("%s%s", tNow.Format("2006-01"), ctv.TXT_START_MONTH)
+		endBy = startAt
+	case ctv.FN_START_OF_QUARTER:
+		tQuarter = (int(tNow.Month()) - 1) / 3
+		tStartMonth = time.Month(tQuarter*3 + 1)
+		tStartOfQuarter = time.Date(tNow.Year(), tStartMonth, 1, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tStartOfQuarter.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_YEAR:
+		tStartOfYear = time.Date(tNow.Year(), time.January, 1, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tStartOfYear.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_END_OF_WEEK:
+		tDaysToEndWeek = 6 - int(tNow.Weekday())
+		tWeek = tNow.AddDate(0, 0, tDaysToEndWeek)
+		startAt = fmt.Sprintf("%s %s", tWeek.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_MONTH:
+		tNextMonth = tNow.AddDate(0, 1, 0)
+		tFirstDayOfNextMonth = time.Date(tNextMonth.Year(), tNextMonth.Month(), 1, 0, 0, 0, 0, tNextMonth.Location())
+		tLastDayOfMonth = tFirstDayOfNextMonth.AddDate(0, 0, -1)
+		startAt = fmt.Sprintf("%s %s", tLastDayOfMonth.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_QUARTER:
+		tQuarter = (int(tNow.Month()) - 1) / 3
+		tStartMonthOfNextQuarter = time.Month((tQuarter+1)*3 + 1)
+		tFirstDayOfNextQuarter = time.Date(tNow.Year(), tStartMonthOfNextQuarter, 1, 0, 0, 0, 0, tNow.Location())
+		tEndOfQuarter = tFirstDayOfNextQuarter.AddDate(0, 0, -1)
+		startAt = fmt.Sprintf("%s %s", tEndOfQuarter.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_YEAR:
+		tEndOfYear = time.Date(tNow.Year(), time.December, 31, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tEndOfYear.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_POINT_IN_TIME, pointInTime))
+	}
+
+	//week_to_date
+	//week
+	//end_of_month
+	//month_to_date
+	//month
+	//quarter_to_date
+	//quarter
+	//year_to_date
+	//year
+
+	fmt.Println("Start At: ", startAt, "EndBy: ", endBy)
+
+	return
+}
+
 // DoesFieldExist - tests the struct for the field name.
 //
 //	Customer Messages: None
@@ -722,3 +821,25 @@ func createLogFile(logFQD string) (
 //
 // 	return
 // }
+
+// getUTCOffsetSeconds - Helper function to convert UTC offset string to seconds.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getUTCOffsetSeconds(userUTCOffsetting string) (utcOffset int, errorInfo errs.ErrorInfo) {
+
+	var (
+		hours   int
+		minutes int
+	)
+
+	if _, errorInfo.Error = fmt.Sscanf(userUTCOffsetting, "%d:%d", &hours, &minutes); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, userUTCOffsetting))
+		return
+	}
+
+	utcOffset = (hours*60 + minutes) * 60
+
+	return
+}
