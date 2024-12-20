@@ -162,17 +162,26 @@ func ConvertStructToMap(structIn interface{}) (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ConvertDateHourMinuteSecsToTimestamp(fieldName string, dateString string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
+func ConvertDateHourMinuteSecsToTimestamp(fieldName string, dateString string, timezone string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
 
-	if timestamp, errorInfo.Error = time.Parse("2006-01-02 15:04:05", dateString); errorInfo.Error == nil {
+	var (
+		tLocationPtr *time.Location
+	)
+
+	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 
-	if timestamp, errorInfo.Error = time.Parse("2006-01-02 15:04:05", dateString); errorInfo.Error == nil {
+	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04:05", dateString, tLocationPtr); errorInfo.Error == nil {
 		return
 	}
 
-	if timestamp, errorInfo.Error = time.Parse("2006-01-02", dateString); errorInfo.Error != nil {
+	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04", dateString, tLocationPtr); errorInfo.Error == nil {
+		return
+	}
+
+	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02", dateString, tLocationPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(fieldName, ctv.TXT_IS_INVALID))
 	}
 
