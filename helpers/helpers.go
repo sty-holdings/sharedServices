@@ -218,7 +218,7 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 	return
 }
 
-// DeterminePointInTimeStartEndTime - will set the start and end time for a point in time
+// DeterminePointInTimeStartEndTime - will set the start and end time for a point in time type based on today.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -301,18 +301,6 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_POINT_IN_TIME, pointInTime))
 	}
-
-	//week_to_date
-	//week
-	//end_of_month
-	//month_to_date
-	//month
-	//quarter_to_date
-	//quarter
-	//year_to_date
-	//year
-
-	fmt.Println("Start At: ", startAt, "EndBy: ", endBy)
 
 	return
 }
