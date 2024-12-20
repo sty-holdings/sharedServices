@@ -104,6 +104,7 @@ const (
 	LBL_SKELETON_CONFIG_DIRECTORY  = "SKELETON CONFIG DIRECTORY: "
 	LBL_STATUS                     = "STATUS: "
 	LBL_STRIPE                     = "STRIPE"
+	LBL_STRIPE_KEY                 = "STRIPE KEY"
 	LBL_STYH_CLIENT_ID             = "STYH CLIENT_ID: "
 	LBL_STYH_USERNAME              = "STYH USERNAME: "
 	LBL_SUB_CATEGORY               = "SUB-CATEGORY: "

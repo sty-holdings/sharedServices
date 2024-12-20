@@ -170,6 +170,7 @@ const (
 	FN_STREET_ADDRESS                     = "street_address"
 	FN_STRIPE_ACCESS_TOKEN                = "stripe_access_token"
 	FN_STRIPE_CUSTOMER_ACCOUNT_ID         = "StripeCustomerAccountId"
+	FN_STRIPE_KEY                         = "stripe_key"
 	FN_STRIPE_LOCK                        = "stripe_lock"
 	FN_STYH_CLIENT_ID                     = "styh_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY             = "custom:secret_key"
