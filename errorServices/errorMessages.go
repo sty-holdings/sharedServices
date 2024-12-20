@@ -138,6 +138,7 @@ const (
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                    = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED        = "Unable to subscribe to the subject."
+	TIMEZONE_NOT_SUPPORT               = "The timezone is not supported."
 	TLS_FILES_MISSING                  = "TLS files are missing."
 	TOKEN_CLAIMS_INVALID               = "The token claims are invalid."
 	TOKEN_EXPIRED                      = "The token has expired."
@@ -245,6 +246,7 @@ var (
 	ErrPostgresConnEmpty              = errors.New(POSTGRES_CONN_EMPTY)
 	ErrPostgresConnFailed             = errors.New(POSTGRES_CONN_FALIED)
 	ErrPostgresSSLMode                = errors.New(POSTGRES_SSL_MODE)
+	ErrPostgresSSLMode                = errors.New(POSTGRES_SSL_MODE)
 	ErrProgramNameMissing             = errors.New(PROGRAM_NAME_MISSING)
 	ErrQuestionNotSupported           = errors.New(QUESTION_NOT_SUPPORT)
 	ErrRecipientTypeInvalid           = errors.New(RECIPIENTTYPEINVALID)
@@ -301,6 +303,7 @@ var (
 	ErrSYTHUserNameEmpty              = errors.New(STYH_USERNAME_EMPTY)
 	ErrSYTHUIDEmpty                   = errors.New(STYH_UID_EMPTY)
 	ErrSubCategoryNotSupported        = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
+	ErrTimezoneNotSupported           = errors.New(TIMEZONE_NOT_SUPPORT)
 	ErrTLSFilesMissing                = errors.New(TLS_FILES_MISSING)
 	ErrTokenClaimsInvalid             = errors.New(TOKEN_CLAIMS_INVALID)
 	ErrTokenExpired                   = errors.New(TOKEN_EXPIRED)
