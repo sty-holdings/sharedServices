@@ -76,6 +76,7 @@ const (
 	PHONE_NUMBER_MISSING               = "The phone number is missing."
 	PID_FILE_EXISTS                    = "A PID file already exists. Delete the 'server.pid' file in '.run' directory and start the server again."
 	PLAID_INVALID_PUBLIC_TOKEN         = "INVALID_PUBLIC_TOKEN" // DO NOT change this, it is used to test a condition
+	POINT_IN_TIME_INVALID              = "The Point In Time is Invalid."
 	POINTER_MISSING                    = "You must pass a pointer. Nil is not valid!"
 	POSTGRES_SSL_MODE                  = "Only disable, allow, prefer and required are supported."
 	POSTGRES_CONN_FALIED               = "No database connection has been established"
@@ -239,6 +240,7 @@ var (
 	ErrPhoneNumberMissing             = errors.New(PHONE_NUMBER_MISSING)
 	ErrPIDFileExists                  = errors.New(PID_FILE_EXISTS)
 	ErrPlaidInvalidPublicToken        = errors.New(PLAID_INVALID_PUBLIC_TOKEN)
+	ErrPointInTimeInvalid             = errors.New(POINT_IN_TIME_INVALID)
 	ErrPointerMissing                 = errors.New(POINTER_MISSING)
 	ErrPostgresConnEmpty              = errors.New(POSTGRES_CONN_EMPTY)
 	ErrPostgresConnFailed             = errors.New(POSTGRES_CONN_FALIED)

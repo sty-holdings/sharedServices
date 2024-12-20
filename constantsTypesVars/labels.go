@@ -84,6 +84,7 @@ const (
 	LBL_PAYMENT_METHOD             = "PAYMENT METHOD: "
 	LBL_PAYMENT_METHOD_TYPE        = "PAYMENT METHOD TYPE: "
 	LBL_PID_DIRECTORY              = "PID DIRECTORY: "
+	LBL_POINT_IN_TIME              = "POINT IN TIME: "
 	LBL_POINTER                    = "POINTER: "
 	LBL_PONG                       = "PONG: "
 	LBL_PROGRAM_NAME               = "PROGRAM NAME: "
