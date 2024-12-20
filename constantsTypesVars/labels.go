@@ -55,6 +55,7 @@ const (
 	LBL_GIN_URL_PORT               = "GIN URL & PORT: "
 	LBL_GOOGLE_LOCATION            = "GOOGLE LOCATION: "
 	LBL_GOOGLE_PROJECT_ID          = "GOOGLE PROJECT ID: "
+	LBL_HAL                        = "HAL"
 	LBL_HEX_STRING                 = "HEX STRING: "
 	LBL_HTTP_BODY                  = "HTTP BODY: "
 	LBL_HTTP_STATUS                = "HTTP STATUS CODE: "
