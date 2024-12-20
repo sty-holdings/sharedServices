@@ -106,6 +106,7 @@ const (
 	LBL_STRIPE                     = "STRIPE"
 	LBL_STYH_CLIENT_ID             = "STYH CLIENT_ID: "
 	LBL_STYH_USERNAME              = "STYH USERNAME: "
+	LBL_SUB_CATEGORY               = "SUB-CATEGORY: "
 	LBL_SUBJECT                    = "SUBJECT: "
 	LBL_SYSTEM_SETTINGS            = "SYSTEM SETTINGS: "
 	LBL_TLS_CA_BUNDLE_FILENAME     = "TLS CA BUNDLE FILENAME: "
