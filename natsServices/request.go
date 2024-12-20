@@ -62,9 +62,10 @@ type BalanceRequest struct {
 }
 
 type ListAllChargeRequest struct {
-	SaaSKey string `json:"saas_key"`
-	StartAt string `json:"start_at"`
-	EndBy   string `json:"end_by"`
+	SaaSKey  string `json:"saas_key"`
+	Timezone string `json:"timezone"`
+	StartAt  string `json:"start_at"`
+	EndBy    string `json:"end_by"`
 }
 
 type ListPaymentMethodRequest struct {
