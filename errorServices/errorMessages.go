@@ -246,7 +246,6 @@ var (
 	ErrPostgresConnEmpty              = errors.New(POSTGRES_CONN_EMPTY)
 	ErrPostgresConnFailed             = errors.New(POSTGRES_CONN_FALIED)
 	ErrPostgresSSLMode                = errors.New(POSTGRES_SSL_MODE)
-	ErrPostgresSSLMode                = errors.New(POSTGRES_SSL_MODE)
 	ErrProgramNameMissing             = errors.New(PROGRAM_NAME_MISSING)
 	ErrQuestionNotSupported           = errors.New(QUESTION_NOT_SUPPORT)
 	ErrRecipientTypeInvalid           = errors.New(RECIPIENTTYPEINVALID)
