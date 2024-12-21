@@ -61,7 +61,7 @@ type BalanceRequest struct {
 	SaaSKey string `json:"saas_key"`
 }
 
-type ListAllChargeRequest struct {
+type ListAllChargesRequest struct {
 	SaaSKey  string `json:"saas_key"`
 	Timezone string `json:"timezone"`
 	StartAt  string `json:"start_at"`
