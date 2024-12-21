@@ -157,12 +157,12 @@ func ConvertStructToMap(structIn interface{}) (
 	return
 }
 
-// ConvertDateHourMinuteSecsToTimestamp - converts a date, hour, minutes, and seconds string (2024-01-01 00:00:00 or 2024-01-01 00:00 or 2024-01-01) to timestamp.
+// ConvertDateTimeToTimestamp - converts a date and time string (2024-01-01 00:00:00 or 2024-01-01 00:00 or 2024-01-01) to timestamp.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ConvertDateHourMinuteSecsToTimestamp(fieldName string, dateString string, timezone string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
+func ConvertDateTimeToTimestamp(fieldName string, dateString string, timezone string) (timestamp time.Time, errorInfo errs.ErrorInfo) {
 
 	var (
 		tLocationPtr *time.Location
@@ -174,14 +174,6 @@ func ConvertDateHourMinuteSecsToTimestamp(fieldName string, dateString string, t
 	}
 
 	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04:05", dateString, tLocationPtr); errorInfo.Error == nil {
-		return
-	}
-
-	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04", dateString, tLocationPtr); errorInfo.Error == nil {
-		return
-	}
-
-	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02", dateString, tLocationPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(fieldName, ctv.TXT_IS_INVALID))
 	}
 
