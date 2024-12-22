@@ -13,7 +13,7 @@ type AnalyzeQuestionRequest struct {
 //==============================
 
 type GenerateAnswerRequest struct {
-	Prompt string
+	PromptData string `json:"prompt_data"`
 }
 
 //==============================

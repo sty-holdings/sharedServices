@@ -239,6 +239,22 @@ func EncryptedMessageDataRequest(
 	return
 }
 
+// SendMessage - will send out the message.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func SendMessage(
+	msg *nats.Msg,
+) (errorInfo errs.ErrorInfo) {
+
+	if errorInfo.Error = msg.RespondMsg(msg); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_NATS, fmt.Sprintf("Uid: %s Subject: %s", msg.Header[ctv.FN_UID], msg.Subject)))
+	}
+
+	return
+}
+
 // SendReply - will take in an object, build a json object out of it, and send out the reply
 //
 //	Customer Messages: None
