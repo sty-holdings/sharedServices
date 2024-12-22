@@ -116,6 +116,7 @@ func RequestWithHeader(
 
 	if connectionPtr == nil {
 		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
+		return
 	}
 	if timeOut < 2*time.Second {
 		timeOut = 2 * time.Second
@@ -124,8 +125,8 @@ func RequestWithHeader(
 		timeOut = 5 * time.Second
 	}
 	if responsePtr, errorInfo.Error = connectionPtr.RequestMsg(messagePtr, timeOut); errorInfo.Error != nil {
-		log.Printf("%v: RequestWithHeader failed on %v %v for %v: %v", instanceName, ctv.LBL_SUBJECT, messagePtr.Subject, ctv.FN_CLIENT_ID, messagePtr.Header.Get(ctv.FN_CLIENT_ID))
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		log.Printf("%v: RequestWithHeader failed on %s %s for %s: %s", instanceName, ctv.LBL_SUBJECT, messagePtr.Subject, ctv.LBL_STYH_CLIENT_ID, messagePtr.Header.Get(ctv.FN_STYH_CLIENT_ID))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s %s", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
