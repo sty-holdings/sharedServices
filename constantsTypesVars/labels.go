@@ -73,6 +73,8 @@ const (
 	LBL_LOG_FULL_QUALIFIED_NAME    = "LOG FULL QUALIFIED NAME: "
 	LBL_MAX_THREADS                = "MAX THREADS: "
 	LBL_MESSAGE                    = "MESSAGE: "
+	LBL_MESSAGE_REPLY              = "MESSAGE REPLY: "
+	LBL_MESSAGE_REQUEST            = "MESSAGE REQUEST: "
 	LBL_MESSAGE_HEADER             = "MESSAGE HEADER: "
 	LBL_MISSING_PARAMETER          = "MISSING PARAMETER: "
 	LBL_MONTH                      = "MONTH: "
