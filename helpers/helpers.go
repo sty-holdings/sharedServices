@@ -50,6 +50,34 @@ func Base64Encode(value string) string {
 	return b64.StdEncoding.EncodeToString([]byte(value))
 }
 
+// checkValueNotEmpty - validates that the value is not empty. If the value is empty, then an error message is returned. The field label starts with ctv.LBL_.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func checkValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if value == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// checkValueNotNil - validates that the value is not nil. If the value is nil, then an error message is returned. The field label starts with ctv.LBL_.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func checkValueNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if value == nil {
+		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_NIL))
+	}
+
+	return
+}
+
 // BuildJSONRequest
 // func BuildJSONRequest(request interface{}) (jsonRequest []byte) {
 //
@@ -254,7 +282,6 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 		return
 	}
 	tNow = time.Now().In(tLocationPtr)
-	fmt.Println(timezone, tNow)
 
 	switch pointInTime {
 	case ctv.FN_TODAY, ctv.FN_CLOSE_OF_BUSINESS:
@@ -305,6 +332,92 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 		endBy = startAt
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_POINT_IN_TIME, pointInTime))
+	}
+
+	return
+}
+
+// DetermineTimeRangeStartEndTime - will set the start and end time for a point in time type based on today.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func DetermineTimeRangeStartEndTime(timezone string, timeRange string) (startAt string, endBy string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tDaysSinceSunday         int
+		tDaysToEndWeek           int
+		tEndOfQuarter            time.Time
+		tEndOfYear               time.Time
+		tFirstDayOfNextMonth     time.Time
+		tFirstDayOfNextQuarter   time.Time
+		tLastDayOfMonth          time.Time
+		tLocationPtr             *time.Location
+		tNextMonth               time.Time
+		tNow                     time.Time
+		tQuarter                 int
+		tStartMonth              time.Month
+		tStartMonthOfNextQuarter time.Month
+		tStartOfQuarter          time.Time
+		tStartOfYear             time.Time
+		tWeek                    time.Time
+	)
+
+	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
+		return
+	}
+	tNow = time.Now().In(tLocationPtr)
+
+	switch timeRange {
+	case ctv.FN_TODAY, ctv.FN_CLOSE_OF_BUSINESS:
+		startAt = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+	case ctv.FN_START_OF_BUSINESS:
+		startAt = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_WEEK:
+		tDaysSinceSunday = int(tNow.Weekday())
+		tWeek = tNow.AddDate(0, 0, -tDaysSinceSunday)
+		startAt = fmt.Sprintf("%s %s", tWeek.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_MONTH:
+		startAt = fmt.Sprintf("%s%s", tNow.Format("2006-01"), ctv.TXT_START_MONTH)
+		endBy = startAt
+	case ctv.FN_START_OF_QUARTER:
+		tQuarter = (int(tNow.Month()) - 1) / 3
+		tStartMonth = time.Month(tQuarter*3 + 1)
+		tStartOfQuarter = time.Date(tNow.Year(), tStartMonth, 1, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tStartOfQuarter.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_START_OF_YEAR:
+		tStartOfYear = time.Date(tNow.Year(), time.January, 1, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tStartOfYear.Format("2006-01-02"), ctv.TXT_START_DAY)
+		endBy = startAt
+	case ctv.FN_END_OF_WEEK:
+		tDaysToEndWeek = 6 - int(tNow.Weekday())
+		tWeek = tNow.AddDate(0, 0, tDaysToEndWeek)
+		startAt = fmt.Sprintf("%s %s", tWeek.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_MONTH:
+		tNextMonth = tNow.AddDate(0, 1, 0)
+		tFirstDayOfNextMonth = time.Date(tNextMonth.Year(), tNextMonth.Month(), 1, 0, 0, 0, 0, tNextMonth.Location())
+		tLastDayOfMonth = tFirstDayOfNextMonth.AddDate(0, 0, -1)
+		startAt = fmt.Sprintf("%s %s", tLastDayOfMonth.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_QUARTER:
+		tQuarter = (int(tNow.Month()) - 1) / 3
+		tStartMonthOfNextQuarter = time.Month((tQuarter+1)*3 + 1)
+		tFirstDayOfNextQuarter = time.Date(tNow.Year(), tStartMonthOfNextQuarter, 1, 0, 0, 0, 0, tNow.Location())
+		tEndOfQuarter = tFirstDayOfNextQuarter.AddDate(0, 0, -1)
+		startAt = fmt.Sprintf("%s %s", tEndOfQuarter.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	case ctv.FN_END_OF_YEAR:
+		tEndOfYear = time.Date(tNow.Year(), time.December, 31, 0, 0, 0, 0, tNow.Location())
+		startAt = fmt.Sprintf("%s %s", tEndOfYear.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+		endBy = startAt
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_TIME_RANGE, timeRange))
 	}
 
 	return
