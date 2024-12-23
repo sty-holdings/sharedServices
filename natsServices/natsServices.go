@@ -29,6 +29,13 @@ func NewNATSService(
 	config NATSConfiguration,
 ) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 
+	if errorInfo = hlps.CheckValueNotEmpty(extensionName, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.NATSURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+		return
+	}
+
 	natsServicePtr = &NATSService{
 		secure: true,
 		url:    config.NATSURL,
@@ -292,6 +299,13 @@ func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequ
 		tDecryptedValue string
 	)
 
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrPointerMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(keyB64, errs.ErrPointerMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
+		return
+	}
+
 	if tDecryptedValue, errorInfo = jwts.Decrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, string(requestMessagePtr.Data)); errorInfo.Error != nil {
 		return
 	}
@@ -326,16 +340,16 @@ func makeRequestReplyWithHeader(
 		tRequestMessagePtr *nats.Msg
 	)
 
+	if errorInfo = hlps.CheckValueNotEmpty(string(dkRequest), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+		return
+	}
 	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(subject, errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
-		return
-	}
-	if errorInfo = hlps.CheckValueNotEmpty(string(dkRequest), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(subject, errs.ErrRequiredParameterMissing, ctv.LBL_SUBJECT); errorInfo.Error != nil {
 		return
 	}
 
@@ -391,6 +405,16 @@ func sendReplyWithHeader(
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 		tReplyJSON         []byte
 	)
+
+	if errorInfo = hlps.CheckValueNotEmpty(dkReply.Reply, errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_KEY_B64); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckPointerNotNil(keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+		return
+	}
 
 	if dkReply.Reply, errorInfo = jwts.Encrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
 		return
