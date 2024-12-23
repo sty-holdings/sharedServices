@@ -18,7 +18,8 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
-// NewNATSService - builds a reusable NATS Service that creates an instance name, builds a connection, and allows for encryption/decryption of DKRequest and DKReply
+// NewNATSService - builds a reusable NATS Service that creates an instance name, builds a connection, and has HandleRequestWithHeader,
+// MakeRequestReplyWithHeader, SendReplyWithHeader, and Subscribe as methods.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -40,7 +41,8 @@ func NewNATSService(
 	return
 }
 
-// HandleRequestWithHeader - will process a message request and provide a DKRequest []byte
+// HandleRequestWithHeader - accepts a NATS message pointer, decrypts request message data, and return a DKRequest string. The provided requestMessagePtr
+// must be retained by the caller, so it can be used to send a reply.
 //
 // Customer Messages: None
 // Errors: None
