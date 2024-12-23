@@ -11,16 +11,6 @@ const (
 	METHOD_DASHES      = "dashes"
 	METHOD_UNDERSCORES = "underscores"
 	METHOD_BLANK       = ""
-
-	CREDENTIAL_FILENAME = "nats-credentials-filename"
-
-	// Test constants
-	TEST_MESSAGE_ENVIRONMENT = "local"
-	TEST_MESSAGE_NAMESPACE   = "nci"
-	TEST_PORT                = 4222
-	TEST_PORT_EMPTY          = ""
-	//
-	TEST_INVALID_URL = "invalid URL"
 )
 
 type MessageHandler struct {
