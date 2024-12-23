@@ -26,11 +26,15 @@ type NATSConfiguration struct {
 }
 
 type NATSService struct {
-	ConnPtr      *nats.Conn
-	InstanceName string
+	connPtr      *nats.Conn
+	instanceName string
+	secure       bool
+	userInfo     natsUserInfo
+	url          string
+}
+
+type natsUserInfo struct {
 	keyB64       string
-	Secure       bool
 	styhClientId string
 	uId          string
-	URL          string
 }
