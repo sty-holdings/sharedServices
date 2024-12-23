@@ -59,6 +59,7 @@ const (
 	TXT_KEY_SET_MISSING              = "Key Set has no keys."
 	TXT_FAILED                       = " failed."
 	TXT_LINE_SEPARATOR               = "----------------"
+	TXT_MARSHALL_FAILED              = "marshalling failed."
 	TXT_MESSAGE_NAMESPACE            = "message_namespace"
 	TXT_MID_NIGHT                    = "23:59:59"
 	TXT_MISSING                      = "MISSING"
@@ -86,5 +87,6 @@ const (
 	TXT_START_MONTH                  = "-01 00:00:00"
 	TXT_TRUE                         = "true"
 	TXT_UNKNOWN                      = "unknown"
+	TXT_UNMARSHALL_FAILED            = "unmarshalling failed."
 	TXT_YES                          = "yes"
 )
