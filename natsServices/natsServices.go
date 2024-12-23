@@ -374,7 +374,7 @@ func makeRequestReplyWithHeader(
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHALL_FAILED))
 	}
 
-	dkReply.Reply, errorInfo = jwts.Decrypt(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+	dkReply.Reply, errorInfo = jwts.DecryptByteToByte(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
 
 	return
 }
@@ -400,7 +400,7 @@ func sendReplyWithHeader(
 		tReplyJSON         []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(dkReply.Reply, errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(string(dkReply.Reply), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_KEY_B64); errorInfo.Error != nil {
@@ -410,7 +410,7 @@ func sendReplyWithHeader(
 		return
 	}
 
-	if dkReply.Reply, errorInfo = jwts.Encrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
+	if dkReply.Reply, errorInfo = jwts.EncryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
 		return
 	}
 

@@ -10,15 +10,6 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 )
 
-type ErrorInfo struct {
-	AdditionalInfo string `json:"error_additional_info"`
-	Error          error  `json:"-"`
-	FileName       string `json:"error_filename"`
-	FunctionName   string `json:"error_function_name"`
-	LineNumber     int    `json:"error_line_number"`
-	Message        string `json:"error_message"`
-}
-
 // NewErrorInfo - will return an ErrorInfo object.
 //
 //	Customer Messages: None

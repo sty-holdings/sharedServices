@@ -11,7 +11,7 @@ import (
 //==============================
 
 type DKReply struct {
-	Reply     string         `json:"reply"`
+	Reply     []byte         `json:"reply"`
 	ErrorInfo errs.ErrorInfo `json:"error,omitempty"`
 }
 
