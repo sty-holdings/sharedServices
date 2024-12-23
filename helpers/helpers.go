@@ -64,15 +64,15 @@ func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo e
 	return
 }
 
-// CheckValueNotNil - validates that the value is not nil. If the value is nil, then an error message is returned. The field label starts with ctv.LBL_.
+// CheckPointerNotNil - validates that the pointer is not nil. If the pointer is nil, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckValueNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_NIL))
 	}
 
 	return
