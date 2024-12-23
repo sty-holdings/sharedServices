@@ -32,6 +32,7 @@ const (
 	LBL_DEBUG_MODE                 = "DEBUG MODE: "
 	LBL_DIRECTORY                  = "DIRECTORY: "
 	LBL_DK_REQEST                  = "DK REQUEST: "
+	LBL_DK_REPLY                   = "DK REPLY: "
 	LBL_DOCUMENT_ID                = "DOCUMENT ID: "
 	LBL_ELASPE_TIME_SECONDS        = "ELASPE TIME SECONDS: "
 	LBL_EMAIL                      = "EMAIL: "

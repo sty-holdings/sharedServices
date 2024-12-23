@@ -85,6 +85,7 @@ const (
 	TXT_SERVICE_FAILED               = " service failed."
 	TXT_START_DAY                    = "00:00:00"
 	TXT_START_MONTH                  = "-01 00:00:00"
+	TXT_SUBSCRIPTION_FAILED          = "subscription failed."
 	TXT_TRUE                         = "true"
 	TXT_UNKNOWN                      = "unknown"
 	TXT_UNMARSHALL_FAILED            = "unmarshalling failed."

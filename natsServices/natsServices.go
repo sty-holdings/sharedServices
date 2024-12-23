@@ -4,307 +4,133 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"reflect"
+	"os"
 	"runtime"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/nats-io/nats.go"
 
 	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
+	hlps "github.com/sty-holdings/sharedServices/v2024/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
+	vals "github.com/sty-holdings/sharedServices/v2024/validators"
 )
 
-// BuildInstanceName - will create the NATS connection name with dashes, underscores between nodes or as provided.
-// The method can be natsServices.METHOD_DASHES, natsServices.METHOD_UNDERSCORES, ctv.VAL_EMPTY, "dashes", "underscores" or ""
+// NewNATSService - builds a reusable NATS Service that creates an instance name, builds a connection, and allows for encryption/decryption of DKRequest and DKReply
 //
 //	Customer Messages: None
-//	Errors: error returned by natsServices.Connect
+//	Errors: None
 //	Verifications: None
-func BuildInstanceName(
-	method string,
-	nodes ...string,
-) (
-	instanceName string,
-	errorInfo errs.ErrorInfo,
-) {
-
-	if len(nodes) == 1 {
-		method = METHOD_BLANK
-	}
-	switch strings.Trim(strings.ToLower(method), ctv.SPACES_ONE) {
-	case METHOD_DASHES:
-		instanceName, errorInfo = buildInstanceName(ctv.DASH, nodes...)
-	case METHOD_UNDERSCORES:
-		instanceName, errorInfo = buildInstanceName(ctv.UNDERSCORE, nodes...)
-	default:
-		instanceName, errorInfo = buildInstanceName(ctv.VAL_EMPTY, nodes...)
-	}
-
-	return
-}
-
-// GetConnection - will connect to a NATS leaf server with either a ssl or non-ssl connection.
-// This connection function requires natsServices.NATSConfiguration be populated. The following fields
-// do not have to be at this time: TLSCert, TLSPrivateKey, TLSCABundle. The fields TLSCertFQN, TLSPrivateKeyFQN,
-// TLSCABundleFQN must be populated.
-//
-//	Customer Messages: None
-//	Errors: error returned by natsServices.Connect
-//	Verifications: None
-func GetConnection(
-	instanceName string,
+func NewNATSService(
+	extensionName string,
 	config NATSConfiguration,
-) (
-	connPtr *nats.Conn,
-	errorInfo errs.ErrorInfo,
-) {
+) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 
-	var (
-		opts []nats.Option
-		tURL string
-	)
-
-	opts = []nats.Option{
-		nats.Name(instanceName),             // Set a client name
-		nats.MaxReconnects(5),               // Set maximum reconnection attempts
-		nats.ReconnectWait(5 * time.Second), // Set reconnection wait time
-		nats.UserCredentials(config.NATSCredentialsFilename),
-		nats.RootCAs(config.NATSTLSInfo.TLSCABundleFQN),
-		nats.ClientCert(config.NATSTLSInfo.TLSCertFQN, config.NATSTLSInfo.TLSPrivateKeyFQN),
+	natsServicePtr = &NATSService{
+		secure: true,
+		url:    config.NATSURL,
 	}
-
-	if tURL, errorInfo = buildURLPort(config.NATSURL, config.NATSPort); errorInfo.Error != nil {
+	if natsServicePtr.instanceName, errorInfo = buildInstanceName(extensionName, config.NATSURL); errorInfo.Error != nil {
 		return
 	}
-	if connPtr, errorInfo.Error = nats.Connect(tURL, opts...); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v: %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
-		return
-	}
-
-	log.Printf("%v: A connection has been established with the NATS server at %v.", instanceName, config.NATSURL)
-	log.Printf(
-		"%v: URL: %v Server Name: %v Server Id: %v Address: %v",
-		instanceName,
-		connPtr.ConnectedUrl(),
-		connPtr.ConnectedClusterName(),
-		connPtr.ConnectedServerId(),
-		connPtr.ConnectedAddr(),
-	)
+	natsServicePtr.connPtr, errorInfo = getConnection(natsServicePtr.instanceName, config)
 
 	return
 }
 
-// RequestWithHeader - will submit a request and wait for a response.
+// HandleRequestWithHeader - will process a message request and provide a DKRequest []byte
+//
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func (natsServicePtr *NATSService) HandleRequestWithHeader(
+	keyB64 string,
+	requestMessagePtr *nats.Msg,
+) (
+	dkRequest DKRequest,
+	errorInfo errs.ErrorInfo,
+) {
+
+	dkRequest, errorInfo = handleRequestWithHeader(requestMessagePtr, keyB64)
+
+	return
+}
+
+// MakeRequestReplyWithHeader - will submit a request and wait for a reply.
 // Min timeOut is 2 seconds and the max is 5 seconds.
 //
 // Customer Messages: None
 // Errors: None
 // Verifications: None
-func RequestWithHeader(
-	connectionPtr *nats.Conn,
-	instanceName string,
-	messagePtr *nats.Msg,
-	timeOut time.Duration,
+func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
+	dkRequest []byte,
+	keyB64 string,
+	styhClientId string,
+	subject string,
+	uId string,
+	timeOutInSec int,
 ) (
-	responsePtr *nats.Msg,
+	dkReply DKReply,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	if connectionPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
-		return
-	}
-	if timeOut < 2*time.Second {
-		timeOut = 2 * time.Second
-	}
-	if timeOut > 5*time.Second {
-		timeOut = 5 * time.Second
-	}
-	if responsePtr, errorInfo.Error = connectionPtr.RequestMsg(messagePtr, timeOut); errorInfo.Error != nil {
-		log.Printf("%v: RequestWithHeader failed on %s %s for %s: %s", instanceName, ctv.LBL_SUBJECT, messagePtr.Subject, ctv.LBL_STYH_CLIENT_ID, messagePtr.Header.Get(ctv.FN_STYH_CLIENT_ID))
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s %s", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
-		return
-	}
-
-	responsePtr.Header = messagePtr.Header
+	natsServicePtr.userInfo.uId = uId
+	natsServicePtr.userInfo.styhClientId = styhClientId
+	natsServicePtr.userInfo.keyB64 = keyB64
+	dkReply, errorInfo = makeRequestReplyWithHeader(dkRequest, natsServicePtr, subject, timeOutInSec)
 
 	return
 }
 
-// EncryptedDataReply - takes a structure, marshals to a []byte, encrypts the data and responds.
+// SendReplyWithHeader - will reply to a request.
+// Min timeOut is 2 seconds and the max is 5 seconds.
 //
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func EncryptedDataReply(
-	response interface{},
-	msg *nats.Msg,
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func (natsServicePtr *NATSService) SendReplyWithHeader(
+	dkReply DKReply,
 	keyB64 string,
-	uId string,
-) (errorInfo errs.ErrorInfo) {
-
-	var (
-		eMessageB64 []byte
-		tJSON       []byte
-	)
-
-	if tJSON, errorInfo.Error = json.Marshal(response); errorInfo.Error != nil {
-		// todo correct error handling
-		return
-	}
-
-	if eMessageB64, errorInfo = jwts.EncryptFromByteToByte(uId, keyB64, tJSON); errorInfo.Error != nil {
-		// todo add error handling
-		return
-	}
-
-	if errorInfo.Error = msg.Respond(eMessageB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
-	}
-
-	return
-}
-
-// EncryptedMessageDataRequest - takes a structure, marshals to a []byte, encrypts the data and makes a request.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func EncryptedMessageDataRequest(
-	functionName string,
-	natsConnectionPtr *nats.Conn,
-	instanceName string,
-	keyB64 string,
-	msg *nats.Msg,
-	request interface{},
-	timeOutInSecs int,
-	uId string,
-	testingOn bool,
+	requestMessagePtr *nats.Msg,
 ) (
-	replyMsgPtr *nats.Msg,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	var (
-		eMessageDataB64    []byte
-		tAdditionalInfo    string
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-		tJSON              []byte
-	)
-
-	if functionName == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_FUNCTION_NAME, ctv.TXT_IS_MISSING))
-	}
-	if natsConnectionPtr == nil && testingOn == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_NATS_CONNECT_SERVER, ctv.TXT_IS_MISSING))
-	}
-	if instanceName == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_INSTANCE_NAME, ctv.TXT_IS_MISSING))
-	}
-	if keyB64 == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_SECRET_KEY, ctv.TXT_IS_MISSING))
-	}
-	if msg == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
-	}
-	if request == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_REQUEST, ctv.TXT_IS_MISSING))
-	}
-	if uId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildAdditionalInfo(ctv.LBL_UID, ctv.TXT_IS_MISSING))
-	}
-
-	tAdditionalInfo = fmt.Sprintf("%s%s %s @ %s", ctv.LBL_FUNCTION_NAME, functionName, ctv.TXT_FAILED, tFunctionName)
-
-	if tJSON, errorInfo.Error = json.Marshal(request); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
-		return
-	}
-
-	if eMessageDataB64, errorInfo = jwts.EncryptToByte(uId, keyB64, string(tJSON)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
-		return
-	}
-
-	msg.Data = eMessageDataB64
-
-	if replyMsgPtr, errorInfo = RequestWithHeader(natsConnectionPtr, instanceName, msg, validateAdjustTimeOut(timeOutInSecs)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
-	}
+	errorInfo = sendReplyWithHeader(dkReply, keyB64, requestMessagePtr)
 
 	return
 }
 
-// SendMessage - will send out the message.
+// Subscribe - will create a NATS subscription to a subject.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func SendMessage(
-	msg *nats.Msg,
-) (errorInfo errs.ErrorInfo) {
-
-	if errorInfo.Error = msg.RespondMsg(msg); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_NATS, fmt.Sprintf("Uid: %s Subject: %s", msg.Header[ctv.FN_UID], msg.Subject)))
-	}
-
-	return
-}
-
-// SendReply - will take in an object, build a json object out of it, and send out the reply
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func SendReply(
-	reply interface{},
-	msg *nats.Msg,
-) (errorInfo errs.ErrorInfo) {
-
-	var (
-		tJSONReply []byte
-	)
-
-	if tJSONReply, errorInfo = buildJSONReply(reply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
-		return
-	}
-
-	if errorInfo.Error = msg.Respond(tJSONReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v%v%v", ctv.LBL_SUBJECT, msg.Subject, ctv.LBL_MESSAGE_HEADER, msg.Header))
-	}
-
-	return
-}
-
-// Subscribe - will create a NATS subscription
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func Subscribe(
-	connectionPtr *nats.Conn,
-	instanceName, subject string,
+func (natsServicePtr *NATSService) Subscribe(
 	handler nats.MsgHandler,
+	subject string,
 ) (
 	subscriptionPtr *nats.Subscription,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	if connectionPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrPointerMissing, fmt.Sprintf("%s%s", ctv.LBL_POINTER, ctv.TXT_NATS))
-	}
+	var (
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+	)
 
-	if subscriptionPtr, errorInfo.Error = connectionPtr.Subscribe(subject, handler); errorInfo.Error != nil {
-		log.Printf("%v: Subscribe failed on subject: %v", instanceName, subject)
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
 		return
 	}
-	log.Printf("%v Subscribed to subject: %v", instanceName, subject)
+
+	if subscriptionPtr, errorInfo.Error = natsServicePtr.connPtr.Subscribe(subject, handler); errorInfo.Error != nil {
+		log.Printf("ALERT %v: Subscribe failed on subject: %v", natsServicePtr.instanceName, subject)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(tFunctionName, ctv.TXT_SUBSCRIPTION_FAILED))
+		return
+	}
+	log.Printf("%v Subscribed to subject: %v", natsServicePtr.instanceName, subject)
 
 	return
 }
@@ -317,78 +143,37 @@ func Subscribe(
 //	Errors: error returned by natsServices.Connect
 //	Verifications: None
 func buildInstanceName(
-	delimiter string,
-	nodes ...string,
+	extensionName string,
+	natsURL string,
 ) (
 	instanceName string,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	if len(nodes) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprint(ctv.TXT_AT_LEAST_ONE))
+	var (
+		tHostName string
+	)
+
+	if errorInfo = hlps.CheckValueNotEmpty(extensionName, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
-	for index, node := range nodes {
-		if index == 0 {
-			instanceName = strings.Trim(node, ctv.SPACES_ONE)
-		} else {
-			instanceName = fmt.Sprintf("%v%v%v", instanceName, delimiter, strings.Trim(node, ctv.SPACES_ONE))
-		}
+	if errorInfo = hlps.CheckValueNotEmpty(natsURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+		return
 	}
+
+	tHostName, _ = os.Hostname()
+
+	instanceName = fmt.Sprintf("%s-%s-%s", tHostName, extensionName, natsURL)
 
 	return
 }
 
-// buildJSONReply - return a JSON reply object
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func buildJSONReply(reply interface{}) (
-	jsonReply []byte,
-	errorInfo errs.ErrorInfo,
-) {
-
-	if jsonReply, errorInfo.Error = json.Marshal(reply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_REPLY_TYPE, reflect.ValueOf(reply).Type().String()))
-		return
-	}
-
-	return
-}
-
-// BuildTemporaryFiles - creates temporary files for Token.
-// The function checks if the  NATSCredentialsFilename is provided. If the value is empty,
-// the function returns an error.
-//
-//	Customer Messages: None
-//	Errors: ErrRequiredArgumentMissing, returned from WriteFile
-//	Verifications: None
-func BuildTemporaryFiles(
-	tempDirectory string,
-	config NATSConfiguration,
-) (
-	errorInfo errs.ErrorInfo,
-) {
-
-	if config.NATSCredentialsFilename == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TOKEN))
-		return
-	} else {
-		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, CREDENTIAL_FILENAME), []byte(config.NATSCredentialsFilename), 0744); errorInfo.Error != nil {
-			return
-		}
-	}
-
-	return
-}
-
-// buildURLPort - will create the NATS URL with the port.
+// buildURLWithPort - will create the NATS URL with the port.
 //
 //	Customer Messages: None
 //	Errors: error returned by natsServices.Connect
 //	Verifications: None
-func buildURLPort(
+func buildURLWithPort(
 	url string,
 	port string,
 ) (
@@ -410,6 +195,224 @@ func buildURLPort(
 	}
 
 	return fmt.Sprintf("%v:%d", url, tNATSPort), errs.ErrorInfo{}
+}
+
+// getConnection - will connect to a NATS leaf server with either a ssl or non-ssl connection.
+// This connection function requires natsServices.NATSConfiguration be populated. The following fields
+// do not have to be at this time: TLSCert, TLSPrivateKey, TLSCABundle. The fields TLSCertFQN, TLSPrivateKeyFQN,
+// TLSCABundleFQN must be populated.
+//
+// Notes:
+//
+//	MaxReconnects is set to 5
+//	ReconnectWait is set to 2 seconds
+//
+// Customer Messages: None
+// Errors: error returned by natsServices.Connect
+// Verifications: None
+func getConnection(
+	instanceName string,
+	config NATSConfiguration,
+) (
+	connPtr *nats.Conn,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		opts []nats.Option
+		tURL string
+	)
+
+	if errorInfo = hlps.CheckValueNotEmpty(instanceName, errs.ErrRequiredParameterMissing, ctv.LBL_INSTANCE_NAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.NATSURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.NATSPort, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_PORT); errorInfo.Error != nil {
+		return
+	}
+	if vals.DoesFileExist(config.NATSCredentialsFilename) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSCredentialsFilename))
+	}
+	if vals.DoesFileExist(config.NATSTLSInfo.TLSCertFQN) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCertFQN))
+		return
+	}
+	if vals.DoesFileExist(config.NATSTLSInfo.TLSPrivateKeyFQN) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSPrivateKeyFQN))
+		return
+	}
+	if vals.DoesFileExist(config.NATSTLSInfo.TLSCABundleFQN) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCABundleFQN))
+		return
+	}
+
+	opts = []nats.Option{
+		nats.Name(instanceName),             // Set a client name
+		nats.MaxReconnects(5),               // Set maximum reconnection attempts
+		nats.ReconnectWait(2 * time.Second), // Set reconnection wait time
+		nats.UserCredentials(config.NATSCredentialsFilename),
+		nats.RootCAs(config.NATSTLSInfo.TLSCABundleFQN),
+		nats.ClientCert(config.NATSTLSInfo.TLSCertFQN, config.NATSTLSInfo.TLSPrivateKeyFQN),
+	}
+
+	if tURL, errorInfo = buildURLWithPort(config.NATSURL, config.NATSPort); errorInfo.Error != nil {
+		return
+	}
+	if connPtr, errorInfo.Error = nats.Connect(tURL, opts...); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v: %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		return
+	}
+
+	log.Printf("%v: A connection has been established with the NATS server at %v.", instanceName, config.NATSURL)
+	log.Printf(
+		"%v: URL: %v CLuster/Server Name: %v Server Id: %v Address: %v",
+		instanceName,
+		connPtr.ConnectedUrl(),
+		connPtr.ConnectedClusterName(),
+		connPtr.ConnectedServerId(),
+		connPtr.ConnectedAddr(),
+	)
+
+	return
+}
+
+// handleRequestWithHeader - accepts a NATS message pointer, decrypts request message data, and return a DKRequest string. The provided requestMessagePtr
+// must be retained by the caller, so it can be used to send a reply.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequest DKRequest, errorInfo errs.ErrorInfo) {
+
+	var (
+		tDecryptedValue string
+	)
+
+	if tDecryptedValue, errorInfo = jwts.Decrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, string(requestMessagePtr.Data)); errorInfo.Error != nil {
+		return
+	}
+
+	dkRequest = DKRequest(tDecryptedValue)
+
+	return
+}
+
+// makeRequestReplyWithHeader - submits a Base64 DK Request and wait for a DK Reply. The function will validate inputs,
+// build a NATS message pointer, adjust the time-out in seconds as needed, make the request, wait for the reply, unmarshal the
+// reply, and decrypt the DKReply.Reply string.
+//
+// The caller must create the DKRequest []byte and handling any errors returned.
+
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func makeRequestReplyWithHeader(
+	dkRequest []byte,
+	natsServicePtr *NATSService,
+	subject string,
+	timeOutInSec int,
+) (
+	dkReply DKReply,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tActualTimeOut     time.Duration
+		tReplyMessagePtr   *nats.Msg
+		tRequestMessagePtr *nats.Msg
+	)
+
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(subject, errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(string(dkRequest), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+		return
+	}
+
+	tRequestMessagePtr = &nats.Msg{
+		Subject: subject,
+	}
+	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.uId)
+	tRequestMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, natsServicePtr.userInfo.styhClientId)
+	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.uId, natsServicePtr.userInfo.keyB64, dkRequest); errorInfo.Error != nil {
+		return
+	}
+
+	tActualTimeOut = validateAdjustTimeOut(timeOutInSec)
+	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.connPtr.RequestMsg(tRequestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
+		log.Printf(
+			"ALERT %s: RequestWithHeader failed on %s %s for %s: %s",
+			natsServicePtr.instanceName,
+			ctv.LBL_SUBJECT,
+			subject,
+			ctv.LBL_UID,
+			tRequestMessagePtr.Header.Get(ctv.FN_UID),
+		)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		return
+	}
+
+	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHALL_FAILED))
+	}
+
+	dkReply.Reply, errorInfo = jwts.Decrypt(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+
+	return
+}
+
+// sendReplyWithHeader - will take in an object, build a json object out of it, and send out the reply.
+// The DKReply.Reply will be encrypted into a []byte. The DKReply will then be marshalled and sent out as a response
+// using the original message (requestMessagePtr).
+//
+// The caller must create the DKReply.Reply string and handling any errors returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func sendReplyWithHeader(
+	dkReply DKReply,
+	keyB64 string,
+	requestMessagePtr *nats.Msg,
+) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		tReplyJSON         []byte
+	)
+
+	if dkReply.Reply, errorInfo = jwts.Encrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
+		return
+	}
+
+	if tReplyJSON, errorInfo.Error = json.Marshal(dkReply); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdSubjectLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHALL_FAILED))
+		return
+	}
+
+	if errorInfo.Error = requestMessagePtr.Respond(tReplyJSON); errorInfo.Error != nil {
+		log.Printf(
+			"ALERT %s %s for %s%s %s%s",
+			tFunctionName,
+			ctv.TXT_FAILED,
+			ctv.LBL_UID,
+			requestMessagePtr.Header.Get(ctv.FN_UID),
+			ctv.LBL_SUBJECT,
+			requestMessagePtr.Subject,
+		)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdSubjectLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_NATS, ctv.TXT_FAILED))
+	}
+
+	return
 }
 
 // validateAdjustTimeOut - will check the timeout (Seconds) is between 2 and 5. If not it, will adjust the value

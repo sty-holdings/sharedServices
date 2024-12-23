@@ -58,7 +58,7 @@ func Base64Encode(value string) string {
 func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -197,12 +197,12 @@ func ConvertDateTimeToTimestamp(fieldName string, dateString string, timezone st
 	)
 
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 
 	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04:05", dateString, tLocationPtr); errorInfo.Error == nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(fieldName, ctv.TXT_IS_INVALID))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(fieldName, ctv.TXT_IS_INVALID))
 	}
 
 	return
@@ -278,7 +278,7 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 	)
 
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 	tNow = time.Now().In(tLocationPtr)
@@ -331,7 +331,7 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 		startAt = fmt.Sprintf("%s %s", tEndOfYear.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
 		endBy = startAt
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_POINT_IN_TIME, pointInTime))
+		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildLabelValue(ctv.LBL_POINT_IN_TIME, pointInTime))
 	}
 
 	return
@@ -364,7 +364,7 @@ func DetermineTimeRangeStartEndTime(timezone string, timeRange string) (startAt 
 	)
 
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildAdditionalInfo(ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 	tNow = time.Now().In(tLocationPtr)
@@ -417,7 +417,7 @@ func DetermineTimeRangeStartEndTime(timezone string, timeRange string) (startAt 
 		startAt = fmt.Sprintf("%s %s", tEndOfYear.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
 		endBy = startAt
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildAdditionalInfo(ctv.LBL_TIME_RANGE, timeRange))
+		errorInfo = errs.NewErrorInfo(errs.ErrPointInTimeInvalid, errs.BuildLabelValue(ctv.LBL_TIME_RANGE, timeRange))
 	}
 
 	return

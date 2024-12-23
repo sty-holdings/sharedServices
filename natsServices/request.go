@@ -9,6 +9,12 @@ type AnalyzeQuestionRequest struct {
 }
 
 //==============================
+// DK Generic
+//==============================
+
+type DKRequest string
+
+//==============================
 // Generate Answer
 //==============================
 
