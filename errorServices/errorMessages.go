@@ -63,11 +63,13 @@ const (
 	MAP_MISSING_KEY                    = "Provided map has a nil or empty key."
 	MAP_MISSING_VALUE                  = "Provided map has a nil or empty value."
 	MAX_THREADS_INVALID                = "The config file max threads value is less than 1."
-	NATS_CONNECTION_FAILED             = "Connecting to NATS server failed."
-	NATS_URL_INVALID                   = "The NATS URL value is invalid."
-	NATS_ZERO                          = "The port value is zero. This is not allowed. Recommended values are 4222 and 9222."
 	MESSAGE_JSON_INVALID               = "The message body is not valid JSON."
 	MESSAGE_NAMESPACE_INVALID          = "The Message namespace value is invalid."
+	NATS_CONNECTION_FAILED             = "Connecting to NATS server failed."
+	NATS_HEADER_UID_EMPTY              = "The NATS message header must contain a map entry with uid and it must be populated."
+	NATS_HEADER_STYH_CLIENT_ID_EMPTY   = "The NATS message header must contain a map entry with styh_client_id and it must be populated."
+	NATS_URL_INVALID                   = "The NATS URL value is invalid."
+	NATS_ZERO                          = "The port value is zero. This is not allowed. Recommended values are 4222 and 9222."
 	NOT_DIVISIBLE_N                    = "Calculate value must not be divisable by N."
 	OPTION_INVALID                     = "Option Invalid"
 	PARSE_BIG_INT_FAILED               = "Unable to parse the value provided."
@@ -131,9 +133,7 @@ const (
 	STRIPE_OUT_NOT_SUPPORTED           = "Transfers out using Stripe are not supported."
 	STRIPE_SOURCE_INVALID              = "The provided source is invalid. See https://docs.stripe.com/api/payment_intents."
 	STRUCT_INVALID                     = "Provided object is not a struct."
-	STYH_CLIENT_ID_EMPTY               = "An empty STYH Client Id is not allowed."
 	STYH_USERNAME_EMPTY                = "An empty STYH Username is not allowed."
-	STYH_UID_EMPTY                     = "An empty STYH UID is not allowed."
 	SUB_CATEGORY_NOT_SUPPORTED         = "The sub-category is not supported."
 	SUBJECTS_MISSING                   = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                    = "The subject is invalid."
@@ -168,6 +168,7 @@ const (
 
 //goland:noinspection ALL
 var (
+	ErrAWSInvalidSSMParameters        = errors.New(AWS_INVALID_SSM_PARAMETERS)
 	ErrAccessTokenMissing             = errors.New(ACCESS_TOKEN_MISSING)
 	ErrAddressCityMissing             = errors.New(ADDRESS_CITY_MISSING)
 	ErrAddressStateMissing            = errors.New(ADDRESS_STATE_MISSING)
@@ -176,7 +177,6 @@ var (
 	ErrAlreadyConfirmedEmail          = errors.New(USER_ALREADY_CONFIRMED_EMAIL)
 	ErrAlreadyConfirmedPhone          = errors.New(USER_ALREADY_CONFIRMED_PHONE)
 	ErrAttemptsExceeded               = errors.New(ATTEMPTS_EXCEEDED)
-	ErrAWSInvalidSSMParameters        = errors.New(AWS_INVALID_SSM_PARAMETERS)
 	ErrBase64Invalid                  = errors.New(BASE64_INVALID)
 	ErrBucketNotFound                 = errors.New(BUCKET_NOT_FOUND)
 	ErrBufferEmpty                    = errors.New(BUFFER_EMPTY)
@@ -204,10 +204,10 @@ var (
 	ErrFileMissing                    = errors.New(FILE_MISSING)
 	ErrFileRemovalFailed              = errors.New(FILE_REMOVAL_FAILED)
 	ErrFileUnreadable                 = errors.New(FILE_UNREADABLE)
-	ErrFirebaseAuthConnectionFailed   = errors.New(FIREBASE_AUTH_CONNECTION_FAILED)
-	ErrFirestoreClientFailed          = errors.New(FIRESTORE_CLIENT_FAILED)
 	ErrFirebaseAppConnectionFailed    = errors.New(FIREBASE_APP_CONNECTION_FAILED)
+	ErrFirebaseAuthConnectionFailed   = errors.New(FIREBASE_AUTH_CONNECTION_FAILED)
 	ErrFirebaseProjectMissing         = errors.New(FIREBASE_PROJECT_ID_MISSING)
+	ErrFirestoreClientFailed          = errors.New(FIRESTORE_CLIENT_FAILED)
 	ErrFloatInvalid                   = errors.New(FLOAT_INVALID)
 	ErrGinModeInvalid                 = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing              = errors.New(GIN_URL_PORT_MISSING)
@@ -227,19 +227,21 @@ var (
 	ErrMaxThreadsInvalid              = errors.New(MAX_THREADS_INVALID)
 	ErrMessageJSONInvalid             = errors.New(MESSAGE_JSON_INVALID)
 	ErrMessageNamespaceInvalid        = errors.New(MESSAGE_NAMESPACE_INVALID)
+	ErrNATSConnectionFailed           = errors.New(NATS_CONNECTION_FAILED)
+	ErrNATSHeaderSYTHClientIdEmpty    = errors.New(NATS_HEADER_STYH_CLIENT_ID_EMPTY)
+	ErrNATSHeaderUIDEmpty             = errors.New(NATS_HEADER_UID_EMPTY)
+	ErrNATSURLInvalid                 = errors.New(NATS_URL_INVALID)
 	ErrNameFirstLastMissing           = errors.New(NAME_FIRST_LAST_MISSING)
 	ErrNameFirstMissing               = errors.New(NAME_FIRST_MISSING)
 	ErrNameLastMissing                = errors.New(NAME_LAST_MISSING)
-	ErrNATSConnectionFailed           = errors.New(NATS_CONNECTION_FAILED)
 	ErrNatsPortInvalid                = errors.New(NATS_ZERO)
-	ErrNATSURLInvalid                 = errors.New(NATS_URL_INVALID)
 	ErrNotDivisibleN                  = errors.New(NOT_DIVISIBLE_N)
 	ErrOptionInvalid                  = errors.New(OPTION_INVALID)
+	ErrPIDFileExists                  = errors.New(PID_FILE_EXISTS)
 	ErrParseBigIntFailed              = errors.New(PARSE_BIG_INT_FAILED)
 	ErrPhoneNumberAreaCodeMissing     = errors.New(PHONE_NUMBER_AREA_CODE_MISSING)
 	ErrPhoneNumberCountryCodeMissing  = errors.New(PHONE_NUMBER_COUNTRY_CODE_MISSING)
 	ErrPhoneNumberMissing             = errors.New(PHONE_NUMBER_MISSING)
-	ErrPIDFileExists                  = errors.New(PID_FILE_EXISTS)
 	ErrPlaidInvalidPublicToken        = errors.New(PLAID_INVALID_PUBLIC_TOKEN)
 	ErrPointInTimeInvalid             = errors.New(POINT_IN_TIME_INVALID)
 	ErrPointerMissing                 = errors.New(POINTER_MISSING)
@@ -254,9 +256,12 @@ var (
 	ErrRefreshTooSoon                 = errors.New(REFRESH_TOO_SOON)
 	ErrRequestorIdMissing             = errors.New(REQUESTOR_ID_MISSING)
 	ErrRequiredArgumentMissing        = errors.New(REQUIRED_ARGUMENT_MISSING)
-	ErrRequiredParameterMissing       = errors.New(REQUIRED_PARAMETER_MISSING)
 	ErrRequiredFileMissing            = errors.New(REQUIRED_FILE_MISSING)
+	ErrRequiredParameterMissing       = errors.New(REQUIRED_PARAMETER_MISSING)
 	ErrRetryLimitHit                  = errors.New(RETRY_LIMIT_HIT)
+	ErrSRPAModNZero                   = errors.New(SRP_A_MOD_N_ZERO)
+	ErrSRPBModNZero                   = errors.New(SRP_B_MOD_N_ZERO)
+	ErrSYTHUsernameEmpty              = errors.New(STYH_USERNAME_EMPTY)
 	ErrSaasProviderExists             = errors.New(SAAS_PROVIDER_EXISTS)
 	ErrSaasProviderMissing            = errors.New(SAAS_PROVIDER_MISSING)
 	ErrServerConfigurationInvalid     = errors.New(SERVER_CONFIGURATION_INVALID)
@@ -279,8 +284,6 @@ var (
 	ErrSetStringFailed                = errors.New(SET_STRING_FAILED)
 	ErrShortURLMissing                = errors.New(SHORT_URL_MISSING)
 	ErrSignalUnknown                  = errors.New(SIGNAL_UNKNOWN)
-	ErrSRPAModNZero                   = errors.New(SRP_A_MOD_N_ZERO)
-	ErrSRPBModNZero                   = errors.New(SRP_B_MOD_N_ZERO)
 	ErrStripeAmountInvalid            = errors.New(STRIPE_AMOUNT_INVALID)
 	ErrStripeCreateCustomerFailed     = errors.New(STRIPE_CUSTOMER_FAILED)
 	ErrStripeCurrencyInvalid          = errors.New(STRIPE_CURRENCY_INVALID)
@@ -295,15 +298,12 @@ var (
 	ErrStripePaymentMethodTypeInvalid = errors.New(STRIPE_PAYMENT_METHOD_TYPE_INVALID)
 	ErrStripeSourceInvalid            = errors.New(STRIPE_SOURCE_INVALID)
 	ErrStructInvalid                  = errors.New(STRUCT_INVALID)
-	ErrSubjectInvalid                 = errors.New(SUBJECT_INVALID)
-	ErrSubjectsMissing                = errors.New(SUBJECTS_MISSING)
-	ErrSubjectSubscriptionFailed      = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
-	ErrSYTHClientIdEmpty              = errors.New(STYH_CLIENT_ID_EMPTY)
-	ErrSYTHUserNameEmpty              = errors.New(STYH_USERNAME_EMPTY)
-	ErrSYTHUIDEmpty                   = errors.New(STYH_UID_EMPTY)
 	ErrSubCategoryNotSupported        = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
-	ErrTimezoneNotSupported           = errors.New(TIMEZONE_NOT_SUPPORT)
+	ErrSubjectInvalid                 = errors.New(SUBJECT_INVALID)
+	ErrSubjectSubscriptionFailed      = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
+	ErrSubjectsMissing                = errors.New(SUBJECTS_MISSING)
 	ErrTLSFilesMissing                = errors.New(TLS_FILES_MISSING)
+	ErrTimezoneNotSupported           = errors.New(TIMEZONE_NOT_SUPPORT)
 	ErrTokenClaimsInvalid             = errors.New(TOKEN_CLAIMS_INVALID)
 	ErrTokenExpired                   = errors.New(TOKEN_EXPIRED)
 	ErrTokenInvalid                   = errors.New(TOKEN_INVALID)
