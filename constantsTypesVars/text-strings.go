@@ -52,6 +52,7 @@ const (
 	TXT_IS_EMPTY                     = "is empty"
 	TXT_IS_INVALID                   = "is invalid"
 	TXT_IS_MISSING                   = "is missing"
+	TXT_IS_NIL                       = "is nil"
 	TXT_IS_OK                        = "is ok"
 	TXT_IS_UNREADABLE                = "is unreadable"
 	TXT_KEY_SET_MISSING              = "Key Set has no keys."
