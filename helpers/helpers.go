@@ -50,12 +50,12 @@ func Base64Encode(value string) string {
 	return b64.StdEncoding.EncodeToString([]byte(value))
 }
 
-// checkValueNotEmpty - validates that the value is not empty. If the value is empty, then an error message is returned. The field label starts with ctv.LBL_.
+// CheckValueNotEmpty - validates that the value is not empty. If the value is empty, then an error message is returned. The field label starts with ctv.LBL_.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func checkValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_EMPTY))
@@ -64,12 +64,12 @@ func checkValueNotEmpty(value string, err error, fieldLabel string) (errorInfo e
 	return
 }
 
-// checkValueNotNil - validates that the value is not nil. If the value is nil, then an error message is returned. The field label starts with ctv.LBL_.
+// CheckValueNotNil - validates that the value is not nil. If the value is nil, then an error message is returned. The field label starts with ctv.LBL_.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func checkValueNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckValueNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildAdditionalInfo(fieldLabel, ctv.TXT_IS_NIL))
