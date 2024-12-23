@@ -295,10 +295,6 @@ func getConnection(
 //	Verifications: None
 func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequest DKRequest, errorInfo errs.ErrorInfo) {
 
-	var (
-		tDecryptedValue string
-	)
-
 	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrPointerMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 		return
 	}
@@ -306,11 +302,9 @@ func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequ
 		return
 	}
 
-	if tDecryptedValue, errorInfo = jwts.Decrypt(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, string(requestMessagePtr.Data)); errorInfo.Error != nil {
+	if dkRequest, errorInfo = jwts.DecryptToByte(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, string(requestMessagePtr.Data)); errorInfo.Error != nil {
 		return
 	}
-
-	dkRequest = DKRequest(tDecryptedValue)
 
 	return
 }
