@@ -29,6 +29,7 @@ const (
 	TXT_DATATYPE_UINT64          = "uint64"
 	TXT_DATATYPE_UINT8           = "uint8"
 	TXT_DATATYPE_UINTPTR         = "uintptr"
+	TXT_DECODE_FAILED            = "decode failed"
 	TXT_DID_NOT_MATCH            = "Values didn't match"
 	TXT_DIRECTORY_DOES_NOT_EXIST = "Directory doesn't exist"
 	TXT_DIRECTORY_EXISTS         = "Directory exists"
