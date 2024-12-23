@@ -52,7 +52,7 @@ func NewErrorInfo(
 //	Verifications: None
 func BuildAdditionalInfo(label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s%s", label, value)
+	return fmt.Sprintf("%s%s.", label, value)
 }
 
 // PrintError - will output error information using this format:
