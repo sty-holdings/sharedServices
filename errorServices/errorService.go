@@ -45,14 +45,24 @@ func NewErrorInfo(
 	return
 }
 
-// BuildAdditionalInfo - builds the additional information parameter using fmt.Sprintf("%s%s",...).
+// BuildLabelValue - builds a string using a label and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildAdditionalInfo(label string, value string) (additionalInfo string) {
+func BuildLabelValue(label string, value string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s%s.", label, value)
+}
+
+// BuildUIdLabelValue - builds a string using a label and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildUIdLabelValue(uId string, label string, value string) (additionalInfo string) {
+
+	return fmt.Sprintf("UId: %s %s%s.", uId, label, value)
 }
 
 // PrintError - will output error information using this format:
