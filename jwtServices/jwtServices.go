@@ -22,53 +22,11 @@ import (
 	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
 )
 
-// BuildTLSTemporaryFiles - creates temporary files for TLS information.
-// The function checks if the TLSCABundle, TLSCert, and TLSPrivateKey in tlsInfo are provided. If any of these values are empty,
-// the function returns an error indicating the missing.
-//
-//	Customer Messages: None
-//	Errors: ErrRequiredArgumentMissing, returned from WriteFile
-//	Verifications: None
-func BuildTLSTemporaryFiles(
-	tempDirectory string,
-	tlsInfo TLSInfo,
-) (
-	errorInfo errs.ErrorInfo,
-) {
-
-	if tlsInfo.TLSCABundle == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CA_BUNDLE))
-		return
-	} else {
-		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CA_BUNDLE_FILENAME), []byte(tlsInfo.TLSCABundle), 0744); errorInfo.Error != nil {
-			return
-		}
-	}
-	if tlsInfo.TLSCert == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_CERTIFICATE))
-		return
-	} else {
-		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_CERT_FILENAME), []byte(tlsInfo.TLSCert), 0744); errorInfo.Error != nil {
-			return
-		}
-	}
-	if tlsInfo.TLSPrivateKey == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_MISSING_PARAMETER, ctv.FN_TLS_PRIVATE_KEY))
-		return
-	} else {
-		if errorInfo = hlp.WriteFile(fmt.Sprintf("%v/%v", tempDirectory, TLS_PRIVATE_KEY_FILENAME), []byte(tlsInfo.TLSPrivateKey), 0744); errorInfo.Error != nil {
-			return
-		}
-	}
-
-	return
-}
-
-// Decrypt - decrypts a base64 string using AES-GCM mode of operation and returns a string.
+// Decrypt - decrypts a Base64 string using AES-GCM mode of operation and returns a string.
 //
 // Customer Messages: None
 // Errors:
-// - ErrInvalidBase64: If the encryptedMessage could not be decoded from base64.
+// - ErrInvalidBase64: If the encryptedMessage could not be decoded from Base64.
 // - ErrCipherInitialization: If the AES cipher could not be initialized with the provided key.
 // - ErrAEADInitialization: If the AEAD object could not be created.
 // - ErrDecryption: If the ciphertext could not be decrypted.
@@ -76,9 +34,9 @@ func BuildTLSTemporaryFiles(
 func Decrypt(
 	uId string,
 	keyB64 string,
-	encryptedMessageB64 string,
+	valueB64 string,
 ) (
-	decryptedMessage string,
+	decryptedValue string,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -92,28 +50,18 @@ func Decrypt(
 		tPlaintext  []byte
 	)
 
-	if encryptedMessageB64 == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_MESSAGE, ctv.TXT_IS_MISSING))
-		return
-	}
-	if keyB64 == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_SECRET_KEY, ctv.TXT_IS_MISSING))
-		return
-	}
-	if uId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, ctv.TXT_IS_MISSING))
+	if errorInfo = checkEncryptDecryptParameters(uId, keyB64, valueB64); errorInfo.Error != nil {
 		return
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_UID, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.FN_KEY_B64, ctv.TXT_DECODE_FAILED))
 		return
+	}
+	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(valueB64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_CIPHER_TEXT_B64, ctv.TXT_DECODE_FAILED))
 	}
 
-	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(encryptedMessageB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_UID, uId))
-		return
-	}
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_UID, uId))
 		return
@@ -132,12 +80,12 @@ func Decrypt(
 		return
 	}
 
-	decryptedMessage = string(tPlaintext)
+	decryptedValue = string(tPlaintext)
 
 	return
 }
 
-// DecryptToByte - will call decrypt using a base64 string and returns a []byte
+// DecryptToByte - will call decrypt using a Base64 string and returns a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -145,71 +93,71 @@ func Decrypt(
 func DecryptToByte(
 	uId string,
 	keyB64 string,
-	encryptedMessageB64 string,
+	valueB64 string,
 ) (
-	decryptedMessage []byte,
+	decryptedValue []byte,
 	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
-		tDecryptedMessage string
+		tDecryptedValue string
 	)
 
-	if tDecryptedMessage, errorInfo = Decrypt(uId, keyB64, encryptedMessageB64); errorInfo.Error == nil {
-		decryptedMessage = []byte(tDecryptedMessage)
+	if tDecryptedValue, errorInfo = Decrypt(uId, keyB64, valueB64); errorInfo.Error == nil {
+		decryptedValue = []byte(tDecryptedValue)
 	}
 
 	return
 }
 
-// DecryptFromByteToByte - will call decrypt using a base64 []byte and returns a []byte
+// DecryptByteToByte - will call decrypt using a Base64 []byte and returns a []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
 //	Verifications: None
-func DecryptFromByteToByte(
+func DecryptByteToByte(
 	uId string,
 	keyB64 string,
-	encryptedMessageB64 []byte,
+	valueB64 []byte,
 ) (
-	decryptedMessage []byte,
+	decryptedValue []byte,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = DecryptToByte(uId, keyB64, string(encryptedMessageB64))
+	decryptedValue, errorInfo = DecryptToByte(uId, keyB64, string(valueB64))
 
 	return
 }
 
-// DecryptFromByteToString - will call decrypt using a base64 []byte and return a string
+// DecryptByteToString - will call decrypt using a Base64 []byte and return a string
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
 //	Verifications: None
-func DecryptFromByteToString(
+func DecryptByteToString(
 	uId string,
 	keyB64 string,
-	encryptedMessageB64 []byte,
+	valueB64 []byte,
 ) (
 	decryptedMessage string,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(encryptedMessageB64))
+	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(valueB64))
 
 	return
 }
 
-// Encrypt - encrypts a message using AES-GCM mode of operation and returns a base64 string
+// Encrypt - encrypts a value using AES-GCM mode of operation and returns a Base64 string
 // The function encrypts message and initializes the AES cipher
 // with the provided key.
 //
 // Returns:
-// - encryptedMessage: base64 encoded string
+// - encryptedMessage: Base64 encoded string
 //
 // Customer Messages: None
 // Errors:
-// - ErrInvalidBase64: If the encryptedMessage could not be decoded from base64.
+// - ErrInvalidBase64: If the encryptedMessage could not be decoded from Base64.
 // - ErrCipherInitialization: If the AES cipher could not be initialized with the provided key.
 // - ErrAEADInitialization: If the AEAD object could not be created.
 // - ErrDecryption: If the ciphertext could not be decrypted.
@@ -217,9 +165,9 @@ func DecryptFromByteToString(
 func Encrypt(
 	uId string,
 	keyB64 string,
-	message string,
+	value string,
 ) (
-	encryptedMessageB64 string,
+	encryptedValueB64 string,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -230,6 +178,10 @@ func Encrypt(
 		tDecodedKey []byte
 		tNonce      []byte
 	)
+
+	if errorInfo = checkEncryptDecryptParameters(uId, keyB64, value); errorInfo.Error != nil {
+		return
+	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_USERNAME, uId))
@@ -250,13 +202,13 @@ func Encrypt(
 	//goland:noinspection GoUnhandledErrorResult
 	io.ReadFull(rand.Reader, tNonce) // Use a cryptographically secure RNG
 
-	tCiphertext = tAESGCM.Seal(tNonce, tNonce, []byte(message), nil)
-	encryptedMessageB64 = base64.StdEncoding.EncodeToString(tCiphertext)
+	tCiphertext = tAESGCM.Seal(tNonce, tNonce, []byte(value), nil)
+	encryptedValueB64 = base64.StdEncoding.EncodeToString(tCiphertext)
 
 	return
 }
 
-// EncryptToByte - will call encrypt using a string and returns a base64 []byte
+// EncryptToByte - will call encrypt using a string and returns a Base64 []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
@@ -264,9 +216,9 @@ func Encrypt(
 func EncryptToByte(
 	uId string,
 	keyB64 string,
-	message string,
+	value string,
 ) (
-	encryptedMessageB64 []byte,
+	encryptedValueB64 []byte,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -274,47 +226,47 @@ func EncryptToByte(
 		tEncryptedMessageB64 string
 	)
 
-	if tEncryptedMessageB64, errorInfo = Encrypt(uId, keyB64, message); errorInfo.Error == nil {
-		encryptedMessageB64 = []byte(tEncryptedMessageB64)
+	if tEncryptedMessageB64, errorInfo = Encrypt(uId, keyB64, value); errorInfo.Error == nil {
+		encryptedValueB64 = []byte(tEncryptedMessageB64)
 	}
 
 	return
 }
 
-// EncryptFromByteToByte - will call encrypt using a []byte and returns a base 64 []byte
+// EncryptByteToByte - will call encrypt using a []byte and returns a Base64 []byte
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
 //	Verifications: None
-func EncryptFromByteToByte(
+func EncryptByteToByte(
 	uId string,
 	keyB64 string,
-	message []byte,
+	value []byte,
 ) (
-	encryptedMessageB64 []byte,
+	encryptedValueB64 []byte,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	encryptedMessageB64, errorInfo = EncryptToByte(uId, keyB64, string(message))
+	encryptedValueB64, errorInfo = EncryptToByte(uId, keyB64, string(value))
 
 	return
 }
 
-// EncryptFromByteToString - will call encrypt the []byte and return a string
+// EncryptByteToString - will call encrypt the []byte and return a Base64 string
 //
 //	Customer Messages: None
 //	Errors: returned by Decrypt
 //	Verifications: None
-func EncryptFromByteToString(
+func EncryptByteToString(
 	uId string,
 	keyB64 string,
-	encryptedMessageB64 []byte,
+	encryptedValueB64 []byte,
 ) (
 	decryptedMessage string,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Encrypt(uId, keyB64, string(encryptedMessageB64))
+	decryptedMessage, errorInfo = Encrypt(uId, keyB64, string(encryptedValueB64))
 
 	return
 }
@@ -407,7 +359,7 @@ func GenerateRSAKey(rsaBits int) (
 // GenerateSymmetricKey - generates a Symmetric key with 32 bytes.
 //
 // Returns:
-// - SymmetricKey: The generated symmetric key base64 encoded
+// - SymmetricKey: The generated symmetric key Base64 encoded
 //
 // Customer Messages: None
 // Errors: Any error during key generation.
@@ -471,6 +423,26 @@ func RemoveTLSTemporaryFiles(
 			}
 		}
 	}
+
+	return
+}
+
+// Private Functions
+
+// CheckEncryptDecryptParameters - Checks the required parameter for Encrypt and Decrypt functions.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func checkEncryptDecryptParameters(uId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
+
+	if errorInfo = hlp.CheckValueNotEmpty(uId, errs.ErrRequiredParameterMissing, ctv.FN_UID); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlp.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
+		return
+	}
+	errorInfo = hlp.CheckValueNotEmpty(value, errs.ErrRequiredParameterMissing, ctv.FN_VALUE_B64)
 
 	return
 }
