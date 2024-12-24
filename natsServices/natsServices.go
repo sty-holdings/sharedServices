@@ -348,6 +348,7 @@ func makeRequestReplyWithHeader(
 	}
 
 	tRequestMessagePtr = &nats.Msg{
+		Header:  make(nats.Header),
 		Subject: subject,
 	}
 	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.uId)
