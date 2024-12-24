@@ -18,11 +18,11 @@ type MessageHandler struct {
 }
 
 type NATSConfiguration struct {
-	NATSCredentialsFilename string `json:"nats_credentials_filename"`
+	NATSCredentialsFilename string `json:"nats_credentials_filename" yaml:"nats_credentials_filename"`
 	NATSToken               string
-	NATSPort                string       `json:"nats_port"`
-	NATSTLSInfo             jwts.TLSInfo `json:"nats_tls_info"`
-	NATSURL                 string       `json:"nats_url"`
+	NATSPort                string       `json:"nats_port" yaml:"nats_port"`
+	NATSTLSInfo             jwts.TLSInfo `json:"nats_tls_info" yaml:"nats_tls_info"`
+	NATSURL                 string       `json:"nats_url" yaml:"nats_url"`
 }
 
 type NATSService struct {

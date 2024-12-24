@@ -47,10 +47,10 @@ type GenerateCertificate struct {
 
 // TLSInfo files
 type TLSInfo struct {
-	TLSCert          string `json:"tls_certificate"`
-	TLSCertFQN       string `json:"tls_certificate_fqn"`
-	TLSPrivateKey    string `json:"tls_private_key"`
-	TLSPrivateKeyFQN string `json:"tls_private_key_fqn"`
-	TLSCABundle      string `json:"tls_ca_bundle"`
-	TLSCABundleFQN   string `json:"tls_ca_bundle_fqn"`
+	TLSCert          string `json:"tls_certificate" yaml:"tls_certificate"`
+	TLSCertFQN       string `json:"tls_certificate_fqn" yaml:"tls_certificate_fqn"`
+	TLSPrivateKey    string `json:"tls_private_key" yaml:"tls_private_key"`
+	TLSPrivateKeyFQN string `json:"tls_private_key_fqn" yaml:"tls_private_key_fqn"`
+	TLSCABundle      string `json:"tls_ca_bundle" yaml:"tls_ca_bundle"`
+	TLSCABundleFQN   string `json:"tls_ca_bundle_fqn" yaml:"tls_ca_bundle_fqn"`
 }
