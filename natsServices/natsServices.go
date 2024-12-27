@@ -68,7 +68,7 @@ func (natsServicePtr *NATSService) HandleRequestWithHeader(
 }
 
 // MakeRequestReplyWithHeader - will submit a request and wait for a reply.
-// Min timeOut is 2 seconds and the max is 5 seconds.
+// Min timeout is 2 seconds and the max is 5 seconds.
 //
 // Customer Messages: None
 // Errors: None
@@ -89,6 +89,28 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
 	natsServicePtr.userInfo.styhClientId = styhClientId
 	natsServicePtr.userInfo.keyB64 = keyB64
 	dkReply, errorInfo = makeRequestReplyWithHeader(dkRequest, natsServicePtr, subject, timeOutInSec)
+
+	return
+}
+
+// MakeRequestReplyWithMessage - will submit a message and wait for a reply.
+// Min timeout is 2 seconds and the max is 5 seconds.
+//
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func (natsServicePtr *NATSService) MakeRequestReplyWithMessage(
+	keyB64 string,
+	requestMessagePtr *nats.Msg,
+	subject string,
+	timeOutInSec int,
+) (
+	dkReply DKReply,
+	errorInfo errs.ErrorInfo,
+) {
+
+	natsServicePtr.userInfo.keyB64 = keyB64
+	dkReply, errorInfo = makeRequestReplyWithMessage(natsServicePtr, requestMessagePtr, subject, timeOutInSec)
 
 	return
 }
@@ -314,7 +336,7 @@ func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequ
 // reply, and decrypt the DKReply.Reply string.
 //
 // The caller must create the DKRequest []byte and handling any errors returned.
-
+//
 // Customer Messages: None
 // Errors: None
 // Verifications: None
@@ -373,9 +395,76 @@ func makeRequestReplyWithHeader(
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHALL_FAILED))
+		return
 	}
 
-	dkReply.Reply, errorInfo = jwts.DecryptByteToByte(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+	if errorInfo.Error == nil {
+		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+	}
+
+	return
+}
+
+// makeRequestReplyWithMessage - submits a NATS message and wait for a DK Reply. The function will validate inputs,
+// adjust the time-out in seconds as needed, update the subject, make the request, wait for the reply, unmarshal the
+// reply, and decrypt the DKReply.Reply string.
+//
+// The caller must provide the requestMessagePtr *nats.MSG and handling any errors returned.
+//
+// Customer Messages: None
+// Errors: None
+// Verifications: None
+func makeRequestReplyWithMessage(
+	natsServicePtr *NATSService,
+	requestMessagePtr *nats.Msg,
+	subject string,
+	timeOutInSec int,
+) (
+	dkReply DKReply,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tActualTimeOut   time.Duration
+		tReplyMessagePtr *nats.Msg
+	)
+
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(subject, errs.ErrRequiredParameterMissing, ctv.LBL_SUBJECT); errorInfo.Error != nil {
+		return
+	}
+
+	requestMessagePtr.Subject = subject
+	tActualTimeOut = validateAdjustTimeOut(timeOutInSec)
+	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.connPtr.RequestMsg(requestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
+		log.Printf(
+			"ALERT %s: RequestWithHeader failed on %s %s for %s: %s",
+			natsServicePtr.instanceName,
+			ctv.LBL_SUBJECT,
+			subject,
+			ctv.LBL_UID,
+			requestMessagePtr.Header.Get(ctv.FN_UID),
+		)
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		return
+	}
+
+	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHALL_FAILED))
+		return
+	}
+
+	if errorInfo.Error == nil {
+		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+	}
 
 	return
 }
