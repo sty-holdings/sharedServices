@@ -50,14 +50,14 @@ func Base64Encode(value string) string {
 	return b64.StdEncoding.EncodeToString([]byte(value))
 }
 
-// CheckValueNotEmpty - validates that the value is not empty. If the value is empty, then an error message is returned. The field label starts with ctv.LBL_.
+// CheckLengthGTZero - validates that the value length is greater than zero. If the values length is zero, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckLengthGTZero(value []interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
-	if value == ctv.VAL_EMPTY {
+	if len(value) == ctv.VAL_ZERO {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
@@ -73,6 +73,20 @@ func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorI
 
 	if value == nil {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_NIL))
+	}
+
+	return
+}
+
+// CheckValueNotEmpty - validates that the value is not empty. If the value is empty, then an error message is returned. The field label starts with ctv.LBL_.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if value == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
