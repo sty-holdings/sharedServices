@@ -43,6 +43,7 @@ const (
 	LBL_END_OF_WEEK                = "END OF WEEK: "
 	LBL_END_OF_YEAR                = "END OF YEAR: "
 	LBL_ENVIRONMENT                = "ENVIRONMENT: "
+	LBL_ERROR_MESSAGE              = "ERROR MESSAGE: "
 	LBL_EXTENSIONS                 = "EXTENSIONS: "
 	LBL_EXTENSION_NAME             = "EXTENSION NAME: "
 	LBL_FILENAME                   = "FILENAME: "

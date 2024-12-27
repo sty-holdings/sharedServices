@@ -496,13 +496,20 @@ func sendReplyWithHeader(
 		tReplyJSON         []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(string(dkReply.Reply), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
-		return
+	if dkReply.ErrorInfo.Error == nil {
+		if errorInfo = hlps.CheckValueNotEmpty(string(dkReply.Reply), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
+			return
+		}
+	}
+	if dkReply.Reply == nil {
+		if errorInfo = hlps.CheckValueNotEmpty(dkReply.ErrorInfo.Message, errs.ErrRequiredParameterMissing, ctv.LBL_ERROR_MESSAGE); errorInfo.Error != nil {
+			return
+		}
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 		return
 	}
 
