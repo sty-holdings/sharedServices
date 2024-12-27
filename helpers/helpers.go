@@ -291,6 +291,13 @@ func DeterminePointInTimeStartEndTime(timezone string, pointInTime string) (star
 		tWeek                    time.Time
 	)
 
+	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = CheckValueNotEmpty(pointInTime, errs.ErrTimezoneNotSupported, ctv.LBL_POINT_IN_TIME); errorInfo.Error != nil {
+		return
+	}
+
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
 		return
