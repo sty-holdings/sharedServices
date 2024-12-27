@@ -67,8 +67,11 @@ func (natsServicePtr *NATSService) HandleRequestWithHeader(
 	return
 }
 
-// MakeRequestReplyWithHeader - will submit a request and wait for a reply.
-// Min timeout is 2 seconds and the max is 5 seconds.
+// makeRequestReplyWithHeader - submits a Base64 DK Request and wait for a DK Reply. The function will validate inputs,
+// build a NATS message pointer, adjust the time-out in seconds as needed, make the request, wait for the reply, unmarshal the
+// reply, and decrypt the DKReply.Reply string.
+//
+// The caller must create the DKRequest []byte and handling any errors returned.
 //
 // Customer Messages: None
 // Errors: None
@@ -93,8 +96,11 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
 	return
 }
 
-// MakeRequestReplyWithMessage - will submit a message and wait for a reply.
-// Min timeout is 2 seconds and the max is 5 seconds.
+// MakeRequestReplyWithMessage - submits a NATS message and wait for a DK Reply. The function will validate inputs,
+// adjust the time-out in seconds as needed, update the subject, make the request, wait for the reply, unmarshal the
+// reply, and decrypt the DKReply.Reply string.
+//
+// The caller must provide the requestMessagePtr *nats.MSG and handling any errors returned.
 //
 // Customer Messages: None
 // Errors: None
