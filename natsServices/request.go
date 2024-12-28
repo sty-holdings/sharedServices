@@ -19,7 +19,7 @@ type DKRequest []byte
 //==============================
 
 type GenerateAnswerRequest struct {
-	PromptData string `json:"prompt_data"`
+	PromptData []byte `json:"prompt_data"`
 }
 
 //==============================
