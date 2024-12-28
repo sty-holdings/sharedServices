@@ -513,8 +513,10 @@ func sendReplyWithHeader(
 		return
 	}
 
-	if dkReply.Reply, errorInfo = jwts.EncryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
-		return
+	if len(dkReply.Reply) > ctv.VAL_ZERO {
+		if dkReply.Reply, errorInfo = jwts.EncryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), keyB64, dkReply.Reply); errorInfo.Error != nil {
+			return
+		}
 	}
 
 	if tReplyJSON, errorInfo.Error = json.Marshal(dkReply); errorInfo.Error != nil {
