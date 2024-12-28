@@ -19,7 +19,14 @@ type DKRequest []byte
 //==============================
 
 type GenerateAnswerRequest struct {
-	PromptData string `json:"prompt_data"`
+	PromptData PromptInfo `json:"prompt_data"`
+}
+
+type PromptInfo struct {
+	EndBy      string `json:"end_by"`
+	Question   string `json:"question"`
+	StartAt    string `json:"start_at"`
+	StripeData string `json:"stripe_data"`
 }
 
 //==============================
