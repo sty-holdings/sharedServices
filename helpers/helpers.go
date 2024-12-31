@@ -275,13 +275,15 @@ func DetermineStartEndTime(
 	startDate string,
 	timezone string,
 ) (
-	startAt string, endBy string,
+	startAt string,
+	endBy string,
 	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
+		tEnd         time.Time
 		tLocationPtr *time.Location
-		tNow         time.Time
+		tStart       time.Time
 	)
 
 	if errorInfo = CheckValueNotEmpty(endDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
@@ -298,10 +300,11 @@ func DetermineStartEndTime(
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
 		return
 	}
-	tNow = time.Now().In(tLocationPtr)
+	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
+	tEnd, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
 
-	startAt = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_START_DAY)
-	endBy = fmt.Sprintf("%s %s", tNow.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.TXT_START_DAY)
+	endBy = fmt.Sprintf("%s %s", tEnd.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
 
 	//switch pointInTime {
 	//case ctv.FN_TODAY, ctv.FN_CLOSE_OF_BUSINESS:
