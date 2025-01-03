@@ -62,6 +62,7 @@ const (
 	MAP_IS_EMPTY                       = "Provided map is not populated."
 	MAP_MISSING_KEY                    = "Provided map has a nil or empty key."
 	MAP_MISSING_VALUE                  = "Provided map has a nil or empty value."
+	MAX_OUTPUT_TOKENS                  = "You have exceeded the max_output_tokens setting in the configuration file."
 	MAX_THREADS_INVALID                = "The config file max threads value is less than 1."
 	MESSAGE_JSON_INVALID               = "The message body is not valid JSON."
 	MESSAGE_NAMESPACE_INVALID          = "The Message namespace value is invalid."
@@ -224,6 +225,7 @@ var (
 	ErrMapIsEmpty                     = errors.New(MAP_IS_EMPTY)
 	ErrMapIsMissingKey                = errors.New(MAP_MISSING_KEY)
 	ErrMapIsMissingValue              = errors.New(MAP_MISSING_VALUE)
+	ErrMaxOutputTokens                = errors.New(MAX_OUTPUT_TOKENS)
 	ErrMaxThreadsInvalid              = errors.New(MAX_THREADS_INVALID)
 	ErrMessageJSONInvalid             = errors.New(MESSAGE_JSON_INVALID)
 	ErrMessageNamespaceInvalid        = errors.New(MESSAGE_NAMESPACE_INVALID)
