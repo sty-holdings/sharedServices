@@ -140,6 +140,7 @@ const (
 	SUBJECT_INVALID                    = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED        = "Unable to subscribe to the subject."
 	TIMEZONE_NOT_SUPPORT               = "The timezone is not supported."
+	TIMEOUT_REACHED                    = "You have exceeded the set timeout."
 	TLS_FILES_MISSING                  = "TLS files are missing."
 	TOKEN_CLAIMS_INVALID               = "The token claims are invalid."
 	TOKEN_EXPIRED                      = "The token has expired."
@@ -306,6 +307,7 @@ var (
 	ErrSubjectsMissing                = errors.New(SUBJECTS_MISSING)
 	ErrTLSFilesMissing                = errors.New(TLS_FILES_MISSING)
 	ErrTimezoneNotSupported           = errors.New(TIMEZONE_NOT_SUPPORT)
+	ErrTimeoutReached                 = errors.New(TIMEOUT_REACHED)
 	ErrTokenClaimsInvalid             = errors.New(TOKEN_CLAIMS_INVALID)
 	ErrTokenExpired                   = errors.New(TOKEN_EXPIRED)
 	ErrTokenInvalid                   = errors.New(TOKEN_INVALID)
