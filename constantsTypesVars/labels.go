@@ -3,6 +3,7 @@ package sharedServices
 //goland:noinspection ALL
 const (
 	LBL_AMOUNT                     = "AMOUNT: "
+	LBL_ANALYSIS_STATUS            = "ANALYSIS_STATUS: "
 	LBL_ANALYZE_QUESTION           = "ANALYZE_QUESTION: "
 	LBL_APPLICATION_NAME           = "APPLICATION NAME: "
 	LBL_ARRAY_ELEMENT              = "ARRAY_ELEMENT: "
