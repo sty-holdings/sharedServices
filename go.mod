@@ -1,4 +1,4 @@
-module github.com/sty-holdings/sharedServices/v2024
+module github.com/sty-holdings/sharedServices/v2025
 
 go 1.22.3
 
