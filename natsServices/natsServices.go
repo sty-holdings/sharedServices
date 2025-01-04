@@ -11,11 +11,11 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlps "github.com/sty-holdings/sharedServices/v2024/helpers"
-	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
-	vals "github.com/sty-holdings/sharedServices/v2024/validators"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
+	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // NewNATSService - builds a reusable NATS Service that creates an instance name, builds a connection, and has HandleRequestWithHeader,

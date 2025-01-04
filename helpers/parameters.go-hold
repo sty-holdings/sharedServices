@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	"github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
 )
 
 //goland:noinspection ALL

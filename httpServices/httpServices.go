@@ -9,11 +9,11 @@ import (
 	// "os"
 	// "time"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
-	vals "github.com/sty-holdings/sharedServices/v2024/validators"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
+	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 type HTTPConfiguration struct {

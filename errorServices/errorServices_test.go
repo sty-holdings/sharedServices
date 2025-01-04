@@ -4,7 +4,7 @@ import (
 	"runtime"
 	"testing"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
 func TestNewErrorInfo(tPtr *testing.T) {

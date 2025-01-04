@@ -8,9 +8,9 @@ import (
 	"cloud.google.com/go/firestore"
 	//firebase "firebase.google.com/go"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	//fbs "github.com/sty-holdings/sharedServices/v2024/firebaseServices"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	//fbs "github.com/sty-holdings/sharedServices/v2025/firebaseServices"
 )
 
 var (

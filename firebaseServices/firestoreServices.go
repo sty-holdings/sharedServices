@@ -12,10 +12,10 @@ import (
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/iterator"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vlds "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 //goland:noinspection ALL

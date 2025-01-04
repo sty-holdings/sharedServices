@@ -15,9 +15,9 @@ import (
 
 	"github.com/google/uuid"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	vlds "github.com/sty-holdings/sharedServices/v2024/validators"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	vlds "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // Base64Decode - will decode a base64 string to a string. If there is an error,

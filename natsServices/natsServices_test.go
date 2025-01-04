@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"testing"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
 func TestGetNATSConnection(tPtr *testing.T) {

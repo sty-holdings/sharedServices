@@ -17,9 +17,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 )
 
 // Decrypt - decrypts a Base64 string using AES-GCM mode of operation and returns a string.

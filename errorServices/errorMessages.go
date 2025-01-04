@@ -26,7 +26,7 @@ const (
 	COGNITO_USER_NAME_MISSING          = "Username is not in the Cognito user pool."
 	COGNITO_USERPOOL_ID_INVALID        = "User Pool ID must be in format: '<region>_<pool name>'"
 	CONFIG_FILE_MISSING                = "Not able to read the supplied config file. "
-	CURRENCY_INVALID                   = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
+	CURRENCY_INVALID                   = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
 	DECODE_STRING_FAILED               = "Unable to decode the string."
 	DIRECTORY_MISSING                  = "The directory does not exist."
 	DIRECTORY_NOT_FULLY_QUALIFIED      = "The directory doesn't start and end with slash."

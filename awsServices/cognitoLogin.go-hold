@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
+	pi "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 // NewCognitoLogin - creates a CognitoLogin object. If you have a clientSecret, we use a pointer

@@ -7,7 +7,7 @@ import (
 	"log"
 	"runtime"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
 // NewErrorInfo - will return an ErrorInfo object.

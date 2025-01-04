@@ -3,7 +3,7 @@ package sharedServices
 import (
 	"strings"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
 // IsDirectoryFullyQualified - checks to see if the directory starts and ends with a slash.

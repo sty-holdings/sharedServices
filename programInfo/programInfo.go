@@ -6,7 +6,7 @@ import (
 	"os"
 	"runtime"
 
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 )
 
 type ProgramInfo struct {

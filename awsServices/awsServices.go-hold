@@ -20,10 +20,10 @@ import (
 	awsSSM "github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/golang-jwt/jwt/v5"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2024/helpers"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	pi "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 // GetIdentityCredentials - will return AWS temporary credentials.

@@ -10,9 +10,9 @@ import (
 	"regexp"
 	"strings"
 
-	ctv "github.com/sty-holdings/sharedServices/v2024/constantsTypesVars"
-	errs "github.com/sty-holdings/sharedServices/v2024/errorServices"
-	pi "github.com/sty-holdings/sharedServices/v2024/programInfo"
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	pi "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 // AreMapKeysPopulated - will test to make sure all map keys are set to anything other than nil or empty.

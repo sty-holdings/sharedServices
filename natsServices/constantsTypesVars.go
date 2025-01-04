@@ -3,7 +3,7 @@ package sharedServices
 import (
 	"github.com/nats-io/nats.go"
 
-	jwts "github.com/sty-holdings/sharedServices/v2024/jwtServices"
+	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
 //goland:noinspection GoSnakeCaseUsage,GoCommentStart
