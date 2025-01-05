@@ -42,9 +42,6 @@ const (
 	OPER_DOUBE_EQUAL_SIGN   = "=="
 	OPER_EQUAL_SIGN         = "="
 	PID_FILENAME            = "server.pid"
-	VAL_EMPTY               = ""
-	VAL_ZERO                = 0
-	VALID                   = "VALID"
 )
 
 //goland:noinspection All
