@@ -838,7 +838,7 @@ func RemoveFile(fqn string) (errorInfo errs.ErrorInfo) {
 
 	// This doesn't use the coreValidator.DoesFileExist by design.
 	if _, err := os.Stat(fqn); err != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 

@@ -39,7 +39,7 @@ const (
 	EXTRACT_KEY_FAILED                 = "Extracting the key has failed."
 	FALSE_SHOULD_BE_TRUE               = "The result should have been true."
 	FILE_CREATION_FAILED               = "Create the file failed."
-	FILE_MISSING                       = "The file doesn't exist."
+	FILE_DOESNT_EXIST                  = "The file doesn't exist."
 	FILE_REMOVAL_FAILED                = "The file was not deleted."
 	FILE_UNREADABLE                    = "[ERROR} The file is not readable."
 	FIREBASE_APP_CONNECTION_FAILED     = "The Firebase App connection failed and is empty."
@@ -203,7 +203,7 @@ var (
 	ErrExtractKeysFailure             = errors.New(EXTRACT_KEY_FAILED)
 	ErrFalseShouldBeTrue              = errors.New(FALSE_SHOULD_BE_TRUE)
 	ErrFileCreationFailed             = errors.New(FILE_CREATION_FAILED)
-	ErrFileMissing                    = errors.New(FILE_MISSING)
+	ErrFileDoesntExist                = errors.New(FILE_DOESNT_EXIST)
 	ErrFileRemovalFailed              = errors.New(FILE_REMOVAL_FAILED)
 	ErrFileUnreadable                 = errors.New(FILE_UNREADABLE)
 	ErrFirebaseAppConnectionFailed    = errors.New(FIREBASE_APP_CONNECTION_FAILED)

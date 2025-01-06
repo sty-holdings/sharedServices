@@ -270,18 +270,18 @@ func getConnection(
 		return
 	}
 	if vals.DoesFileExist(config.NATSCredentialsFilename) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSCredentialsFilename))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSCredentialsFilename))
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSCertFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCertFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCertFQN))
 		return
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSPrivateKeyFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSPrivateKeyFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSPrivateKeyFQN))
 		return
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSCABundleFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist errs.BuildLabelValue(ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCABundleFQN))
 		return
 	}
 

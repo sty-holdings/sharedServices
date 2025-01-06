@@ -95,14 +95,14 @@ func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.Error
 	if fileLabel == ctv.VAL_EMPTY {
 		fileLabel = ctv.TXT_NO_LABEL_PROVIDED
 	}
-	errorInfo.AdditionalInfo = fmt.Sprintf("File: %v  Config File Label: %v", filename, fileLabel)
+	errorInfo.AdditionalInfo = fmt.Sprintf("File: %s  Config File Label: %s", fqn, fileLabel)
 
 	if filename == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errorInfo.AdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.FN_FILENAME, ctv.TXT_IS_EMPTY))
 		return
 	}
 	if DoesFileExist(fqn) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileMissing, errorInfo.AdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errorInfo.AdditionalInfo)
 		return
 	}
 	if IsFileReadable(fqn) == false { // File is not readable
