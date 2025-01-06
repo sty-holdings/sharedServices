@@ -116,32 +116,30 @@ func PrintErrorInfo(errorInfo ErrorInfo) {
 func outputError(errorInfo ErrorInfo) {
 
 	log.Printf(
-		"[ERROR] %v Additional Info: '%v' File: %v Near Line Number: %v\n",
+		"[ERROR] %s Additional Info: '%s' \nStackTrace: %s\n",
 		errorInfo.Error.Error(),
 		errorInfo.AdditionalInfo,
-		errorInfo.FileName,
-		errorInfo.LineNumber,
+		errorInfo.StackTrace,
 	)
 }
 
 func newError(myError error) (errorInfo ErrorInfo) {
 
-	errorInfo = getErrorFunctionFileNameLineNumber(3)
+	errorInfo.StackTrace = getErrorFunctionFileNameLineNumber()
 	errorInfo.Error = myError
 
 	return
 }
 
-func getErrorFunctionFileNameLineNumber(level int) (errorInfo ErrorInfo) {
+func getErrorFunctionFileNameLineNumber() string {
 
 	var (
-		tFunction, _, _, _ = runtime.Caller(level)
+		buf = make([]byte, 1024)
 	)
 
-	errorInfo.FunctionName = runtime.FuncForPC(tFunction).Name()
-	_, errorInfo.FileName, errorInfo.LineNumber, _ = runtime.Caller(level)
+	runtime.Stack(buf, false)
 
-	return
+	return string(buf)
 }
 
 // DumpErrorInfos - outputs multiple error messages

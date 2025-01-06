@@ -1,6 +1,7 @@
 package sharedServices
 
 import (
+	"fmt"
 	"runtime"
 	"testing"
 
@@ -37,7 +38,7 @@ func TestNewErrorInfo(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				NewErrorInfo(ts.arguments.myError, ts.arguments.additionalInfo)
+				fmt.Println(NewErrorInfo(ts.arguments.myError, ts.arguments.additionalInfo))
 			},
 		)
 	}
@@ -255,10 +256,6 @@ func TestNewError(tPtr *testing.T) {
 // Private Functions
 func TestGetErrorFunctionFileNameLineNumber(tPtr *testing.T) {
 
-	type arguments struct {
-		level int
-	}
-
 	var (
 		gotError           bool
 		tErrorInfo         ErrorInfo
@@ -268,28 +265,10 @@ func TestGetErrorFunctionFileNameLineNumber(tPtr *testing.T) {
 
 	tests := []struct {
 		name      string
-		arguments arguments
 		wantError bool
 	}{
 		{
-			name: "Positive Case: Successful!",
-			arguments: arguments{
-				level: -1,
-			},
-			wantError: false,
-		},
-		{
-			name: "Positive Case: Successful!",
-			arguments: arguments{
-				level: 0,
-			},
-			wantError: false,
-		},
-		{
-			name: "Positive Case: Successful!",
-			arguments: arguments{
-				level: 1,
-			},
+			name:      "Positive Case: Successful!",
 			wantError: false,
 		},
 	}
@@ -297,7 +276,7 @@ func TestGetErrorFunctionFileNameLineNumber(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			tFunctionName, func(t *testing.T) {
-				if tErrorInfo = getErrorFunctionFileNameLineNumber(ts.arguments.level); tErrorInfo.Error != nil {
+				if tErrorInfo.StackTrace = getErrorFunctionFileNameLineNumber(); tErrorInfo.Error != nil {
 					gotError = true
 				} else {
 					gotError = false

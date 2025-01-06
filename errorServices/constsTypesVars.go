@@ -11,8 +11,6 @@ const (
 type ErrorInfo struct {
 	AdditionalInfo string `json:"error_additional_info"`
 	Error          error
-	FileName       string `json:"error_filename"`
-	FunctionName   string `json:"error_function_name"`
-	LineNumber     int    `json:"error_line_number"`
+	StackTrace     string `json:"error_stack_trace"`
 	Message        string `json:"error_message"`
 }
