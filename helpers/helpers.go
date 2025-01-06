@@ -864,6 +864,24 @@ func RemovePidFile(pidFQN string) (errorInfo errs.ErrorInfo) {
 	return
 }
 
+// TrimString - takes a search value, finds it in the string, and trims everything to the left of the search value.
+// If the search value is not found the data is returned.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func TrimString(searchValue string, data string) (trimmedPath string) {
+
+	index := strings.Index(data, searchValue)
+	if index == -1 {
+		trimmedPath = data
+		return
+	}
+	trimmedPath = data[index:]
+
+	return
+}
+
 // WriteFile - will create and write to a fully qualified file.
 //
 //	Customer Messages: None
