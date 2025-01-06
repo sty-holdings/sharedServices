@@ -236,6 +236,7 @@ func TestOutputError(tPtr *testing.T) {
 func TestNewError(tPtr *testing.T) {
 
 	var (
+		buf                = make([]byte, 1024)
 		errorInfo          ErrorInfo
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
@@ -243,48 +244,12 @@ func TestNewError(tPtr *testing.T) {
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
-			if errorInfo = newError(ErrErrorMissing); errorInfo.Error == nil {
+			if errorInfo = newError(buf, ErrErrorMissing); errorInfo.Error == nil {
 				tPtr.Errorf(FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
-			if errorInfo = newError(nil); errorInfo.Error != nil {
+			if errorInfo = newError(buf, nil); errorInfo.Error != nil {
 				tPtr.Errorf(FORMAT_EXPECTING_NO_ERROR, tFunctionName, errorInfo.Error)
 			}
 		},
 	)
-}
-
-// Private Functions
-func TestGetErrorFunctionFileNameLineNumber(tPtr *testing.T) {
-
-	var (
-		gotError           bool
-		tErrorInfo         ErrorInfo
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-	)
-
-	tests := []struct {
-		name      string
-		wantError bool
-	}{
-		{
-			name:      "Positive Case: Successful!",
-			wantError: false,
-		},
-	}
-
-	for _, ts := range tests {
-		tPtr.Run(
-			tFunctionName, func(t *testing.T) {
-				if tErrorInfo.StackTrace = getErrorFunctionFileNameLineNumber(); tErrorInfo.Error != nil {
-					gotError = true
-				} else {
-					gotError = false
-				}
-				if gotError != ts.wantError {
-					tPtr.Error(tErrorInfo.Error.Error())
-				}
-			},
-		)
-	}
 }

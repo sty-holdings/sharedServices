@@ -20,10 +20,15 @@ func NewErrorInfo(
 	additionalInfo string,
 ) (errorInfo ErrorInfo) {
 
+	var (
+		buf = make([]byte, 1024)
+	)
+
 	if myError == nil {
 		return
 	} else {
-		errorInfo = newError(myError)
+		runtime.Stack(buf, false)
+		errorInfo = newError(buf, myError)
 	}
 
 	if additionalInfo == ctv.VAL_EMPTY {
@@ -79,13 +84,15 @@ func PrintError(
 ) {
 
 	var (
+		buf       = make([]byte, 1024)
 		errorInfo ErrorInfo
 	)
 
+	runtime.Stack(buf, false)
 	if myError == nil {
-		errorInfo = newError(ErrErrorMissing)
+		errorInfo = newError(buf, ErrErrorMissing)
 	} else {
-		errorInfo = newError(myError)
+		errorInfo = newError(buf, myError)
 	}
 	if additionalInfo == ctv.VAL_EMPTY {
 		errorInfo.AdditionalInfo = ctv.TXT_EMPTY
@@ -105,8 +112,13 @@ func PrintError(
 //	Verifications: None
 func PrintErrorInfo(errorInfo ErrorInfo) {
 
+	var (
+		buf = make([]byte, 1024)
+	)
+
+	runtime.Stack(buf, false)
 	if errorInfo.Error == nil {
-		errorInfo = newError(ErrErrorMissing)
+		errorInfo = newError(buf, ErrErrorMissing)
 	}
 
 	outputError(errorInfo)
@@ -123,29 +135,10 @@ func outputError(errorInfo ErrorInfo) {
 	)
 }
 
-func newError(myError error) (errorInfo ErrorInfo) {
+func newError(stackTrace []byte, myError error) (errorInfo ErrorInfo) {
 
-	errorInfo.StackTrace = getErrorFunctionFileNameLineNumber()
+	errorInfo.StackTrace = string(stackTrace)
 	errorInfo.Error = myError
 
 	return
 }
-
-func getErrorFunctionFileNameLineNumber() string {
-
-	var (
-		buf = make([]byte, 1024)
-	)
-
-	runtime.Stack(buf, false)
-
-	return string(buf)
-}
-
-// DumpErrorInfos - outputs multiple error messages
-//
-//	func DumpErrorInfos(ErrorInfos []ErrorInfo) {
-//		for _, info := range ErrorInfos {
-//			PrintError(info)
-//		}
-//	}
