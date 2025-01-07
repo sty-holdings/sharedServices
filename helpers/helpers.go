@@ -619,6 +619,25 @@ func GenerateUUIDType4(removeDashes bool) (myUUID string) {
 // 	return time.Now().Format("2006-01-02")
 // }
 
+// GetDateTimeWithLocation - returns the date/time (month day, year hh:mm:ss AM/PM format based on
+// the IANA Time Zone Database value.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetDateTimeWithLocation(timezone string) (myDateTime string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tLocationPtr *time.Location
+	)
+
+	if tLocationPtr, errorInfo = GetLocationTimePtr(timezone); errorInfo.Error != nil {
+		return
+	}
+
+	return time.Now().In(tLocationPtr).Format("January 2, 2006 3:04:05 PM"), errs.ErrorInfo{}
+}
+
 // GetLocationTimePtr - using the IANA Time Zone Database, this will return a locationPtr for date/time.
 //
 //	Customer Messages: None
