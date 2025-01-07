@@ -619,6 +619,21 @@ func GenerateUUIDType4(removeDashes bool) (myUUID string) {
 // 	return time.Now().Format("2006-01-02")
 // }
 
+// GetLocationTimePtr - using the IANA Time Zone Database, this will return a locationPtr for date/time.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetLocationTimePtr(timezone string) (locationPtr *time.Location, errorInfo errs.ErrorInfo) {
+
+	if locationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
+		return
+	}
+
+	return
+}
+
 // GetUnixTimestamp - gets date/time in unix format (Mon Jan _2 15:04:05 MST 2006)
 //
 //	Customer Messages: None
