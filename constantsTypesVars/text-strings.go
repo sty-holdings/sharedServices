@@ -81,6 +81,7 @@ const (
 	TXT_PONG                         = "pong"
 	TXT_PROCESS_MANUALLY             = "Process transfer manually."
 	TXT_PROTECTED                    = "protected"
+	TXT_SAAS_PROVIDER_FAILED         = "pulling SaaS provider failed."
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
 	TXT_SERVER                       = "server"
 	TXT_SERVICE_FAILED               = " service failed."
