@@ -21,7 +21,7 @@ func NewErrorInfo(
 ) (errorInfo ErrorInfo) {
 
 	var (
-		buf = make([]byte, 1024)
+		buf = make([]byte, 2048)
 	)
 
 	if myError == nil {
@@ -84,7 +84,7 @@ func PrintError(
 ) {
 
 	var (
-		buf       = make([]byte, 1024)
+		buf       = make([]byte, 2048)
 		errorInfo ErrorInfo
 	)
 
@@ -113,7 +113,7 @@ func PrintError(
 func PrintErrorInfo(errorInfo ErrorInfo) {
 
 	var (
-		buf = make([]byte, 1024)
+		buf = make([]byte, 2048)
 	)
 
 	runtime.Stack(buf, false)
