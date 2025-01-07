@@ -55,3 +55,8 @@ const (
 	INSTR_CATEGORY_PROMPT_COMPARISON_NAME = "CategoryPromptComparison"
 	INSTR_TIME_SUBTIME_PERIOD_NAME        = "TimeSubTimePeriod"
 )
+
+//goland:noinspection All
+const (
+	ANS_DATE_TIME_FORMAT = "The time for %s is %s"
+)
