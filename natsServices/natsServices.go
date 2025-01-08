@@ -540,7 +540,7 @@ func sendReplyWithHeader(
 	return
 }
 
-// validateAdjustTimeOut - will check the timeout (Seconds) is between 2 and 15. If not it, will adjust the value
+// validateAdjustTimeOut - will check the timeout (Seconds) is between 2 and 30. If not it, will adjust the value
 //
 //	Customer Messages: None
 //	Errors: None
@@ -552,8 +552,8 @@ func validateAdjustTimeOut(timeOutInSeconds int) (actualTimeOut time.Duration) {
 		return
 	}
 
-	if timeOutInSeconds > 15 {
-		actualTimeOut = 15 * time.Second
+	if timeOutInSeconds > 30 {
+		actualTimeOut = 30 * time.Second
 		return
 	}
 
