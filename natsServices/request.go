@@ -23,9 +23,7 @@ type GenerateAnswerRequest struct {
 }
 
 type PromptInfo struct {
-	EndBy      string `json:"end_by"`
 	Question   string `json:"question"`
-	StartAt    string `json:"start_at"`
 	StripeData string `json:"stripe_data"`
 }
 
