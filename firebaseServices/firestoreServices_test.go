@@ -10,18 +10,6 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	//fbs "github.com/sty-holdings/sharedServices/v2025/firebaseServices"
-)
-
-var (
-	tFireTestNameValue = map[any]interface{}{
-		//ctv.FN_REQUESTOR_ID: ctv.TEST_USERNAME_SAVUP_REQUESTOR_ID,
-		//ctv.FN_EMAIL:        ctv.TEST_STRING,
-	}
-	tFireTestNameValueSubCollection = map[any]interface{}{
-		//ctv.FN_INSTITUTION_NAME:   ctv.TEST_INSTITUTION_CHASE,
-		//ctv.FN_PLAID_ACCESS_TOKEN: ctv.TEST_STRING,
-	}
 )
 
 func TestBuildFirestoreUpdate(tPtr *testing.T) {
