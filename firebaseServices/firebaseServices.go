@@ -110,8 +110,8 @@ func GetFirebaseUserInfo(
 	firestoreClientPtr *firestore.Client,
 	username string,
 ) (
-	userInfo map[string]interface{},
 	dkElapseTime float64,
+	userInfo map[string]interface{},
 	errorInfo errs.ErrorInfo,
 ) {
 
