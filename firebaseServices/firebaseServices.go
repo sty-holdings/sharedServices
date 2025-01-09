@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -110,10 +111,12 @@ func GetFirebaseUserInfo(
 	username string,
 ) (
 	userInfo map[string]interface{},
+	dkElapseTime float64,
 	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
+		tStartTime               = time.Now()
 		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
 	)
 
@@ -127,6 +130,7 @@ func GetFirebaseUserInfo(
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
+	dkElapseTime = time.Since(tStartTime).Seconds()
 
 	return
 }
