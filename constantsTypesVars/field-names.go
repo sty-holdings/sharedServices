@@ -92,6 +92,7 @@ const (
 	FN_FEDERAL_TAX_ID_IS_SET              = "federal_tax_id_is_set"
 	FN_FILENAME                           = "filename"
 	FN_FIRST_NAME                         = "first_name"
+	FN_FUNCTION_INFO                      = "function_info"
 	FN_FUNCTION_NAME                      = "function_name"
 	FN_GCP_CREDENTIAL_FILENAME            = "gcp_credential_filename"
 	FN_GCP_LOCATION                       = "gcp_location"
