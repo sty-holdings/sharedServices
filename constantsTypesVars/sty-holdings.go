@@ -52,8 +52,10 @@ const (
 
 //goland:noinspection All
 const (
-	INSTR_CATEGORY_PROMPT_COMPARISON_NAME = "CategoryPromptComparison"
-	INSTR_TIME_SUBTIME_PERIOD_NAME        = "TimeSubTimePeriod"
+	INSTR_CATEGORY_PROMPT_COMPARISON_NAME        = "CategoryPromptComparison"
+	INSTR_TIME_PERIOD_VALUES_NAME                = "TimePeriodValues"
+	INSTR_TIME_PERIOD_WORDS_PRESENT_NAME         = "TimePeriodWordsPresent"
+	INSTR_TIME_PERIOD_SPECIAL_WORDS_PRESENT_NAME = "TimePeriodSpecialWordsPresent"
 )
 
 //goland:noinspection All
