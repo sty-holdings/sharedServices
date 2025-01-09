@@ -18,7 +18,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func RecordFunctionTimings(dkElapsedTime time.Duration, firestoreClientPtr *firestore.Client, testMode bool) {
+func RecordFunctionTimings(dkElapsedTime float64, environment string, extensionName string, firestoreClientPtr *firestore.Client, testMode bool) {
 
 	var (
 		tFields       = make(map[any]interface{})
@@ -28,6 +28,8 @@ func RecordFunctionTimings(dkElapsedTime time.Duration, firestoreClientPtr *fire
 	tFunctionInfo = pi.GetFunctionInfo(2)
 
 	tFields[ctv.FN_ELASPE_TIME_SECONDS] = dkElapsedTime
+	tFields[ctv.FN_ENVIRONMENT] = environment
+	tFields[ctv.FN_EXTENSION_NAME] = extensionName
 	tFields[ctv.FN_FUNCTION_NAME] = tFunctionInfo.Name
 	tFields[ctv.FN_FILENAME] = tFunctionInfo.FileName
 	tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
