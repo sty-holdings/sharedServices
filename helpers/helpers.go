@@ -412,6 +412,33 @@ func FloatToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
+// CalculateFlagCombination takes a JSON string representing flags
+// and returns the bitwise flag combination as a uint8.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPresent) (flagCombination uint8) {
+
+	if wordsPresent.Year {
+		flagCombination |= 1 << ctv.FLAG_YEARS
+	}
+	if wordsPresent.Quarter {
+		flagCombination |= 1 << ctv.FLAG_QUARTERS
+	}
+	if wordsPresent.Month {
+		flagCombination |= 1 << ctv.FLAG_MONTHS
+	}
+	if wordsPresent.Week {
+		flagCombination |= 1 << ctv.FLAG_WEEKS
+	}
+	if wordsPresent.Day {
+		flagCombination |= 1 << ctv.FLAG_DAYS
+	}
+
+	return
+}
+
 // GenerateUUIDType1 - provides the high level of uniqueness for UUIDs.
 //
 //	Customer Messages: None

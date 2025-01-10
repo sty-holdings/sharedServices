@@ -62,3 +62,28 @@ const (
 const (
 	ANS_DATE_TIME_FORMAT = "The time for %s is %s"
 )
+
+//goland:noinspection All
+const (
+	// Define flag positions
+	FLAG_YEARS = iota
+	FLAG_QUARTERS
+	FLAG_MONTHS
+	FLAG_WEEKS
+	FLAG_DAYS
+)
+
+type TimePeriodSpecialWordsPresent struct {
+	Current      bool `json:"current"`
+	Today        bool `json:"today"`
+	LastPrevious bool `json:"last_previous"`
+	Next         bool `json:"next"`
+}
+
+type TimePeriodWordsPresent struct {
+	Year    bool `json:"year"`
+	Quarter bool `json:"quarter"`
+	Month   bool `json:"month"`
+	Week    bool `json:"week"`
+	Day     bool `json:"day"`
+}
