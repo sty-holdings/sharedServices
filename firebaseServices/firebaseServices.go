@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"runtime"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -14,6 +16,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
@@ -114,7 +117,11 @@ func GetFirebaseUserInfo(
 ) {
 
 	var (
+		tFunction, _, _, _       = runtime.Caller(0)
+		tFunctionName            = runtime.FuncForPC(tFunction).Name()
 		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
+		tFields                  = make(map[any]interface{})
+		xStartTime               = time.Now()
 	)
 
 	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
@@ -127,6 +134,15 @@ func GetFirebaseUserInfo(
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
+
+	tFields[ctv.FN_ELASPE_TIME_SECONDS] = time.Since(xStartTime).Seconds()
+	tFields[ctv.FN_ENVIRONMENT] = ctv.TXT_UNKNOWN
+	tFields[ctv.FN_EXTENSION_NAME] = ctv.TXT_UNKNOWN
+	tFields[ctv.FN_FUNCTION_NAME] = tFunctionName
+	tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+	go func() {
+		SetDocument(firestoreClientPtr, ctv.DATASTORE_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
+	}()
 
 	return
 }
