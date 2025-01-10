@@ -48,7 +48,7 @@ func NewErrorInfo(
 //	Verifications: None
 func BuildLabelValue(label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s%s.", label, value)
+	return fmt.Sprintf("%s %s.", label, value)
 }
 
 // BuildUIdLabelValue - builds a string using the uId, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
@@ -58,7 +58,7 @@ func BuildLabelValue(label string, value string) (additionalInfo string) {
 //	Verifications: None
 func BuildUIdLabelValue(uId string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("UId: %s %s%s.", uId, label, value)
+	return fmt.Sprintf("UId: %s %s %s.", uId, label, value)
 }
 
 // BuildUIdSubjectLabelValue - builds a string using the uId, subject, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
@@ -68,7 +68,7 @@ func BuildUIdLabelValue(uId string, label string, value string) (additionalInfo 
 //	Verifications: None
 func BuildUIdSubjectLabelValue(uId string, subject string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("UId: %s Subject: %s %s%s.", uId, subject, label, value)
+	return fmt.Sprintf("UId: %s Subject: %s %s %s.", uId, subject, label, value)
 }
 
 // PrintError - will output error information using this format:
