@@ -205,6 +205,7 @@ const (
 	FN_SUB                                = "sub"
 	FN_SUBJECT                            = "subject"
 	FN_SUB_CATEGORY                       = "sub-category"
+	FN_TEST                               = "test"
 	FN_TEMP_DIRECTORY                     = "temporary_directory_fqd"
 	FN_TIMEZONE                           = "timezone"
 	FN_TLS_CA_BUNDLE                      = "tls_ca_bundle"
