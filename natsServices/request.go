@@ -6,6 +6,7 @@ package sharedServices
 
 type AnalyzeQuestionRequest struct {
 	Question string `json:"question"`
+	Test     bool   `json:"test,omitempty"`
 }
 
 //==============================
@@ -33,6 +34,7 @@ type PromptInfo struct {
 
 type GetMyAnswerRequest struct {
 	Question string `json:"question"`
+	Test     bool   `json:"test,omitempty"`
 }
 
 //==============================
