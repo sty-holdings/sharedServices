@@ -82,6 +82,30 @@ var (
 //
 // }
 
+func TestConvertDateTimeToTimestamp(tPtr *testing.T) {
+
+	var (
+		errorInfo          errs.ErrorInfo
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		tTimeStamp         time.Time
+	)
+
+	tPtr.Run(
+		tFunctionName, func(t *testing.T) {
+			if tTimeStamp, errorInfo = ConvertDateTimeToTimestamp("2025-01-01 15:23:04", "US/Pacific"); errorInfo.Error != nil {
+				tPtr.Errorf("%v Failed: Was not expecting a map with any entries.", tFunctionName)
+			}
+			fmt.Println("Timestamp: ", tTimeStamp)
+			if tTimeStamp, errorInfo = ConvertDateTimeToTimestamp("2024-06-01 15:23:04", "US/Pacific"); errorInfo.Error != nil {
+				tPtr.Errorf("%v Failed: Was expecting a map to have entries.", tFunctionName)
+			}
+			fmt.Println("Timestamp: ", tTimeStamp)
+		},
+	)
+
+}
+
 // func TestConvertMapAnyToMapString(tPtr *testing.T) {
 //
 // 	var (
