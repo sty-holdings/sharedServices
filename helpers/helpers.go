@@ -382,34 +382,91 @@ func FloatToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
-// GenerateEndDate - will return a string by taking the startDate and adding months.
-// If the startDate is empty the endDate will be empty.
+// GetYearStartDateTime - return the first date/time of the supplied year
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-// func GenerateEndDate(startDate string, months int) (endDate string) {
+func GetYearStartDateTime(year int) string {
+
+	t := time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// GetYearEndDateTime - return the last date/time of the supplied year
 //
-// 	var (
-// 		err    error
-// 		tStart time.Time
-// 	)
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearEndDateTime(year int) string {
+
+	t := time.Date(year, 1, 1, 23, 59, 59, 0, time.UTC)
+
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// GetYearQuarterStartDateTime - return the first date/time of the supplied year and quarter
 //
-// 	if startDate == "" {
-// 		endDate = ""
-// 	} else {
-// 		// Parse the start date string.
-// 		tStart, err = time.Parse("2006-01-02", startDate)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		// Calculate the end date.
-// 		end := tStart.AddDate(0, months, 0)
-// 		endDate = end.Format("2006-01-02")
-// 	}
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearQuarterStartDateTime(year int, quarter int) string {
+
+	var (
+		tTime time.Time
+	)
+	switch quarter {
+	case 1:
+		tTime = time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
+	case 2:
+		tTime = time.Date(year, 4, 1, 0, 0, 0, 0, time.UTC)
+	case 3:
+		tTime = time.Date(year, 7, 1, 0, 0, 0, 0, time.UTC)
+	case 4:
+		tTime = time.Date(year, 10, 1, 0, 0, 0, 0, time.UTC)
+	default:
+		return ctv.TXT_UNKNOWN
+	}
+
+	return tTime.Format("2006-01-02 15:04:05")
+}
+
+// GetYearMonthStartDateTime - return the first date/time of the supplied year and month
 //
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearMonthStartDateTime(year int, month int) string {
+
+	t := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// GetLastWeekStartDateTime - return the first date/time of last week depending on the weekStartDay value.
+// weekStartDay of zero is Sunday and one is Monday. Anything other than 0 or 1, 0 will be used.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
+
+	var (
+		tDaysToSubtract int
+		tWeekday        time.Weekday
+	)
+
+	tWeekday = today.Weekday()
+
+	if weekStartDay == 1 {
+		tDaysToSubtract = int(tWeekday) + 6
+	} else {
+		tDaysToSubtract = int(tWeekday) + 7
+	}
+
+	return today.AddDate(0, 0, -tDaysToSubtract)
+}
 
 // GenerateURL - will return the protocol, domain, and port. Using HTTP_PROTOCOL_SECURE or HTTP_PROTOCOL_NON_SECURE,
 // ENDPOINT_VERIFY_EMAIL and HTTP_SECURE_PORT or HTTP_NON_SECURE_PORT based on the arguments.
