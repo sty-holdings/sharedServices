@@ -265,30 +265,24 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 	return
 }
 
-// DetermineStartEndTime - will set the start and end time for the start and end dates.
+// DetermineStartTime - will set the start time for the start.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func DetermineStartEndTime(
-	endDate string,
+func DetermineStartTime(
 	startDate string,
 	timezone string,
 ) (
 	startAt string,
-	endBy string,
 	errorInfo errs.ErrorInfo,
 ) {
 
 	var (
-		tEnd         time.Time
 		tLocationPtr *time.Location
 		tStart       time.Time
 	)
 
-	if errorInfo = CheckValueNotEmpty(endDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
-		return
-	}
 	if errorInfo = CheckValueNotEmpty(startDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
 		return
 	}
@@ -301,10 +295,44 @@ func DetermineStartEndTime(
 		return
 	}
 	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
-	tEnd, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
 
 	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.TXT_START_DAY)
-	endBy = fmt.Sprintf("%s %s", tEnd.Format("2006-01-02"), ctv.TXT_MID_NIGHT)
+
+	return
+}
+
+// DetermineEndTime - will set the end time for the start.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func DetermineEndEndTime(
+	endDate string,
+	timezone string,
+) (
+	endBy string,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tLocationPtr *time.Location
+		tEndBy       time.Time
+	)
+
+	if errorInfo = CheckValueNotEmpty(endDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
+		return
+	}
+
+	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
+		return
+	}
+	tEndBy, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
+
+	endBy = fmt.Sprintf("%s %s", tEndBy.Format("2006-01-02"), ctv.TXT_START_DAY)
 
 	return
 }
