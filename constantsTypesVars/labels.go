@@ -57,6 +57,7 @@ const (
 	LBL_FIREBASE_APP                          = "FIREBASE APP: "
 	LBL_FIREBASE_AUTH                         = "FIREBASE AUTH: "
 	LBL_FIRESTORE                             = "FIRESTORE: "
+	LBL_FLAG_COMBINATION                      = "FLAG COMBINATION: "
 	LBL_FUNCTION_NAME                         = "FUNCTION NAME: "
 	LBL_GCP_CREDENTIAL_FILENAME               = "GCP CREDENTIAL FILENAME: "
 	LBL_GEMINI                                = "GEMINI: "
