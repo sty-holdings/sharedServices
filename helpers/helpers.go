@@ -401,7 +401,7 @@ func GetYearStartDateTime(year int) string {
 //	Verifications: None
 func GetYearEndDateTime(year int) string {
 
-	t := time.Date(year, 1, 1, 23, 59, 59, 0, time.UTC)
+	t := time.Date(year, 12, 31, 23, 59, 59, 0, time.UTC)
 
 	return t.Format("2006-01-02 15:04:05")
 }
