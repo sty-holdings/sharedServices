@@ -498,30 +498,35 @@ func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
 // }
 
 // CalculateFlagCombination takes a JSON string representing flags
-// and returns the bitwise flag combination as a uint8.
+// and uses bitwise to build a string.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPresent) (flagCombination uint8) {
+func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPresent) string {
+
+	var (
+		tFlagCombination uint8
+	)
 
 	if wordsPresent.Year {
-		flagCombination |= 1 << ctv.FLAG_YEARS
+		tFlagCombination |= 1 << ctv.FLAG_YEARS
 	}
 	if wordsPresent.Quarter {
-		flagCombination |= 1 << ctv.FLAG_QUARTERS
+		tFlagCombination |= 1 << ctv.FLAG_QUARTERS
 	}
 	if wordsPresent.Month {
-		flagCombination |= 1 << ctv.FLAG_MONTHS
+		tFlagCombination |= 1 << ctv.FLAG_MONTHS
 	}
 	if wordsPresent.Week {
-		flagCombination |= 1 << ctv.FLAG_WEEKS
+		tFlagCombination |= 1 << ctv.FLAG_WEEKS
 	}
 	if wordsPresent.Day {
-		flagCombination |= 1 << ctv.FLAG_DAYS
+		tFlagCombination |= 1 << ctv.FLAG_DAYS
 	}
 
-	return
+	return fmt.Sprintf("%05b", tFlagCombination)
+
 }
 
 // GenerateUUIDType1 - provides the high level of uniqueness for UUIDs.
