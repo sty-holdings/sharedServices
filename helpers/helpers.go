@@ -382,18 +382,6 @@ func FloatToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
-// GetYearStartDateTime - return the first date/time of the supplied year
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func GetYearStartDateTime(year int) string {
-
-	t := time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
-
-	return t.Format("2006-01-02 15:04:05")
-}
-
 // GetYearEndDateTime - return the last date/time of the supplied year
 //
 //	Customer Messages: None
@@ -406,6 +394,45 @@ func GetYearEndDateTime(year int) string {
 	return t.Format("2006-01-02 15:04:05")
 }
 
+// GetYearStartDateTime - return the first date/time of the supplied year
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearStartDateTime(year int) string {
+
+	t := time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// GetYearQuarterStartDateTime - return the last date/time of the supplied year and quarter
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearQuarterEndDateTime(year int, quarter int) string {
+
+	var (
+		tTime time.Time
+	)
+
+	switch quarter {
+	case 1:
+		tTime = time.Date(year, 3, 31, 23, 59, 59, 0, time.UTC)
+	case 2:
+		tTime = time.Date(year, 6, 30, 23, 59, 59, 0, time.UTC)
+	case 3:
+		tTime = time.Date(year, 9, 30, 23, 59, 59, 0, time.UTC)
+	case 4:
+		tTime = time.Date(year, 12, 31, 23, 59, 59, 0, time.UTC)
+	default:
+		return ctv.TXT_UNKNOWN
+	}
+
+	return tTime.Format("2006-01-02 15:04:05")
+}
+
 // GetYearQuarterStartDateTime - return the first date/time of the supplied year and quarter
 //
 //	Customer Messages: None
@@ -416,6 +443,7 @@ func GetYearQuarterStartDateTime(year int, quarter int) string {
 	var (
 		tTime time.Time
 	)
+
 	switch quarter {
 	case 1:
 		tTime = time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -430,6 +458,21 @@ func GetYearQuarterStartDateTime(year int, quarter int) string {
 	}
 
 	return tTime.Format("2006-01-02 15:04:05")
+}
+
+// GetYearMonthEndDateTime - return the last date/time of the supplied year and month
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearMonthEndDateTime(year int, month int) string {
+
+	var (
+		tTime time.Time
+	)
+
+	tTime = time.Date(year, time.Month(month+1), 1, 0, 0, 0, 0, time.UTC)
+	return tTime.AddDate(0, 0, -1).Format("2006-01-02 15:04:05")
 }
 
 // GetYearMonthStartDateTime - return the first date/time of the supplied year and month
