@@ -100,6 +100,4 @@ type PaymentIntentRequest struct {
 	ReceiptEmail            string  `json:"receipt_email"`
 	ReturnURL               string  `json:"return_url,omitempty"`
 	SaaSKey                 string  `json:"saas_key"`
-	// Confirm            bool     `json:"confirm,omitempty"`
-	// PaymentMethodTypes []string `json:"payment_method_types,omitempty"`
 }
