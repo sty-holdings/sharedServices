@@ -754,6 +754,22 @@ func GetUnixTimestampByte() (timestamp []byte) {
 // 	return time.Now().Format("15-04-05.00000")
 // }
 
+// GetTimeSinceEpoch -  converts an int64 representing seconds since the epoch to a formatted string in the format "yyyy-mm-dd hh:mm:ss AM/PM".
+//
+//	Customer Message: None
+//	Errors: None
+//	Verification: None
+func GetTimeSinceEpoch(seconds int64) string {
+
+	var (
+		tTime time.Time
+	)
+
+	tTime = time.Unix(seconds, 0)
+
+	return tTime.Format("2006-01-02 03:04:05 PM")
+}
+
 // GetFieldsNames - will return a list fields in a struct
 //
 //	Customer Messages: None
