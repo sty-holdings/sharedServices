@@ -74,7 +74,7 @@ type BalanceRequest struct {
 	SaaSKey string `json:"saas_key"`
 }
 
-type ListChargesBetweenRequest struct {
+type ListTransactionsBetweenRequest struct {
 	SaaSKey  string `json:"saas_key"`
 	Timezone string `json:"timezone"`
 	StartAt  string `json:"start_at"`
