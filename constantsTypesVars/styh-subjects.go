@@ -17,6 +17,7 @@ const (
 	SUB_SAAS_PROFILE_UPDATE = "saas-profile.update"
 	//
 	SUB_STRIPE_LIST_CHARGES_BETWEEN         = "stripe.list-charges-between"
+	SUB_STRIPE_LIST_TOTAL_CHARGES_BETWEEN   = "stripe.list-total-charges-between"
 	SUB_STRIPE_LIST_ALL_CHECKOUT_SESSIONS   = "stripe.list-all-checkout-sessions"
 	SUB_STRIPE_LIST_DISPUTES_BETWEEN        = "stripe.list-disputes-between"
 	SUB_STRIPE_LIST_INVOICES_BETWEEN        = "stripe.list-invoices-between"
