@@ -140,9 +140,7 @@ func GetFirebaseUserInfo(
 	tFields[ctv.FN_EXTENSION_NAME] = ctv.TXT_UNKNOWN
 	tFields[ctv.FN_FUNCTION_NAME] = tFunctionName
 	tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-	go func() {
-		SetDocument(firestoreClientPtr, ctv.DATASTORE_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
-	}()
+	SetDocument(firestoreClientPtr, ctv.DATASTORE_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
 
 	return
 }
