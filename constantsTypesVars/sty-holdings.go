@@ -88,9 +88,13 @@ const (
 
 type TimePeriodSpecialWordsPresent struct {
 	Current      bool `json:"current"`
-	Today        bool `json:"today"`
-	LastPrevious bool `json:"last_previous"`
+	Details      bool `json:"details"`
+	Last         bool `json:"last"`
 	Next         bool `json:"next"`
+	Previous     bool `json:"previous"`
+	SubTotal     bool `json:"subtotal"`
+	Today        bool `json:"today"`
+	Transactions bool `json:"transactions"`
 }
 
 type TimePeriodWordsPresent struct {
