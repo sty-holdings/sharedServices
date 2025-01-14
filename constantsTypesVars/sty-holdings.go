@@ -86,6 +86,13 @@ const (
 	COMBINATION_DAY                         = "10000"
 )
 
+type CategoryPromptComparison struct {
+	Category           string `json:"category"`
+	ComparisonQuestion bool   `json:"comparison_question"`
+	Prompt             string `json:"prompt"`
+	QuestionSubject    string `json:"question_subject"`
+}
+
 type TimePeriodSpecialWordsPresent struct {
 	Current      bool `json:"current"`
 	Details      bool `json:"details"`
