@@ -78,7 +78,13 @@ type BalanceRequest struct {
 	SaaSKey string `json:"saas_key"`
 }
 
-type ListAmountTransactionsBetween struct {
+type ListAmountTransactionsBetweenRequest struct {
+	SaaSKey   string               `json:"saas_key"`
+	Timezone  string               `json:"timezone"`
+	DateRange ctv.TimePeriodValues `json:"date_range"`
+}
+
+type ListTransactionsBetweenRequest struct {
 	SaaSKey   string               `json:"saas_key"`
 	Timezone  string               `json:"timezone"`
 	DateRange ctv.TimePeriodValues `json:"date_range"`
@@ -103,10 +109,4 @@ type PaymentIntentRequest struct {
 	ReceiptEmail            string  `json:"receipt_email"`
 	ReturnURL               string  `json:"return_url,omitempty"`
 	SaaSKey                 string  `json:"saas_key"`
-}
-
-type ListTransactionsBetweenRequest struct {
-	SaaSKey   string               `json:"saas_key"`
-	Timezone  string               `json:"timezone"`
-	DateRange ctv.TimePeriodValues `json:"date_range"`
 }
