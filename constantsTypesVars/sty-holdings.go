@@ -111,3 +111,11 @@ type TimePeriodWordsPresent struct {
 	Week    bool `json:"week"`
 	Day     bool `json:"day"`
 }
+
+type TimePeriodValues struct {
+	Years    []int `json:"years"`
+	Quarters []int `json:"quarters"`
+	Months   []int `json:"months"`
+	Weeks    []int `json:"weeks"`
+	Days     []int `json:"days"`
+}
