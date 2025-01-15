@@ -84,7 +84,7 @@ type ListAmountTransactionsBetweenRequest struct {
 	DateRange ctv.TimePeriodValues `json:"date_range"`
 }
 
-type ListTransactionsBetweenRequest struct {
+type ListTotalTransactionsBetweenRequest struct {
 	SaaSKey   string               `json:"saas_key"`
 	Timezone  string               `json:"timezone"`
 	DateRange ctv.TimePeriodValues `json:"date_range"`
