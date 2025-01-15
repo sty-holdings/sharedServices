@@ -1,5 +1,9 @@
 package sharedServices
 
+import (
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+)
+
 //==============================
 // Analyze Question
 //==============================
@@ -75,10 +79,10 @@ type BalanceRequest struct {
 }
 
 type ListTransactionsBetweenRequest struct {
-	SaaSKey  string `json:"saas_key"`
-	Timezone string `json:"timezone"`
-	StartAt  string `json:"start_at"`
-	EndBy    string `json:"end_by"`
+	SaaSKey   string               `json:"saas_key"`
+	Timezone  string               `json:"timezone"`
+	DateRange ctv.TimePeriodValues `json:"date_range"`
+	EndBy     string               `json:"end_by"`
 }
 
 type ListPaymentMethodRequest struct {
