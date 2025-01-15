@@ -572,6 +572,19 @@ func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPre
 
 }
 
+// FixFloat64ToDecimalPlaces - takes a float and truncates it to the number of places.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func FixFloat64ToDecimalPlaces(num float64, places int) float64 {
+	format := fmt.Sprintf("%%.%df", places)
+	fixedStr := fmt.Sprintf(format, num)
+	var fixedNum float64
+	_, _ = fmt.Sscanf(fixedStr, format, &fixedNum)
+	return fixedNum
+}
+
 // GenerateUUIDType1 - provides the high level of uniqueness for UUIDs.
 //
 //	Customer Messages: None
