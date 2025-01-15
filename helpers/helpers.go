@@ -794,12 +794,12 @@ func GetFieldsNames(unknownStruct interface{}) (
 	return
 }
 
-// PenniesToFloat
+// PenniesToDollars
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func PenniesToFloat(pennies int64) float64 {
+func PenniesToDollars(pennies int64) float64 {
 
 	return float64(pennies) / 100
 }
