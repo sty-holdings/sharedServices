@@ -356,12 +356,12 @@ func DoesFieldExist(
 	return found
 }
 
-// FloatToPennies - multiples the value by 100. Called pennies because we did for the US first.
+// DollarsToPennies - multiples the value by 100. Called pennies because we did for the US first.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func FloatToPennies(amount float64) (pennies int64) {
+func DollarsToPennies(amount float64) (pennies int64) {
 
 	return int64(amount * 100)
 }
@@ -471,7 +471,7 @@ func GetYearMonthEndDateTime(year int, month int) string {
 		tTime time.Time
 	)
 
-	tTime = time.Date(year, time.Month(month+1), 1, 0, 0, 0, 0, time.UTC)
+	tTime = time.Date(year, time.Month(month+1), 1, 23, 59, 59, 0, time.UTC)
 	return tTime.AddDate(0, 0, -1).Format("2006-01-02 15:04:05")
 }
 

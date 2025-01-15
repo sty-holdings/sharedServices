@@ -122,7 +122,8 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithMessage(
 }
 
 // SendReplyWithHeader - will reply to a request.
-// Min timeOut is 2 seconds and the max is 5 seconds.
+// The DKReply.Reply will be encrypted into a []byte. The DKReply will then be marshalled and sent out as a response
+// using the original message (requestMessagePtr).
 //
 // Customer Messages: None
 // Errors: None
