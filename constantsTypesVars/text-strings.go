@@ -91,6 +91,7 @@ const (
 	TXT_START_DAY                    = "00:00:00"
 	TXT_START_MONTH                  = "-01 00:00:00"
 	TXT_SUBSCRIPTION_FAILED          = "subscription failed."
+	TXT_TIME_FRAME_UNKNOWN           = "time frame is unknown."
 	TXT_TRUE                         = "true"
 	TXT_TURNED_ON                    = "turned on"
 	TXT_UNKNOWN                      = "unknown"

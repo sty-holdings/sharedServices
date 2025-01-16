@@ -139,6 +139,7 @@ const (
 	SUBJECTS_MISSING                           = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                            = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED                = "Unable to subscribe to the subject."
+	TIME_FRAME_MISSING                         = "Inorder to answer your question, the question must have a timefram. Ex, the year, today, month, etc."
 	TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED = "The time period word combination is not supported."
 	TIMEZONE_NOT_SUPPORT                       = "The timezone is not supported."
 	TIMEOUT_REACHED                            = "You have exceeded the set timeout."
@@ -304,12 +305,13 @@ var (
 	ErrStructInvalid                         = errors.New(STRUCT_INVALID)
 	ErrSubCategoryNotSupported               = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
 	ErrSubjectInvalid                        = errors.New(SUBJECT_INVALID)
-	ErrTimePeriodWordCombinationNotSupported = errors.New(TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED)
 	ErrSubjectSubscriptionFailed             = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
 	ErrSubjectsMissing                       = errors.New(SUBJECTS_MISSING)
 	ErrTLSFilesMissing                       = errors.New(TLS_FILES_MISSING)
-	ErrTimezoneNotSupported                  = errors.New(TIMEZONE_NOT_SUPPORT)
+	ErrTimeFrameMissing                      = errors.New(TIME_FRAME_MISSING)
 	ErrTimeoutReached                        = errors.New(TIMEOUT_REACHED)
+	ErrTimePeriodWordCombinationNotSupported = errors.New(TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED)
+	ErrTimezoneNotSupported                  = errors.New(TIMEZONE_NOT_SUPPORT)
 	ErrTokenClaimsInvalid                    = errors.New(TOKEN_CLAIMS_INVALID)
 	ErrTokenExpired                          = errors.New(TOKEN_EXPIRED)
 	ErrTokenInvalid                          = errors.New(TOKEN_INVALID)
