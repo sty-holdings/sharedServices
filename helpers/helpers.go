@@ -382,6 +382,26 @@ func DollarsToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
+// GetMonth - returns the current month integer
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetMonth() int {
+
+	return int(time.Now().Month())
+}
+
+// GetYear - returns the current year integer
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYear() int {
+
+	return time.Now().Year()
+}
+
 // GetYearEndDateTime - return the last date/time of the supplied year
 //
 //	Customer Messages: None
