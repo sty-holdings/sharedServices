@@ -75,15 +75,16 @@ const (
 
 //goland:noinspection All
 const (
+	COMBINATION_DAY                         = "10000"
+	COMBINATION_MONTH                       = "00100"
+	COMBINATION_NONE                        = "00000"
+	COMBINATION_QUARTER                     = "00010"
+	COMBINATION_WEEK                        = "01000"
 	COMBINATION_YEAR                        = "00001"
 	COMBINATION_YEAR_QUARTER                = "00011"
 	COMBINATION_YEAR_QUARTER_MONTH          = "00111"
 	COMBINATION_YEAR_QUARTER_MONTH_WEEK     = "01111"
 	COMBINATION_YEAR_QUARTER_MONTH_WEEK_DAY = "11111"
-	COMBINATION_QUARTER                     = "00010"
-	COMBINATION_MONTH                       = "00100"
-	COMBINATION_WEEK                        = "01000"
-	COMBINATION_DAY                         = "10000"
 )
 
 type CategoryPromptComparison struct {
