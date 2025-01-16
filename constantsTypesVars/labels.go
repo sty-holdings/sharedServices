@@ -31,6 +31,7 @@ const (
 	LBL_CURRENT                               = "CURRENT: "
 	LBL_DATASTORE                             = "DATASTORE: "
 	LBL_DATE_TIME                             = "DATE/TIME: "
+	LBL_DAY                                   = "DAY: "
 	LBL_DEBUG_MESSAGE                         = "DEBUG MESSAGE: "
 	LBL_DEBUG_MODE                            = "DEBUG MODE: "
 	LBL_DECODED_KEY                           = "DECODED KEY: "
