@@ -20,6 +20,21 @@ import (
 	vlds "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
+// AddMonths - will add the number of months and adjust the year.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func AddMonths(year int, month int, monthsToAdd int) (int, int) {
+	month += monthsToAdd
+	year += month / 12 // Add any full years
+	month = month % 12 // Get the remaining months (modulo)
+	if month == 0 {    // If month is 0 (divisible by 12), it was December
+		month = 12
+	}
+	return year, month
+}
+
 // AdjustDateAdjustDateByDays - will modify the year, month and day when adding days
 //
 //	Customer Messages: None
