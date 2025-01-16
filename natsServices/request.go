@@ -90,6 +90,12 @@ type ListCheckoutSessionsRequest struct {
 	DateRange ctv.TimePeriodValues `json:"date_range"`
 }
 
+type ListDisputesBetweenRequest struct {
+	SaaSKey   string               `json:"saas_key"`
+	Timezone  string               `json:"timezone"`
+	DateRange ctv.TimePeriodValues `json:"date_range"`
+}
+
 type ListTotalTransactionsBetweenRequest struct {
 	SaaSKey   string               `json:"saas_key"`
 	Timezone  string               `json:"timezone"`
