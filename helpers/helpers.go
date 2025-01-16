@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -1034,6 +1035,23 @@ func RemovePidFile(pidFQN string) (errorInfo errs.ErrorInfo) {
 	}
 
 	return
+}
+
+// SubtractMonths - subtracts months and adjusted the year as needed. ...
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func SubtractMonths(year int, month int, monthsToSubtract int) (int, int) {
+
+	month -= monthsToSubtract
+	if month <= 0 {
+		yearsToSubtract := int(math.Abs(float64(month)/12)) + 1 // Use math.Abs() and convert to int
+		year -= yearsToSubtract
+		month += 12 * yearsToSubtract
+	}
+
+	return year, month
 }
 
 // TrimString - takes a search value, finds it in the string, and trims everything to the left of the search value.
