@@ -156,6 +156,7 @@ const (
 	LBL_SUB_CATEGORY                          = "SUB-CATEGORY: "
 	LBL_SYMMETRIC_KEY                         = "SYMMETRIC KEY: "
 	LBL_SYSTEM_SETTINGS                       = "SYSTEM SETTINGS: "
+	LBL_TIME_PERIOD                           = "TIME PERIOD: "
 	LBL_TIME_RANGE                            = "TIME RANGE: "
 	LBL_TIME_TENSE                            = "TIME TENSE: "
 	LBL_TIMEZONE                              = "TIMEZONE: "
