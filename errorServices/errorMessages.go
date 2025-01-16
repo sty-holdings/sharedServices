@@ -140,6 +140,7 @@ const (
 	SUBJECT_INVALID                            = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED                = "Unable to subscribe to the subject."
 	TIME_FRAME_MISSING                         = "Inorder to answer your question, the question must have a timefram. Ex, the year, today, month, etc."
+	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "The time period level,  weeks and days, are not supported."
 	TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED = "The time period word combination is not supported."
 	TIMEZONE_NOT_SUPPORT                       = "The timezone is not supported."
 	TIMEOUT_REACHED                            = "You have exceeded the set timeout."
@@ -310,6 +311,7 @@ var (
 	ErrTLSFilesMissing                       = errors.New(TLS_FILES_MISSING)
 	ErrTimeFrameMissing                      = errors.New(TIME_FRAME_MISSING)
 	ErrTimeoutReached                        = errors.New(TIMEOUT_REACHED)
+	errTimePeriodLevelNotSupported           = errors.New(TIME_PERIOD_LEVEL_NOT_SUPPORTED)
 	ErrTimePeriodWordCombinationNotSupported = errors.New(TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED)
 	ErrTimezoneNotSupported                  = errors.New(TIMEZONE_NOT_SUPPORT)
 	ErrTokenClaimsInvalid                    = errors.New(TOKEN_CLAIMS_INVALID)
