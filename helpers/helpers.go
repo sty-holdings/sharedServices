@@ -20,6 +20,27 @@ import (
 	vlds "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
+// AdjustDateAdjustDateByDays - will modify the year, month and day when adding days
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func AdjustDateByDays(year int, month int, day int, addDays int) (int, int, int) {
+
+	day += addDays
+
+	for day > DetermineDaysInMonth(year, month) {
+		day -= DetermineDaysInMonth(year, month)
+		month++
+		if month > 12 {
+			month = 1
+			year++
+		}
+	}
+
+	return year, month, day
+}
+
 // Base64Decode - will decode a base64 string to a string. If there is an error,
 // the first 20 characters of the base64 string are logged.
 // REMINDER: If the base64 string has sensitivity information, empty out the
@@ -265,40 +286,24 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 	return
 }
 
-// DetermineStartTime - will set the start time for the start.
+// DetermineDaysInMonth - returns the number of days in the month
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func DetermineStartTime(
-	startDate string,
-	timezone string,
-) (
-	startAt string,
-	errorInfo errs.ErrorInfo,
-) {
-
-	var (
-		tLocationPtr *time.Location
-		tStart       time.Time
-	)
-
-	if errorInfo = CheckValueNotEmpty(startDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
-		return
+func DetermineDaysInMonth(year, month int) int {
+	switch month {
+	case 2:
+		if (year%4 == 0 && year%100 != 0) || year%400 == 0 {
+			return 29
+		} else {
+			return 28
+		}
+	case 4, 6, 9, 11:
+		return 30
+	default:
+		return 31
 	}
-	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
-		return
-	}
-
-	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
-		return
-	}
-	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
-
-	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.TXT_START_DAY)
-
-	return
 }
 
 // DetermineEndTime - will set the end time for the start.
@@ -333,6 +338,42 @@ func DetermineEndEndTime(
 	tEndBy, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
 
 	endBy = fmt.Sprintf("%s %s", tEndBy.Format("2006-01-02"), ctv.TXT_START_DAY)
+
+	return
+}
+
+// DetermineStartTime - will set the start time for the start.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func DetermineStartTime(
+	startDate string,
+	timezone string,
+) (
+	startAt string,
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tLocationPtr *time.Location
+		tStart       time.Time
+	)
+
+	if errorInfo = CheckValueNotEmpty(startDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
+		return
+	}
+
+	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
+		return
+	}
+	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
+
+	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.TXT_START_DAY)
 
 	return
 }
