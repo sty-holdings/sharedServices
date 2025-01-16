@@ -18,8 +18,8 @@ const (
 	//
 	SUB_STRIPE_BALANCE                                = "stripe.balance"
 	SUB_STRIPE_CUSTOMERS                              = "stripe.customers"
-	SUB_STRIPE_LIST_ALL_CHECKOUT_SESSIONS             = "stripe.list-all-checkout-sessions"
 	SUB_STRIPE_LIST_AMOUNT_TRANSACTIONS_BETWEEN       = "stripe.list-amount-transactions-between"
+	SUB_STRIPE_LIST_CHECKOUT_SESSIONS                 = "stripe.list-checkout-sessions"
 	SUB_STRIPE_LIST_DISPUTES_BETWEEN                  = "stripe.list-disputes-between"
 	SUB_STRIPE_LIST_INVOICES_BETWEEN                  = "stripe.list-invoices-between"
 	SUB_STRIPE_LIST_PAYMENT_INTENTS_BETWEEN           = "stripe.list-payment-intents-between"
