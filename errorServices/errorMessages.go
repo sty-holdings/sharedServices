@@ -132,6 +132,7 @@ const (
 	STRIPE_METHOD_TYPE_UNSUPPORTED             = "The payment method is not support. To request support, contact support@sty-holdings.com."
 	STRIPE_ONE_TIME_CODE_FAILED                = "Generating the Stripe One Time Use Token failed."
 	STRIPE_OUT_NOT_SUPPORTED                   = "Transfers out using Stripe are not supported."
+	STRIPE_NO_DATA_FOUND                       = "There is no stripe data available."
 	STRIPE_SOURCE_INVALID                      = "The provided source is invalid. See https://docs.stripe.com/api/payment_intents."
 	STRUCT_INVALID                             = "Provided object is not a struct."
 	STYH_USERNAME_EMPTY                        = "An empty STYH Username is not allowed."
@@ -302,6 +303,7 @@ var (
 	ErrStripePaymentMethodInvalid            = errors.New(STRIPE_PAYMENT_METHOD_INVALID)
 	ErrStripePaymentMethodTypeEmpty          = errors.New(STRIPE_PAYMENT_METHOD_TYPE_EMPTY)
 	ErrStripePaymentMethodTypeInvalid        = errors.New(STRIPE_PAYMENT_METHOD_TYPE_INVALID)
+	ErrStripeNoDataFound                     = errors.New(STRIPE_NO_DATA_FOUND)
 	ErrStripeSourceInvalid                   = errors.New(STRIPE_SOURCE_INVALID)
 	ErrStructInvalid                         = errors.New(STRUCT_INVALID)
 	ErrSubCategoryNotSupported               = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
