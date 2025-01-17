@@ -327,29 +327,55 @@ func IsFileReadable(fileName string) bool {
 	return false
 }
 
-// IsFutureDate - determines if the year and month are in the future
+// IsFutureYear - determines if the year is in the future
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func IsFutureDate(year int, month int, location string) bool {
+func IsFutureMonth(year int, month int, location string) bool {
 
 	var (
 		tLocationPtr *time.Location
+		tYear        int
+		tMonth       time.Month
 	)
 
 	tLocationPtr, _ = time.LoadLocation(location)
 
 	now := time.Now().In(tLocationPtr)
-	currentYear, currentMonth, _ := now.Date()
+	tYear, tMonth, _ = now.Date()
 
-	if year > currentYear {
+	if year > tYear {
 		return true
 	}
-	if year < currentYear {
+	if year < tYear {
 		return false
 	}
-	if month > int(currentMonth) {
+	if month > int(tMonth) {
+		return true
+	}
+
+	return false
+}
+
+// IsFutureYear - determines if the year is in the future
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsFutureYear(year int, location string) bool {
+
+	var (
+		tLocationPtr *time.Location
+		tYear        int
+	)
+
+	tLocationPtr, _ = time.LoadLocation(location)
+
+	now := time.Now().In(tLocationPtr)
+	tYear, _, _ = now.Date()
+
+	if year > tYear {
 		return true
 	}
 
