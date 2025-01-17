@@ -106,7 +106,7 @@ func CheckArrayLengthGTZero(value []interface{}, err error, fieldLabel string) (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckMapLengthGTZero(value map[any]any, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckMapLengthGTZero[K comparable, V any](value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
