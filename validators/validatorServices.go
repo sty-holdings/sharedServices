@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -320,6 +321,35 @@ func IsEmpty(value interface{}) bool {
 func IsFileReadable(fileName string) bool {
 
 	if _, err := os.OpenFile(fileName, os.O_RDONLY, 0644); err == nil {
+		return true
+	}
+
+	return false
+}
+
+// IsFutureDate - determines if the year and month are in the future
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsFutureDate(year int, month int, location string) bool {
+
+	var (
+		tLocationPtr *time.Location
+	)
+
+	tLocationPtr, _ = time.LoadLocation(location)
+
+	now := time.Now().In(tLocationPtr)
+	currentYear, currentMonth, _ := now.Date()
+
+	if year > currentYear {
+		return true
+	}
+	if year < currentYear {
+		return false
+	}
+	if month > int(currentMonth) {
 		return true
 	}
 
