@@ -71,6 +71,7 @@ const (
 	TXT_NATS_REQUEST_FAILED          = "NATS request failed."
 	TXT_NIL                          = "nil"
 	TXT_NO                           = "no"
+	TXT_NO_DATA_FOUND                = "no data found."
 	TXT_NO_LABEL_PROVIDED            = "no label provided"
 	TXT_NONE                         = "none"
 	TXT_NON_SECURE_CONNECTION_FAILED = "Non-secure connection request failed."
