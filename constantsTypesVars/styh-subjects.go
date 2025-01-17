@@ -16,8 +16,8 @@ const (
 	SUB_SAAS_PROFILE_DELETE = "saas-profile.delete"
 	SUB_SAAS_PROFILE_UPDATE = "saas-profile.update"
 	//
-	SUB_STRIPE_BALANCE                          = "stripe.balance"
-	SUB_STRIPE_CUSTOMERS                        = "stripe.customers"
+	SUB_STRIPE_BALANCE = "stripe.balance"
+	//SUB_STRIPE_CUSTOMERS                        = "stripe.customers"
 	SUB_STRIPE_LIST_AMOUNT_TRANSACTIONS_BETWEEN = "stripe.list-amount-transactions-between"
 	//SUB_STRIPE_LIST_CHECKOUT_SESSIONS                 = "stripe.list-checkout-sessions"
 	SUB_STRIPE_LIST_DISPUTES_BETWEEN = "stripe.list-disputes-between"
@@ -35,7 +35,7 @@ const (
 
 var StripeSubjects = []string{
 	SUB_STRIPE_BALANCE,
-	SUB_STRIPE_CUSTOMERS,
+	//SUB_STRIPE_CUSTOMERS,
 	SUB_STRIPE_LIST_AMOUNT_TRANSACTIONS_BETWEEN,
 	SUB_STRIPE_LIST_DISPUTES_BETWEEN,
 	SUB_STRIPE_LIST_REFUNDS_BETWEEN,

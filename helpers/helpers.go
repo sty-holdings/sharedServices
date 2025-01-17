@@ -87,12 +87,26 @@ func Base64Encode(value string) string {
 	return b64.StdEncoding.EncodeToString([]byte(value))
 }
 
-// CheckLengthGTZero - validates that the value length is greater than zero. If the values length is zero, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
+// CheckArrayLengthGTZero - validates that the array length is greater than zero. If the values length is zero, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckLengthGTZero(value []interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckArrayLengthGTZero(value []interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if len(value) == ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// CheckMapLengthGTZero - validates that the map length is greater than zero. If the values length is zero, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func CheckMapLengthGTZero(value map[any]any, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
