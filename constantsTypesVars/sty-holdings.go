@@ -122,7 +122,7 @@ type TimePeriodValues struct {
 }
 
 type UserInfo struct {
-	keyB64       string
-	styhClientId string
-	uId          string
+	KeyB64       string
+	STYHClientId string
+	UId          string
 }
