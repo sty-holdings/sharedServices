@@ -103,7 +103,7 @@ func NewGRPCService(
 		tTLSConfig.ClientAuth = tls.NoClientCert
 	}
 
-	gRPCServicePtr.gRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
+	gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
 
 	return
 }
