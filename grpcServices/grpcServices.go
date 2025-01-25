@@ -70,40 +70,38 @@ func NewGRPCService(
 	}
 	gRPCServicePtr.GRPCListenerPtr = &tGRPCListener
 
-	if tCertificate, errorInfo.Error = tls.LoadX509KeyPair(config.GRPCTLSInfo.TLSCertFQN, config.GRPCTLSInfo.TLSPrivateKeyFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, fmt.Sprintf(
-				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, config.GRPCTLSInfo.TLSCertFQN), errs.BuildLabelValue(
-					ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
-					config.GRPCTLSInfo.TLSPrivateKeyFQN,
-				),
-			),
-		)
-		return
-	}
-	if tCACertificateFile, errorInfo.Error = os.ReadFile(config.GRPCTLSInfo.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, config.GRPCTLSInfo.TLSCABundleFQN))
-		return
-	}
-	tCACertPool = x509.NewCertPool()
-	if ok := tCACertPool.AppendCertsFromPEM(tCACertificateFile); !ok {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
-		return
-	}
-	tTransportCredentials = credentials.NewTLS(tTLSConfig)
-
-	tTLSConfig = &tls.Config{
-		Certificates: []tls.Certificate{tCertificate},
-		ClientCAs:    tCACertPool,
-	}
-
+	tTLSConfig = &tls.Config{}
 	if config.GRPCSecure {
+		if tCertificate, errorInfo.Error = tls.LoadX509KeyPair(config.GRPCTLSInfo.TLSCertFQN, config.GRPCTLSInfo.TLSPrivateKeyFQN); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error, fmt.Sprintf(
+					"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, config.GRPCTLSInfo.TLSCertFQN), errs.BuildLabelValue(
+						ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
+						config.GRPCTLSInfo.TLSPrivateKeyFQN,
+					),
+				),
+			)
+			return
+		}
+		if tCACertificateFile, errorInfo.Error = os.ReadFile(config.GRPCTLSInfo.TLSCABundleFQN); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, config.GRPCTLSInfo.TLSCABundleFQN))
+			return
+		}
+		tCACertPool = x509.NewCertPool()
+		if ok := tCACertPool.AppendCertsFromPEM(tCACertificateFile); !ok {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+			return
+		}
+		tTransportCredentials = credentials.NewTLS(tTLSConfig)
+		tTLSConfig.Certificates = []tls.Certificate{tCertificate}
+		tTLSConfig.ClientCAs = tCACertPool
 		tTLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
-	} else {
-		tTLSConfig.ClientAuth = tls.NoClientCert
+		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
+		return
 	}
 
-	gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
+	tTLSConfig.ClientAuth = tls.NoClientCert
+	gRPCServicePtr.GRPCServerPtr = grpc.NewServer()
 
 	return
 }
