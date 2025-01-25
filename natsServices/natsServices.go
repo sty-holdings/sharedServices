@@ -88,9 +88,9 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	natsServicePtr.userInfo.uId = uId
-	natsServicePtr.userInfo.styhClientId = styhClientId
-	natsServicePtr.userInfo.keyB64 = keyB64
+	natsServicePtr.userInfo.UId = uId
+	natsServicePtr.userInfo.STYHClientId = styhClientId
+	natsServicePtr.userInfo.KeyB64 = keyB64
 	dkReply, errorInfo = makeRequestReplyWithHeader(dkRequest, natsServicePtr, subject, timeOutInSec)
 
 	return
@@ -115,7 +115,7 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithMessage(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	natsServicePtr.userInfo.keyB64 = keyB64
+	natsServicePtr.userInfo.KeyB64 = keyB64
 	dkReply, errorInfo = makeRequestReplyWithMessage(natsServicePtr, requestMessagePtr, subject, timeOutInSec)
 
 	return
@@ -380,9 +380,9 @@ func makeRequestReplyWithHeader(
 		Header:  make(nats.Header),
 		Subject: subject,
 	}
-	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.uId)
-	tRequestMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, natsServicePtr.userInfo.styhClientId)
-	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.uId, natsServicePtr.userInfo.keyB64, dkRequest); errorInfo.Error != nil {
+	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.UId)
+	tRequestMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, natsServicePtr.userInfo.STYHClientId)
+	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.UId, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
 		return
 	}
 
@@ -406,7 +406,7 @@ func makeRequestReplyWithHeader(
 	}
 
 	if errorInfo.Error == nil {
-		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.KeyB64, dkReply.Reply)
 	}
 
 	return
@@ -470,7 +470,7 @@ func makeRequestReplyWithMessage(
 	}
 
 	if errorInfo.Error == nil {
-		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.keyB64, dkReply.Reply)
+		dkReply.Reply, errorInfo = jwts.DecryptByteToByte(requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.userInfo.KeyB64, dkReply.Reply)
 	}
 
 	return
