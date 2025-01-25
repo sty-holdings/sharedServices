@@ -10,7 +10,6 @@ const (
 	SUB_HAL_GET_MY_ANSWER = "hal.get-my-answer"
 	//
 	SUB_GEMINI_ANALYZE_QUESTION = "gemini.analyze-question"
-	SUB_GEMINI_GENERATE_ANSWER  = "gemini.generate-answer"
 	//
 	SUB_SAAS_PROFILE_ADD    = "saas-profile.add"
 	SUB_SAAS_PROFILE_DELETE = "saas-profile.delete"
