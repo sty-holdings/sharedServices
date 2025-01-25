@@ -10,7 +10,7 @@ import (
 )
 
 type GRPCConfiguration struct {
-	GRPCHost    string       `json:"grpc_host"`
+	GRPCHost    string       `json:"grpc_host"` // This is only used on the client side. Server side is set to localhost.
 	GRPCPort    int          `json:"grpc_port"`
 	GRPCSecure  bool         `json:"grpc_secure"`
 	GRPCTLSInfo jwts.TLSInfo `json:"grpc_tls_info"`
