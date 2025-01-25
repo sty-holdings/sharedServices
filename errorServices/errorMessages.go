@@ -79,6 +79,7 @@ const (
 	PHONE_NUMBER_COUNTRY_CODE_MISSING          = "The country code is missing."
 	PHONE_NUMBER_MISSING                       = "The phone number is missing."
 	PID_FILE_EXISTS                            = "A PID file already exists. Delete the 'server.pid' file in '.run' directory and start the server again."
+	PROTOCOL_INVALID                           = "The protocol is invalid. Use ctv.VAL_TCP or ctv.VAL_NATS."
 	PLAID_INVALID_PUBLIC_TOKEN                 = "INVALID_PUBLIC_TOKEN" // DO NOT change this, it is used to test a condition
 	POINT_IN_TIME_INVALID                      = "The Point In Time is Invalid."
 	POINTER_MISSING                            = "You must pass a pointer. Nil is not valid!"
@@ -247,6 +248,7 @@ var (
 	ErrNotDivisibleN                         = errors.New(NOT_DIVISIBLE_N)
 	ErrOptionInvalid                         = errors.New(OPTION_INVALID)
 	ErrPIDFileExists                         = errors.New(PID_FILE_EXISTS)
+	ErrProtocolInvalid                       = errors.New(PROTOCOL_INVALID)
 	ErrParseBigIntFailed                     = errors.New(PARSE_BIG_INT_FAILED)
 	ErrPhoneNumberAreaCodeMissing            = errors.New(PHONE_NUMBER_AREA_CODE_MISSING)
 	ErrPhoneNumberCountryCodeMissing         = errors.New(PHONE_NUMBER_COUNTRY_CODE_MISSING)
