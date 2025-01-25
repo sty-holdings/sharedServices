@@ -367,7 +367,7 @@ func DetermineEndEndTime(
 	}
 	tEndBy, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
 
-	endBy = fmt.Sprintf("%s %s", tEndBy.Format("2006-01-02"), ctv.TXT_START_DAY)
+	endBy = fmt.Sprintf("%s %s", tEndBy.Format("2006-01-02"), ctv.VAL_START_DAY)
 
 	return
 }
@@ -403,7 +403,7 @@ func DetermineStartTime(
 	}
 	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
 
-	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.TXT_START_DAY)
+	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.VAL_START_DAY)
 
 	return
 }
