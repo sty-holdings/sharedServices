@@ -1,5 +1,7 @@
 package sharedServices
 
+// Text strings are for building messages.
+
 //goland:noinspection ALL
 const (
 	TXT_ARE_EMPTY                    = "are empty"
@@ -34,7 +36,6 @@ const (
 	TXT_DIRECTORY_DOES_NOT_EXIST     = "Directory doesn't exist"
 	TXT_DIRECTORY_EXISTS             = "Directory exists"
 	TXT_DIRECTORY_PARAM_EMPTY        = "Directory parameter is empty"
-	TXT_END_DAY                      = "23:59:59"
 	TXT_EMAIL                        = "email"
 	TXT_END_MONTH                    = "end of month"
 	TXT_EMPTY                        = "empty"
@@ -62,7 +63,6 @@ const (
 	TXT_LINE_SEPARATOR               = "----------------"
 	TXT_MARSHALL_FAILED              = "marshalling failed."
 	TXT_MESSAGE_NAMESPACE            = "message_namespace"
-	TXT_MID_NIGHT                    = "23:59:59"
 	TXT_MISSING                      = "MISSING"
 	TXT_MISSING_KEY                  = "missing key"
 	TXT_MISSING_VALUE                = "missing value"
@@ -90,10 +90,7 @@ const (
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
 	TXT_SERVER                       = "server"
 	TXT_SERVICE_FAILED               = " service failed."
-	TXT_START_DAY                    = "00:00:00"
-	TXT_START_MONTH                  = "-01 00:00:00"
 	TXT_SUBSCRIPTION_FAILED          = "subscription failed."
-	TXT_TCP                          = "tcp"
 	TXT_TIME_FRAME_UNKNOWN           = "time frame is unknown."
 	TXT_TRUE                         = "true"
 	TXT_TURNED_ON                    = "turned on"

@@ -1,9 +1,11 @@
 package sharedServices
 
+// Entries here are for JSON, 3rd parties, and internal used names of data. The entries maybe upper, mixed, or lower case as needed.
+
 //goland:noinspection ALL
 const (
 	FN_ACCOUNTS                             = "accounts"
-	FN_ACCOUNTS_STRIPE_BANK_ACCOUNT_TOKEN   = "accounts.stripe_bank_account_tokens."
+	FN_ACCOUNTS_STRIPE_BANK_ACCOUNT_TOKEN   = "accounts.stripe_bank_account_tokens"
 	FN_ACCOUNT_ID                           = "account_id"
 	FN_ADDED_PHONE                          = "added_phone"
 	FN_ADDED_SAVINGS_GOAL                   = "added_savings_goal"
