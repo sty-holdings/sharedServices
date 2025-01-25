@@ -68,7 +68,7 @@ func NewGRPCService(
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
 		return
 	}
-	gRPCServicePtr.gRPCListenerPtr = &tGRPCListener
+	gRPCServicePtr.GRPCListenerPtr = &tGRPCListener
 
 	if tCertificate, errorInfo.Error = tls.LoadX509KeyPair(config.GRPCTLSInfo.TLSCertFQN, config.GRPCTLSInfo.TLSPrivateKeyFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(

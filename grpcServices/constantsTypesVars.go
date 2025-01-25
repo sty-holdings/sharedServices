@@ -17,7 +17,7 @@ type GRPCConfiguration struct {
 }
 
 type GRPCService struct {
-	gRPCListenerPtr *net.Listener
+	GRPCListenerPtr *net.Listener
 	GRPCServerPtr   *grpc.Server
 	secure          bool
 	host            string
