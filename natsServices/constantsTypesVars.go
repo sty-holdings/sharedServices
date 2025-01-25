@@ -3,14 +3,8 @@ package sharedServices
 import (
 	"github.com/nats-io/nats.go"
 
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
-)
-
-//goland:noinspection GoSnakeCaseUsage,GoCommentStart
-const (
-	METHOD_DASHES      = "dashes"
-	METHOD_UNDERSCORES = "underscores"
-	METHOD_BLANK       = ""
 )
 
 type MessageHandler struct {
@@ -29,12 +23,6 @@ type NATSService struct {
 	connPtr      *nats.Conn
 	instanceName string
 	secure       bool
-	userInfo     natsUserInfo
+	userInfo     ctv.UserInfo
 	url          string
-}
-
-type natsUserInfo struct {
-	keyB64       string
-	styhClientId string
-	uId          string
 }

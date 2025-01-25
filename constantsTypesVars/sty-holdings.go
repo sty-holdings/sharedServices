@@ -120,3 +120,9 @@ type TimePeriodValues struct {
 	Weeks    []int `json:"weeks"`
 	Days     []int `json:"days"`
 }
+
+type UserInfo struct {
+	keyB64       string
+	styhClientId string
+	uId          string
+}
