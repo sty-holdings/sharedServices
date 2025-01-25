@@ -3,6 +3,8 @@ package sharedServices
 import (
 	"net"
 
+	"google.golang.org/grpc"
+
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
@@ -15,8 +17,9 @@ type GRPCConfiguration struct {
 }
 
 type GRPCService struct {
-	grpcListener *net.Listener
-	secure       bool
-	host         string
-	userInfo     ctv.UserInfo
+	gRPCListenerPtr *net.Listener
+	gRPCServerPtr   *grpc.Server
+	secure          bool
+	host            string
+	userInfo        ctv.UserInfo
 }
