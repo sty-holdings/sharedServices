@@ -52,6 +52,7 @@ const (
 	GIN_MODE_INVALID                           = "The Gin mode is invalid."
 	GIN_URL_PORT_MISSING                       = "The Gin URL & PORT is missing."
 	GREATER_THAN_ZERO                          = "The value must be greater than zero."
+	GRPC_PORT_INVALID                          = "gRPC port value is invalid. The port value must be greater than 50050."
 	HTTP_REQUEST_FALIED                        = "The HTTP request failed with a non-200 status code."
 	HTTP_SECURE_SERVER_FAILED                  = "The HTTP services secure server failed."
 	IDENTITY_PROVIDER_INVALID                  = "The identity provider is invalid."
@@ -218,6 +219,7 @@ var (
 	ErrGinModeInvalid                        = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing                     = errors.New(GIN_URL_PORT_MISSING)
 	ErrGreatThanZero                         = errors.New(GREATER_THAN_ZERO)
+	ErrGRPCPortInvalud                       = errors.New(GRPC_PORT_INVALID)
 	ErrHTTPRequestFalied                     = errors.New(HTTP_REQUEST_FALIED)
 	ErrHTTPSecureServerFailed                = errors.New(HTTP_SECURE_SERVER_FAILED)
 	ErrIdentityProviderInvalid               = errors.New(IDENTITY_PROVIDER_INVALID)
