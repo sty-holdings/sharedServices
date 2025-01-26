@@ -44,6 +44,7 @@ const (
 	FILE_UNREADABLE                            = "[ERROR} The file is not readable."
 	FIREBASE_APP_CONNECTION_FAILED             = "The Firebase App connection failed and is empty."
 	FIREBASE_AUTH_CONNECTION_FAILED            = "The Firebase Auth connection failed and is empty."
+	FIREBASE_STORAGE_CLIENT_FAILED             = "The Firebase Storage client failed."
 	FIRESTORE_CLIENT_FAILED                    = "The Firestore client failed."
 	FIREBASE_PROJECT_ID_MISSING                = "No Firebase project id was not provided."
 	NAME_FIRST_MISSING                         = "The first name is missing."
@@ -216,6 +217,7 @@ var (
 	ErrFirebaseAuthConnectionFailed          = errors.New(FIREBASE_AUTH_CONNECTION_FAILED)
 	ErrFirebaseProjectMissing                = errors.New(FIREBASE_PROJECT_ID_MISSING)
 	ErrFirestoreClientFailed                 = errors.New(FIRESTORE_CLIENT_FAILED)
+	ErrFirebaseStorageClientFailed           = errors.New(FIREBASE_STORAGE_CLIENT_FAILED)
 	ErrFloatInvalid                          = errors.New(FLOAT_INVALID)
 	ErrGinModeInvalid                        = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing                     = errors.New(GIN_URL_PORT_MISSING)

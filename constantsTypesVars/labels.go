@@ -57,6 +57,7 @@ const (
 	LBL_FILENAME                              = "FILENAME: "
 	LBL_FIREBASE_APP                          = "FIREBASE APP: "
 	LBL_FIREBASE_AUTH                         = "FIREBASE AUTH: "
+	LBL_FIREBASE_STORAGE                      = "FIREBASE STORAGE: "
 	LBL_FIRESTORE                             = "FIRESTORE: "
 	LBL_FLAG_COMBINATION                      = "FLAG COMBINATION: "
 	LBL_FUNCTION_NAME                         = "FUNCTION NAME: "
