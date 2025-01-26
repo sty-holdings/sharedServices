@@ -3,6 +3,7 @@ package sharedServices
 //goland:noinspection All
 const (
 	// Extensions
+	EXTENSION_ADMIN            = "admin"
 	EXTENSION_ANALYZE_QUESTION = "analyze-question"
 	EXTENSION_HAL              = "hal"
 	EXTENSION_HTTPS_NATS       = "https-nats"
