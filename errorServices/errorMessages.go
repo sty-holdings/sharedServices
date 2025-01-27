@@ -222,7 +222,7 @@ var (
 	ErrGinModeInvalid                        = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing                     = errors.New(GIN_URL_PORT_MISSING)
 	ErrGreatThanZero                         = errors.New(GREATER_THAN_ZERO)
-	ErrGRPCPortInvalud                       = errors.New(GRPC_PORT_INVALID)
+	ErrGRPCPortInvalid                       = errors.New(GRPC_PORT_INVALID)
 	ErrHTTPRequestFalied                     = errors.New(HTTP_REQUEST_FALIED)
 	ErrHTTPSecureServerFailed                = errors.New(HTTP_SECURE_SERVER_FAILED)
 	ErrIdentityProviderInvalid               = errors.New(IDENTITY_PROVIDER_INVALID)
