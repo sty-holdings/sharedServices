@@ -38,6 +38,9 @@ func NewGRPCService(
 	if errorInfo = hlps.CheckValueNotEmpty(extensionName, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+		return
+	}
 	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
 		errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
 		return
@@ -51,12 +54,9 @@ func NewGRPCService(
 	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
-		return
-	}
 
 	gRPCServicePtr = &GRPCService{
-		host:     ctv.VAL_LOCAL_HOST,
+		host:     config.GRPCHost,
 		secure:   config.GRPCSecure,
 		userInfo: ctv.UserInfo{},
 	}
@@ -92,7 +92,7 @@ func NewGRPCService(
 		tTransportCredentials = credentials.NewTLS(tTLSConfig)
 		tTLSConfig.Certificates = []tls.Certificate{tCertificate}
 		tTLSConfig.ClientCAs = tCACertPool
-		tTLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		tTLSConfig.ClientAuth = tls.VerifyClientCertIfGiven
 		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
 		return
 	}
