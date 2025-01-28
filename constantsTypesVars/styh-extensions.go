@@ -9,6 +9,7 @@ const (
 	EXTENSION_HAL              = "hal"
 	EXTENSION_HTTPS_NATS       = "https-nats"
 	NC_INTERNAL                = "nc-internal"
+	EXTENSION_QUICKBOOKS       = "quickbooks"
 	EXTENSION_SAAS_PROFILE     = "saas-profile"
 	EXTENSION_SENDGRID         = "sendgrid"
 	EXTENSION_STRIPE           = "stripe"
