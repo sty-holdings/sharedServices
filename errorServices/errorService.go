@@ -3,6 +3,7 @@ package sharedServices
 import (
 	// Add imports here
 
+	"errors"
 	"fmt"
 	"log"
 	"runtime"
@@ -37,6 +38,31 @@ func NewErrorInfo(
 		errorInfo.AdditionalInfo = additionalInfo
 	}
 	errorInfo.Message = myError.Error()
+
+	return
+}
+
+// NewGRPCErrorInfo - will return an ErrorInfo object with the Error containing both the error and additional info
+// combined. Only the errorInfo.Error property will be returned. All other properties are empty.
+//
+//	Customer Messages: None
+//	Errors: Missing values will be filled with 'MISSING'.
+//	Verifications: None
+func NewGRPCErrorInfo(
+	myError error,
+	additionalInfo string,
+) (errorInfo ErrorInfo) {
+
+	if myError == nil {
+		return
+	}
+
+	if additionalInfo == ctv.VAL_EMPTY {
+		errorInfo.AdditionalInfo = ctv.TXT_EMPTY
+	} else {
+		errorInfo.AdditionalInfo = additionalInfo
+	}
+	errorInfo.Error = errors.New(fmt.Sprintf("Error: %s - Additional Info: %s", myError.Error(), additionalInfo))
 
 	return
 }
