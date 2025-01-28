@@ -52,6 +52,7 @@ const (
 	FN_CLIENT_KEY                           = "client_key"
 	FN_CLOSE_OF_BUSINESS                    = "close_of_business"
 	FN_COGNITO_USERNAME                     = "cognito:username"
+	FN_COMPANY_NAME                         = "company_name"
 	FN_COMPARISON_QUESTION                  = "comparison_question"
 	FN_CREATE_TIMESTAMP                     = "create_timestamp"
 	FN_CREDENTIALS_FILENAME                 = "credentials_filename"
