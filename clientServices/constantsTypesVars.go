@@ -17,6 +17,7 @@ type STYHClient struct {
 	StyhClientId string          `firebase:"styh_client_id" json:"styh_client_id"`
 	Timezone     string          `firebase:"timezone" json:"timezone"`
 	Uid          string          `firebase:"uid" json:"uid"`
+	OnBoarded    bool            `firebase:"on_boarded" json:"on_boarded"`
 }
 
 type UserSaaSProfile struct {

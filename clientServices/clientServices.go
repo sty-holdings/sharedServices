@@ -50,6 +50,10 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		clientStruct.LastName = value.(string)
 	}
 
+	if value, ok = tUserInfo[ctv.FN_ON_BOARDED]; ok {
+		clientStruct.OnBoarded = value.(bool)
+	}
+
 	if value, ok = tUserInfo[ctv.FN_SAAS_PROFILE]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_MARSHALL_FAILED))
@@ -78,4 +82,18 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	}
 
 	return
+}
+
+// SaaSProfilePopulated - determines is a SaaS provider exists.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func SaaSProfilePopulated(clientStruct STYHClient) bool {
+
+	if len(clientStruct.SaasProfile.UserSaaSProviders) > ctv.VAL_ZERO {
+		return true
+	}
+
+	return false
 }

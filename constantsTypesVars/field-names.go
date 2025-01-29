@@ -149,6 +149,7 @@ const (
 	FN_NICKNAME                             = "nickname"
 	FN_OFFERED_INTEREST_RATE                = "offered_interest_rate"
 	FN_OFFICIAL_NAME                        = "official_name"
+	FN_ON_BOARDED                           = "on_boarded"
 	FN_PARAMETER_TYPE                       = "parameterType"
 	FN_PASSWORD                             = "password"
 	FN_PAYMENT_FREQENCY                     = "payment_frequency"
