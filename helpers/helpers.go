@@ -216,7 +216,7 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ConvertInterfaceToMapStringString(interfaceIn interface{}) (mapOut map[string]string, errorInfo errs.ErrorInfo) {
+func ConvertInterfaceToMapStringString(interfaceIn interface{}, interfaceOutPtr *interface{}) (errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData           []byte
@@ -229,7 +229,7 @@ func ConvertInterfaceToMapStringString(interfaceIn interface{}) (mapOut map[stri
 		return
 	}
 
-	if errorInfo.Error = json.Unmarshal(jsonData, &mapOut); errorInfo.Error != nil {
+	if errorInfo.Error = json.Unmarshal(jsonData, &interfaceOutPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(tFunctionName, ctv.TXT_UNMARSHALL_FAILED))
 	}
 
