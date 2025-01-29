@@ -20,7 +20,7 @@ type NATSConfiguration struct {
 }
 
 type NATSService struct {
-	connPtr      *nats.Conn
+	ConnPtr      *nats.Conn
 	instanceName string
 	secure       bool
 	userInfo     ctv.UserInfo
