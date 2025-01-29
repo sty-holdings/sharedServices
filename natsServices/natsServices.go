@@ -43,7 +43,7 @@ func NewNATSService(
 	if natsServicePtr.instanceName, errorInfo = buildInstanceName(extensionName, config.NATSURL); errorInfo.Error != nil {
 		return
 	}
-	natsServicePtr.connPtr, errorInfo = getConnection(natsServicePtr.instanceName, config)
+	natsServicePtr.ConnPtr, errorInfo = getConnection(natsServicePtr.instanceName, config)
 
 	return
 }
@@ -56,7 +56,7 @@ func NewNATSService(
 // Verifications: None
 func (natsServicePtr *NATSService) GetStatus() string {
 
-	return natsServicePtr.connPtr.Status().String()
+	return natsServicePtr.ConnPtr.Status().String()
 }
 
 // HandleRequestWithHeader - accepts a NATS message pointer, decrypts request message data, and return a DKRequest string. The provided requestMessagePtr
@@ -170,11 +170,11 @@ func (natsServicePtr *NATSService) Subscribe(
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
 
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.ConnPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
 		return
 	}
 
-	if subscriptionPtr, errorInfo.Error = natsServicePtr.connPtr.Subscribe(subject, handler); errorInfo.Error != nil {
+	if subscriptionPtr, errorInfo.Error = natsServicePtr.ConnPtr.Subscribe(subject, handler); errorInfo.Error != nil {
 		log.Printf("ALERT %v: Subscribe failed on subject: %v", natsServicePtr.instanceName, subject)
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(tFunctionName, ctv.TXT_SUBSCRIPTION_FAILED))
 		return
@@ -263,7 +263,7 @@ func getConnection(
 	instanceName string,
 	config NATSConfiguration,
 ) (
-	connPtr *nats.Conn,
+	ConnPtr *nats.Conn,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -309,7 +309,7 @@ func getConnection(
 	if tURL, errorInfo = buildURLWithPort(config.NATSURL, config.NATSPort); errorInfo.Error != nil {
 		return
 	}
-	if connPtr, errorInfo.Error = nats.Connect(tURL, opts...); errorInfo.Error != nil {
+	if ConnPtr, errorInfo.Error = nats.Connect(tURL, opts...); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v: %v", instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
@@ -318,10 +318,10 @@ func getConnection(
 	log.Printf(
 		"%v: URL: %v CLuster/Server Name: %v Server Id: %v Address: %v",
 		instanceName,
-		connPtr.ConnectedUrl(),
-		connPtr.ConnectedClusterName(),
-		connPtr.ConnectedServerId(),
-		connPtr.ConnectedAddr(),
+		ConnPtr.ConnectedUrl(),
+		ConnPtr.ConnectedClusterName(),
+		ConnPtr.ConnectedServerId(),
+		ConnPtr.ConnectedAddr(),
 	)
 
 	return
@@ -380,7 +380,7 @@ func makeRequestReplyWithHeader(
 	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.ConnPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(subject, errs.ErrRequiredParameterMissing, ctv.LBL_SUBJECT); errorInfo.Error != nil {
@@ -398,7 +398,7 @@ func makeRequestReplyWithHeader(
 	}
 
 	tActualTimeOut = validateAdjustTimeOut(timeOutInSec)
-	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.connPtr.RequestMsg(tRequestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
+	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.ConnPtr.RequestMsg(tRequestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
 		log.Printf(
 			"ALERT %s: RequestWithHeader failed on %s %s for %s: %s",
 			natsServicePtr.instanceName,
@@ -450,7 +450,7 @@ func makeRequestReplyWithMessage(
 	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.ConnPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
@@ -462,7 +462,7 @@ func makeRequestReplyWithMessage(
 
 	requestMessagePtr.Subject = subject
 	tActualTimeOut = validateAdjustTimeOut(timeOutInSec)
-	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.connPtr.RequestMsg(requestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
+	if tReplyMessagePtr, errorInfo.Error = natsServicePtr.ConnPtr.RequestMsg(requestMessagePtr, tActualTimeOut); errorInfo.Error != nil {
 		log.Printf(
 			"ALERT %s: RequestWithHeader failed on %s %s for %s: %s",
 			natsServicePtr.instanceName,
