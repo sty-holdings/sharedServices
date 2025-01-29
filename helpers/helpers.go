@@ -208,6 +208,24 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 	return
 }
 
+// ConvertMapAnyInterfaceToMapStringString
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertMapAnyInterfaceToMapStringString(mapIn map[any]interface{}) (mapOut map[string]string) {
+
+	mapOut = make(map[string]string)
+
+	if vlds.IsMapPopulated(mapIn) {
+		for key, value := range mapIn {
+			mapOut[key.(string)] = value.(string)
+		}
+	}
+
+	return
+}
+
 // ConvertMapStringToMapAny
 //
 //	Customer Messages: None
@@ -224,8 +242,8 @@ func ConvertMapStringToMapAny(mapIn map[string]interface{}) (mapOut map[any]inte
 	return
 }
 
-// ConvertStructToMap - converts a given struct to a map by marshaling it into JSON and then unmarshaling it into a map.
-// If there is an error during the marshaling or unmarshaling process, the error information is returned.
+// ConvertStructToMap - converts a given struct to a map by marshaling it into JSON and then unmarshalling it into a map.
+// If there is an error during the marshaling or unmarshalling process, the error information is returned.
 //
 // Customer Messages: None
 // Errors: error returned by json.Marshal and json.Unmarshal
