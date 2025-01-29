@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -204,33 +203,6 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 		for key, value := range mapIn {
 			mapOut[key.(string)] = value
 		}
-	}
-
-	return
-}
-
-// ConvertInterfaceToMapStringString - will convert an interface of map[any]interface to a
-//
-//	map[string]string.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func ConvertInterfaceToMapStringString(interfaceIn interface{}, interfaceOutPtr *any) (errorInfo errs.ErrorInfo) {
-
-	var (
-		jsonData           []byte
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-	)
-
-	if jsonData, errorInfo.Error = json.Marshal(interfaceIn); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(tFunctionName, ctv.TXT_MARSHALL_FAILED))
-		return
-	}
-
-	if errorInfo.Error = json.Unmarshal(jsonData, &interfaceOutPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(tFunctionName, ctv.TXT_UNMARSHALL_FAILED))
 	}
 
 	return
