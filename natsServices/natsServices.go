@@ -54,6 +54,17 @@ func NewNATSService(
 // Customer Messages: None
 // Errors: None
 // Verifications: None
+func (natsServicePtr *NATSService) GetStatus() string {
+
+	return natsServicePtr.connPtr.Status().String()
+}
+
+// HandleRequestWithHeader - accepts a NATS message pointer, decrypts request message data, and return a DKRequest string. The provided requestMessagePtr
+// must be retained by the caller, so it can be used to send a reply.
+//
+// Customer Messages: None
+// Errors: None
+// Verifications: None
 func (natsServicePtr *NATSService) HandleRequestWithHeader(
 	keyB64 string,
 	requestMessagePtr *nats.Msg,
