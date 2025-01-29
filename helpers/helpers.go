@@ -216,7 +216,7 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func ConvertInterfaceToMapStringString(interfaceIn interface{}, interfaceOutPtr *interface{}) (errorInfo errs.ErrorInfo) {
+func ConvertInterfaceToMapStringString(interfaceIn interface{}, interfaceOutPtr *any) (errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData           []byte
