@@ -155,7 +155,7 @@ func LoadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, er
 
 func loadTLSCertificate(tlsCertFQN string, tlsPrivateKeyFQN string) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
 
-	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsCertFQN, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsCertFQN, tlsPrivateKeyFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error, fmt.Sprintf(
 				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, tlsCertFQN), errs.BuildLabelValue(
