@@ -93,7 +93,6 @@ func NewGRPCService(
 		tTLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
 		tTransportCredentials = credentials.NewTLS(tTLSConfig)
 		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
-		return
 	default:
 		// This is the default security if server side and mutual are both set to false.
 		tTLSConfig.ClientAuth = tls.NoClientCert
