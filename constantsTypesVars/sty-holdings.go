@@ -94,6 +94,12 @@ type CategoryPromptComparison struct {
 	QuestionSubject    string `json:"question_subject"`
 }
 
+type SystemInstruction struct {
+	Name        string `json:"name"`
+	Instruction string `json:"instruction"`
+	SetDate     bool   `json:"set_date"`
+}
+
 type TimePeriodSpecialWordsPresent struct {
 	Current      bool `json:"current"`
 	Details      bool `json:"details"`
