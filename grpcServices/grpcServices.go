@@ -89,6 +89,7 @@ func NewGRPCService(
 		}
 
 		tTLSConfig.Certificates = []tls.Certificate{tCertificate}
+		tTLSConfig.RootCAs = tCACertPool
 		tTLSConfig.ClientCAs = tCACertPool
 		tTLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
 		tTransportCredentials = credentials.NewTLS(tTLSConfig)
