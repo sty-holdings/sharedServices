@@ -138,6 +138,8 @@ const (
 	STRIPE_NO_DATA_FOUND                       = "There is no stripe data available."
 	STRIPE_SOURCE_INVALID                      = "The provided source is invalid. See https://docs.stripe.com/api/payment_intents."
 	STRUCT_INVALID                             = "Provided object is not a struct."
+	STYH_CLIENT_ID_INVALID                     = "The STYH Client Id is invalid"
+	STYH_CLIENT_ID_MISSING                     = "The STYH Client Id is empty"
 	STYH_USERNAME_EMPTY                        = "An empty STYH Username is not allowed."
 	SUB_CATEGORY_NOT_SUPPORTED                 = "The sub-category is not supported."
 	SUBJECTS_MISSING                           = "No subject(s) have been defined for the NATS extension."
@@ -312,6 +314,8 @@ var (
 	ErrStripeNoDataFound                     = errors.New(STRIPE_NO_DATA_FOUND)
 	ErrStripeSourceInvalid                   = errors.New(STRIPE_SOURCE_INVALID)
 	ErrStructInvalid                         = errors.New(STRUCT_INVALID)
+	ErrSTYHClientIdInvalid                   = errors.New(STYH_CLIENT_ID_INVALID)
+	ErrSTYHClientIdMissing                   = errors.New(STYH_CLIENT_ID_MISSING)
 	ErrSubCategoryNotSupported               = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
 	ErrSubjectInvalid                        = errors.New(SUBJECT_INVALID)
 	ErrSubjectSubscriptionFailed             = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
