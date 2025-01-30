@@ -103,6 +103,30 @@ func NewGRPCService(
 	return
 }
 
+// LoadTLSCACertificate - loads the CA Bundle certificate into a x509 certificate pool.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (gRPCServicePtr *GRPCService) LoadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
+
+	var (
+		tCACertificateFile []byte
+	)
+
+	if tCACertificateFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		return
+	}
+
+	caCertPoolPtr = x509.NewCertPool()
+	if ok := caCertPoolPtr.AppendCertsFromPEM(tCACertificateFile); !ok {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+	}
+
+	return
+}
+
 //  Private Functions
 
 // loadTLSCredentials - load the x509 certificate and private key
@@ -121,30 +145,6 @@ func loadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, er
 				),
 			),
 		)
-	}
-
-	return
-}
-
-// loadTLSCACertificate - loads the CA Bundle certificate into a x509 certificate pool.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func loadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
-
-	var (
-		tCACertificateFile []byte
-	)
-
-	if tCACertificateFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
-		return
-	}
-
-	caCertPoolPtr = x509.NewCertPool()
-	if ok := caCertPoolPtr.AppendCertsFromPEM(tCACertificateFile); !ok {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
 	}
 
 	return
