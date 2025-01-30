@@ -67,7 +67,7 @@ func NewGRPCService(
 	tTLSConfig = &tls.Config{}
 	switch {
 	case config.GRPCSecure.ServerSide:
-		if tCertificate, errorInfo = loadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCertificate, errorInfo = LoadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
 
@@ -80,11 +80,11 @@ func NewGRPCService(
 			return
 		}
 	case config.GRPCSecure.Mutual:
-		if tCertificate, errorInfo = loadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCertificate, errorInfo = LoadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
 
-		if tCACertPool, errorInfo = loadTLSCACertificate(config.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCACertPool, errorInfo = LoadTLSCACertificate(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
 
@@ -108,7 +108,7 @@ func NewGRPCService(
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func (gRPCServicePtr *GRPCService) LoadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
+func LoadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
 
 	var (
 		tCACertificateFile []byte
@@ -127,14 +127,12 @@ func (gRPCServicePtr *GRPCService) LoadTLSCACertificate(tlsConfig jwts.TLSInfo) 
 	return
 }
 
-//  Private Functions
-
-// loadTLSCredentials - load the x509 certificate and private key
+// LoadTLSCredentials - load the x509 certificate and private key
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func loadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
+func LoadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
 
 	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
@@ -149,3 +147,5 @@ func loadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, er
 
 	return
 }
+
+//  Private Functions
