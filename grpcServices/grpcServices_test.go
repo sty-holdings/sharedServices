@@ -30,18 +30,31 @@ func TestGetNATSConnection(tPtr *testing.T) {
 		wantError bool
 	}{
 		{
-			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			name: ctv.TEST_POSITIVE_SUCCESS + "Insecure connection.",
 			arguments: arguments{
 				config: GRPCConfiguration{
 					GRPCHost:   "localhost",
 					GRPCPort:   50051,
 					GRPCSecure: false,
 					GRPCTLSInfo: jwts.TLSInfo{
-						TLSCert:          "",
 						TLSCertFQN:       "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net.crt",
-						TLSPrivateKey:    "",
 						TLSPrivateKeyFQN: "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local-sty-holdings-net-private.key",
-						TLSCABundle:      "",
+						TLSCABundleFQN:   "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net_CAbundle.crt",
+					},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				config: GRPCConfiguration{
+					GRPCHost:   "localhost",
+					GRPCPort:   50051,
+					GRPCSecure: true,
+					GRPCTLSInfo: jwts.TLSInfo{
+						TLSCertFQN:       "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net.crt",
+						TLSPrivateKeyFQN: "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local-sty-holdings-net-private.key",
 						TLSCABundleFQN:   "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net_CAbundle.crt",
 					},
 				},

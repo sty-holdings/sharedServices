@@ -14,6 +14,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
 // NewGRPCService - builds a reusable gRPC Service that creates an instance name and builds a connection. The GRPCPort must be at or above 50051.
@@ -27,7 +28,6 @@ func NewGRPCService(
 ) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCACertificateFile    []byte
 		tCertificate          tls.Certificate
 		tCACertPool           *x509.CertPool
 		tGRPCListener         net.Listener
@@ -56,11 +56,8 @@ func NewGRPCService(
 	}
 
 	gRPCServicePtr = &GRPCService{
-		host:     config.GRPCHost,
-		secure:   config.GRPCSecure,
-		userInfo: ctv.UserInfo{},
+		host: config.GRPCHost,
 	}
-
 	if tGRPCListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", ctv.VAL_LOCAL_HOST, config.GRPCPort)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
 		return
@@ -68,39 +65,87 @@ func NewGRPCService(
 	gRPCServicePtr.GRPCListenerPtr = &tGRPCListener
 
 	tTLSConfig = &tls.Config{}
-	if config.GRPCSecure {
-		if tCertificate, errorInfo.Error = tls.LoadX509KeyPair(config.GRPCTLSInfo.TLSCertFQN, config.GRPCTLSInfo.TLSPrivateKeyFQN); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(
-				errorInfo.Error, fmt.Sprintf(
-					"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, config.GRPCTLSInfo.TLSCertFQN), errs.BuildLabelValue(
-						ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
-						config.GRPCTLSInfo.TLSPrivateKeyFQN,
-					),
-				),
-			)
+	switch {
+	case config.GRPCSecure.ServerSide:
+		if tCertificate, errorInfo = loadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
-		if tCACertificateFile, errorInfo.Error = os.ReadFile(config.GRPCTLSInfo.TLSCABundleFQN); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, config.GRPCTLSInfo.TLSCABundleFQN))
-			return
-		}
-		tCACertPool = x509.NewCertPool()
-		if ok := tCACertPool.AppendCertsFromPEM(tCACertificateFile); !ok {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
-			return
-		}
+
+		tTLSConfig.Certificates = []tls.Certificate{tCertificate}
+		tTLSConfig.ClientAuth = tls.NoClientCert
 		tTransportCredentials = credentials.NewTLS(tTLSConfig)
+
+		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
+		if hlps.CheckPointerNotNil(gRPCServicePtr.GRPCServerPtr, errs.ErrPointerMissing, ctv.FN_GRPC_SERVER_POINTER); errorInfo.Error != nil {
+			return
+		}
+	case config.GRPCSecure.Mutual:
+		if tCertificate, errorInfo = loadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
+			return
+		}
+
+		if tCACertPool, errorInfo = loadTLSCACertificate(config.GRPCTLSInfo); errorInfo.Error != nil {
+			return
+		}
+
 		tTLSConfig.Certificates = []tls.Certificate{tCertificate}
 		tTLSConfig.ClientCAs = tCACertPool
-		tTLSConfig.ClientAuth = tls.VerifyClientCertIfGiven
+		tTLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		tTransportCredentials = credentials.NewTLS(tTLSConfig)
 		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tTransportCredentials))
 		return
+	default:
+		// This is the default security if server side and mutual are both set to false.
+		tTLSConfig.ClientAuth = tls.NoClientCert
+		gRPCServicePtr.GRPCServerPtr = grpc.NewServer()
 	}
-
-	tTLSConfig.ClientAuth = tls.NoClientCert
-	gRPCServicePtr.GRPCServerPtr = grpc.NewServer()
 
 	return
 }
 
 //  Private Functions
+
+// loadTLSCredentials - load the x509 certificate and private key
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func loadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
+
+	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error, fmt.Sprintf(
+				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, tlsConfig.TLSCertFQN), errs.BuildLabelValue(
+					ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
+					tlsConfig.TLSPrivateKeyFQN,
+				),
+			),
+		)
+	}
+
+	return
+}
+
+// loadTLSCACertificate - loads the CA Bundle certificate into a x509 certificate pool.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func loadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
+
+	var (
+		tCACertificateFile []byte
+	)
+
+	if tCACertificateFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		return
+	}
+
+	caCertPoolPtr = x509.NewCertPool()
+	if ok := caCertPoolPtr.AppendCertsFromPEM(tCACertificateFile); !ok {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+	}
+
+	return
+}

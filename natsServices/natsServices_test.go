@@ -188,3 +188,64 @@ func TestGetNATSConnection(tPtr *testing.T) {
 		)
 	}
 }
+
+func TestMakeRequestReplyNoHeaderInsecure(tPtr *testing.T) {
+
+	type arguments struct {
+		instanceName string
+		dkRequest    DKRequest
+	}
+
+	var (
+		errorInfo       errs.ErrorInfo
+		gotError        bool
+		tConfig         NATSConfiguration
+		tNatsServicePtr *NATSService
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
+			arguments: arguments{
+				instanceName: "scott-test-connection",
+				dkRequest:    []byte(ctv.NCI_PING),
+			},
+			wantError: false,
+		},
+	}
+
+	tConfig = NATSConfiguration{
+		NATSCredentialsFilename: "/Volumes/development-share/.keys/ai-daveknows-dev/nats/creds/connect-server-US-WEST",
+		NATSPort:                "4222",
+		NATSTLSInfo: jwts.TLSInfo{
+			TLSCertFQN:       "/Volumes/development-share/.keys/ai-daveknows-dev/tls/certs/dev_daveknows_net.crt",
+			TLSPrivateKeyFQN: "/Volumes/development-share/.keys/ai-daveknows-dev/tls/dk-dev-private.key",
+			TLSCABundleFQN:   "/Volumes/development-share/.keys/ai-daveknows-dev/tls/certs/ca-bundle.crt",
+		},
+		NATSURL: "dev.daveknows.net",
+	}
+
+	if tNatsServicePtr, errorInfo = NewNATSService("test", tConfig); errorInfo.Error != nil {
+		tPtr.Errorf("Error creating NATS service: %v", errorInfo.Error)
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if _, errorInfo = makeRequestReplyNoHeaderInsecure(ts.arguments.dkRequest, tNatsServicePtr, ctv.SUB_GEMINI_ANALYZE_QUESTION, 5); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantError {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
