@@ -884,6 +884,22 @@ func GetTimeSinceEpoch(seconds int64) string {
 	return tTime.Format("2006-01-02 03:04:05 PM")
 }
 
+// IntSliceToInt32Slice - Helper function to convert []int to []int32
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IntSliceToInt32Slice(intSlice []int) (int32Slice []int32) {
+
+	int32Slice = make([]int32, len(intSlice))
+
+	for i, v := range intSlice {
+		int32Slice[i] = int32(v)
+	}
+
+	return
+}
+
 // GetFieldsNames - will return a list fields in a struct
 //
 //	Customer Messages: None
