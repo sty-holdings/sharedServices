@@ -167,6 +167,8 @@ const (
 	UNSUPPORTED_TRANSFER_METHOD                = "The transfer method is not supported."
 	UNMARSHAL_FAILED                           = "Unable to unmarshal data"
 	USER_MISSING                               = "The user is not in the system."
+	UID_INVALID                                = "The uId is invalid."
+	UID_MISSING                                = "The uId is missing."
 	USER_ALREADY_EXISTS                        = "The user already exists in the system."
 	USER_ALREADY_CONFIRMED_EMAIL               = "The user has already been confirmed by email."
 	USER_ALREADY_CONFIRMED_PHONE               = "The user has already been confirmed by phone."
@@ -342,6 +344,8 @@ var (
 	ErrUnsupportedSubject                    = errors.New(UNSUPPORTED_SUBJECT)
 	ErrUnsupportedTransferMethod             = errors.New(UNSUPPORTED_TRANSFER_METHOD)
 	ErrUserAccountMissing                    = errors.New(USER_MISSING)
+	ErrUIdInvalid                            = errors.New(UID_INVALID)
+	ErrUIdMissing                            = errors.New(UID_MISSING)
 	ErrUserAlreadyExists                     = errors.New(USER_ALREADY_EXISTS)
 	ErrUserBundleAlreadyExists               = errors.New(BUNDLE_ALREADY_EXISTS)
 	ErrUserBundleMissing                     = errors.New(BUNDLE_MISSING)
