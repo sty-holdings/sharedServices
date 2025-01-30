@@ -67,7 +67,7 @@ func NewGRPCService(
 	tTLSConfig = &tls.Config{}
 	switch {
 	case config.GRPCSecure.ServerSide:
-		if tCertificate, errorInfo = LoadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCertificate, errorInfo = LoadTLSCredentialsWithKey(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
 
@@ -80,7 +80,7 @@ func NewGRPCService(
 			return
 		}
 	case config.GRPCSecure.Mutual:
-		if tCertificate, errorInfo = LoadTLSCredentials(config.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCertificate, errorInfo = LoadTLSCredentialsWithKey(config.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
 
@@ -127,19 +127,40 @@ func LoadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool,
 	return
 }
 
-// LoadTLSCredentials - load the x509 certificate and private key
+// LoadTLSCredentialsWithKey - load the x509 certificate with private key
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func LoadTLSCredentialsWithKey(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
+
+	certificate, errorInfo = loadTLSCertificate(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN)
+
+	return
+}
+
+// LoadTLSCredentials - load the x509 certificate
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
 func LoadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
 
-	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
+	certificate, errorInfo = loadTLSCertificate(tlsConfig.TLSCertFQN, ctv.VAL_EMPTY)
+
+	return
+}
+
+//  Private Functions
+
+func loadTLSCertificate(tlsCertFQN string, tlsPrivateKeyFQN string) (certificate tls.Certificate, errorInfo errs.ErrorInfo) {
+
+	if certificate, errorInfo.Error = tls.LoadX509KeyPair(tlsCertFQN, ctv.VAL_EMPTY); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error, fmt.Sprintf(
-				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, tlsConfig.TLSCertFQN), errs.BuildLabelValue(
+				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, tlsCertFQN), errs.BuildLabelValue(
 					ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
-					tlsConfig.TLSPrivateKeyFQN,
+					tlsPrivateKeyFQN,
 				),
 			),
 		)
@@ -147,5 +168,3 @@ func LoadTLSCredentials(tlsConfig jwts.TLSInfo) (certificate tls.Certificate, er
 
 	return
 }
-
-//  Private Functions
