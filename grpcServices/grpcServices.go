@@ -58,7 +58,7 @@ func NewGRPCService(
 	gRPCServicePtr = &GRPCService{
 		host: config.GRPCHost,
 	}
-	if tGRPCListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", ctv.VAL_LOCAL_HOST, config.GRPCPort)); errorInfo.Error != nil {
+	if tGRPCListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", config.GRPCHost, config.GRPCPort)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
 		return
 	}
