@@ -127,6 +127,17 @@ type TimePeriodValues struct {
 	Days     []int `json:"days"`
 }
 
+type UniqueSettings struct {
+	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
+	GeminiModelName          string              `json:"gemini_model_name"`
+	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
+	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
+	GeminiTemperature        string              `json:"gemini_temperature"`
+	GcpCredentialFilename    string              `json:"gcp_credential_filename"`
+	GcpLocation              string              `json:"gcp_location"`
+	GcpProjectID             string              `json:"gcp_project_id"`
+}
+
 type UserInfo struct {
 	KeyB64       string
 	STYHClientId string
