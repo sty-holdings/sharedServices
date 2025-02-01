@@ -100,9 +100,9 @@ type UniqueSettingsGEMINI struct {
 	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
 	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
 	GeminiTemperature        string              `json:"gemini_temperature"`
-	GcpCredentialFilename    string              `json:"gcp_credential_filename"`
-	GcpLocation              string              `json:"gcp_location"`
-	GcpProjectID             string              `json:"gcp_project_id"`
+	GCPCredentialFilename    string              `json:"gcp_credential_filename"`
+	GCPLocation              string              `json:"gcp_location"`
+	GCPProjectID             string              `json:"gcp_project_id"`
 }
 
 type SystemInstruction struct {
