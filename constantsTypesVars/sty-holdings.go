@@ -94,6 +94,10 @@ type CategoryPromptComparison struct {
 	QuestionSubject    string `json:"question_subject"`
 }
 
+type ExtensionUniqueSettingsGEMINI struct {
+	UniqueSettings SettingsForGEMINI `json:"unique_settings"`
+}
+
 type SystemInstruction struct {
 	Name        string `json:"name"`
 	Instruction string `json:"instruction"`
@@ -127,7 +131,7 @@ type TimePeriodValues struct {
 	Days     []int `json:"days"`
 }
 
-type UniqueSettings struct {
+type SettingsForGEMINI struct {
 	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
 	GeminiModelName          string              `json:"gemini_model_name"`
 	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
