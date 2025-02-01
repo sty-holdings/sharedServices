@@ -94,7 +94,7 @@ type CategoryPromptComparison struct {
 	QuestionSubject    string `json:"question_subject"`
 }
 
-type ExtensionUniqueSettingsGEMINI struct {
+type UniqueSettingsGEMINI struct {
 	UniqueSettings SettingsForGEMINI `json:"unique_settings"`
 }
 
