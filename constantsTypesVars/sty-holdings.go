@@ -95,7 +95,14 @@ type CategoryPromptComparison struct {
 }
 
 type UniqueSettingsGEMINI struct {
-	UniqueSettings SettingsForGEMINI `json:"unique_settings"`
+	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
+	GeminiModelName          string              `json:"gemini_model_name"`
+	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
+	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
+	GeminiTemperature        string              `json:"gemini_temperature"`
+	GcpCredentialFilename    string              `json:"gcp_credential_filename"`
+	GcpLocation              string              `json:"gcp_location"`
+	GcpProjectID             string              `json:"gcp_project_id"`
 }
 
 type SystemInstruction struct {
@@ -129,17 +136,6 @@ type TimePeriodValues struct {
 	Months   []int `json:"months"`
 	Weeks    []int `json:"weeks"`
 	Days     []int `json:"days"`
-}
-
-type SettingsForGEMINI struct {
-	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
-	GeminiModelName          string              `json:"gemini_model_name"`
-	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
-	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
-	GeminiTemperature        string              `json:"gemini_temperature"`
-	GcpCredentialFilename    string              `json:"gcp_credential_filename"`
-	GcpLocation              string              `json:"gcp_location"`
-	GcpProjectID             string              `json:"gcp_project_id"`
 }
 
 type UserInfo struct {
