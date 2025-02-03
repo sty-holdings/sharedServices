@@ -33,6 +33,7 @@ const (
 	DOCUMENT_NOT_FOUND                         = "The document was not found."
 	DOCUMENTS_NONE_FOUND                       = "No documents were found."
 	DOMAIN_INVALID                             = "The domain value is invalid."
+	EMAIL_MISSING                              = "The email address is missing."
 	ENVIRNOMENT_INVALID                        = "The environment value is invalid."
 	ERROR_MISSING                              = "ERROR MISSING"
 	EXTENSION_INVALID                          = "The extension name is invalid."
@@ -209,6 +210,7 @@ var (
 	ErrDocumentsNoneFound                    = errors.New(DOCUMENTS_NONE_FOUND)
 	ErrDomainInvalid                         = errors.New(DOMAIN_INVALID)
 	ErrEnvironmentInvalid                    = errors.New(ENVIRNOMENT_INVALID)
+	ErrEmailMissing                          = errors.New(EMAIL_MISSING)
 	ErrErrorMissing                          = errors.New(ERROR_MISSING)
 	ErrExtensionInvalid                      = errors.New(EXTENSION_INVALID)
 	ErrExtractKeysFailure                    = errors.New(EXTRACT_KEY_FAILED)
