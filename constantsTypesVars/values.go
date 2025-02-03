@@ -15,6 +15,7 @@ const (
 	VAL_START_DAY      = "00:00:00"
 	VAL_START_MONTH    = "-01 00:00:00"
 	VAL_TCP            = "tcp"
+	VAL_TEST           = "TEST"
 	VAL_VALID          = "VALID"
 	VAL_ZERO           = 0
 )
