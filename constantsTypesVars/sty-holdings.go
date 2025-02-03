@@ -106,9 +106,10 @@ type UniqueSettingsGEMINI struct {
 }
 
 type SystemInstruction struct {
-	Name        string `json:"name"`
-	Instruction string `json:"instruction"`
-	SetDate     bool   `json:"set_date"`
+	Name         string `json:"name"`
+	Instruction  string `json:"instruction"`
+	OutputFormat string `json:"output_format"`
+	SetDate      bool   `json:"set_date"`
 }
 
 type TimePeriodSpecialWordsPresent struct {
