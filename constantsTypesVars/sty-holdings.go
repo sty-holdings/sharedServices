@@ -106,6 +106,7 @@ type UniqueSettingsGEMINI struct {
 }
 
 type SystemInstruction struct {
+	Topic        string `json:"topic"`
 	Name         string `json:"name"`
 	Instruction  string `json:"instruction"`
 	OutputFormat string `json:"output_format"`
