@@ -41,3 +41,12 @@ var StripeSubjects = []string{
 	SUB_STRIPE_LIST_REFUNDS_BETWEEN,
 	SUB_STRIPE_LIST_TOTAL_AMOUNT_BETWEEN,
 }
+
+var StripeSubjectDescriptions = map[string]string{
+	SUB_STRIPE_BALANCE:                          "return balance today",
+	SUB_STRIPE_LIST_AMOUNT_TRANSACTIONS_BETWEEN: "return transactions between date",
+	SUB_STRIPE_LIST_DISPUTES_BETWEEN:            "return disputes between date",
+	SUB_STRIPE_LIST_PAYMENT_METHODS:             "return payment methods",
+	SUB_STRIPE_LIST_REFUNDS_BETWEEN:             "return refunds between date",
+	SUB_STRIPE_LIST_TOTAL_AMOUNT_BETWEEN:        "return total amount year quarter month week day",
+}

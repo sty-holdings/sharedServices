@@ -190,6 +190,21 @@ func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo e
 // 	return string(bytes.Join([][]byte{y, z}, nil))
 // }
 
+// ConvertMapStringToString - takes a map of strings and returns a string using the format of key: value
+// with a space.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertMapStringToString(mapIn map[string]string) (mapString string) {
+
+	for key, value := range mapIn {
+		mapString += key + ": " + value + " "
+	}
+
+	return
+}
+
 // ConvertMapAnyToMapString
 //
 //	Customer Messages: None
