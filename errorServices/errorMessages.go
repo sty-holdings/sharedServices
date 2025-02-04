@@ -102,6 +102,9 @@ const (
 	RETRY_LIMIT_HIT                            = "You have tried too many times. Please try again in 15 mins or contact support@sty-holdings.com."
 	SAAS_PROVIDER_EXISTS                       = "The provider you are trying to add already exists."
 	SAAS_PROVIDER_MISSING                      = "The SaaS provider was not found."
+	SAAS_SUPPORTED_PROVIDER_EXISTS             = "The suppported provider you are trying to add already exists."
+	SAAS_SUPPORTED_PROVIDER_MISSING            = "The suppported SaaS provider was not found."
+	SAAS_SUPPORTED_PROVIDERS_EMPTY             = "The support SaaS provider record is empty."
 	SERVER_CONFIGURATION_INVALID               = "The setting in the configuration file are inconsistant."
 	SERVER_NAME_MISSING                        = "The server name in main.go is empty."
 	SERVER_INSTANCE_NUMBER_MISSING             = "The server instance number is missing."
@@ -285,6 +288,9 @@ var (
 	ErrSYTHUsernameEmpty                     = errors.New(STYH_USERNAME_EMPTY)
 	ErrSaasProviderExists                    = errors.New(SAAS_PROVIDER_EXISTS)
 	ErrSaasProviderMissing                   = errors.New(SAAS_PROVIDER_MISSING)
+	ErrSaasSupportedProviderExists           = errors.New(SAAS_SUPPORTED_PROVIDER_EXISTS)
+	ErrSaasSupportedProviderMissing          = errors.New(SAAS_SUPPORTED_PROVIDER_MISSING)
+	ErrSaasSupportedProviderEmpty            = errors.New(SAAS_SUPPORTED_PROVIDERS_EMPTY)
 	ErrServerConfigurationInvalid            = errors.New(SERVER_CONFIGURATION_INVALID)
 	ErrServerInstanceNumberMissing           = errors.New(SERVER_INSTANCE_NUMBER_MISSING)
 	ErrServerNameMissing                     = errors.New(SERVER_NAME_MISSING)
