@@ -156,7 +156,7 @@ const (
 	LBL_START_TIME_PERIOD                     = "END TIME PERIOD: "
 	LBL_START_TIME_RANGE                      = "END TIME RANGE: "
 	LBL_STATUS                                = "STATUS: "
-	LBL_STRIPE                                = "STRIPE"
+	LBL_STRIPE                                = "STRIPE: "
 	LBL_STRIPE_KEY                            = "STRIPE KEY: "
 	LBL_STYH_CLIENT_ID                        = "STYH CLIENT_ID: "
 	LBL_STYH_USERNAME                         = "STYH USERNAME: "

@@ -22,7 +22,7 @@ const (
 	SUB_STRIPE_LIST_DISPUTES_BETWEEN = "stripe.list-disputes-between"
 	//SUB_STRIPE_LIST_INVOICES_BETWEEN                  = "stripe.list-invoices-between"
 	//SUB_STRIPE_LIST_PAYMENT_INTENTS_BETWEEN           = "stripe.list-payment-intents-between"
-	//SUB_STRIPE_LIST_PAYMENT_METHODS                   = "stripe.list-payment-methods"
+	SUB_STRIPE_LIST_PAYMENT_METHODS = "stripe.list-payment-methods"
 	//SUB_STRIPE_LIST_PAYOUTS_BETWEEN                   = "stripe.list-payouts-between"
 	SUB_STRIPE_LIST_REFUNDS_BETWEEN                   = "stripe.list-refunds-between"
 	SUB_STRIPE_LIST_TOTAL_AMOUNT_TRANSACTIONS_BETWEEN = "stripe.list-total-amount-transactions-between"
