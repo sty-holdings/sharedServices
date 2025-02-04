@@ -186,6 +186,7 @@ const (
 	FN_SAAS_PROVIDER_API_KEY                = "saas_provider_api_key"
 	FN_SAAS_PROVIDER_CLIENT_ID              = "saas_provider_client_id"
 	FN_SAAS_PROVIDER_KEY_INFO               = "saas_provider_key_info"
+	FN_SAAS_SUPPORTED_PROVIDERS             = "saas_supported_providers"
 	FN_SECRET_KEY                           = "secret_key"
 	FN_SERVER_INSTANCE_NUMBER               = "server_instance_number"
 	FN_SERVER_VERSION                       = "server_version"
