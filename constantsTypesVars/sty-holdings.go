@@ -119,30 +119,33 @@ type SystemInstruction struct {
 }
 
 type TimePeriodSpecialWordsPresent struct {
-	Current      bool `json:"current"`
-	Details      bool `json:"details"`
-	Last         bool `json:"last"`
-	Next         bool `json:"next"`
-	Previous     bool `json:"previous"`
-	SubTotal     bool `json:"subtotal"`
-	Today        bool `json:"today"`
-	Transactions bool `json:"transactions"`
+	Current      bool                `json:"current"`
+	Details      bool                `json:"details"`
+	Last         bool                `json:"last"`
+	Next         bool                `json:"next"`
+	Previous     bool                `json:"previous"`
+	SubTotal     bool                `json:"subtotal"`
+	Today        bool                `json:"today"`
+	Transactions bool                `json:"transactions"`
+	TokenCount   genai.UsageMetadata `json:"token_count"`
 }
 
 type TimePeriodWordsPresent struct {
-	Year    bool `json:"year"`
-	Quarter bool `json:"quarter"`
-	Month   bool `json:"month"`
-	Week    bool `json:"week"`
-	Day     bool `json:"day"`
+	Year       bool                `json:"year"`
+	Quarter    bool                `json:"quarter"`
+	Month      bool                `json:"month"`
+	Week       bool                `json:"week"`
+	Day        bool                `json:"day"`
+	TokenCount genai.UsageMetadata `json:"token_count"`
 }
 
 type TimePeriodValues struct {
-	Years    []int `json:"years"`
-	Quarters []int `json:"quarters"`
-	Months   []int `json:"months"`
-	Weeks    []int `json:"weeks"`
-	Days     []int `json:"days"`
+	Years      []int               `json:"years"`
+	Quarters   []int               `json:"quarters"`
+	Months     []int               `json:"months"`
+	Weeks      []int               `json:"weeks"`
+	Days       []int               `json:"days"`
+	TokenCount genai.UsageMetadata `json:"token_count"`
 }
 
 type UserInfo struct {
