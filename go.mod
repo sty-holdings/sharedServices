@@ -11,6 +11,7 @@ require (
 	github.com/nats-io/nats.go v1.37.0
 	google.golang.org/api v0.214.0
 	google.golang.org/grpc v1.70.0
+	cloud.google.com/go/vertexai v0.13.3
 )
 
 require (

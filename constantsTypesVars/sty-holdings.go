@@ -1,5 +1,9 @@
 package sharedServices
 
+import (
+	"cloud.google.com/go/vertexai/genai"
+)
+
 //goland:noinspection All
 const (
 	// Text strings
@@ -88,10 +92,11 @@ const (
 )
 
 type CategoryPromptComparison struct {
-	Category           string `json:"category"`
-	ComparisonQuestion bool   `json:"comparison_question"`
-	Prompt             string `json:"prompt"`
-	QuestionSubject    string `json:"question_subject"`
+	Category           string              `json:"category"`
+	ComparisonQuestion bool                `json:"comparison_question"`
+	Prompt             string              `json:"prompt"`
+	QuestionSubject    string              `json:"question_subject"`
+	TokenCount         genai.UsageMetadata `json:"token_count"`
 }
 
 type UniqueSettingsGEMINI struct {
