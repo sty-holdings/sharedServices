@@ -1,12 +1,14 @@
 package sharedServices
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -18,7 +20,12 @@ import (
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
-// NewGRPCServer - builds a reusable gRPC Server that creates an instance name and builds a connection. The GRPCPort must be at or above 50051.
+// NewGRPCServer - builds a reusable gRPC Server that creates an instance name and builds a connection.
+// The GRPCPort must be at or above 50051. This will not register the server or execute the serve command.
+// Here are examples for reference:
+//
+//		protos_def.RegisterHalServicesServer(gRPCServer.GRPCServerPtr, &Server{})
+//		errorInfo.Error = gRPCServer.GRPCServerPtr.Serve(*gRPCServer.GRPCListenerPtr)
 //
 //	Customer Messages: None
 //	Errors: None
@@ -79,25 +86,100 @@ func NewGRPCServer(
 	return
 }
 
-// LoadTLSCACertificate - loads the CA Bundle certificate into a x509 certificate pool.
+// NewGRPCClient - builds a reusable gRPC Client. The GRPCHost and GRPCPort must match the server. This will not create the message client or
+// execute any services. Here are examples for reference:
+//
+//		d := protos_def.NewHalServicesClient(gRPCServicePtr.GRPCClientPtr)
+//		myPongReplyPtr, err = d.PingPong(gRPCServicePtr.timeoutContext, &protos_def.PingRequest{Email: "scott-DK@yackofamily.com"},
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func LoadTLSCACertificate(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
+func NewGRPCClient(
+	extensionName string,
+	config GRPCConfiguration,
+) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCACertificateFile []byte
+		tCancel     context.CancelFunc
+		tDailOption grpc.DialOption
 	)
 
-	if tCACertificateFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(extensionName, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+		return
+	}
+	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
+		errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if config.GRPCTimeout <= ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
+		return
+	}
+
+	if config.GRPCDebug {
+		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
+	}
+
+	gRPCServicePtr = &GRPCService{
+		host: config.GRPCHost,
+		port: config.GRPCPort,
+	}
+
+	gRPCServicePtr.timeoutContext, tCancel = context.WithTimeout(context.Background(), time.Duration(config.GRPCTimeout)*time.Second)
+	defer tCancel()
+
+	if tDailOption, errorInfo = LoadTLSCABundle(config.GRPCTLSInfo); errorInfo.Error != nil {
+		return
+	}
+
+	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(fmt.Sprintf("%s:%s", config.GRPCHost, strconv.Itoa(config.GRPCPort)), tDailOption); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_CLIENT, ctv.TXT_FAILED))
+	}
+
+	return
+}
+
+// LoadTLSCABundle - loads the CA Bundle certificate into a x509 certificate pool and returns the dailOption.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func LoadTLSCABundle(tlsConfig jwts.TLSInfo) (dailOption grpc.DialOption, errorInfo errs.ErrorInfo) {
+
+	var (
+		tCABundleFile  []byte
+		tCACertPoolPtr *x509.CertPool
+	)
+
+	if tCABundleFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
 		return
 	}
 
-	caCertPoolPtr = x509.NewCertPool()
-	if ok := caCertPoolPtr.AppendCertsFromPEM(tCACertificateFile); !ok {
+	tCACertPoolPtr = x509.NewCertPool()
+	if ok := tCACertPoolPtr.AppendCertsFromPEM(tCABundleFile); !ok {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+	}
+
+	config := &tls.Config{
+		RootCAs: tCACertPoolPtr,
+	}
+
+	if dailOption = grpc.WithTransportCredentials(credentials.NewTLS(config)); dailOption == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrDialOptionFailed, errs.BuildLabelValue(ctv.LBL_DIAL_OPTION, ctv.TXT_FAILED))
 	}
 
 	return

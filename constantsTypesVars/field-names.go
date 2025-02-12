@@ -113,6 +113,7 @@ const (
 	FN_GIN_URL_PORT                         = "gin_url_port"
 	FN_GIVEN_NAME                           = "given_name"
 	FN_GRPC_SERVER_POINTER                  = "grpc_server_pointer"
+	FN_GRPC_TIMEOUT                         = "grpc_timeout"
 	FN_HTTP_TLS_INFO                        = "http_tls_info"
 	FN_INSTITUTIONS                         = "institutions"
 	FN_INSTITUTION_ACCOUNT                  = "institution_account"

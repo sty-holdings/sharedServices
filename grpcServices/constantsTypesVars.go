@@ -1,6 +1,7 @@
 package sharedServices
 
 import (
+	"context"
 	"net"
 
 	"google.golang.org/grpc"
@@ -14,13 +15,16 @@ type GRPCConfiguration struct {
 	GRPCPort    int            `json:"grpc_port" yaml:"grpc_port"`
 	GRPCSecure  SecureSettings `json:"grpc_secure" yaml:"grpc_secure"`
 	GRPCTLSInfo jwts.TLSInfo   `json:"grpc_tls_info" yaml:"grpc_tls_info"`
+	GRPCTimeout int            `json:"grpc_timeout" yaml:"grpc_timeout"`
 }
 type GRPCService struct {
 	GRPCListenerPtr *net.Listener
 	GRPCServerPtr   *grpc.Server
+	GRPCClientPtr   *grpc.ClientConn
 	secure          SecureSettings
 	host            string
 	port            int
+	timeoutContext  context.Context
 }
 
 // If both ServerSide and Mutual are false, then it is the default NoClient.

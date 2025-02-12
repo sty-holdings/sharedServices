@@ -30,6 +30,7 @@ const (
 	CONFIG_FILE_MISSING                        = "Not able to read the supplied config file. "
 	CURRENCY_INVALID                           = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
 	DECODE_STRING_FAILED                       = "Unable to decode the string."
+	DIAL_OPTION_FAILED                         = "Creation of the gRPC dial option failed."
 	DIRECTORY_MISSING                          = "The directory does not exist."
 	DIRECTORY_NOT_FULLY_QUALIFIED              = "The directory doesn't start and end with slash."
 	DOCUMENT_NOT_FOUND                         = "The document was not found."
@@ -57,6 +58,7 @@ const (
 	GIN_URL_PORT_MISSING                       = "The Gin URL & PORT is missing."
 	GREATER_THAN_ZERO                          = "The value must be greater than zero."
 	GRPC_PORT_INVALID                          = "gRPC port value is invalid. The port value must be greater than 50050."
+	GRPC_TIMEOUT_INVALID                       = "gRPC time value is invalid. The timeout value must be greater than zero."
 	HTTP_REQUEST_FALIED                        = "The HTTP request failed with a non-200 status code."
 	HTTP_SECURE_SERVER_FAILED                  = "The HTTP services secure server failed."
 	IDENTITY_PROVIDER_INVALID                  = "The identity provider is invalid."
@@ -212,6 +214,7 @@ var (
 	ErrConfigFileMissing                     = errors.New(CONFIG_FILE_MISSING)
 	ErrCurrencyInvalid                       = errors.New(CURRENCY_INVALID)
 	ErrDecodeStringFailed                    = errors.New(DECODE_STRING_FAILED)
+	ErrDialOptionFailed                      = errors.New(DIAL_OPTION_FAILED)
 	ErrDirectoryMissing                      = errors.New(DIRECTORY_MISSING)
 	ErrDirectoryNotFullyQualified            = errors.New(DIRECTORY_NOT_FULLY_QUALIFIED)
 	ErrDocumentNotFound                      = errors.New(DOCUMENT_NOT_FOUND)
@@ -237,6 +240,7 @@ var (
 	ErrGinURLPortMissing                     = errors.New(GIN_URL_PORT_MISSING)
 	ErrGreatThanZero                         = errors.New(GREATER_THAN_ZERO)
 	ErrGRPCPortInvalid                       = errors.New(GRPC_PORT_INVALID)
+	ErrGRPCTimeoutInvalid                    = errors.New(GRPC_TIMEOUT_INVALID)
 	ErrHTTPRequestFalied                     = errors.New(HTTP_REQUEST_FALIED)
 	ErrHTTPSecureServerFailed                = errors.New(HTTP_SECURE_SERVER_FAILED)
 	ErrIdentityProviderInvalid               = errors.New(IDENTITY_PROVIDER_INVALID)
