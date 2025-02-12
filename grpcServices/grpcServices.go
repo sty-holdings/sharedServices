@@ -1,14 +1,12 @@
 package sharedServices
 
 import (
-	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"net"
 	"os"
 	"strconv"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -101,7 +99,6 @@ func NewGRPCClient(
 ) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCancel     context.CancelFunc
 		tDailOption grpc.DialOption
 	)
 
@@ -131,9 +128,6 @@ func NewGRPCClient(
 		Host: config.GRPCHost,
 		Port: config.GRPCPort,
 	}
-
-	gRPCServicePtr.TimeoutContext, tCancel = context.WithTimeout(context.Background(), time.Duration(config.GRPCTimeout)*time.Second)
-	defer tCancel()
 
 	if tDailOption, errorInfo = LoadTLSCABundle(config.GRPCTLSInfo); errorInfo.Error != nil {
 		return
