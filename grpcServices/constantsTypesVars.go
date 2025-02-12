@@ -9,6 +9,7 @@ import (
 )
 
 type GRPCConfiguration struct {
+	GRPCDebug   bool           `json:"grpc_debug" yaml:"grpc_debug"`
 	GRPCHost    string         `json:"grpc_host" yaml:"grpc_host"` // This is only used on the client side. Server side is set to localhost.
 	GRPCPort    int            `json:"grpc_port" yaml:"grpc_port"`
 	GRPCSecure  SecureSettings `json:"grpc_secure" yaml:"grpc_secure"`
@@ -19,6 +20,7 @@ type GRPCService struct {
 	GRPCServerPtr   *grpc.Server
 	secure          SecureSettings
 	host            string
+	port            int
 }
 
 // If both ServerSide and Mutual are false, then it is the default NoClient.

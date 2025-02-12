@@ -33,9 +33,12 @@ func TestGetNATSConnection(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Insecure connection.",
 			arguments: arguments{
 				config: GRPCConfiguration{
-					GRPCHost:   "localhost",
-					GRPCPort:   50051,
-					GRPCSecure: false,
+					GRPCHost: "localhost",
+					GRPCPort: 50051,
+					GRPCSecure: SecureSettings{
+						ServerSide: true,
+						Mutual:     false,
+					},
 					GRPCTLSInfo: jwts.TLSInfo{
 						TLSCertFQN:       "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net.crt",
 						TLSPrivateKeyFQN: "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local-sty-holdings-net-private.key",
@@ -49,9 +52,12 @@ func TestGetNATSConnection(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
 			arguments: arguments{
 				config: GRPCConfiguration{
-					GRPCHost:   "localhost",
-					GRPCPort:   50051,
-					GRPCSecure: true,
+					GRPCHost: "localhost",
+					GRPCPort: 50051,
+					GRPCSecure: SecureSettings{
+						ServerSide: true,
+						Mutual:     false,
+					},
 					GRPCTLSInfo: jwts.TLSInfo{
 						TLSCertFQN:       "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local_sty-holdings_net.crt",
 						TLSPrivateKeyFQN: "/Volumes/development-share/.keys/sty-holdings.net/local/local_sty-holdings_net/local-sty-holdings-net-private.key",
@@ -66,7 +72,7 @@ func TestGetNATSConnection(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if _, errorInfo = NewGRPCService(ctv.EXTENSION_HAL, ts.arguments.config); errorInfo.Error != nil {
+				if _, errorInfo = NewGRPCServer(ctv.EXTENSION_HAL, ts.arguments.config); errorInfo.Error != nil {
 					gotError = true
 					errorInfo = errs.ErrorInfo{
 						Error: errors.New(fmt.Sprintf("Failed - gRPC connection was not created for Test: %v", tFunctionName)),

@@ -20,6 +20,8 @@ const (
 	BUFFER_EMPTY                               = "The buffer is empty"
 	BUNDLE_ALREADY_EXISTS                      = "The bundle already exists in the system."
 	BUNDLE_MISSING                             = "The bundle is not in the system."
+	CA_BUNDLE_FILENAME_MISSING                 = "The CA Bundle filename is missing."
+	CA_BUNDLE_LOADING_FAILED                   = "The CA Bundle file failed to load."
 	CATEGORY_NOT_SUPPORTED                     = "The category is not supported."
 	CLIENT_SECRET_MISSING                      = "The client secret has not been provided.)"
 	COGNITO_SECRET_BLOCK_INVALID               = "Unable to decode challenge parameter 'SECRET_BLOCK'."
@@ -200,6 +202,8 @@ var (
 	ErrBufferEmpty                           = errors.New(BUFFER_EMPTY)
 	ErrBundleAlreadyExists                   = errors.New(BUNDLE_ALREADY_EXISTS)
 	ErrBundleMissing                         = errors.New(BUNDLE_MISSING)
+	ErrCABundleFilenameMissing               = errors.New(CA_BUNDLE_FILENAME_MISSING)
+	ErrCABundleLoadingFailed                 = errors.New(CA_BUNDLE_LOADING_FAILED)
 	ErrCategoryNotSupported                  = errors.New(CATEGORY_NOT_SUPPORTED)
 	ErrClientSecretBlockInvalid              = errors.New(COGNITO_SECRET_BLOCK_INVALID)
 	ErrClientSecretMissing                   = errors.New(CLIENT_SECRET_MISSING)
