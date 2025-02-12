@@ -65,9 +65,9 @@ func NewGRPCServer(
 	}
 
 	gRPCServicePtr = &GRPCService{
-		secure: config.GRPCSecure,
-		host:   config.GRPCHost,
-		port:   config.GRPCPort,
+		Secure: config.GRPCSecure,
+		Host:   config.GRPCHost,
+		Port:   config.GRPCPort,
 	}
 	if tGRPCListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", config.GRPCHost, config.GRPCPort)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
@@ -134,11 +134,11 @@ func NewGRPCClient(
 	}
 
 	gRPCServicePtr = &GRPCService{
-		host: config.GRPCHost,
-		port: config.GRPCPort,
+		Host: config.GRPCHost,
+		Port: config.GRPCPort,
 	}
 
-	gRPCServicePtr.timeoutContext, tCancel = context.WithTimeout(context.Background(), time.Duration(config.GRPCTimeout)*time.Second)
+	gRPCServicePtr.TimeoutContext, tCancel = context.WithTimeout(context.Background(), time.Duration(config.GRPCTimeout)*time.Second)
 	defer tCancel()
 
 	if tDailOption, errorInfo = LoadTLSCABundle(config.GRPCTLSInfo); errorInfo.Error != nil {

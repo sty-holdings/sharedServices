@@ -21,10 +21,10 @@ type GRPCService struct {
 	GRPCListenerPtr *net.Listener
 	GRPCServerPtr   *grpc.Server
 	GRPCClientPtr   *grpc.ClientConn
-	secure          SecureSettings
-	host            string
-	port            int
-	timeoutContext  context.Context
+	Secure          SecureSettings
+	Host            string
+	Port            int
+	TimeoutContext  context.Context
 }
 
 // If both ServerSide and Mutual are false, then it is the default NoClient.
