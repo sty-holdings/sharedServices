@@ -65,10 +65,6 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		}
 	}
 
-	if value, ok = tUserInfo[ctv.FN_SECRET_KEY]; ok {
-		clientStruct.SecretKey = value.(string)
-	}
-
 	if value, ok = tUserInfo[ctv.FN_STYH_CLIENT_ID]; ok {
 		clientStruct.StyhClientId = value.(string)
 	}
