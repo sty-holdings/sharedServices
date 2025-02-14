@@ -140,7 +140,7 @@ const (
 	STRIPE_PAYMENT_METHOD_INVALID              = "The payment method is not support by NATS Connect. See https://docs.stripe.com/testing?testing-method=payment-methods#cards."
 	STRIPE_PAYMENT_METHOD_TYPE_EMPTY           = "An empty payment method type is not allowed. See https://docs.stripe.com/api/payment_methods/object#payment_method_object-type."
 	STRIPE_PAYMENT_METHOD_TYPE_INVALID         = "The payment method type is not support by NATS Connect. See https://docs.stripe.com/api/payment_methods/object#payment_method_object-type."
-	STRIPE_KEY_INVALID                         = "The stripe key is invalid. See https://docs.stripe.com/api/payment_intents source."
+	STRIPE_KEY_INVALID                         = "The stripe key is invalid. Go to https://dashboard.stripe.com/login?redirect=/apikeys."
 	STRIPE_METHOD_TYPE_UNSUPPORTED             = "The payment method is not support. To request support, contact support@sty-holdings.com."
 	STRIPE_ONE_TIME_CODE_FAILED                = "Generating the Stripe One Time Use Token failed."
 	STRIPE_OUT_NOT_SUPPORTED                   = "Transfers out using Stripe are not supported."
