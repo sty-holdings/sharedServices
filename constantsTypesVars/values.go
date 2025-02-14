@@ -4,19 +4,22 @@ package sharedServices
 
 //goland:noinspection All
 const (
-	VAL_DETERMINE_SUBJECTS = "determine-subjects"
-	VAL_EMPTY              = ""
-	VAL_END_DAY            = "23:59:59"
-	VAL_GRPC_MIN_PORT      = 50051
-	VAL_LOCAL_HOST         = "localhost"
-	VAL_MID_NIGHT          = "23:59:59"
-	VAL_NATS               = "nats"
-	VAL_NOT_SUPPORTED      = "not supported"
-	VAL_NO_CHARGE_DATA     = "{\"dk_charges\":null}"
-	VAL_START_DAY          = "00:00:00"
-	VAL_START_MONTH        = "-01 00:00:00"
-	VAL_TCP                = "tcp"
-	VAL_TEST               = "TEST"
-	VAL_VALID              = "VALID"
-	VAL_ZERO               = 0
+	VAL_DETERMINE_SUBJECTS  = "determine-subjects"
+	VAL_EMPTY               = ""
+	VAL_END_DAY             = "23:59:59"
+	VAL_GRPC_MIN_PORT       = 50051
+	VAL_LOCAL_HOST          = "localhost"
+	VAL_MID_NIGHT           = "23:59:59"
+	VAL_NATS                = "nats"
+	VAL_NO_CHARGE_DATA      = "{\"dk_charges\":null}"
+	VAL_NOT_FOUND           = "not found"
+	VAL_NOT_SUPPORTED       = "not supported"
+	VAL_START_DAY           = "00:00:00"
+	VAL_START_MONTH         = "-01 00:00:00"
+	VAL_TCP                 = "tcp"
+	VAL_TEST                = "TEST"
+	VAL_UNKNOWN             = "UNKNOWN"
+	VAL_USER_DOES_NOT_EXIST = "User does not exist."
+	VAL_VALID               = "VALID"
+	VAL_ZERO                = 0
 )

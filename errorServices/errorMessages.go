@@ -18,8 +18,6 @@ const (
 	INTEGER_INVALID                            = "The integer64 value is invalid."
 	BUCKET_NOT_FOUND                           = "The bucket was not found."
 	BUFFER_EMPTY                               = "The buffer is empty"
-	BUNDLE_ALREADY_EXISTS                      = "The bundle already exists in the system."
-	BUNDLE_MISSING                             = "The bundle is not in the system."
 	CA_BUNDLE_FILENAME_MISSING                 = "The CA Bundle filename is missing."
 	CA_BUNDLE_LOADING_FAILED                   = "The CA Bundle file failed to load."
 	CATEGORY_NOT_SUPPORTED                     = "The category is not supported."
@@ -181,8 +179,6 @@ const (
 	USER_ALREADY_EXISTS                        = "The user already exists in the system."
 	USER_ALREADY_CONFIRMED_EMAIL               = "The user has already been confirmed by email."
 	USER_ALREADY_CONFIRMED_PHONE               = "The user has already been confirmed by phone."
-	USER_BUNDLE_ALREADY_EXISTS                 = "The user bundle already exists in the system."
-	USER_BUNDLE_MISSING                        = "The user bundle is not in the system."
 	VERSION_INVALID                            = "The software version is invalid. Use @env GOOS=linux GOARCH=amd64 go build -ldflags \"-X main.version=$(" +
 		"VERSION)\" -o ${ROOT_DIRECTORY}/servers/${SERVER_NAME}/bin/${SERVER_NAME} ${ROOT_DIRECTORY}/servers/${SERVER_NAME}/main.go"
 	ZERO_INVALID = "A value of zero is invalid."
@@ -202,8 +198,6 @@ var (
 	ErrBase64Invalid                         = errors.New(BASE64_INVALID)
 	ErrBucketNotFound                        = errors.New(BUCKET_NOT_FOUND)
 	ErrBufferEmpty                           = errors.New(BUFFER_EMPTY)
-	ErrBundleAlreadyExists                   = errors.New(BUNDLE_ALREADY_EXISTS)
-	ErrBundleMissing                         = errors.New(BUNDLE_MISSING)
 	ErrCABundleFilenameMissing               = errors.New(CA_BUNDLE_FILENAME_MISSING)
 	ErrCABundleLoadingFailed                 = errors.New(CA_BUNDLE_LOADING_FAILED)
 	ErrCategoryNotSupported                  = errors.New(CATEGORY_NOT_SUPPORTED)
@@ -248,7 +242,7 @@ var (
 	ErrJSONGenerationFailed                  = errors.New(JSON_GENERATION_FAILED)
 	ErrJSONInvalid                           = errors.New(JSON_INVALID)
 	ErrJWTMissing                            = errors.New(JWT_MISSING)
-	ErrJWTTokenSignatureInvalid              = errors.New(JWT_TOKEN_SIGNATURE_INVALID)
+	ErrJWTTokenSignatureInvalid              = errors.New(JWT_3P_TOKEN_SIGNATURE_INVALID)
 	ErrLessThanEqualZero                     = errors.New(LESS_THAN_ZERO)
 	ErrMapIsEmpty                            = errors.New(MAP_IS_EMPTY)
 	ErrMapIsMissingKey                       = errors.New(MAP_MISSING_KEY)
@@ -365,8 +359,6 @@ var (
 	ErrUIdInvalid                            = errors.New(UID_INVALID)
 	ErrUIdMissing                            = errors.New(UID_MISSING)
 	ErrUserAlreadyExists                     = errors.New(USER_ALREADY_EXISTS)
-	ErrUserBundleAlreadyExists               = errors.New(BUNDLE_ALREADY_EXISTS)
-	ErrUserBundleMissing                     = errors.New(BUNDLE_MISSING)
 	ErrVersionInvalid                        = errors.New(VERSION_INVALID)
 	ErrZeroInvalid                           = errors.New(ZERO_INVALID)
 )
