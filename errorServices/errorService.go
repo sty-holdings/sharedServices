@@ -39,6 +39,8 @@ func NewErrorInfo(
 	}
 	errorInfo.Message = myError.Error()
 
+	outputError(errorInfo)
+
 	return
 }
 
@@ -63,6 +65,8 @@ func NewGRPCErrorInfo(
 		errorInfo.AdditionalInfo = additionalInfo
 	}
 	errorInfo.Error = errors.New(fmt.Sprintf("%s - Additional Info: %s", myError.Error(), additionalInfo))
+
+	outputError(errorInfo)
 
 	return
 }
