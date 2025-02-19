@@ -170,6 +170,7 @@ const (
 	UNAUTHORIZED_REQUEST                       = "You are not authorized to use this system."
 	UNCONFIRMED_EMAIL                          = "Users email has not been confirmed."
 	UNEXPECTED_ERROR                           = "The system has experienced an unexpected issue. Investigate right away!"
+	UNSUPPORTED_QUESTION                       = "This question is not supported."
 	UNSUPPORTED_SUBJECT                        = "This subject is not supported."
 	UNSUPPORTED_TRANSFER_METHOD                = "The transfer method is not supported."
 	UNMARSHAL_FAILED                           = "Unable to unmarshal data"
@@ -353,6 +354,7 @@ var (
 	ErrUnconfirmedEmail                      = errors.New(UNCONFIRMED_EMAIL)
 	ErrUnexpectedError                       = errors.New(UNEXPECTED_ERROR)
 	ErrUnmarshalFailed                       = errors.New(UNMARSHAL_FAILED)
+	ErrUnsupportedQuestion                   = errors.New(UNSUPPORTED_QUESTION)
 	ErrUnsupportedSubject                    = errors.New(UNSUPPORTED_SUBJECT)
 	ErrUnsupportedTransferMethod             = errors.New(UNSUPPORTED_TRANSFER_METHOD)
 	ErrUserAccountMissing                    = errors.New(USER_MISSING)
