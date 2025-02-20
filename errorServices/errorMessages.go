@@ -152,7 +152,7 @@ const (
 	SUBJECTS_MISSING                           = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                            = "The subject is invalid."
 	SUBJECT_SUBSCRIPTION_FAILED                = "Unable to subscribe to the subject."
-	TIME_FRAME_MISSING                         = "Inorder to answer your question, the question must have a timefram. Ex, the year, today, month, etc."
+	TIME_FRAME_MISSING                         = "In order to answer your question, it must have a timeframe, such as the year, today, month, etc."
 	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "We are working on supporting week and day level information."
 	TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED = "The time period word combination is not supported."
 	TIMEOUT_REACHED                            = "You have exceeded the set timeout."
