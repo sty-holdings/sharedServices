@@ -31,7 +31,7 @@ func RecordSubjectTiming(dkElapsedTime float64, environment string, extensionNam
 	}
 }
 
-// RecordFunctionTiming - stores a timing record for a function
+// RecordFunctionTiming - stores a timing record for a function. This can not be used by Firebase Services.
 //
 //	Customer Messages: None
 //	Errors: None

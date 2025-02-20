@@ -16,7 +16,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	tms "github.com/sty-holdings/sharedServices/v2025/timings"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
@@ -156,8 +156,17 @@ func GetFirebaseUserInfo(
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
 
+	//This can not use the Timing service.
 	go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
-		tms.RecordFunctionTiming(time.Since(startTime).Seconds(), functionName, firestoreClientPtr, false)
+
+		var (
+			tFields = make(map[any]interface{})
+		)
+
+		tFields[ctv.FN_ELASPE_TIME_SECONDS] = time.Since(xStartTime).Seconds()
+		tFields[ctv.FN_FUNCTION_NAME] = functionName
+		tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+		SetDocument(firestoreClientPtr, ctv.DATASTORE_STATS_FUNCTION_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
 	}(xStartTime, tFunctionName, firestoreClientPtr)
 
 	return
