@@ -7,7 +7,7 @@ const (
 	DATASTORE_REFERENCE_DATA          = "reference_data"
 	DATASTORE_STATS_ANALYZED_QUESTION = "stats_analyzed_question"
 	DATASTORE_STATS_DETERMINE_SUBJECT = "stats_determine_subject"
-	DATASTORE_STATS_TIMINGS           = "stats_timings"
+	DATASTORE_STATS_GENERATE_ANSWER   = "stats_generate_answer"
 	DATASTORE_TRAINING_QUESTIONS      = "training_questions"
 	DATASTORE_USERS                   = "users"
 )
