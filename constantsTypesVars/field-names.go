@@ -195,7 +195,7 @@ const (
 	FN_SAAS_PROVIDER_KEY_INFO               = "saas_provider_key_info"
 	FN_SAAS_SUPPORTED_PROVIDERS             = "saas_supported_providers"
 	FN_SECRET_KEY                           = "secret_key"
-	FN_SELECT_API_NAME                      = "selected_api_name"
+	FN_SELECTED_API_NAME                    = "selected_api_name"
 	FN_SERVER_INSTANCE_NUMBER               = "server_instance_number"
 	FN_SERVER_VERSION                       = "server_version"
 	FN_SET_BANKER_PREFERENCES               = "set_banker_preferences"
