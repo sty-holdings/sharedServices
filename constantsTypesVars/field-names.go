@@ -15,6 +15,7 @@ const (
 	FN_AMOUNT_IN_PENNIES                    = "amount_in_pennies"
 	FN_ANALYSIS                             = "analysis"
 	FN_ANALYSIS_STATUS                      = "analysis_status"
+	FN_ANSWER                               = "answer"
 	FN_API_KEY                              = "api_key"
 	FN_AREA_CODE                            = "area_code"
 	FN_AREA_CODE_CUSTOM                     = "custom:areaCode"

@@ -150,7 +150,7 @@ const (
 	STYH_USERNAME_EMPTY                        = "An empty STYH Username is not allowed."
 	SUB_CATEGORY_NOT_SUPPORTED                 = "The sub-category is not supported."
 	SUBJECTS_MISSING                           = "No subject(s) have been defined for the NATS extension."
-	SUBJECT_INVALID                            = "The subject is invalid."
+	SUBJECT_INVALID                            = "At this time, we are not gathering information for this type of question."
 	SUBJECT_SUBSCRIPTION_FAILED                = "Unable to subscribe to the subject."
 	TIME_FRAME_MISSING                         = "In order to answer your question, it must have a timeframe, such as the year, today, month, etc."
 	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "We are working on supporting week and day level information."
