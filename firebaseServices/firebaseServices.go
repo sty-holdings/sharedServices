@@ -16,13 +16,35 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	tms "github.com/sty-holdings/sharedServices/v2025/timings"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var (
 	CTXBackground = context.Background()
 )
+
+// NewFirebaseApp - creates a new Firebase App
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func NewFirebaseApp(credentialsFQN string) (
+	appPtr *firebase.App,
+	errorInfo errs.ErrorInfo,
+) {
+
+	// DO NOT DELETE
+	// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
+	// Case 10319546 has been filed with Firebase Support
+	//if appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)); errorInfo.Error != nil {
+	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.ErrServiceFailedFIREBASE.Error())
+	//}
+	// END DO NOT DELETE
+	appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN))
+
+	return
+}
 
 // FindFirebaseAuthUser - determines if the user exists in the Firebase Auth database. If so, then pointer to the user is return, otherwise, an error.
 //
@@ -120,7 +142,6 @@ func GetFirebaseUserInfo(
 		tFunction, _, _, _       = runtime.Caller(0)
 		tFunctionName            = runtime.FuncForPC(tFunction).Name()
 		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
-		tFields                  = make(map[any]interface{})
 		xStartTime               = time.Now()
 	)
 
@@ -135,12 +156,9 @@ func GetFirebaseUserInfo(
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
 
-	tFields[ctv.FN_ELASPE_TIME_SECONDS] = time.Since(xStartTime).Seconds()
-	tFields[ctv.FN_ENVIRONMENT] = ctv.TXT_UNKNOWN
-	tFields[ctv.FN_EXTENSION_NAME] = ctv.TXT_UNKNOWN
-	tFields[ctv.FN_FUNCTION_NAME] = tFunctionName
-	tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-	SetDocument(firestoreClientPtr, ctv.DATASTORE_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
+	go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
+		tms.RecordFunctionTiming(time.Since(startTime).Seconds(), functionName, firestoreClientPtr, false)
+	}(xStartTime, tFunctionName, firestoreClientPtr)
 
 	return
 }
@@ -181,28 +199,6 @@ func IsFirebaseIdTokenValid(
 	}
 
 	return true
-}
-
-// NewFirebaseApp - creates a new Firebase App
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func NewFirebaseApp(credentialsFQN string) (
-	appPtr *firebase.App,
-	errorInfo errs.ErrorInfo,
-) {
-
-	// DO NOT DELETE
-	// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
-	// Case 10319546 has been filed with Firebase Support
-	//if appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)); errorInfo.Error != nil {
-	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.ErrServiceFailedFIREBASE.Error())
-	//}
-	// END DO NOT DELETE
-	appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN))
-
-	return
 }
 
 // GetFirebaseAuthConnection - creates a new Firebase Auth Connection
