@@ -6,6 +6,7 @@ const (
 	EXTENSION_ADMIN            = "admin"
 	EXTENSION_ANALYZE_QUESTION = "analyze-question"
 	EXTENSION_DK_CLIENT        = "dk-client"
+	EXTENSION_GOOGLE_ADS       = "google-ads"
 	EXTENSION_HAL              = "hal"
 	EXTENSION_HTTPS_NATS       = "https-nats"
 	NC_INTERNAL                = "nc-internal"
