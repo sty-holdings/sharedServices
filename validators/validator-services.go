@@ -323,18 +323,10 @@ func IsExtensionValid(extension string) bool {
 		fallthrough
 	case ctv.EXTENSION_DK_CLIENT:
 		fallthrough
-	case ctv.EXTENSION_GOOGLE_ADS:
-		fallthrough
 	case ctv.EXTENSION_HAL:
-		fallthrough
-	case ctv.EXTENSION_QUICKBOOKS:
 		fallthrough
 	case ctv.EXTENSION_SAAS_PROFILE:
 		fallthrough
-	case ctv.EXTENSION_SENDGRID:
-		fallthrough
-	case ctv.EXTENSION_STRIPE:
-		return true
 	default:
 		return false
 	}
