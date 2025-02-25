@@ -205,6 +205,7 @@ const (
 	FN_SERVER_DEBUG_MODE_ON                 = "server_debug_mode_on"
 	FN_SERVER_INSTANCE_NUMBER               = "server_instance_number"
 	FN_SERVER_VERSION                       = "server_version"
+	FN_SERVICE_CONFIG_FILENAMES             = "service_config_filenames"
 	FN_SET_BANKER_PREFERENCES               = "set_banker_preferences"
 	FN_SHORT_URL                            = "short_URL"
 	FN_SIGNAL                               = "signal"
