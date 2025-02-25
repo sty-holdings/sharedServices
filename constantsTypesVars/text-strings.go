@@ -90,6 +90,7 @@ const (
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
 	TXT_SERVER                       = "server"
 	TXT_SERVICE_FAILED               = " service failed."
+	TXT_SERVICE_GEMINI               = "Gemini"
 	TXT_SUBSCRIPTION_FAILED          = "subscription failed."
 	TXT_TIME_FRAME_UNKNOWN           = "time frame is unknown."
 	TXT_TRUE                         = "true"
