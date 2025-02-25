@@ -5,18 +5,19 @@ go 1.22.3
 require (
 	cloud.google.com/go/firestore v1.18.0
 	cloud.google.com/go/storage v1.50.0
+	cloud.google.com/go/vertexai v0.13.3
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/nats-io/nats.go v1.37.0
 	google.golang.org/api v0.214.0
 	google.golang.org/grpc v1.70.0
-	cloud.google.com/go/vertexai v0.13.3
 )
 
 require (
 	cel.dev/expr v0.19.0 // indirect
 	cloud.google.com/go v0.117.0 // indirect
+	cloud.google.com/go/aiplatform v1.69.0 // indirect
 	cloud.google.com/go/auth v0.13.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.6 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect

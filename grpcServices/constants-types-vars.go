@@ -10,7 +10,7 @@ import (
 
 type GRPCConfiguration struct {
 	GRPCDebug   bool           `json:"grpc_debug" yaml:"grpc_debug"`
-	GRPCHost    string         `json:"grpc_host" yaml:"grpc_host"` // This is only used on the client side. Server side is set to localhost.
+	GRPCHost    string         `json:"grpc_host" yaml:"grpc_host"` // This is only used on the client side. Server side is set to 0.0.0.0.
 	GRPCPort    int            `json:"grpc_port" yaml:"grpc_port"`
 	GRPCSecure  SecureSettings `json:"grpc_secure" yaml:"grpc_secure"`
 	GRPCTLSInfo jwts.TLSInfo   `json:"grpc_tls_info" yaml:"grpc_tls_info"`

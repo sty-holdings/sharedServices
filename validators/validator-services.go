@@ -312,6 +312,34 @@ func IsEmpty(value interface{}) bool {
 	}
 }
 
+// IsExtensionValid - checks if the value is a valid extension
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsExtensionValid(extension string) bool {
+	switch extension {
+	case ctv.EXTENSION_ADMIN:
+		fallthrough
+	case ctv.EXTENSION_DK_CLIENT:
+		fallthrough
+	case ctv.EXTENSION_GOOGLE_ADS:
+		fallthrough
+	case ctv.EXTENSION_HAL:
+		fallthrough
+	case ctv.EXTENSION_QUICKBOOKS:
+		fallthrough
+	case ctv.EXTENSION_SAAS_PROFILE:
+		fallthrough
+	case ctv.EXTENSION_SENDGRID:
+		fallthrough
+	case ctv.EXTENSION_STRIPE:
+		return true
+	default:
+		return false
+	}
+}
+
 // IsFileReadable - tries to open the file using 0644 permissions
 //
 //	Customer Messages: None
@@ -398,23 +426,6 @@ func IsGinModeValid(mode string) bool {
 func IsPopulated(value interface{}) bool {
 
 	if IsEmpty(value) {
-		return false
-	}
-
-	return true
-}
-
-// IsIdentityProviderValid - checks if the identity provider setting is valid.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func IsIdentityProviderValid(identityProvider string) bool {
-
-	switch identityProvider {
-	case ctv.IDP_FIREBASE:
-	case ctv.IDP_COGNITO:
-	default:
 		return false
 	}
 

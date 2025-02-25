@@ -99,15 +99,18 @@ type CategoryPromptComparison struct {
 	TokenCount         genai.UsageMetadata `json:"token_count"`
 }
 
-type UniqueSettingsGEMINI struct {
+type GeminiConfig struct {
 	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
 	GeminiModelName          string              `json:"gemini_model_name"`
 	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
 	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
 	GeminiTemperature        string              `json:"gemini_temperature"`
-	GCPCredentialFilename    string              `json:"gcp_credential_filename"`
-	GCPLocation              string              `json:"gcp_location"`
-	GCPProjectID             string              `json:"gcp_project_id"`
+}
+
+type GCPConfig struct {
+	GCPCredentialFilename string `json:"gcp_credential_filename"`
+	GCPLocation           string `json:"gcp_location"`
+	GCPProjectID          string `json:"gcp_project_id"`
 }
 
 type SystemInstruction struct {

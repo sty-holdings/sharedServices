@@ -14,6 +14,7 @@ const (
 	VAL_NO_CHARGE_DATA      = "{\"dk_charges\":null}"
 	VAL_NOT_FOUND           = "not found"
 	VAL_NOT_SUPPORTED       = "not supported"
+	VAL_ONE                 = 1
 	VAL_START_DAY           = "00:00:00"
 	VAL_START_MONTH         = "-01 00:00:00"
 	VAL_TCP                 = "tcp"

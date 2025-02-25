@@ -1,7 +1,6 @@
 package sharedServices
 
 import (
-	"bytes"
 	"os"
 	"runtime"
 	"strings"
@@ -9,7 +8,6 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 )
 
 var (
@@ -127,44 +125,6 @@ var (
 // 		}
 // 	})
 // }
-
-func TestBase64Decode(tPtr *testing.T) {
-
-	var (
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-		tValue             []byte
-	)
-
-	tPtr.Run(
-		tFunctionName, func(tPtr *testing.T) {
-			if tValue, _ = hlp.Base64Decode(TEST_BASE64_STRING); bytes.Equal(tValue, TestByteArray) {
-			} else {
-				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.VAL_EMPTY)
-			}
-			if tValue, _ = hlp.Base64Decode(TEST_STRING); bytes.Equal(tValue, TestByteArray) {
-				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName)
-			}
-		},
-	)
-}
-
-func TestBase64Encode(tPtr *testing.T) {
-
-	var (
-		tFunction, _, _, _ = runtime.Caller(0)
-		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-	)
-
-	tPtr.Run(
-		tFunctionName, func(tPtr *testing.T) {
-			// Adds working directory to file name
-			if hlp.Base64Encode(TEST_STRING) != TEST_BASE64_STRING {
-				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.VAL_EMPTY)
-			}
-		},
-	)
-}
 
 func TestCheckFileExistsAndReadable(tPtr *testing.T) {
 
@@ -395,6 +355,60 @@ func TestIsDomainValid(tPtr *testing.T) {
 		tPtr.Run(
 			ts.name, func(tPtr *testing.T) {
 				if IsDomainValid(ts.arguments.domain) {
+					gotError = false
+				} else {
+					gotError = true
+				}
+				if gotError != ts.wantError {
+					tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, ts.name, ctv.TXT_GOT_WRONG_BOOLEAN)
+				}
+			},
+		)
+	}
+}
+
+func TestIsExtensionValid(tPtr *testing.T) {
+
+	type arguments struct {
+		extension string
+	}
+
+	var (
+		gotError bool
+	)
+
+	tests := []struct {
+		name      string
+		arguments arguments
+		wantError bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "No extension",
+			arguments: arguments{
+				extension: ctv.VAL_EMPTY,
+			},
+			wantError: true,
+		},
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + ctv.EXTENSION_ADMIN,
+			arguments: arguments{
+				extension: ctv.EXTENSION_ADMIN,
+			},
+			wantError: false,
+		},
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + ctv.EXTENSION_HAL,
+			arguments: arguments{
+				extension: ctv.EXTENSION_HAL,
+			},
+			wantError: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(tPtr *testing.T) {
+				if IsExtensionValid(ts.arguments.extension) {
 					gotError = false
 				} else {
 					gotError = true

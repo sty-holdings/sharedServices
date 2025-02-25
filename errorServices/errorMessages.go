@@ -64,6 +64,7 @@ const (
 	JSON_INVALID                               = "The JSON provided is invalid"
 	JWT_MISSING                                = "JWT token is missing."
 	LESS_THAN_ZERO                             = "The value must be less than zero."
+	LOAD_EXTENSIONS_MISSING                    = "There must be at least one extension entry."
 	MAP_IS_EMPTY                               = "Provided map is not populated."
 	MAP_MISSING_KEY                            = "Provided map has a nil or empty key."
 	MAP_MISSING_VALUE                          = "Provided map has a nil or empty value."
@@ -245,6 +246,7 @@ var (
 	ErrJWTMissing                            = errors.New(JWT_MISSING)
 	ErrJWTTokenSignatureInvalid              = errors.New(JWT_3P_TOKEN_SIGNATURE_INVALID)
 	ErrLessThanEqualZero                     = errors.New(LESS_THAN_ZERO)
+	ErrLoadExtensionsMissing                 = errors.New(LOAD_EXTENSIONS_MISSING)
 	ErrMapIsEmpty                            = errors.New(MAP_IS_EMPTY)
 	ErrMapIsMissingKey                       = errors.New(MAP_MISSING_KEY)
 	ErrMapIsMissingValue                     = errors.New(MAP_MISSING_VALUE)
