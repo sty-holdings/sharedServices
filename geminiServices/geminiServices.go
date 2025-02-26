@@ -13,7 +13,6 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var (
@@ -142,7 +141,7 @@ func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.GeminiMaxOutputTokens, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = vals.DoesFileExistsAndReadable(geminiConfig.GeminiModelName, ctv.FN_GEMINI_MODEL_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.GeminiModelName, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MODEL_NAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.GeminiSetTopProbability, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SET_TOP_K); errorInfo.Error != nil {
