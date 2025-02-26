@@ -222,8 +222,6 @@ func GetFirebaseAuthConnection(appPtr *firebase.App) (
 
 	if authPtr, errorInfo.Error = appPtr.Auth(CTXBackground); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, "")
-	} else {
-		log.Println("The Firebase Auth client has been created.")
 	}
 
 	return

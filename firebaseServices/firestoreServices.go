@@ -326,8 +326,6 @@ func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *fir
 		return
 	}
 
-	log.Printf("The Firestore client has been created successfully.")
-
 	return
 }
 
