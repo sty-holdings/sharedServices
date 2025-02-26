@@ -50,6 +50,7 @@ func NewGRPCServer(gRPCConfigFilename string) (gRPCServicePtr *GRPCService, erro
 	}
 
 	gRPCServicePtr = &GRPCService{
+		DebugOn: tGRPCConfig.GRPCDebug,
 		Secure: SecureSettings{
 			ServerSide: tGRPCConfig.GRPCSecure.ServerSide,
 			Mutual:     tGRPCConfig.GRPCSecure.Mutual,
@@ -92,9 +93,9 @@ func NewGRPCClient(
 	gRPCConfigFilename string,
 ) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
-	var (
-		tDailOption grpc.DialOption
-	)
+	//var (
+	//	tDailOption grpc.DialOption
+	//)
 
 	//if errorInfo = hlps.CheckValueNotEmpty(ctv.EXT_SERVICE_GRPC_SERVER, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 	//	return
