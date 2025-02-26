@@ -19,5 +19,6 @@ type GeminiConfig struct {
 
 type GeminiService struct {
 	GeminiClientPtr *genai.Client
+	GeminiModelPtr  *genai.GenerativeModel
 	geminiConfig    GeminiConfig
 }

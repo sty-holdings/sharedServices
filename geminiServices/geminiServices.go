@@ -3,7 +3,9 @@ package sharedServices
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
+	"strconv"
 
 	"cloud.google.com/go/vertexai/genai"
 	"google.golang.org/api/option"
@@ -56,6 +58,46 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 	); errorInfo.Error != nil {
 		return
 	}
+
+	return
+}
+
+// buildModel - will create the model instance and configure the settings
+//
+//	Customer Message: none
+//	Errors: none
+//	Verifications: none
+func (geminiServicePtr *GeminiService) BuildModel() (errorInfo errs.ErrorInfo) {
+
+	var (
+		tFloat32 float32
+		tFloat64 float64
+		tInt32   int32
+		tInt64   int64
+	)
+
+	geminiServicePtr.GeminiModelPtr = geminiServicePtr.GeminiClientPtr.GenerativeModel(geminiServicePtr.geminiConfig.GeminiModelName)
+
+	if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.geminiConfig.GeminiMaxOutputTokens, 10, 32); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.geminiConfig.GeminiMaxOutputTokens))
+		return
+	}
+	tInt32 = int32(tInt64)
+	geminiServicePtr.GeminiModelPtr.MaxOutputTokens = &tInt32
+
+	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.geminiConfig.GeminiSetTopProbability, 64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.geminiConfig.GeminiSetTopProbability))
+		return
+	}
+	tFloat32 = float32(tFloat64)
+	geminiServicePtr.GeminiModelPtr.SetTopP(tFloat32)
+
+	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.geminiConfig.GeminiTemperature, 64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.geminiConfig.GeminiTemperature))
+		return
+	}
+	tFloat32 = float32(tFloat64)
+	geminiServicePtr.GeminiModelPtr.Temperature = &tFloat32
 
 	return
 }
