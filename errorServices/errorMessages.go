@@ -38,6 +38,7 @@ const (
 	ENVIRNOMENT_INVALID                        = "The environment value is invalid."
 	ERROR_MISSING                              = "ERROR MISSING"
 	EXTENSION_INVALID                          = "The extension name is invalid."
+	EXTENSION_SERVICE_INVALID                  = "The extension service name is invalid."
 	EXTRACT_KEY_FAILED                         = "Extracting the key has failed."
 	FALSE_SHOULD_BE_TRUE                       = "The result should have been true."
 	FILE_CREATION_FAILED                       = "Create the file failed."
@@ -220,6 +221,7 @@ var (
 	ErrEmailMissing                          = errors.New(EMAIL_MISSING)
 	ErrErrorMissing                          = errors.New(ERROR_MISSING)
 	ErrExtensionInvalid                      = errors.New(EXTENSION_INVALID)
+	ErrExtensionServiceInvalid               = errors.New(EXTENSION_SERVICE_INVALID)
 	ErrExtractKeysFailure                    = errors.New(EXTRACT_KEY_FAILED)
 	ErrFalseShouldBeTrue                     = errors.New(FALSE_SHOULD_BE_TRUE)
 	ErrFileCreationFailed                    = errors.New(FILE_CREATION_FAILED)
