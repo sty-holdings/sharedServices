@@ -1,11 +1,18 @@
 package sharedServices
 
 import (
+	"cloud.google.com/go/vertexai/genai"
+
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
 //goland:noinspection ALL
 const ()
+
+type GeminiService struct {
+	GeminiClientPtr *genai.Client
+	geminiConfig    GeminiConfig
+}
 
 type GeminiConfig struct {
 	GeminiMaxOutputTokens    string                           `json:"gemini_max_output_tokens"`

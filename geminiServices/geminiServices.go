@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"os"
 
+	"cloud.google.com/go/vertexai/genai"
+	"google.golang.org/api/option"
+
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
@@ -20,7 +23,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGeminiService(gcpCredentialsFilename string, geminiConfigFilename string) (geminiServicePtr *GeminiConfig, errorInfo errs.ErrorInfo) {
+func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, geminiConfigFilename string) (geminiServicePtr *GeminiService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGeminiConfig GeminiConfig
@@ -41,7 +44,18 @@ func NewGeminiService(gcpCredentialsFilename string, geminiConfigFilename string
 		return
 	}
 
-	geminiServicePtr = &tGeminiConfig
+	geminiServicePtr = &GeminiService{
+		geminiConfig: tGeminiConfig,
+	}
+
+	if geminiServicePtr.GeminiClientPtr, errorInfo.Error = genai.NewClient(
+		context.Background(),
+		gcpProjectId,
+		gcpLocation,
+		option.WithCredentialsFile(gcpCredentialsFilename),
+	); errorInfo.Error != nil {
+		return
+	}
 
 	return
 }

@@ -15,7 +15,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPConfig, errorInfo errs.ErrorInfo) {
+func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGCPConfig GCPConfig
@@ -33,7 +33,7 @@ func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPConfig, error
 		return
 	}
 
-	gcpServicePtr = &tGCPConfig
+	gcpServicePtr = &GCPService{GCPConfig: tGCPConfig}
 
 	return
 }
