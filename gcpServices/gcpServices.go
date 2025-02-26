@@ -15,7 +15,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGeminiClient(geminiConfigFilename string) (gcpServicePtr *GCPConfig, errorInfo errs.ErrorInfo) {
+func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPConfig, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGCPConfig GCPConfig
