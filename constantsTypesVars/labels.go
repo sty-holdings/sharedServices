@@ -65,6 +65,7 @@ const (
 	LBL_END_TIME_RANGE                        = "END TIME RANGE: "
 	LBL_ENVIRONMENT                           = "ENVIRONMENT: "
 	LBL_ERROR_MESSAGE                         = "ERROR MESSAGE: "
+	LBL_EXTENSION                             = "EXTENSION: "
 	LBL_EXTENSION_CONFIG_FILENAME             = "EXTENSION CONFIG FILENAME: "
 	LBL_EXTENSION_DECLARATIONS                = "EXTENSIONS DECLARATIONS: "
 	LBL_EXTENSION_NAME                        = "EXTENSION NAME: "
