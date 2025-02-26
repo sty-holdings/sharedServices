@@ -69,6 +69,8 @@ const (
 	LBL_EXTENSION_CONFIG_FILENAME             = "EXTENSION CONFIG FILENAME: "
 	LBL_EXTENSION_DECLARATIONS                = "EXTENSIONS DECLARATIONS: "
 	LBL_EXTENSION_NAME                        = "EXTENSION NAME: "
+	LBL_EXTENSION_SERVICE                     = "EXTENSION SERVICE: "
+	LBL_EXTENSION_SERVICES                    = "EXTENSION SERVICES: "
 	LBL_EXTENSIONS                            = "EXTENSIONS: "
 	LBL_FILENAME                              = "FILENAME: "
 	LBL_FIREBASE_APP                          = "FIREBASE APP: "
