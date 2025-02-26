@@ -84,9 +84,7 @@ func validateGCPConfig(gcpConfig GCPConfig) (errorInfo errs.ErrorInfo) {
 	if errorInfo = hlps.CheckValueNotEmpty(gcpConfig.GCPLocation, errs.ErrRequiredParameterMissing, ctv.FN_GCP_LOCATION); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(gcpConfig.GCPProjectID, errs.ErrRequiredParameterMissing, ctv.FN_GCP_PROJECT_ID); errorInfo.Error != nil {
-		return
-	}
+	errorInfo = hlps.CheckValueNotEmpty(gcpConfig.GCPProjectID, errs.ErrRequiredParameterMissing, ctv.FN_GCP_PROJECT_ID)
 
 	return
 }

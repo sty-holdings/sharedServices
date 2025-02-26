@@ -109,9 +109,7 @@ func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.GeminiSystemInstructions, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SYSTEM_INSTRUCTION); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.GeminiTemperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE); errorInfo.Error != nil {
-		return
-	}
+	errorInfo = hlps.CheckValueNotEmpty(geminiConfig.GeminiTemperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE)
 
 	return
 }

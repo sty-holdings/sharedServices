@@ -8,7 +8,7 @@ import (
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
-type GRPCConfiguration struct {
+type GRPCConfig struct {
 	GRPCDebug   bool           `json:"grpc_debug" yaml:"grpc_debug"`
 	GRPCHost    string         `json:"grpc_host" yaml:"grpc_host"` // This is only used on the client side. Server side is set to 0.0.0.0.
 	GRPCPort    int            `json:"grpc_port" yaml:"grpc_port"`
@@ -16,6 +16,7 @@ type GRPCConfiguration struct {
 	GRPCTLSInfo jwts.TLSInfo   `json:"grpc_tls_info" yaml:"grpc_tls_info"`
 	GRPCTimeout int            `json:"grpc_timeout" yaml:"grpc_timeout"`
 }
+
 type GRPCService struct {
 	GRPCListenerPtr *net.Listener
 	GRPCServerPtr   *grpc.Server
