@@ -87,6 +87,7 @@ const (
 	TXT_PROTECTED                    = "protected"
 	TXT_PULL_FAILED                  = "pull failed."
 	TXT_SAAS_PROVIDER_FAILED         = "pulling SaaS provider failed."
+	TXT_SAAS_PROVIDERS_SUPPORTED     = "supported saas providers"
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
 	TXT_SERVER                       = "server"
 	TXT_SERVICE_FAILED               = " service failed."
