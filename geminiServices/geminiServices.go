@@ -15,12 +15,12 @@ var (
 	CTXBackground = context.Background()
 )
 
-// NewGeminiClient - creates a new gemini client
+// NewGeminiService - creates a new gemini client
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGeminiClient(gcpCredentialsFilename string, geminiConfigFilename string) (geminiServicePtr *GeminiConfig, errorInfo errs.ErrorInfo) {
+func NewGeminiService(gcpCredentialsFilename string, geminiConfigFilename string) (geminiServicePtr *GeminiConfig, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGeminiConfig GeminiConfig
