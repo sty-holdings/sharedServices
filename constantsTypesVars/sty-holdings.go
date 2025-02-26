@@ -99,14 +99,6 @@ type CategoryPromptComparison struct {
 	TokenCount         genai.UsageMetadata `json:"token_count"`
 }
 
-type GeminiConfig struct {
-	GeminiMaxOutputTokens    string              `json:"gemini_max_output_tokens"`
-	GeminiModelName          string              `json:"gemini_model_name"`
-	GeminiSetTopProbability  string              `json:"gemini_set_top_probability"`
-	GeminiSystemInstructions []SystemInstruction `json:"gemini_system_instructions"`
-	GeminiTemperature        string              `json:"gemini_temperature"`
-}
-
 type SystemInstruction struct {
 	Topic        string `json:"topic"`
 	Name         string `json:"name"`
