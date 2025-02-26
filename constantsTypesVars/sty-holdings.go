@@ -107,12 +107,6 @@ type GeminiConfig struct {
 	GeminiTemperature        string              `json:"gemini_temperature"`
 }
 
-type GCPConfig struct {
-	GCPCredentialFilename string `json:"gcp_credential_filename"`
-	GCPLocation           string `json:"gcp_location"`
-	GCPProjectID          string `json:"gcp_project_id"`
-}
-
 type SystemInstruction struct {
 	Topic        string `json:"topic"`
 	Name         string `json:"name"`
