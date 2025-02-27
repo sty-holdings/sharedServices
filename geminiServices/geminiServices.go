@@ -164,38 +164,38 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	)
 
 	switch topic {
-	case ctv.SI_TOPIC_AI_QUESTION:
+	case SI_TOPIC_AI_QUESTION:
 		switch key {
-		case ctv.SI_KEY_SIMPLE_ANSWER:
+		case SI_KEY_SIMPLE_ANSWER:
 			fallthrough
-		case ctv.SI_KEY_COMPLEX_ANSWER:
+		case SI_KEY_COMPLEX_ANSWER:
 			systemInstruction = geminiServicePtr.config.SystemInstructions.AIQuestion[key].Instruction
 			tOutputFormat = geminiServicePtr.config.SystemInstructions.AIQuestion[key].OutputFormat
 			tSetDate = geminiServicePtr.config.SystemInstructions.AIQuestion[key].SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
 		}
-	case ctv.SI_TOPIC_ANALYZE_QUESTION:
+	case SI_TOPIC_ANALYZE_QUESTION:
 		switch key {
-		case ctv.SI_KEY_CATEGORY_PROMPY_COMPARISON:
+		case SI_KEY_CATEGORY_PROMPY_COMPARISON:
 			fallthrough
-		case ctv.SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT:
+		case SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT:
 			fallthrough
-		case ctv.SI_KEY_TIME_PERIOD_WORDS_PRESENT:
+		case SI_KEY_TIME_PERIOD_WORDS_PRESENT:
 			fallthrough
-		case ctv.SI_KEY_TIME_PERIOD_VALUES:
+		case SI_KEY_TIME_PERIOD_VALUES:
 			systemInstruction = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].Instruction
 			tOutputFormat = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].OutputFormat
 			tSetDate = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
 		}
-	case ctv.SI_TOPIC_DETERMINE_API:
-		systemInstruction = geminiServicePtr.config.SystemInstructions.DetermineAPI[ctv.SI_KEY_DETEMINE_API].Instruction
+	case SI_TOPIC_DETERMINE_API:
+		systemInstruction = geminiServicePtr.config.SystemInstructions.DetermineAPI[SI_KEY_DETEMINE_API].Instruction
 		tOutputFormat = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].OutputFormat
 		tSetDate = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].SetDate
-	case ctv.SI_TOPIC_GENERATE_ANSWER:
-		systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[ctv.SI_KEY_BUSINESS_ANALYST].Instruction
+	case SI_TOPIC_GENERATE_ANSWER:
+		systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[SI_KEY_BUSINESS_ANALYST].Instruction
 		tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
 		tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
 	default:
@@ -208,7 +208,7 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	if tSetDate {
 		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
 	}
-	
+
 	return
 }
 
