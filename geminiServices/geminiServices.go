@@ -60,6 +60,8 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 		return
 	}
 
+	errorInfo = geminiServicePtr.buildModel()
+	
 	return
 }
 
@@ -68,7 +70,7 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 //	Customer Message: none
 //	Errors: none
 //	Verifications: none
-func (geminiServicePtr *GeminiService) BuildModel() (errorInfo errs.ErrorInfo) {
+func (geminiServicePtr *GeminiService) buildModel() (errorInfo errs.ErrorInfo) {
 
 	var (
 		tFloat32 float32
