@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/vertexai/genai"
 	"google.golang.org/api/option"
@@ -105,14 +106,18 @@ func (geminiServicePtr *GeminiService) BuildModel() (errorInfo errs.ErrorInfo) {
 // GenerateContent - takes inputs and submits them to the AI engine, parses the output, and returns the results and token counts
 //
 //	Customer Messages: None
-//	Errors: None
+//	Errors: returned by GenerateContent, returned by loadSystemInstruction
 //	Verifications: None
-func (geminiServicePtr *GeminiService) GenerateContent(prompt string, promptData map[string]string, systemInstruction string) (
+func (geminiServicePtr *GeminiService) GenerateContent(
+	locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
+	systemInstructionKey string,
+) (
 	response string, tokenCount genai.UsageMetadata, errorInfo errs.ErrorInfo,
 ) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
+		tInstruction                string
 		tPromptData                 string
 		tResponseParts              []genai.Part
 	)
@@ -121,7 +126,10 @@ func (geminiServicePtr *GeminiService) GenerateContent(prompt string, promptData
 		tPromptData += fmt.Sprintf("%s %s ", source, data)
 	}
 
-	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(systemInstruction)}}
+	if tInstruction, errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); errorInfo.Error != nil {
+		return
+	}
+	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
 	if tGenerateContentResponsePtr, errorInfo.Error = geminiServicePtr.modelPtr.GenerateContent(
 		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
@@ -139,6 +147,67 @@ func (geminiServicePtr *GeminiService) GenerateContent(prompt string, promptData
 	}
 
 	tokenCount = *tGenerateContentResponsePtr.UsageMetadata
+
+	return
+}
+
+// loadSystemInstruction - using the system instruction topic and key, the instruction will be returned
+//
+//	Customer Messages: None
+//	Errors: ErrSystemInstructionKeyInvalid, ErrSystemInstructionTopicInvalid
+//	Verifications: None
+func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.Location, topic string, key string) (systemInstruction string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tSetDate      bool
+		tOutputFormat string
+	)
+
+	switch topic {
+	case ctv.SI_TOPIC_AI_QUESTION:
+		switch key {
+		case ctv.SI_KEY_SIMPLE_ANSWER:
+			fallthrough
+		case ctv.SI_KEY_COMPLEX_ANSWER:
+			systemInstruction = geminiServicePtr.config.SystemInstructions.AIQuestion[key].Instruction
+			tOutputFormat = geminiServicePtr.config.SystemInstructions.AIQuestion[key].OutputFormat
+			tSetDate = geminiServicePtr.config.SystemInstructions.AIQuestion[key].SetDate
+		default:
+			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+		}
+	case ctv.SI_TOPIC_ANALYZE_QUESTION:
+		switch key {
+		case ctv.SI_KEY_CATEGORY_PROMPY_COMPARISON:
+			fallthrough
+		case ctv.SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT:
+			fallthrough
+		case ctv.SI_KEY_TIME_PERIOD_WORDS_PRESENT:
+			fallthrough
+		case ctv.SI_KEY_TIME_PERIOD_VALUES:
+			systemInstruction = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].Instruction
+			tOutputFormat = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].OutputFormat
+			tSetDate = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].SetDate
+		default:
+			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+		}
+	case ctv.SI_TOPIC_DETERMINE_API:
+		systemInstruction = geminiServicePtr.config.SystemInstructions.DetermineAPI[ctv.SI_KEY_DETEMINE_API].Instruction
+		tOutputFormat = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].OutputFormat
+		tSetDate = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].SetDate
+	case ctv.SI_TOPIC_GENERATE_ANSWER:
+		systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[ctv.SI_KEY_BUSINESS_ANALYST].Instruction
+		tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
+		tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
+	}
+
+	if tOutputFormat != ctv.VAL_EMPTY {
+		systemInstruction = fmt.Sprintf("%s %s", systemInstruction, tOutputFormat)
+	}
+	if tSetDate {
+		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
+	}
 	
 	return
 }
@@ -189,10 +258,16 @@ func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.SetTopProbability, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.AnalyzeQuestion, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SYSTEM_INSTRUCTION); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.AIQuestion, errs.ErrRequiredParameterMissing, ctv.FN_SI_AI_QUESTION); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.Hal, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SYSTEM_INSTRUCTION); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.AnalyzeQuestion, errs.ErrRequiredParameterMissing, ctv.FN_SI_ANALYZE_QUESTION); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.DetermineAPI, errs.ErrRequiredParameterMissing, ctv.FN_SI_DETERMINE_API); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.GenerateAnswer, errs.ErrRequiredParameterMissing, ctv.FN_SI_GENERATE_ANSWER); errorInfo.Error != nil {
 		return
 	}
 	errorInfo = hlps.CheckValueNotEmpty(geminiConfig.Temperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE)

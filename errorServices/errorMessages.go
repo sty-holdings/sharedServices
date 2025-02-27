@@ -154,6 +154,8 @@ const (
 	SUBJECTS_MISSING                           = "No subject(s) have been defined for the NATS extension."
 	SUBJECT_INVALID                            = "At this time, we are not gathering information for this type of question."
 	SUBJECT_SUBSCRIPTION_FAILED                = "Unable to subscribe to the subject."
+	SYSTEM_INSTRUCTION_TOPIC_INVALID           = "The system instruction topic is invalid."
+	SYSTEM_INSTRUCTION_KEY_INVALID             = "The system instruction key is invalid."
 	TIME_FRAME_MISSING                         = "In order to answer your question, it must have a timeframe, such as the year, today, month, etc."
 	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "We are working on supporting week and day level information."
 	TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED = "The time period word combination is not supported."
@@ -338,6 +340,8 @@ var (
 	ErrSubCategoryNotSupported               = errors.New(SUB_CATEGORY_NOT_SUPPORTED)
 	ErrSubjectInvalid                        = errors.New(SUBJECT_INVALID)
 	ErrSubjectSubscriptionFailed             = errors.New(SUBJECT_SUBSCRIPTION_FAILED)
+	ErrSystemInstructionTopicInvalid         = errors.New(SYSTEM_INSTRUCTION_TOPIC_INVALID)
+	ErrSystemInstructionKeyInvalid           = errors.New(SYSTEM_INSTRUCTION_KEY_INVALID)
 	ErrSubjectsMissing                       = errors.New(SUBJECTS_MISSING)
 	ErrTLSFilesMissing                       = errors.New(TLS_FILES_MISSING)
 	ErrTimeFrameMissing                      = errors.New(TIME_FRAME_MISSING)

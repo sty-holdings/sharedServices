@@ -28,6 +28,8 @@ type InstructionSet struct {
 }
 
 type SystemInstructions struct {
+	AIQuestion      map[string]InstructionSet `json:"ai-question"`
 	AnalyzeQuestion map[string]InstructionSet `json:"analyze-question"`
-	Hal             map[string]InstructionSet `json:"hal"`
+	DetermineAPI    map[string]InstructionSet `json:"determine-api"`
+	GenerateAnswer  map[string]InstructionSet `json:"generate-answer"`
 }
