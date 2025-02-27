@@ -8,11 +8,11 @@ import (
 const ()
 
 type GeminiConfig struct {
-	GeminiMaxOutputTokens    string                        `json:"gemini_max_output_tokens"`
-	GeminiModelName          string                        `json:"gemini_model_name"`
-	GeminiSetTopProbability  string                        `json:"gemini_set_top_probability"`
-	GeminiSystemInstructions map[string]SystemInstructions `json:"gemini_system_instructions"`
-	GeminiTemperature        string                        `json:"gemini_temperature"`
+	MaxOutputTokens    string             `json:"max_output_tokens"`
+	ModelName          string             `json:"model_name"`
+	SetTopProbability  string             `json:"set_top_probability"`
+	SystemInstructions SystemInstructions `json:"system_instructions"`
+	Temperature        string             `json:"temperature"`
 }
 
 type GeminiService struct {
