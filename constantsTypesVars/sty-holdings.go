@@ -99,14 +99,6 @@ type CategoryPromptComparison struct {
 	TokenCount         genai.UsageMetadata `json:"token_count"`
 }
 
-type SystemInstruction struct {
-	Topic        string `json:"topic"`
-	Name         string `json:"name"`
-	Instruction  string `json:"instruction"`
-	OutputFormat string `json:"output_format"`
-	SetDate      bool   `json:"set_date"`
-}
-
 type TimePeriodSpecialWordsPresent struct {
 	Current      bool                `json:"current"`
 	Details      bool                `json:"details"`
