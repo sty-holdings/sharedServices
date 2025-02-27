@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"cloud.google.com/go/vertexai/genai"
 	"google.golang.org/api/option"
@@ -46,10 +47,10 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 	}
 
 	geminiServicePtr = &GeminiService{
-		geminiConfig: tGeminiConfig,
+		config: tGeminiConfig,
 	}
 
-	if geminiServicePtr.GeminiClientPtr, errorInfo.Error = genai.NewClient(
+	if geminiServicePtr.clientPtr, errorInfo.Error = genai.NewClient(
 		context.Background(),
 		gcpProjectId,
 		gcpLocation,
@@ -75,29 +76,70 @@ func (geminiServicePtr *GeminiService) BuildModel() (errorInfo errs.ErrorInfo) {
 		tInt64   int64
 	)
 
-	geminiServicePtr.GeminiModelPtr = geminiServicePtr.GeminiClientPtr.GenerativeModel(geminiServicePtr.geminiConfig.ModelName)
+	geminiServicePtr.modelPtr = geminiServicePtr.clientPtr.GenerativeModel(geminiServicePtr.config.ModelName)
 
-	if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.geminiConfig.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.geminiConfig.MaxOutputTokens))
+	if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.config.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
 		return
 	}
 	tInt32 = int32(tInt64)
-	geminiServicePtr.GeminiModelPtr.MaxOutputTokens = &tInt32
+	geminiServicePtr.modelPtr.MaxOutputTokens = &tInt32
 
-	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.geminiConfig.SetTopProbability, 64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.geminiConfig.SetTopProbability))
+	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.SetTopProbability, 64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.config.SetTopProbability))
 		return
 	}
 	tFloat32 = float32(tFloat64)
-	geminiServicePtr.GeminiModelPtr.SetTopP(tFloat32)
+	geminiServicePtr.modelPtr.SetTopP(tFloat32)
 
-	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.geminiConfig.Temperature, 64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.geminiConfig.Temperature))
+	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.Temperature, 64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.config.Temperature))
 		return
 	}
 	tFloat32 = float32(tFloat64)
-	geminiServicePtr.GeminiModelPtr.Temperature = &tFloat32
+	geminiServicePtr.modelPtr.Temperature = &tFloat32
 
+	return
+}
+
+// GenerateContent - takes inputs and submits them to the AI engine, parses the output, and returns the results and token counts
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (geminiServicePtr *GeminiService) GenerateContent(prompt string, promptData map[string]string, systemInstruction string) (
+	response string, tokenCount genai.UsageMetadata, errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tGenerateContentResponsePtr *genai.GenerateContentResponse
+		tPromptData                 string
+		tResponseParts              []genai.Part
+	)
+
+	for source, data := range promptData {
+		tPromptData += fmt.Sprintf("%s %s ", source, data)
+	}
+
+	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(systemInstruction)}}
+
+	if tGenerateContentResponsePtr, errorInfo.Error = geminiServicePtr.modelPtr.GenerateContent(
+		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
+	); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
+	for _, part := range tResponseParts {
+		response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
+		response = strings.ReplaceAll(response, "json", "")
+		response = strings.ReplaceAll(response, "\n", "")
+		response = strings.ReplaceAll(response, "  ", " ")
+	}
+
+	tokenCount = *tGenerateContentResponsePtr.UsageMetadata
+	
 	return
 }
 
