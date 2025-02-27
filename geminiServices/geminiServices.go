@@ -61,7 +61,7 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 	}
 
 	errorInfo = geminiServicePtr.buildModel()
-	
+
 	return
 }
 
@@ -146,6 +146,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 		response = strings.ReplaceAll(response, "json", "")
 		response = strings.ReplaceAll(response, "\n", "")
 		response = strings.ReplaceAll(response, "  ", " ")
+		response = strings.ReplaceAll(response, "```", "")
 	}
 
 	tokenCount = *tGenerateContentResponsePtr.UsageMetadata

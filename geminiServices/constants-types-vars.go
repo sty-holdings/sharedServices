@@ -18,7 +18,7 @@ const (
 	// SI = System Instruction
 	SI_KEY_SIMPLE_ANSWER                     = "simple-answer"
 	SI_KEY_COMPLEX_ANSWER                    = "complex-answer"
-	SI_KEY_CATEGORY_PROMPY_COMPARISON        = "category-prompt-Comparison"
+	SI_KEY_CATEGORY_PROMPY_COMPARISON        = "category-prompt-comparison"
 	SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT = "time-period-special-words-present"
 	SI_KEY_TIME_PERIOD_WORDS_PRESENT         = "time-period-words-present"
 	SI_KEY_TIME_PERIOD_VALUES                = "time-period-values"
