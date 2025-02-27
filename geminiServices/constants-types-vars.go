@@ -52,3 +52,12 @@ type SystemInstructions struct {
 	DetermineAPI    map[string]InstructionSet `json:"determine-api"`
 	GenerateAnswer  map[string]InstructionSet `json:"generate-answer"`
 }
+
+var (
+	SITopicAnalyzeQuestionKeys = []string{
+		SI_KEY_CATEGORY_PROMPY_COMPARISON,
+		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT,
+		SI_KEY_TIME_PERIOD_WORDS_PRESENT,
+		SI_KEY_TIME_PERIOD_VALUES,
+	}
+)
