@@ -84,41 +84,41 @@ const (
 )
 
 type CategoryPromptComparison struct {
-	Category           string              `json:"category"`
-	ComparisonQuestion bool                `json:"comparison_question"`
-	Prompt             string              `json:"prompt"`
-	QuestionSubject    string              `json:"question_subject"`
-	TokenCount         genai.UsageMetadata `json:"token_count"`
+	Category           string `json:"category"`
+	ComparisonQuestion bool   `json:"comparison_question"`
+	Prompt             string `json:"prompt"`
+	QuestionSubject    string `json:"question_subject"`
+	TokenCount         genai.UsageMetadata
 }
 
 type TimePeriodSpecialWordsPresent struct {
-	Current      bool                `json:"current"`
-	Details      bool                `json:"details"`
-	Last         bool                `json:"last"`
-	Next         bool                `json:"next"`
-	Previous     bool                `json:"previous"`
-	SubTotal     bool                `json:"subtotal"`
-	Today        bool                `json:"today"`
-	Transactions bool                `json:"transactions"`
-	TokenCount   genai.UsageMetadata `json:"token_count"`
+	Current      bool `json:"current"`
+	Details      bool `json:"details"`
+	Last         bool `json:"last"`
+	Next         bool `json:"next"`
+	Previous     bool `json:"previous"`
+	SubTotal     bool `json:"subtotal"`
+	Today        bool `json:"today"`
+	Transactions bool `json:"transactions"`
+	TokenCount   genai.UsageMetadata
 }
 
 type TimePeriodWordsPresent struct {
-	Year       bool                `json:"year"`
-	Quarter    bool                `json:"quarter"`
-	Month      bool                `json:"month"`
-	Week       bool                `json:"week"`
-	Day        bool                `json:"day"`
-	TokenCount genai.UsageMetadata `json:"token_count"`
+	Year       bool `json:"year"`
+	Quarter    bool `json:"quarter"`
+	Month      bool `json:"month"`
+	Week       bool `json:"week"`
+	Day        bool `json:"day"`
+	TokenCount genai.UsageMetadata
 }
 
 type TimePeriodValues struct {
-	Years      []int               `json:"years"`
-	Quarters   []int               `json:"quarters"`
-	Months     []int               `json:"months"`
-	Weeks      []int               `json:"weeks"`
-	Days       []int               `json:"days"`
-	TokenCount genai.UsageMetadata `json:"token_count"`
+	Years      []int `json:"years"`
+	Quarters   []int `json:"quarters"`
+	Months     []int `json:"months"`
+	Weeks      []int `json:"weeks"`
+	Days       []int `json:"days"`
+	TokenCount genai.UsageMetadata
 }
 
 type UserInfo struct {
