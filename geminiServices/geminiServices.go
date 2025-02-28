@@ -221,6 +221,10 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 		systemInstruction = fmt.Sprintf("%s %s", systemInstruction, tOutputFormat)
 	}
 	if tSetDate {
+		if locationPtr == nil {
+			errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_TIMEZONE, ctv.TXT_IS_MISSING))
+			return
+		}
 		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
 	}
 

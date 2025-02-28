@@ -82,6 +82,14 @@ var (
 		SI_KEY_TIME_PERIOD_VALUES,
 	}
 
+	SITopicDetermineAPIKeys = []string{
+		SI_KEY_DETEMINE_API,
+	}
+
+	SITopicGenerateAnswerKeys = []string{
+		SI_KEY_BUSINESS_ANALYST,
+	}
+
 	siTopicKeyPoolAssignment = map[string]string{
 		// SI_TOPIC_AI_QUESTION
 		SI_KEY_SIMPLE_ANSWER:  "pool-0",
