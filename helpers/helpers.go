@@ -68,9 +68,6 @@ func AppendToByteArray(byteArrayIn []byte, data ...any) (byteArrayOut []byte, er
 		tSubjectPromptPart []byte
 	)
 
-	if errorInfo = CheckValueNotEmpty(string(byteArrayIn), errs.ErrRequiredParameterMissing, "byteArrayIn"); errorInfo.Error != nil {
-		return
-	}
 	if tSubjectPromptPart, errorInfo.Error = json.Marshal(&data); errorInfo.Error != nil {
 		return
 	}
