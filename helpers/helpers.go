@@ -62,19 +62,19 @@ func AdjustDateByDays(year int, month int, day int, addDays int) (int, int, int)
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func AppendToByteArray(byteArrayPtr *[]byte, data ...any) (errorInfo errs.ErrorInfo) {
+func AppendToByteArray(byteArrayIn []byte, data ...any) (byteArrayOut []byte, errorInfo errs.ErrorInfo) {
 
 	var (
 		tSubjectPromptPart []byte
 	)
 
-	if errorInfo = CheckPointerNotNil(byteArrayPtr, errs.ErrPointerMissing, ctv.FN_POINTER); errorInfo.Error != nil {
+	if errorInfo = CheckValueNotEmpty(string(byteArrayIn), errs.ErrRequiredParameterMissing, "byteArrayIn"); errorInfo.Error != nil {
 		return
 	}
 	if tSubjectPromptPart, errorInfo.Error = json.Marshal(&data); errorInfo.Error != nil {
 		return
 	}
-	*byteArrayPtr = append(*byteArrayPtr, tSubjectPromptPart...)
+	byteArrayOut = append(byteArrayIn, tSubjectPromptPart...)
 
 	return
 }
