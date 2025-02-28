@@ -175,6 +175,7 @@ const (
 	FN_PLAID_ACCOUNTS                       = "plaid_accounts"
 	FN_PLAID_INFO_FQN                       = "Plaid_Key_FQN"
 	FN_PLAID_ITEM_ID                        = "plaid_item_id"
+	FN_POINTER                              = "any_pointer"
 	FN_PORT                                 = "port"
 	FN_PRIVATE_KEY                          = "PrivateKey"
 	FN_PROMPT                               = "prompt"

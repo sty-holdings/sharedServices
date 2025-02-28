@@ -57,6 +57,28 @@ func AdjustDateByDays(year int, month int, day int, addDays int) (int, int, int)
 	return year, month, day
 }
 
+// function_name - builds ...
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func AppendToByteArray(byteArrayPtr *[]byte, data ...any) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tSubjectPromptPart []byte
+	)
+
+	if errorInfo = CheckPointerNotNil(byteArrayPtr, errs.ErrPointerMissing, ctv.FN_POINTER); errorInfo.Error != nil {
+		return
+	}
+	if tSubjectPromptPart, errorInfo.Error = json.Marshal(&data); errorInfo.Error != nil {
+		return
+	}
+	*byteArrayPtr = append(*byteArrayPtr, tSubjectPromptPart...)
+
+	return
+}
+
 // Base64Decode - will decode a base64 string to a string. If there is an error,
 // the first 20 characters of the base64 string are logged.
 // REMINDER: If the base64 string has sensitivity information, empty out the
