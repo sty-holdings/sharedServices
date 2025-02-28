@@ -68,7 +68,7 @@ type GeminiResponse struct {
 }
 
 var (
-	siTopicKeyPoolAssignment = map[string]string{
+	SITopicKeyPoolAssignment = map[string]string{
 		// SI_TOPIC_AI_QUESTION
 		SI_KEY_SIMPLE_ANSWER:  "pool-0",
 		SI_KEY_COMPLEX_ANSWER: "pool-1",
