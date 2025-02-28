@@ -113,9 +113,7 @@ func (geminiServicePtr *GeminiService) buildModel() (errorInfo errs.ErrorInfo) {
 func (geminiServicePtr *GeminiService) GenerateContent(
 	locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
 	systemInstructionKey string,
-) (
-	response string, tokenCount genai.UsageMetadata, errorInfo errs.ErrorInfo,
-) {
+) (geminiResponse GeminiResponse) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
@@ -128,28 +126,28 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 		tPromptData += fmt.Sprintf("%s %s ", source, data)
 	}
 
-	if tInstruction, errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); errorInfo.Error != nil {
+	if tInstruction, geminiResponse.errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); errorInfo.Error != nil {
 		return
 	}
 	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
-	if tGenerateContentResponsePtr, errorInfo.Error = geminiServicePtr.modelPtr.GenerateContent(
+	if tGenerateContentResponsePtr, geminiResponse.errorInfo.Error = geminiServicePtr.modelPtr.GenerateContent(
 		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
-	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, ctv.VAL_EMPTY)
+	); geminiResponse.errorInfo.Error != nil {
+		geminiResponse.errorInfo = errs.NewErrorInfo(geminiResponse.errorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
 	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
 	for _, part := range tResponseParts {
-		response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
-		response = strings.ReplaceAll(response, "json", "")
-		response = strings.ReplaceAll(response, "\n", "")
-		response = strings.ReplaceAll(response, "  ", " ")
-		response = strings.ReplaceAll(response, "```", "")
+		geminiResponse.response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
+		geminiResponse.response = strings.ReplaceAll(geminiResponse.response, "json", "")
+		geminiResponse.response = strings.ReplaceAll(geminiResponse.response, "\n", "")
+		geminiResponse.response = strings.ReplaceAll(geminiResponse.response, "  ", " ")
+		geminiResponse.response = strings.ReplaceAll(geminiResponse.response, "```", "")
 	}
 
-	tokenCount = *tGenerateContentResponsePtr.UsageMetadata
+	geminiResponse.tokenCount = *tGenerateContentResponsePtr.UsageMetadata
 
 	return
 }

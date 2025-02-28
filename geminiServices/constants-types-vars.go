@@ -2,6 +2,8 @@ package sharedServices
 
 import (
 	"cloud.google.com/go/vertexai/genai"
+
+	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 )
 
 //goland:noinspection All
@@ -51,6 +53,12 @@ type SystemInstructions struct {
 	AnalyzeQuestion map[string]InstructionSet `json:"analyze-question"`
 	DetermineAPI    map[string]InstructionSet `json:"determine-api"`
 	GenerateAnswer  map[string]InstructionSet `json:"generate-answer"`
+}
+
+type GeminiResponse struct {
+	response   string
+	tokenCount genai.UsageMetadata
+	errorInfo  errs.ErrorInfo
 }
 
 var (
