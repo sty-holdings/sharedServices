@@ -39,7 +39,7 @@ type GeminiConfig struct {
 type GeminiService struct {
 	clientPtr *genai.Client
 	debugOn   bool
-	modelPtr  *genai.GenerativeModel
+	modelPtrs map[string]*genai.GenerativeModel
 	config    GeminiConfig
 }
 

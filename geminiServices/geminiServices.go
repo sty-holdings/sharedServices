@@ -62,17 +62,18 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 		return
 	}
 
-	errorInfo = geminiServicePtr.buildModel()
+	geminiServicePtr.modelPtrs = make(map[string]*genai.GenerativeModel, len(SITopicAnalyzeQuestionKeys))
+	errorInfo = geminiServicePtr.buildModelPool()
 
 	return
 }
 
-// buildModel - will create the model instance and configure the settings
+// buildModelPool - will configure and create a model pool based on the number of entries in SITopicAnalyzeQuestionKeys.
 //
 //	Customer Message: none
 //	Errors: none
 //	Verifications: none
-func (geminiServicePtr *GeminiService) buildModel() (errorInfo errs.ErrorInfo) {
+func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInfo) {
 
 	var (
 		tFloat32 float32
@@ -81,28 +82,29 @@ func (geminiServicePtr *GeminiService) buildModel() (errorInfo errs.ErrorInfo) {
 		tInt64   int64
 	)
 
-	geminiServicePtr.modelPtr = geminiServicePtr.clientPtr.GenerativeModel(geminiServicePtr.config.ModelName)
+	for _, worker := range SITopicAnalyzeQuestionKeys {
+		geminiServicePtr.modelPtrs[worker] = geminiServicePtr.clientPtr.GenerativeModel(geminiServicePtr.config.ModelName)
+		if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.config.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
+			return
+		}
+		tInt32 = int32(tInt64)
+		geminiServicePtr.modelPtrs[worker].MaxOutputTokens = &tInt32
 
-	if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.config.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
-		return
-	}
-	tInt32 = int32(tInt64)
-	geminiServicePtr.modelPtr.MaxOutputTokens = &tInt32
+		if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.SetTopProbability, 64); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.config.SetTopProbability))
+			return
+		}
+		tFloat32 = float32(tFloat64)
+		geminiServicePtr.modelPtrs[worker].SetTopP(tFloat32)
 
-	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.SetTopProbability, 64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.config.SetTopProbability))
-		return
+		if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.Temperature, 64); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.config.Temperature))
+			return
+		}
+		tFloat32 = float32(tFloat64)
+		geminiServicePtr.modelPtrs[worker].Temperature = &tFloat32
 	}
-	tFloat32 = float32(tFloat64)
-	geminiServicePtr.modelPtr.SetTopP(tFloat32)
-
-	if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.Temperature, 64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.config.Temperature))
-		return
-	}
-	tFloat32 = float32(tFloat64)
-	geminiServicePtr.modelPtr.Temperature = &tFloat32
 
 	return
 }
@@ -131,9 +133,9 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	if tInstruction, geminiResponse.errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); geminiResponse.errorInfo.Error != nil {
 		return
 	}
-	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
+	geminiServicePtr.modelPtrs[systemInstructionKey].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
-	if tGenerateContentResponsePtr, geminiResponse.errorInfo.Error = geminiServicePtr.modelPtr.GenerateContent(
+	if tGenerateContentResponsePtr, geminiResponse.errorInfo.Error = geminiServicePtr.modelPtrs[systemInstructionKey].GenerateContent(
 		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
 	); geminiResponse.errorInfo.Error != nil {
 		geminiResponse.errorInfo = errs.NewErrorInfo(geminiResponse.errorInfo.Error, ctv.VAL_EMPTY)
