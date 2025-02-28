@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -26,7 +27,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, geminiConfigFilename string) (geminiServicePtr *GeminiService, errorInfo errs.ErrorInfo) {
+func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, geminiConfigFilename string, debugOn bool) (geminiServicePtr *GeminiService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGeminiConfig GeminiConfig
@@ -48,7 +49,8 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 	}
 
 	geminiServicePtr = &GeminiService{
-		config: tGeminiConfig,
+		config:  tGeminiConfig,
+		debugOn: debugOn,
 	}
 
 	if geminiServicePtr.clientPtr, errorInfo.Error = genai.NewClient(
@@ -147,7 +149,14 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 		geminiResponse.response = strings.ReplaceAll(geminiResponse.response, "```", "")
 	}
 
+	geminiResponse.siKey = systemInstructionKey
 	geminiResponse.tokenCount = *tGenerateContentResponsePtr.UsageMetadata
+
+	if geminiServicePtr.debugOn {
+		log.Printf("SI Key: %s\n", geminiResponse.siKey)
+		log.Printf("Response: %s\n", geminiResponse.response)
+		log.Printf("token count: %d\n", geminiResponse.tokenCount)
+	}
 
 	return
 }

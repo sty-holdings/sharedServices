@@ -38,6 +38,7 @@ type GeminiConfig struct {
 
 type GeminiService struct {
 	clientPtr *genai.Client
+	debugOn   bool
 	modelPtr  *genai.GenerativeModel
 	config    GeminiConfig
 }
@@ -57,6 +58,7 @@ type SystemInstructions struct {
 
 type GeminiResponse struct {
 	response   string
+	siKey      string
 	tokenCount genai.UsageMetadata
 	errorInfo  errs.ErrorInfo
 }
