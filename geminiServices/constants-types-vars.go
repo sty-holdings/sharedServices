@@ -68,7 +68,21 @@ type GeminiResponse struct {
 }
 
 var (
-	SITopicKeyPoolAssignment = map[string]string{
+	modelPoolNames = []string{
+		"pool-0",
+		"pool-1",
+		"pool-2",
+		"pool-3",
+	}
+
+	SITopicAnalyzeQuestionKeys = []string{
+		SI_KEY_CATEGORY_PROMPY_COMPARISON,
+		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT,
+		SI_KEY_TIME_PERIOD_WORDS_PRESENT,
+		SI_KEY_TIME_PERIOD_VALUES,
+	}
+
+	siTopicKeyPoolAssignment = map[string]string{
 		// SI_TOPIC_AI_QUESTION
 		SI_KEY_SIMPLE_ANSWER:  "pool-0",
 		SI_KEY_COMPLEX_ANSWER: "pool-1",
@@ -81,12 +95,5 @@ var (
 		SI_KEY_DETEMINE_API: "pool-0",
 		// SI_TOPIC_GENERATE_ANSWER
 		SI_KEY_BUSINESS_ANALYST: "pool-0",
-	}
-
-	modelPoolNames = []string{
-		"pool-0",
-		"pool-1",
-		"pool-2",
-		"pool-3",
 	}
 )
