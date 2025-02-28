@@ -70,4 +70,11 @@ var (
 		SI_KEY_TIME_PERIOD_WORDS_PRESENT,
 		SI_KEY_TIME_PERIOD_VALUES,
 	}
+
+	modelPoolNames = []string{
+		"pool-0",
+		"pool-1",
+		"pool-2",
+		"pool-3",
+	}
 )

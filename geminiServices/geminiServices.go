@@ -62,7 +62,7 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 		return
 	}
 
-	geminiServicePtr.modelPtrs = make(map[string]*genai.GenerativeModel, len(SITopicAnalyzeQuestionKeys))
+	geminiServicePtr.modelPtrs = make(map[string]*genai.GenerativeModel, len(modelPoolNames))
 	errorInfo = geminiServicePtr.buildModelPool()
 
 	return
@@ -82,7 +82,7 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 		tInt64   int64
 	)
 
-	for _, worker := range SITopicAnalyzeQuestionKeys {
+	for _, worker := range modelPoolNames {
 		geminiServicePtr.modelPtrs[worker] = geminiServicePtr.clientPtr.GenerativeModel(geminiServicePtr.config.ModelName)
 		if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.config.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
