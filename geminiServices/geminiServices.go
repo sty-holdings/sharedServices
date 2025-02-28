@@ -122,7 +122,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
 		tInstruction                string
-		tPool                       = SITopicKeyPoolAssignment[systemInstructionKey]
+		tPool                       = siTopicKeyPoolAssignment[systemInstructionKey]
 		tPromptData                 string
 		tResponseParts              []genai.Part
 	)
