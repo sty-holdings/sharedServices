@@ -5,6 +5,7 @@ const (
 	LBL_AMOUNT                                = "AMOUNT: "
 	LBL_ANALYSIS_STATUS                       = "ANALYSIS_STATUS: "
 	LBL_ANALYZE_QUESTION                      = "ANALYZE_QUESTION: "
+	LBL_API_NAMES                             = "API_NAMES: "
 	LBL_APPLICATION_NAME                      = "APPLICATION NAME: "
 	LBL_ARRAY_ELEMENT                         = "ARRAY_ELEMENT: "
 	LBL_AUTHENICATION_SERVICES                = "AUTHENTICATION_SERVICES: "
