@@ -116,7 +116,7 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 //	Verifications: None
 func (geminiServicePtr *GeminiService) GenerateContent(
 	locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
-	systemInstructionKey string,
+	systemInstructionKey string, additionalInstructions string,
 ) (geminiResponse GeminiResponse) {
 
 	var (
@@ -134,6 +134,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	if tInstruction, geminiResponse.ErrorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); geminiResponse.ErrorInfo.Error != nil {
 		return
 	}
+	tInstruction = fmt.Sprintf("%s %s", tInstruction, additionalInstructions)
 	geminiServicePtr.modelPtrs[tPool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
 	if tGenerateContentResponsePtr, geminiResponse.ErrorInfo.Error = geminiServicePtr.modelPtrs[tPool].GenerateContent(
