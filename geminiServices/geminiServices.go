@@ -126,7 +126,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 		tPromptData += fmt.Sprintf("%s %s ", source, data)
 	}
 
-	if tInstruction, geminiResponse.errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); errorInfo.Error != nil {
+	if tInstruction, geminiResponse.errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); geminiResponse.errorInfo.Error != nil {
 		return
 	}
 	geminiServicePtr.modelPtr.SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
