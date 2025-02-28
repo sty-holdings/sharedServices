@@ -18,14 +18,18 @@ const (
 //goland:noinspection All
 const (
 	// SI = System Instruction
-	SI_KEY_SIMPLE_ANSWER                     = "simple-answer"
-	SI_KEY_COMPLEX_ANSWER                    = "complex-answer"
+	// SI_TOPIC_AI_QUESTION
+	SI_KEY_SIMPLE_ANSWER  = "simple-answer"
+	SI_KEY_COMPLEX_ANSWER = "complex-answer"
+	// SI_TOPIC_ANALYZE_QUESTION
 	SI_KEY_CATEGORY_PROMPY_COMPARISON        = "category-prompt-comparison"
 	SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT = "time-period-special-words-present"
 	SI_KEY_TIME_PERIOD_WORDS_PRESENT         = "time-period-words-present"
 	SI_KEY_TIME_PERIOD_VALUES                = "time-period-values"
-	SI_KEY_DETEMINE_API                      = "determine-api"
-	SI_KEY_BUSINESS_ANALYST                  = "business-analyst"
+	// SI_TOPIC_DETERMINE_API
+	SI_KEY_DETEMINE_API = "determine-api"
+	// SI_TOPIC_GENERATE_ANSWER
+	SI_KEY_BUSINESS_ANALYST = "business-analyst"
 )
 
 type GeminiConfig struct {
@@ -64,11 +68,19 @@ type GeminiResponse struct {
 }
 
 var (
-	SITopicAnalyzeQuestionKeys = []string{
-		SI_KEY_CATEGORY_PROMPY_COMPARISON,
-		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT,
-		SI_KEY_TIME_PERIOD_WORDS_PRESENT,
-		SI_KEY_TIME_PERIOD_VALUES,
+	siTopicKeyPoolAssignment = map[string]string{
+		// SI_TOPIC_AI_QUESTION
+		SI_KEY_SIMPLE_ANSWER:  "pool-0",
+		SI_KEY_COMPLEX_ANSWER: "pool-1",
+		// SI_TOPIC_ANALYZE_QUESTION
+		SI_KEY_CATEGORY_PROMPY_COMPARISON:        "pool-0",
+		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT: "pool-1",
+		SI_KEY_TIME_PERIOD_WORDS_PRESENT:         "pool-2",
+		SI_KEY_TIME_PERIOD_VALUES:                "pool-3",
+		// SI_TOPIC_DETERMINE_API
+		SI_KEY_DETEMINE_API: "pool-0",
+		// SI_TOPIC_GENERATE_ANSWER
+		SI_KEY_BUSINESS_ANALYST: "pool-0",
 	}
 
 	modelPoolNames = []string{

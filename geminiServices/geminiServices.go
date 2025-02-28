@@ -122,6 +122,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
 		tInstruction                string
+		tPool                       = siTopicKeyPoolAssignment[systemInstructionKey]
 		tPromptData                 string
 		tResponseParts              []genai.Part
 	)
@@ -133,9 +134,9 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	if tInstruction, geminiResponse.errorInfo = geminiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); geminiResponse.errorInfo.Error != nil {
 		return
 	}
-	geminiServicePtr.modelPtrs[systemInstructionKey].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
+	geminiServicePtr.modelPtrs[tPool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
-	if tGenerateContentResponsePtr, geminiResponse.errorInfo.Error = geminiServicePtr.modelPtrs[systemInstructionKey].GenerateContent(
+	if tGenerateContentResponsePtr, geminiResponse.errorInfo.Error = geminiServicePtr.modelPtrs[tPool].GenerateContent(
 		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
 	); geminiResponse.errorInfo.Error != nil {
 		geminiResponse.errorInfo = errs.NewErrorInfo(geminiResponse.errorInfo.Error, ctv.VAL_EMPTY)
@@ -155,6 +156,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	geminiResponse.tokenCount = *tGenerateContentResponsePtr.UsageMetadata
 
 	if geminiServicePtr.debugOn {
+		log.Printf("Pool: %s\n", tPool)
 		log.Printf("SI Key: %s\n", geminiResponse.siKey)
 		log.Printf("Response: %s\n", geminiResponse.response)
 		log.Printf("token count: %d\n", geminiResponse.tokenCount)
