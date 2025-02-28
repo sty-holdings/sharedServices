@@ -61,10 +61,10 @@ type SystemInstructions struct {
 }
 
 type GeminiResponse struct {
-	response   string
-	siKey      string
-	tokenCount genai.UsageMetadata
-	errorInfo  errs.ErrorInfo
+	Response   string
+	SIKey      string
+	TokenCount genai.UsageMetadata
+	ErrorInfo  errs.ErrorInfo
 }
 
 var (
