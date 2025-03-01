@@ -78,6 +78,7 @@ const (
 	NATS_HEADER_STYH_CLIENT_ID_EMPTY           = "The NATS message header must contain a map entry with styh_client_id and it must be populated."
 	NATS_URL_INVALID                           = "The NATS URL value is invalid."
 	NATS_ZERO                                  = "The port value is zero. This is not allowed. Recommended values are 4222 and 9222."
+	NO_DATA_FOUND                              = "No data found."
 	NOT_DIVISIBLE_N                            = "Calculate value must not be divisable by N."
 	OPTION_INVALID                             = "Option Invalid"
 	PARSE_BIG_INT_FAILED                       = "Unable to parse the value provided."
@@ -266,6 +267,7 @@ var (
 	ErrNameFirstMissing                      = errors.New(NAME_FIRST_MISSING)
 	ErrNameLastMissing                       = errors.New(NAME_LAST_MISSING)
 	ErrNatsPortInvalid                       = errors.New(NATS_ZERO)
+	ErrNoDataFound                           = errors.New(NO_DATA_FOUND)
 	ErrNotDivisibleN                         = errors.New(NOT_DIVISIBLE_N)
 	ErrOptionInvalid                         = errors.New(OPTION_INVALID)
 	ErrPIDFileExists                         = errors.New(PID_FILE_EXISTS)
