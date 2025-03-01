@@ -8,5 +8,5 @@ const (
 		"2) Try a broader search: Use more general keywords related to the SAAS provider."
 	CUST_MSG_NEED_DATE_FORMATTED = "The question doesn't have a timeframe." + "1) Added a date." +
 		"2) Does the date make sense in the context of the question. Example: A date in the future would not work for Sales questions." +
-		"3) words like current, previous, today, yesterday" + "4) last and the timeframe. ex: last week or last month"
+		"3) You can use words like current, previous, today, yesterday, last and the time period. ex: last week or last month"
 )
