@@ -56,7 +56,7 @@ const (
 
 //goland:noinspection All
 const (
-	ANS_DATE_TIME_FORMAT = "The time for %s is %s"
+	ANS_DATE_TIME_FORMAT = "The date/time in your location (%s) is %s"
 )
 
 //goland:noinspection All
