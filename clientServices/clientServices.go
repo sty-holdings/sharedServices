@@ -80,14 +80,14 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	return
 }
 
-// SaaSProfilePopulated - determines is a SaaS provider exists.
+// SaaSProviderPopulated - determines is a SaaS provider exists.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func SaaSProfilePopulated(clientStruct STYHClient) bool {
+func SaaSProviderPopulated(clientStruct STYHClient) bool {
 
-	if len(clientStruct.SaasProfile.UserSaaSProviders) > ctv.VAL_ZERO {
+	if len(clientStruct.SaasProviders) > ctv.VAL_ZERO {
 		return true
 	}
 
