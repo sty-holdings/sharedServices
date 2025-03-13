@@ -150,6 +150,7 @@ const (
 	LBL_PSQL_HOST                             = "PSQL HOST: "
 	LBL_PSQL_LOGIN                            = "PSQL LOGIN: "
 	LBL_PSQL_MAX_CONNECTIONS                  = "PSQL MAX CONNECTIONS: "
+	LBL_PSQL_PARSE_CONFIG                     = "PSQL PARSE CONFIG: "
 	LBL_PSQL_PASSWORD                         = "PSQL PASSWORD: "
 	LBL_PSQL_PORT                             = "PSQL PORT: "
 	LBL_PSQL_SSL_MODE                         = "PSQL SSL_MODE: "

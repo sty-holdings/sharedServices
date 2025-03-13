@@ -95,9 +95,9 @@ func getConnection(config PSQLConfig) (connectionPoolPtr *pgxpool.Pool, errorInf
 		tConfigPtr     *pgxpool.Config
 	)
 
-	tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(buildConnectionString(config))
-	if errorInfo.Error != nil {
-		os.Exit(1)
+	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(buildConnectionString(config)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
+		return
 	}
 
 	if tCACertPoolPtr, errorInfo = loadTLSCABundle(config.PSQLTLSInfo); errorInfo.Error != nil {
@@ -115,6 +115,7 @@ func getConnection(config PSQLConfig) (connectionPoolPtr *pgxpool.Pool, errorInf
 	}
 
 	if connectionPoolPtr, errorInfo.Error = pgxpool.ConnectConfig(CTXBackground, tConfigPtr); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
 		return
 	}
 
