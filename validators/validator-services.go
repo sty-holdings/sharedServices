@@ -539,21 +539,6 @@ func IsStruct(v interface{}) bool {
 // 	return true
 // }
 
-// This will set the connection values so GetConnection can be executed.
-// func IsPostgresSSLModeValid(sslMode string) bool {
-//
-// 	switch sslMode {
-// 	case ctv.POSTGRES_SSL_MODE_ALLOW:
-// 	case ctv.POSTGRES_SSL_MODE_DISABLE:
-// 	case ctv.POSTGRES_SSL_MODE_PREFER:
-// 	case ctv.POSTGRES_SSL_MODE_REQUIRED:
-// 	default:
-// 		return false
-// 	}
-//
-// 	return true
-// }
-
 // IsUserRegisterTypedValid
 // func IsUserRegisterTypedValid(period string) bool {
 //

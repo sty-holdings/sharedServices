@@ -29,52 +29,52 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGRPCServer(gRPCConfigFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
+func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCreds        credentials.TransportCredentials
-		tGRPCListener net.Listener
-		tGRPCConfig   GRPCConfig
+		tCreds    credentials.TransportCredentials
+		tListener net.Listener
+		tConfig   GRPCConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(gRPCConfigFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(configFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
-	if tGRPCConfig, errorInfo = LoadGRPCConfig(gRPCConfigFilename); errorInfo.Error != nil {
+	if tConfig, errorInfo = loadConfig(configFilename); errorInfo.Error != nil {
 		return
 	}
 
-	if errorInfo = validateGRPCConfig(tGRPCConfig); errorInfo.Error != nil {
+	if errorInfo = validateConfig(tConfig); errorInfo.Error != nil {
 		return
 	}
 
-	gRPCServicePtr = &GRPCService{
-		DebugOn: tGRPCConfig.GRPCDebug,
+	servicePtr = &GRPCService{
+		DebugOn: tConfig.GRPCDebug,
 		Secure: SecureSettings{
-			ServerSide: tGRPCConfig.GRPCSecure.ServerSide,
-			Mutual:     tGRPCConfig.GRPCSecure.Mutual,
+			ServerSide: tConfig.GRPCSecure.ServerSide,
+			Mutual:     tConfig.GRPCSecure.Mutual,
 		},
-		Host: tGRPCConfig.GRPCHost,
-		Port: tGRPCConfig.GRPCPort,
+		Host: tConfig.GRPCHost,
+		Port: tConfig.GRPCPort,
 	}
 
-	if tGRPCConfig.GRPCDebug {
+	if tConfig.GRPCDebug {
 		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
 	}
 
-	if tGRPCListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", gRPCServicePtr.Host, gRPCServicePtr.Port)); errorInfo.Error != nil {
+	if tListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", servicePtr.Host, servicePtr.Port)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
 		return
 	}
-	gRPCServicePtr.GRPCListenerPtr = &tGRPCListener
+	servicePtr.GRPCListenerPtr = &tListener
 
-	if gRPCServicePtr.Secure.ServerSide {
-		if tCreds, errorInfo = LoadTLSCredentialsCACertKey(tGRPCConfig.GRPCTLSInfo); errorInfo.Error != nil {
+	if servicePtr.Secure.ServerSide {
+		if tCreds, errorInfo = LoadTLSCredentialsCACertKey(tConfig.GRPCTLSInfo); errorInfo.Error != nil {
 			return
 		}
-		gRPCServicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
-		errorInfo = hlps.CheckPointerNotNil(gRPCServicePtr.GRPCServerPtr, errs.ErrPointerMissing, ctv.FN_GRPC_SERVER_POINTER)
+		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
+		errorInfo = hlps.CheckPointerNotNil(servicePtr.GRPCServerPtr, errs.ErrPointerMissing, ctv.FN_GRPC_SERVER_POINTER)
 	}
 
 	return
@@ -137,28 +137,28 @@ func NewGRPCClient(
 
 //  Private Functions
 
-// LoadGRPCConfig - reads, and returns a grpc service pointer
+// loadConfig - reads, and returns a grpc service pointer
 //
 //	Customer Messages: None
-//	Errors: error returned by ReadConfigFile or validateConfiguration
+//	Errors: error returned by ReadConfigFile
 //	Verifications: validateConfiguration
-func LoadGRPCConfig(geminiConfigFilename string) (grpcConfig GRPCConfig, errorInfo errs.ErrorInfo) {
+func loadConfig(configFilename string) (grpcConfig GRPCConfig, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(configFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
-	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(geminiConfigFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename))
+	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tConfigData, &grpcConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
 		return
 	}
 
@@ -243,26 +243,26 @@ func LoadTLSCredentialsCACertKey(tlsConfig jwts.TLSInfo) (creds credentials.Tran
 	return
 }
 
-func validateGRPCConfig(grpcCConfig GRPCConfig) (errorInfo errs.ErrorInfo) {
+func validateConfig(config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(grpcCConfig.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
-	if grpcCConfig.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
-		errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_PORT, strconv.Itoa(grpcCConfig.GRPCPort)))
+	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
+		errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(grpcCConfig.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(grpcCConfig.GRPCTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(grpcCConfig.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if grpcCConfig.GRPCTimeout < ctv.VAL_ONE {
-		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.FN_GRPC_TIMEOUT, strconv.Itoa(grpcCConfig.GRPCTimeout)))
+	if config.GRPCTimeout < ctv.VAL_ONE {
+		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
 	}
 
 	return

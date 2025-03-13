@@ -54,7 +54,7 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 	}
 
 	if geminiServicePtr.clientPtr, errorInfo.Error = genai.NewClient(
-		context.Background(),
+		CTXBackground,
 		gcpProjectId,
 		gcpLocation,
 		option.WithCredentialsFile(gcpCredentialsFilename),
@@ -138,7 +138,7 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	geminiServicePtr.modelPtrs[tPool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
 	if tGenerateContentResponsePtr, geminiResponse.ErrorInfo.Error = geminiServicePtr.modelPtrs[tPool].GenerateContent(
-		context.Background(), genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
+		CTXBackground, genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
 	); geminiResponse.ErrorInfo.Error != nil {
 		geminiResponse.ErrorInfo = errs.NewErrorInfo(geminiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
 		return

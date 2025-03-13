@@ -1,0 +1,14 @@
+psql_db_name: 
+psql_debug: false
+psql_host: "localhost"
+pgsql_max_connections: 10
+psql_password: "your_password"
+psql_port: 5432
+psql_ssl_mode: "disable"
+psql_tls_info:
+  cert_file: "" # Path to certificate file
+  key_file: ""  # Path to key file
+  ca_file: ""   # Path to CA certificate file
+  insecure_skip_verify: false # Set to true to skip TLS verification (not recommended for production)
+psql_timeout: 0
+psql_user_name: "your_username"
