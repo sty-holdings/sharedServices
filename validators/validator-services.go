@@ -321,6 +321,8 @@ func IsExtensionValid(extension string) bool {
 	switch extension {
 	case ctv.EXTENSION_ADMIN:
 		fallthrough
+	case ctv.EXTENSION_DIGITS:
+		fallthrough
 	case ctv.EXTENSION_DK_CLIENT:
 		fallthrough
 	case ctv.EXTENSION_HAL:
