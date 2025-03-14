@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"gopkg.in/yaml.v3"
 
@@ -51,6 +52,51 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	servicePtr = &PSQLService{
 		DebugOn:           tConfig.Debug,
 		ConnectionPoolPtr: tConnectionPoolPtr,
+	}
+
+	return
+}
+
+func (psqlService *PSQLService) Close() {
+
+	psqlService.ConnectionPoolPtr.Close()
+}
+
+func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (errorInfo errs.ErrorInfo) {
+
+	var (
+		pStatement string
+	)
+
+	pStatement = fmt.Sprintf(TRUNCATE_TABLE_STATEMENT, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
+	if _, errorInfo.Error = psqlService.ConnectionPoolPtr.Exec(CTXBackground, pStatement); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
+	}
+
+	return
+
+}
+
+func (psqlService *PSQLService) BatchInsert(batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
+
+	var (
+		//pBatchPtr    *pgx.Batch
+		pTransaction pgx.Tx
+		tQueueString string
+	)
+
+	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtr.BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRANSACTION, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
+		return
+	}
+
+	for _, rvs := range rowValues {
+		tQueueString = fmt.Sprintf(insertStatement, rvs...)
+		fmt.Println(tQueueString)
+	}
+
+	if errorInfo.Error = pTransaction.Commit(CTXBackground); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_COMMIT, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
 	}
 
 	return

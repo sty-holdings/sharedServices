@@ -17,8 +17,8 @@ const (
 	PSQL_SSL_MODE_VERIFY_FULL = "verify-full"
 	//
 	PSQL_CONN_STRING = "dbname=%s host=%s pool_max_conns=%d password=%s port=%d sslmode=%s connect_timeout=%d user=%s"
-
-	dsn = "&sslmode=verify-full&sslrootcert=/path/to/root.crt&sslcert=/path/to/client.crt&sslkey=/path/to/client.key"
+	//
+	TRUNCATE_TABLE_STATEMENT = `truncate table "%s"."%s"`
 )
 
 type PSQLConfig struct {

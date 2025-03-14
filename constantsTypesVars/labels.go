@@ -158,6 +158,7 @@ const (
 	LBL_PSQL_SSL_MODE                         = "PSQL SSL_MODE: "
 	LBL_PSQL_TIMEOUT                          = "PSQL TIMEOUT: "
 	LBL_PSQL_TRANSACTION                      = "PSQL TRANSACTION: "
+	LBL_PSQL_TRUNCATE                         = "PSQL TRUNCATE: "
 	LBL_PSQL_USER_NAME                        = "PSQL USER NAME: "
 	LBL_PUBLIC_KEY                            = "PUBLIC KEY: "
 	LBL_QUARTER                               = "QUARTER: "
