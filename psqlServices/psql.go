@@ -96,7 +96,7 @@ func getConnection(config PSQLConfig) (connectionPoolPtr *pgxpool.Pool, errorInf
 	)
 
 	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(buildConnectionString(config)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_PARSE_CONFIG, ctv.TXT_FAILED))
 		return
 	}
 
