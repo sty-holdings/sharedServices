@@ -99,6 +99,7 @@ const (
 	PSQL_HOST_INVALID                          = "PSQL Host is invalid."
 	PSQL_LOGIN_FAILED                          = "The PSQL supplied login credentials failed."
 	PSQL_MAX_CONNECTIONS_INVALID               = "The PSQL max connection is invalid. Must be greater than 0 and less than 100 across all instances."
+	PSQL_NO_DATA_INSERTED                      = "No data was inserted into the database."
 	PSQL_PASSWORD_EMPTY                        = "You must provide an encrypted PSQL password."
 	PSQL_PORT_INVALID                          = "The PSQL port is invalid. Must be 5432."
 	PSQL_SSL_MODE_INVALID                      = "PSQL SSL mode is invalid."
@@ -300,6 +301,7 @@ var (
 	ErrPSQLHostInvalid                       = errors.New(PSQL_HOST_INVALID)
 	ErrPSQLLoginFailed                       = errors.New(PSQL_LOGIN_FAILED)
 	ErrPSQLMaxConnectionsInvalid             = errors.New(PSQL_MAX_CONNECTIONS_INVALID)
+	ErrPSQLNoDataInserted                    = errors.New(PSQL_NO_DATA_INSERTED)
 	ErrPSQLPasswordEmpty                     = errors.New(PSQL_PASSWORD_EMPTY)
 	ErrPSQLPortInvalid                       = errors.New(PSQL_PORT_INVALID)
 	ErrPSQLSSLModeInvalid                    = errors.New(PSQL_SSL_MODE_INVALID)

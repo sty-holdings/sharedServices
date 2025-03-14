@@ -40,6 +40,7 @@ const (
 	LBL_CURRENT                               = "CURRENT: "
 	LBL_DATASTORE                             = "DATASTORE: "
 	LBL_DATE_TIME                             = "DATE/TIME: "
+	LBL_DATA_TYPE                             = "DATA TYPE: "
 	LBL_DAY                                   = "DAY: "
 	LBL_DIAL_OPTION                           = "DIAL OPTION: "
 	LBL_DEBUG_MESSAGE                         = "DEBUG MESSAGE: "
