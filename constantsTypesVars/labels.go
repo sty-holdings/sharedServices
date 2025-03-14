@@ -160,6 +160,7 @@ const (
 	LBL_PSQL_PASSWORD                         = "PSQL PASSWORD: "
 	LBL_PSQL_PORT                             = "PSQL PORT: "
 	LBL_PSQL_SELECT                           = "PSQL SELECT: "
+	LBL_PSQL_SET                              = "PSQL SET: "
 	LBL_PSQL_SSL_MODE                         = "PSQL SSL_MODE: "
 	LBL_PSQL_TABLE                            = "PSQL TABLE: "
 	LBL_PSQL_TIMEOUT                          = "PSQL TIMEOUT: "
