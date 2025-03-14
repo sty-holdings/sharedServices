@@ -18,9 +18,8 @@ const (
 	//
 	PSQL_CONN_STRING = "dbname=%s host=%s pool_max_conns=%d password=%s port=%d sslmode=%s connect_timeout=%d user=%s"
 	//
-	TRUNCATE_TABLE           = "truncate table %s.%s"                                                                                                                                                                                                                                                                     // Disregard the IDE error warning. If a bug.
-	INSERT_DAILY_PERFORMANCE = `INSERT INTO dkga.daily_performance (campaign_id, campaign_type, campaign_name, date, clicks, impressions, ctr, cpc, spend, cpm, cost_per_conversion, conversion_rate, conversion_value
-								) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);` // Disregard the IDE error warning. If a bug.
+	SET_ROLE       = "SET ROLE %s;\n"
+	TRUNCATE_TABLE = "TRUNCATE TABLE %s.%s;\n"
 )
 
 type PSQLConfig struct {

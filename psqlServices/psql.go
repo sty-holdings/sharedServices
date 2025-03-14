@@ -6,6 +6,8 @@ import (
 	"crypto/x509"
 	"fmt"
 	"os"
+	"reflect"
+
 	//"reflect"
 	"strconv"
 
@@ -79,19 +81,14 @@ func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (
 
 }
 
-func (psqlService *PSQLService) BatchInsert(batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
+func (psqlService *PSQLService) BatchInsert(role string, batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
+		pCommandTag   pgconn.CommandTag
 		pTransaction  pgx.Tx
-		pBatchPtr     = &pgx.Batch{}
-		pBatchResults pgx.BatchResults
-		pCommitTag    pgconn.CommandTag
-
-		//tQueueString string
-		//tDataType     string
-		//tInsertValues string
-
-		//batch.Queue(insertStatement, "q1", 1)
+		tQueueString  string
+		tDataType     string
+		tInsertValues string
 	)
 
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtr.BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
@@ -99,40 +96,38 @@ func (psqlService *PSQLService) BatchInsert(batchName string, insertStatement st
 		return
 	}
 
+	if role != ctv.VAL_EMPTY {
+		tQueueString = fmt.Sprintf(SET_ROLE, role)
+	}
 	for _, rvs := range rowValues {
-		//for idx, value := range rvs {
-		//	tDataType = reflect.TypeOf(value).String()
-		//	switch tDataType {
-		//	case "int":
-		//	case "int64":
-		//	case "float64":
-		//	case "string":
-		//		fallthrough
-		//	case "time.Time":
-		//		value = fmt.Sprintf("'%s'", value)
-		//	default:
-		//		errorInfo = errs.NewErrorInfo(errs.ErrDateTypeInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_BATCH, fmt.Sprintf("%s%s %s", ctv.LBL_DATA_TYPE, tDataType, ctv.TXT_FAILED)))
-		//		_ = pTransaction.Rollback(CTXBackground) // ErrorInfo is not checked, because the data is bad and either way the data will be reloaded.
-		//		return
-		//	}
-		//	if idx == 0 {
-		//		tInsertValues = fmt.Sprintf("%v", value)
-		//	} else {
-		//		tInsertValues = fmt.Sprintf("%v, %v", tInsertValues, value)
-		//	}
-		//}
-		pBatchPtr.Queue(insertStatement, rvs)
+		for idx, value := range rvs {
+			tDataType = reflect.TypeOf(value).String()
+			switch tDataType {
+			case "int":
+			case "int64":
+			case "float64":
+			case "string":
+				value = fmt.Sprintf("'%s'", value)
+			case "time.Time":
+				value = fmt.Sprintf("'%s'", value)
+			default:
+				errorInfo = errs.NewErrorInfo(errs.ErrDateTypeInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_BATCH, fmt.Sprintf("%s%s %s", ctv.LBL_DATA_TYPE, tDataType, ctv.TXT_FAILED)))
+				_ = pTransaction.Rollback(CTXBackground) // ErrorInfo is not checked, because the data is bad and either way the data will be reloaded.
+				return
+			}
+			if idx == 0 {
+				tInsertValues = fmt.Sprintf("%v", value)
+			} else {
+				tInsertValues = fmt.Sprintf("%v, %v", tInsertValues, value)
+			}
+		}
+		tQueueString += fmt.Sprintf(insertStatement, tInsertValues)
 	}
 
-	pBatchResults = psqlService.ConnectionPoolPtr.SendBatch(context.Background(), pBatchPtr)
-
-	if pCommitTag, errorInfo.Error = pBatchResults.Exec(); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_BATCH, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
-		_ = pTransaction.Rollback(CTXBackground) // ErrorInfo is not checked, because the data is bad and either way the data will be reloaded.
+	if pCommandTag, errorInfo.Error = pTransaction.Exec(CTXBackground, tQueueString); errorInfo.Error != nil {
+		return
 	}
-	if pCommitTag.RowsAffected() != 1 {
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLNoDataInserted, errs.BuildLabelValue(ctv.LBL_PSQL_BATCH, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
-	}
+	fmt.Println(pCommandTag)
 
 	if errorInfo.Error = pTransaction.Commit(CTXBackground); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_COMMIT, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))

@@ -2,7 +2,6 @@ package sharedServices
 
 import (
 	"testing"
-	"time"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -10,9 +9,9 @@ import (
 
 var (
 	rowValues = map[int][]any{
-		1: {123, "Search", "My Campaign 1", time.Date(2023, 10, 27, 0, 0, 0, 0, time.UTC), 100, int64(10000), 1.0, 2.50, 250.00, 25.00, 50.00, 0.02, 1000.00},
-		2: {456, "Display", "Product Ads", time.Date(2023, 10, 28, 0, 0, 0, 0, time.UTC), 50, int64(5000), 0.5, 1.25, 62.50, 12.50, 25.00, 0.01, 500.00},
-		3: {789, "Video", "Brand Awareness", time.Date(2023, 10, 29, 0, 0, 0, 0, time.UTC), 200, int64(20000), 2.0, 0.75, 150.00, 7.50, 75.00, 0.03, 1500.00},
+		1: {123, "Search", "My Campaign 1", "2025/08/23", 100, int64(10000), 1.0, 2.50, 250.00, 25.00, 50.00, 0.02, 1000.00},
+		2: {456, "Display", "Product Ads", "2025/08/23", 50, int64(5000), 0.5, 1.25, 62.50, 12.50, 25.00, 0.01, 500.00},
+		3: {789, "Video", "Brand Awareness", "2025/08/23", 200, int64(20000), 2.0, 0.75, 150.00, 7.50, 75.00, 0.03, 1500.00},
 		// Add more rows as needed...
 	}
 )
@@ -169,6 +168,7 @@ func TestBatchInsert(tPtr *testing.T) {
 		batchName       string
 		insertStatement string
 		insertValues    map[int][]any
+		role            string
 	}
 
 	var (
@@ -188,6 +188,7 @@ func TestBatchInsert(tPtr *testing.T) {
 				batchName:       "Batch 1",
 				insertStatement: INSERT_DAILY_PERFORMANCE,
 				insertValues:    rowValues,
+				role:            "coupler_google_ads_access",
 			},
 			wantError: false,
 		},
@@ -201,7 +202,7 @@ func TestBatchInsert(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = tPSQLServicePtr.BatchInsert(ts.arguments.batchName, ts.arguments.insertStatement, ts.arguments.insertValues); errorInfo.Error != nil {
+				if errorInfo = tPSQLServicePtr.BatchInsert(ts.arguments.role, ts.arguments.batchName, ts.arguments.insertStatement, ts.arguments.insertValues); errorInfo.Error != nil {
 					gotError = true
 				} else {
 					gotError = false
