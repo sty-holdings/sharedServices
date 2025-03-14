@@ -23,7 +23,7 @@ const (
 )
 
 type PSQLConfig struct {
-	DBName         []string     `json:"psql_db_name" yaml:"psql_db_name"`
+	DBName         []string     `json:"psql_db_names" yaml:"psql_db_names"`
 	Debug          bool         `json:"psql_debug" yaml:"psql_debug"`
 	Host           string       `json:"psql_host" yaml:"psql_host"`
 	MaxConnections int          `json:"pgsql_max_connections" yaml:"pgsql_max_connections"`
