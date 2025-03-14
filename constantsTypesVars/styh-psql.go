@@ -8,6 +8,13 @@ const (
 
 //goland:noinspection All
 const (
+	DB_ANSWERS    = "answers"
+	DB_COUPLER    = "coupler"
+	DB_GOOGLE_ADS = "google_ads"
+)
+
+//goland:noinspection All
+const (
 	SCHEMA_DKA  = "dka"
 	SCHEMA_DKC  = "dkc"
 	SCHEMA_DKGA = "dkga"
