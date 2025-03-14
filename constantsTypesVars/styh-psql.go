@@ -2,6 +2,19 @@ package sharedServices
 
 //goland:noinspection All
 const (
+	ROLE_COUPLER_GOOGLE_ADS_ACCESS = "coupler_google_ads_access"
+	ROLE_ANSWER_ACCESS             = "answers_access"
+)
+
+//goland:noinspection All
+const (
+	SCHEMA_DKA  = "dka"
+	SCHEMA_DKC  = "dkc"
+	SCHEMA_DKGA = "dkga"
+)
+
+//goland:noinspection All
+const (
 	TBL_DAILY_PERFORMANCE  = "daily_performance"
 	TBL_COUPLER_GOOGLE_ADS = "coupler_google_ads"
 )
