@@ -27,6 +27,7 @@ const (
 	COGNITO_USERPOOL_ID_INVALID                = "User Pool ID must be in format: '<region>_<pool name>'"
 	CONFIG_FILE_MISSING                        = "Not able to read the supplied config file. "
 	CURRENCY_INVALID                           = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
+	DATE_TYPE_INVALID                          = "Data Type is not supported."
 	DECODE_STRING_FAILED                       = "Unable to decode the string."
 	DIAL_OPTION_FAILED                         = "Creation of the gRPC dial option failed."
 	DIRECTORY_MISSING                          = "The directory does not exist."
@@ -224,6 +225,7 @@ var (
 	ErrCognitoUserpoolIdInvalid              = errors.New(COGNITO_USERPOOL_ID_INVALID)
 	ErrConfigFileMissing                     = errors.New(CONFIG_FILE_MISSING)
 	ErrCurrencyInvalid                       = errors.New(CURRENCY_INVALID)
+	ErrDateTypeInvalid                       = errors.New(DATE_TYPE_INVALID)
 	ErrDecodeStringFailed                    = errors.New(DECODE_STRING_FAILED)
 	ErrDialOptionFailed                      = errors.New(DIAL_OPTION_FAILED)
 	ErrDirectoryMissing                      = errors.New(DIRECTORY_MISSING)

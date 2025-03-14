@@ -18,7 +18,22 @@ const (
 	//
 	PSQL_CONN_STRING = "dbname=%s host=%s pool_max_conns=%d password=%s port=%d sslmode=%s connect_timeout=%d user=%s"
 	//
-	TRUNCATE_TABLE_STATEMENT = `truncate table "%s"."%s"`
+	TRUNCATE_TABLE           = `truncate table "%s"."%s"`
+	INSERT_DAILY_PERFORMANCE = `INSERT INTO dkga.daily_performance (campaign_id,campaign_type,campaign_name,date,clicks,impressions,ctr,cpc,spend,cpm,cost_per_conversion,conversion_rate,conversion_value) VALUES (
+$1,  -- campaign_id (INTEGER) 
+$2,  -- campaign_type (VARCHAR)
+$3,  -- campaign_name (VARCHAR)
+$4,  -- date (DATE)
+$5,  -- clicks (INTEGER)
+$6,  -- impressions (BIGINT)
+$7,  -- ctr (DECIMAL)
+$8,  -- cpc (DECIMAL)
+$9,  -- spend (DECIMAL)
+$10, -- cpm (DECIMAL)
+$11, -- cost_per_conversion (DECIMAL)
+$12, -- conversion_rate (DECIMAL)
+$13  -- conversion_value (DECIMAL)
+);`
 )
 
 type PSQLConfig struct {

@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"os"
+	"reflect"
 	"strconv"
 
 	"github.com/jackc/pgx/v4"
@@ -68,7 +69,7 @@ func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (
 		pStatement string
 	)
 
-	pStatement = fmt.Sprintf(TRUNCATE_TABLE_STATEMENT, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
+	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
 	if _, errorInfo.Error = psqlService.ConnectionPoolPtr.Exec(CTXBackground, pStatement); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
 	}
@@ -80,9 +81,8 @@ func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (
 func (psqlService *PSQLService) BatchInsert(batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
-		//pBatchPtr    *pgx.Batch
 		pTransaction pgx.Tx
-		tQueueString string
+		//tQueueString string
 	)
 
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtr.BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
@@ -91,8 +91,18 @@ func (psqlService *PSQLService) BatchInsert(batchName string, insertStatement st
 	}
 
 	for _, rvs := range rowValues {
-		tQueueString = fmt.Sprintf(insertStatement, rvs...)
-		fmt.Println(tQueueString)
+		for _, value := range rvs {
+			switch reflect.TypeOf(value).String() {
+			case "int":
+			case "string":
+			case "float64":
+			case "time.Time":
+			default:
+				errorInfo = errs.NewErrorInfo(errs.ErrDateTypeInvalid)
+			}
+			values := fmt.Sprintf("%v, ", value)
+			fmt.Println(values)
+		}
 	}
 
 	if errorInfo.Error = pTransaction.Commit(CTXBackground); errorInfo.Error != nil {
