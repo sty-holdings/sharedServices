@@ -34,8 +34,8 @@ var (
 func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tConfig            PSQLConfig
-		tConnectionPoolPtr *pgxpool.Pool
+		tConfig           PSQLConfig
+		tConnectionConfig PSQLConnectionConfig
 	)
 
 	if errorInfo = hlps.CheckValueNotEmpty(configFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
@@ -50,12 +50,28 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 		return
 	}
 
-	if tConnectionPoolPtr, errorInfo = getConnection(tConfig); errorInfo.Error != nil {
-		return
-	}
 	servicePtr = &PSQLService{
-		DebugOn:           tConfig.Debug,
-		ConnectionPoolPtr: tConnectionPoolPtr,
+		DebugOn:            tConfig.Debug,
+		ConnectionPoolPtrs: make(map[string]*pgxpool.Pool),
+	}
+
+	tConnectionConfig = PSQLConnectionConfig{
+		Debug:          tConfig.Debug,
+		Host:           tConfig.Host,
+		MaxConnections: tConfig.MaxConnections,
+		Password:       tConfig.Password,
+		Port:           tConfig.Port,
+		SSLMode:        tConfig.SSLMode,
+		PSQLTLSInfo:    tConfig.PSQLTLSInfo,
+		Timeout:        tConfig.Timeout,
+		UserName:       tConfig.UserName,
+	}
+
+	for _, database := range tConfig.DBName {
+		tConnectionConfig.DBName = database
+		if servicePtr.ConnectionPoolPtrs[database], errorInfo = getConnection(tConnectionConfig); errorInfo.Error != nil {
+			return
+		}
 	}
 
 	return
@@ -63,17 +79,19 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 
 func (psqlService *PSQLService) Close() {
 
-	psqlService.ConnectionPoolPtr.Close()
+	for _, connectionPtr := range psqlService.ConnectionPoolPtrs {
+		connectionPtr.Close()
+	}
 }
 
-func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (errorInfo errs.ErrorInfo) {
+func (psqlService *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pStatement string
 	)
 
 	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
-	if _, errorInfo.Error = psqlService.ConnectionPoolPtr.Exec(CTXBackground, pStatement); errorInfo.Error != nil {
+	if _, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
 	}
 
@@ -81,7 +99,7 @@ func (psqlService *PSQLService) TruncateTable(schema string, tableName string) (
 
 }
 
-func (psqlService *PSQLService) BatchInsert(role string, batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
+func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pCommandTag   pgconn.CommandTag
@@ -91,7 +109,7 @@ func (psqlService *PSQLService) BatchInsert(role string, batchName string, inser
 		tInsertValues string
 	)
 
-	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtr.BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
+	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRANSACTION, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
 		return
 	}
@@ -143,7 +161,7 @@ func (psqlService *PSQLService) BatchInsert(role string, batchName string, inser
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func buildConnectionString(config PSQLConfig) (dbConnString string) {
+func buildConnectionString(config PSQLConnectionConfig) (dbConnString string) {
 
 	return fmt.Sprintf(PSQL_CONN_STRING, config.DBName, config.Host, config.MaxConnections, config.Password, config.Port, config.SSLMode, config.Timeout, config.UserName)
 
@@ -167,7 +185,7 @@ func buildConnectionString(config PSQLConfig) (dbConnString string) {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func getConnection(config PSQLConfig) (connectionPoolPtr *pgxpool.Pool, errorInfo errs.ErrorInfo) {
+func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool, errorInfo errs.ErrorInfo) {
 
 	var (
 		tCACertPoolPtr *x509.CertPool
@@ -279,7 +297,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 
 func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(config.DBName, errs.ErrPSQLDBNameEmpty, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(config.DBName, errs.ErrPSQLDBNameEmpty, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(config.Host, errs.ErrPSQLHostEmpty, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {

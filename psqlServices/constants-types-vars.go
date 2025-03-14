@@ -23,7 +23,7 @@ const (
 )
 
 type PSQLConfig struct {
-	DBName         string       `json:"psql_db_name" yaml:"psql_db_name"`
+	DBName         []string     `json:"psql_db_name" yaml:"psql_db_name"`
 	Debug          bool         `json:"psql_debug" yaml:"psql_debug"`
 	Host           string       `json:"psql_host" yaml:"psql_host"`
 	MaxConnections int          `json:"pgsql_max_connections" yaml:"pgsql_max_connections"`
@@ -35,9 +35,22 @@ type PSQLConfig struct {
 	UserName       string       `json:"psql_user_name" yaml:"psql_user_name"`
 }
 
+type PSQLConnectionConfig struct {
+	DBName         string
+	Debug          bool
+	Host           string
+	MaxConnections int
+	Password       string
+	Port           int
+	SSLMode        string
+	PSQLTLSInfo    jwts.TLSInfo
+	Timeout        int
+	UserName       string
+}
+
 type PSQLService struct {
-	DebugOn           bool
-	ConnectionPoolPtr *pgxpool.Pool
+	DebugOn            bool
+	ConnectionPoolPtrs map[string]*pgxpool.Pool
 }
 
 // Row and Rows are so pgx package doesn't need to be imported everywhere there are queries to the database.
