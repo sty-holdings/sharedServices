@@ -84,6 +84,19 @@ const (
 )
 
 type CategoryPromptComparison struct {
+	AdverbBySubject    map[string]int      `json:"adverb_by_subject"`
+	Category           []string            `json:"category"`
+	CompoundQuestion   bool                `json:"compound_question"`
+	ComparisonQuestion bool                `json:"comparison_question"`
+	CountBySubject     map[string]int      `json:"count_by_subject"`
+	Prompt             string              `json:"prompt"`
+	QuestionSubject    []string            `json:"question_subject"`
+	SaasProvider       []string            `json:"saas_provider"`
+	Total              bool                `json:"total"`
+	TokenCount         genai.UsageMetadata `json:"-"`
+}
+
+type CategoryPromptComparisonWithResponse struct {
 	Response struct {
 		AdverbBySubject    map[string]int      `json:"adverb_by_subject"`
 		Category           []string            `json:"category"`
@@ -95,22 +108,6 @@ type CategoryPromptComparison struct {
 		SaasProvider       []string            `json:"saas_provider"`
 		Total              bool                `json:"total"`
 		TokenCount         genai.UsageMetadata `json:"-"`
-	} `json:"response"`
-}
-
-type CategoryPromptComparison_HOLD struct {
-	AdverbBySubject    []string       `json:"adverb_by_subject"`
-	Category           []string       `json:"category"`
-	ComparisonQuestion bool           `json:"comparison_question"`
-	CompoundQuestion   bool           `json:"compound_question"`
-	CountBySubject     map[string]int `json:"count_by_subject"`
-	Prompt             string         `json:"prompt"`
-	QuestionSubject    []string       `json:"question_subject"`
-	SaasProvider       []string       `json:"saas_provider"`
-	Total              bool           `json:"total"`
-
-	Response struct {
-		Total bool `json:"total"`
 	} `json:"response"`
 }
 
