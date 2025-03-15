@@ -50,7 +50,8 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	}
 
 	servicePtr = &PSQLService{
-		DebugOn: tConfig.Debug,
+		DebugOn:            tConfig.Debug,
+		ConnectionPoolPtrs: make(map[string]*pgxpool.Pool),
 	}
 
 	tConnectionConfig = PSQLConnectionConfig{
