@@ -31,9 +31,8 @@ const (
 
 //goland:noinspection All
 const (
-	DB_ANSWERS    = "answers"
-	DB_COUPLER    = "coupler"
-	DB_GOOGLE_ADS = "google_ads"
+	DB_ANSWERS            = "answers"
+	DB_COUPLER_GOOGLE_ADS = "coupler_google_ads"
 )
 
 //goland:noinspection All
@@ -286,6 +285,23 @@ type CouplerGoogleAds struct {
 	CustomerID                                            int64
 }
 
+type DKCGACampaignPerformanceDailyRow struct {
+	AccountName            string  `db:"account_name"`
+	CampaignName           string  `db:"campaign_name"`
+	ReportDate             string  `db:"report_date"`
+	AccountID              string  `db:"account_id"`
+	CampaignID             string  `db:"campaign_id"`
+	AmountSpend            float64 `db:"amount_spend"`
+	CPC                    float64 `db:"cpc"`
+	CPM                    float64 `db:"cpm"`
+	CostPerConversion      float64 `db:"cost_per_conversion"`
+	Impressions            float64 `db:"impressions"`
+	Clicks                 float64 `db:"clicks"`
+	CTR                    float64 `db:"ctr"`
+	Conversions            float64 `db:"conversions"`
+	ViewThroughConversions float64 `db:"view_through_conversions"`
+}
+
 type DKCGACampaignPerformanceRow struct {
 	AccountAccountName                string  `db:"account__account_name"`
 	AccountAccountID                  string  `db:"account__account_id"`
@@ -430,21 +446,4 @@ type CouplerLinkedInCompany struct {
 	EngagementLikes              int64
 	EngagementReposts            int64
 	EngagementComments           int64
-}
-
-type DailyPerformance struct {
-	CampaignID        int64
-	CampaignType      string
-	CampaignName      string
-	Date              time.Time
-	Clicks            int64
-	Impressions       int64
-	CTR               float64
-	CPC               float64
-	Spend             float64
-	CPM               float64
-	CostPerConversion float64
-	ConversionRate    float64
-	ConversionValue   float64
-	CreatedAt         time.Time
 }
