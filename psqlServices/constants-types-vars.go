@@ -286,6 +286,27 @@ type CouplerGoogleAds struct {
 	CustomerID                                            int64
 }
 
+type DKCGACampaignPerformanceRow struct {
+	AccountAccountName                string  `db:"account__account_name"`
+	AccountAccountID                  string  `db:"account__account_id"`
+	ReportDate                        string  `db:"report__date"`
+	CampaignCampaignName              string  `db:"campaign__campaign_name"`
+	CampaignCampaignID                string  `db:"campaign__campaign_id"`
+	CampaignCampaignStatus            string  `db:"campaign__campaign_status"`
+	CampaignStartDate                 string  `db:"campaign__start_date"`
+	CampaignEndDate                   string  `db:"campaign__end_date"`
+	CampaignBudgetAmount              float64 `db:"campaign__budget_amount"`
+	CostAmountSpend                   float64 `db:"cost__amount_spend"`
+	CostCPC                           float64 `db:"cost__cpc"`
+	CostCPM                           float64 `db:"cost__cpm"`
+	CostCostPerConversion             float64 `db:"cost__cost_per_conversion"`
+	PerformanceImpressions            float64 `db:"performance__impressions"`
+	PerformanceClicks                 float64 `db:"performance__clicks"`
+	ClicksCTR                         float64 `db:"clicks__ctr"`
+	ConversionsConversions            float64 `db:"conversions__conversions"`
+	ConversionsViewThroughConversions float64 `db:"conversions__view_through_conversions"`
+}
+
 type CouplerGoogleAdsCampaigns struct {
 	AccountName                                             string
 	AccessibleBiddingStrategy                               string
