@@ -12,8 +12,8 @@ import (
 	"strconv"
 
 	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"gopkg.in/yaml.v3"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
