@@ -76,28 +76,6 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	return
 }
 
-func (psqlService *PSQLService) Close() {
-
-	for _, connectionPtr := range psqlService.ConnectionPoolPtrs {
-		connectionPtr.Close()
-	}
-}
-
-func (psqlService *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
-
-	var (
-		pStatement string
-	)
-
-	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
-	if _, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
-	}
-
-	return
-
-}
-
 func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
@@ -151,6 +129,28 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	}
 
 	return
+}
+
+func (psqlService *PSQLService) Close() {
+
+	for _, connectionPtr := range psqlService.ConnectionPoolPtrs {
+		connectionPtr.Close()
+	}
+}
+
+func (psqlService *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
+
+	var (
+		pStatement string
+	)
+
+	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
+	if _, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
+	}
+
+	return
+
 }
 
 //  Private Functions
@@ -357,11 +357,8 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 //	Verifications: None
 func isConnectionActive(connectionPtr *pgxpool.Pool, dbName string) (errorInfo errs.ErrorInfo) {
 
-	//goland:noinspection ALL
-	const checkStatActivity = "SELECT * FROM pg_stat_activity WHERE datname = $1 and state = 'active';"
-
 	var (
-		tRows Rows
+		tRows pgx.Rows
 	)
 
 	if connectionPtr == nil {
@@ -369,7 +366,7 @@ func isConnectionActive(connectionPtr *pgxpool.Pool, dbName string) (errorInfo e
 		return
 	}
 
-	tRows, errorInfo.Error = connectionPtr.Query(CTXBackground, checkStatActivity, dbName)
+	tRows, errorInfo.Error = connectionPtr.Query(CTXBackground, CHECK_STAT_ACTIVITY, dbName)
 	if errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errs.ErrPSQLConnFalied, errs.BuildLabelValue(ctv.LBL_PSQL_DBNAME, dbName))
 	}

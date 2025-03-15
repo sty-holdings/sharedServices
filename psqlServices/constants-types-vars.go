@@ -58,6 +58,7 @@ const (
 		"(campaign_id, campaign_type, campaign_name, date, clicks, impressions, ctr, cpc, spend, cpm, cost_per_conversion, conversion_rate, conversion_value) " +
 		"VALUES (%v);\n"
 	SELECT_ALL_FROM_TABLE = "SELECT * FROM %s.%s;\n"
+	CHECK_STAT_ACTIVITY   = "SELECT * FROM pg_stat_activity WHERE datname = $1 and state = 'active';"
 )
 
 type PSQLConfig struct {

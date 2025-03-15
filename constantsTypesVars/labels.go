@@ -159,6 +159,7 @@ const (
 	LBL_PSQL_PARSE_CONFIG                     = "PSQL PARSE CONFIG: "
 	LBL_PSQL_PASSWORD                         = "PSQL PASSWORD: "
 	LBL_PSQL_PORT                             = "PSQL PORT: "
+	LBL_PSQL_PGXSCAN_SELECT                   = "PSQL PGXSCAN SELECT: "
 	LBL_PSQL_SELECT                           = "PSQL SELECT: "
 	LBL_PSQL_SET                              = "PSQL SET: "
 	LBL_PSQL_SSL_MODE                         = "PSQL SSL_MODE: "
