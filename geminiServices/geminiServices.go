@@ -284,9 +284,6 @@ func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.AnalyzeQuestion, errs.ErrRequiredParameterMissing, ctv.FN_SI_ANALYZE_QUESTION); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.DetermineAPI, errs.ErrRequiredParameterMissing, ctv.FN_SI_DETERMINE_API); errorInfo.Error != nil {
-		return
-	}
 	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.GenerateAnswer, errs.ErrRequiredParameterMissing, ctv.FN_SI_GENERATE_ANSWER); errorInfo.Error != nil {
 		return
 	}
