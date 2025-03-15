@@ -37,9 +37,8 @@ const (
 
 //goland:noinspection All
 const (
-	SCHEMA_DKA  = "dka"
-	SCHEMA_DKC  = "dkc"
-	SCHEMA_DKGA = "dkga"
+	SCHEMA_DKA   = "dka"
+	SCHEMA_DKCGA = "dkcga"
 )
 
 //goland:noinspection All
@@ -48,6 +47,7 @@ const (
 	TBL_COUPLER_GOOGLE_ADS           = "coupler_google_ads"
 	TBL_COUPLER_GOOGLE_ADS_CAMPAIGNS = "coupler_google_ads_campaigns"
 	TBL_COUPLER_LINKEDIN_COMPANY     = "coupler_linkedin_company"
+	TBL_COUPLER_CAMPAIGN_PERFORMANCE = "coupler_campaign_performance"
 )
 
 //goland:noinspection All
