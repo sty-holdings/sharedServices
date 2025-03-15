@@ -84,11 +84,20 @@ const (
 )
 
 type CategoryPromptComparison struct {
-	Category           string              `json:"category"`
+	AdverbBySubject    []string            `json:"adverb_by_subject"`
+	Category           []string            `json:"category"`
 	ComparisonQuestion bool                `json:"comparison_question"`
+	CompoundQuestion   bool                `json:"compound_question"`
+	CountBySubject     map[string]int      `json:"count_by_subject"`
 	Prompt             string              `json:"prompt"`
-	QuestionSubject    string              `json:"question_subject"`
+	QuestionSubject    []string            `json:"question_subject"`
+	SaasProvider       []string            `json:"saas_provider"`
+	Total              bool                `json:"total"`
 	TokenCount         genai.UsageMetadata `json:"-"`
+
+	Response struct {
+		Total bool `json:"total"`
+	} `json:"response"`
 }
 
 type TimePeriodSpecialWordsPresent struct {
