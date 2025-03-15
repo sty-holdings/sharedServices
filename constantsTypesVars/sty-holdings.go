@@ -85,7 +85,7 @@ const (
 
 type CategoryPromptComparison struct {
 	Response struct {
-		AdverbBySubject    []string            `json:"adverb_by_subject"`
+		AdverbBySubject    map[string]int      `json:"adverb_by_subject"`
 		Category           []string            `json:"category"`
 		CompoundQuestion   bool                `json:"compound_question"`
 		ComparisonQuestion bool                `json:"comparison_question"`
