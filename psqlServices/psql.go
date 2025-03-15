@@ -8,11 +8,10 @@ import (
 	"os"
 	"reflect"
 
-	//"reflect"
 	"strconv"
 
-	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"gopkg.in/yaml.v3"
 
@@ -51,8 +50,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	}
 
 	servicePtr = &PSQLService{
-		DebugOn:            tConfig.Debug,
-		ConnectionPoolPtrs: make(map[string]*pgxpool.Pool),
+		DebugOn: tConfig.Debug,
 	}
 
 	tConnectionConfig = PSQLConnectionConfig{
@@ -212,7 +210,7 @@ func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool
 		ServerName:         tConfigPtr.ConnConfig.Host,
 	}
 
-	if connectionPoolPtr, errorInfo.Error = pgxpool.ConnectConfig(CTXBackground, tConfigPtr); errorInfo.Error != nil {
+	if connectionPoolPtr, errorInfo.Error = pgxpool.NewWithConfig(CTXBackground, tConfigPtr); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
 		return
 	}

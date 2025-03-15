@@ -1,8 +1,8 @@
 package sharedServices
 
 import (
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
