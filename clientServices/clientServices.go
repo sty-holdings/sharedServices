@@ -65,6 +65,17 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		}
 	}
 
+	if value, ok = tUserInfo[ctv.FN_SAAS_PROVIDERS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_MARSHALL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_UNMARSHALL_FAILED))
+			return
+		}
+	}
+
 	if value, ok = tUserInfo[ctv.FN_STYH_CLIENT_ID]; ok {
 		clientStruct.StyhClientId = value.(string)
 	}
