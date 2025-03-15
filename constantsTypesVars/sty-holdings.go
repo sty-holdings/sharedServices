@@ -84,6 +84,22 @@ const (
 )
 
 type CategoryPromptComparison struct {
+	Response struct {
+		Prompt          string   `json:"prompt"`
+		QuestionSubject []string `json:"question_subject"`
+		AdverbBySubject []struct {
+			Ads string `json:"ads"`
+		} `json:"adverb_by_subject"`
+		Category           []string      `json:"category"`
+		CompoundQuestion   bool          `json:"compound_question"`
+		ComparisonQuestion bool          `json:"comparison_question"`
+		Total              bool          `json:"total"`
+		SaasProvider       []string      `json:"saas_provider"`
+		CountBySubject     []interface{} `json:"count_by_subject"`
+	} `json:"response"`
+}
+
+type CategoryPromptComparison_HOLD struct {
 	AdverbBySubject    []string            `json:"adverb_by_subject"`
 	Category           []string            `json:"category"`
 	ComparisonQuestion bool                `json:"comparison_question"`
