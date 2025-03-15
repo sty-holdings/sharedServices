@@ -171,7 +171,7 @@ const (
 	SYSTEM_INSTRUCTION_TOPIC_INVALID           = "The system instruction topic is invalid."
 	SYSTEM_INSTRUCTION_KEY_INVALID             = "The system instruction key is invalid."
 	TIME_FRAME_MISSING                         = "In order to answer your question, it must have a timeframe, such as the year, today, month, etc."
-	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "We are working on supporting week and day level information."
+	TIME_PERIOD_LEVEL_NOT_SUPPORTED            = "We are working on supporting that level of information."
 	TIME_PERIOD_WORD_COMBINATION_NOT_SUPPORTED = "The time period word combination is not supported."
 	TIMEOUT_REACHED                            = "You have exceeded the set timeout."
 	TIMEZONE_NOT_SUPPORT                       = "The timezone is not supported."
