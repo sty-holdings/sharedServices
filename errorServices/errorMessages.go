@@ -15,6 +15,7 @@ const (
 	AWS_INVALID_SSM_PARAMETERS                 = "GetParameters returned invalid parameter names. Check AWS SSM Parameter Manager."
 	BASE64_INVALID                             = "The base64 string is invalid."
 	FLOAT_INVALID                              = "The float64 value is invalid."
+	FLAG_COMBINATION_INVALID                   = "The flag combination is invalid."
 	INTEGER_INVALID                            = "The integer64 value is invalid."
 	BUCKET_NOT_FOUND                           = "The bucket was not found."
 	BUFFER_EMPTY                               = "The buffer is empty"
@@ -253,6 +254,7 @@ var (
 	ErrFirestoreClientFailed                 = errors.New(FIRESTORE_CLIENT_FAILED)
 	ErrFirebaseStorageClientFailed           = errors.New(FIREBASE_STORAGE_CLIENT_FAILED)
 	ErrFloatInvalid                          = errors.New(FLOAT_INVALID)
+	ErrFlagCombinationInvalid                = errors.New(FLAG_COMBINATION_INVALID)
 	ErrGinModeInvalid                        = errors.New(GIN_MODE_INVALID)
 	ErrGinURLPortMissing                     = errors.New(GIN_URL_PORT_MISSING)
 	ErrGreatThanZero                         = errors.New(GREATER_THAN_ZERO)
