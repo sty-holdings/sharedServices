@@ -16,17 +16,13 @@ const (
 //goland:noinspection All
 const (
 	// SI = System Instruction
-	// SI_TOPIC_ANALYZE_QUESTION
 	SI_KEY_CATEGORY_PROMPY_COMPARISON        = "category-prompt-comparison"
 	SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT = "time-period-special-words-present"
 	SI_KEY_TIME_PERIOD_WORDS_PRESENT         = "time-period-words-present"
 	SI_KEY_TIME_PERIOD_VALUES                = "time-period-values"
-	// SI_TOPIC_DETERMINE_API
-	SI_KEY_DETEMINE_API = "determine-api"
-	// SI_TOPIC_GENERATE_ANSWER
-	SI_KEY_BUSINESS_ANALYST  = "business-analyst"
-	SI_KEY_MARKETING_ANALYST = "marketing-analyst"
-	SI_KEY_NOT_SUPPORTED     = "not-supported"
+	SI_KEY_BUSINESS_ANALYST                  = "business-analyst"
+	SI_KEY_MARKETING_ANALYST                 = "marketing-analyst"
+	SI_KEY_NOT_SUPPORTED                     = "not-supported"
 )
 
 type GeminiConfig struct {
@@ -51,9 +47,7 @@ type InstructionSet struct {
 }
 
 type SystemInstructions struct {
-	AIQuestion      map[string]InstructionSet `json:"ai-question"`
 	AnalyzeQuestion map[string]InstructionSet `json:"analyze-question"`
-	DetermineAPI    map[string]InstructionSet `json:"determine-api"`
 	GenerateAnswer  map[string]InstructionSet `json:"generate-answer"`
 }
 
@@ -79,12 +73,10 @@ var (
 		SI_KEY_TIME_PERIOD_VALUES,
 	}
 
-	SITopicDetermineAPIKeys = []string{
-		SI_KEY_DETEMINE_API,
-	}
-
 	SITopicGenerateAnswerKeys = []string{
 		SI_KEY_BUSINESS_ANALYST,
+		SI_KEY_MARKETING_ANALYST,
+		SI_KEY_NOT_SUPPORTED,
 	}
 
 	siTopicKeyPoolAssignment = map[string]string{
