@@ -512,7 +512,12 @@ func GetMonth() int {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetSundayDateWeeksAgo(today time.Time, weeksAgo int) (year, month, day int) {
+func GetSundayDateWeeksAgo(weeksAgo int) (year, month, day int) {
+
+	var (
+		today = time.Now()
+	)
+
 	// Calculate the weekday of the given time.
 	weekday := today.Weekday()
 
