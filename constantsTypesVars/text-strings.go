@@ -56,6 +56,7 @@ const (
 	TXT_INTO                         = "into"
 	TXT_INVALID                      = "invalid"
 	TXT_IS_EMPTY                     = "is empty"
+	TXT_HAVE_NO_INFORMATION          = "have no information."
 	TXT_IS_INVALID                   = "is invalid"
 	TXT_IS_MISSING                   = "is missing"
 	TXT_IS_NIL                       = "is nil"
