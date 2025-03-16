@@ -114,7 +114,7 @@ type CategoryPromptComparisonWithResponse struct {
 }
 
 type SaaSResponse struct {
-	saasData  string
+	SaaSData  string
 	ErrorInfo errs.ErrorInfo
 }
 
