@@ -676,11 +676,18 @@ func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
 // }
 
 // CalculateFlagCombination takes a JSON string representing flags
-// and uses bitwise to build a string.
+// and uses bitwise to build a string. String order is
+// day week month quarter year
 //
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
+//	 1    0    0      0      0
+//	 0    1    0      0      0
+//	 0    0    1      0      0
+//	 0    0    0      1      0
+//	 0    0    0      0      1
+//
+//		Customer Messages: None
+//		Errors: None
+//		Verifications: None
 func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPresent) string {
 
 	var (

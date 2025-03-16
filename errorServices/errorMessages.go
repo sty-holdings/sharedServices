@@ -20,6 +20,7 @@ const (
 	BUFFER_EMPTY                               = "The buffer is empty"
 	CA_BUNDLE_FILENAME_MISSING                 = "The CA Bundle filename is missing."
 	CA_BUNDLE_LOADING_FAILED                   = "The CA Bundle file failed to load."
+	CATEGORY_EMPTY                             = "The category is empty."
 	CATEGORY_NOT_SUPPORTED                     = "The category is not supported."
 	CLIENT_SECRET_MISSING                      = "The client secret has not been provided.)"
 	COGNITO_SECRET_BLOCK_INVALID               = "Unable to decode challenge parameter 'SECRET_BLOCK'."
@@ -219,6 +220,7 @@ var (
 	ErrBufferEmpty                           = errors.New(BUFFER_EMPTY)
 	ErrCABundleFilenameMissing               = errors.New(CA_BUNDLE_FILENAME_MISSING)
 	ErrCABundleLoadingFailed                 = errors.New(CA_BUNDLE_LOADING_FAILED)
+	ErrCategoryEmpty                         = errors.New(CATEGORY_EMPTY)
 	ErrCategoryNotSupported                  = errors.New(CATEGORY_NOT_SUPPORTED)
 	ErrClientSecretBlockInvalid              = errors.New(COGNITO_SECRET_BLOCK_INVALID)
 	ErrClientSecretMissing                   = errors.New(CLIENT_SECRET_MISSING)
