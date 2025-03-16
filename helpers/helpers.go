@@ -502,9 +502,12 @@ func GetDay() int {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func PreviousSunday(t time.Time) (year, month, day int) {
-	// Calculate the weekday of the given time.
-	weekday := t.Weekday()
+func PreviousSunday() (year, month, day int) {
+
+	var (
+		t       = time.Now()
+		weekday = t.Weekday()
+	)
 
 	// Calculate the number of days to subtract to reach the previous Sunday.
 	daysToSubtract := int(weekday)
