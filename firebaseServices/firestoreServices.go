@@ -419,7 +419,7 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 			{Path: "saas_profile", Value: firestore.ArrayRemove(arrayElement)},
 		},
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 	}
 
 	return
@@ -520,7 +520,7 @@ func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId str
 		return
 	}
 	if firestoreClientPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 		return
 	}
 	if datastore == ctv.VAL_EMPTY {
@@ -602,7 +602,7 @@ func UpdateDocument(firestoreClientPtr *firestore.Client, datastore, documentId 
 	}
 	if tUpdateFields, errorInfo = buildFirestoreUpdate(nameValues); errorInfo.Error == nil {
 		if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(CTXBackground, tUpdateFields); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 		}
 	}
 
@@ -641,7 +641,7 @@ func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 			{Path: "saas_profile", Value: firestore.ArrayUnion(arrayElement)},
 		},
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 	}
 
 	return
@@ -667,7 +667,7 @@ func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, doc
 	}
 
 	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, mapElements, firestore.MergeAll); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 	}
 
 	return
