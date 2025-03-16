@@ -206,14 +206,19 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
 		}
-	case SI_TOPIC_DETERMINE_API:
-		systemInstruction = geminiServicePtr.config.SystemInstructions.DetermineAPI[SI_KEY_DETEMINE_API].Instruction
-		tOutputFormat = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].OutputFormat
-		tSetDate = geminiServicePtr.config.SystemInstructions.DetermineAPI[key].SetDate
 	case SI_TOPIC_GENERATE_ANSWER:
-		systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[SI_KEY_BUSINESS_ANALYST].Instruction
-		tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
-		tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
+		switch key {
+		case SI_KEY_BUSINESS_ANALYST:
+			fallthrough
+		case SI_KEY_MARKETING_ANALYST:
+			fallthrough
+		case SI_KEY_NOT_SUPPORTED:
+			systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].Instruction
+			tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
+			tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
+		default:
+			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+		}
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
 	}

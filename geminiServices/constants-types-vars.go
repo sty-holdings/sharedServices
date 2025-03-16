@@ -11,7 +11,6 @@ const (
 	// SI = System Instruction
 	SI_TOPIC_AI_QUESTION      = "ai-question"
 	SI_TOPIC_ANALYZE_QUESTION = "analyze-question"
-	SI_TOPIC_DETERMINE_API    = "determine-api"
 	SI_TOPIC_GENERATE_ANSWER  = "generate-answer"
 )
 
@@ -31,6 +30,7 @@ const (
 	// SI_TOPIC_GENERATE_ANSWER
 	SI_KEY_BUSINESS_ANALYST  = "business-analyst"
 	SI_KEY_MARKETING_ANALYST = "marketing-analyst"
+	SI_KEY_NOT_SUPPORTED     = "not-supported"
 )
 
 type GeminiConfig struct {
