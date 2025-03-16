@@ -1,7 +1,7 @@
 package sharedServices
 
 //goland:noinspection All
-var analysisTypes = []string{
+var AnalysisTypes = []string{
 	"actionable",
 	"alignment",
 	"analysis",
