@@ -15,6 +15,7 @@ const (
 	VAL_NATS                 = "nats"
 	VAL_NIL                  = "nil"
 	VAL_NO_CHARGE_DATA       = "{\"dk_charges\":null}"
+	VAL_NONE                 = "none"
 	VAL_NOT_FOUND            = "not found"
 	VAL_NOT_SUPPORTED        = "not supported"
 	VAL_NULL                 = "null"
