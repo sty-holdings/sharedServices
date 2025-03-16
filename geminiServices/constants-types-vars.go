@@ -29,7 +29,8 @@ const (
 	// SI_TOPIC_DETERMINE_API
 	SI_KEY_DETEMINE_API = "determine-api"
 	// SI_TOPIC_GENERATE_ANSWER
-	SI_KEY_BUSINESS_ANALYST = "business-analyst"
+	SI_KEY_BUSINESS_ANALYST  = "business-analyst"
+	SI_KEY_MARKETING_ANALYST = "marketing-analyst"
 )
 
 type GeminiConfig struct {
