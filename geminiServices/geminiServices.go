@@ -194,6 +194,7 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 			tSetDate = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+			return
 		}
 	case SI_TOPIC_GENERATE_ANSWER:
 		switch key {
@@ -207,9 +208,11 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 			tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+			return
 		}
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
+		return
 	}
 
 	if tOutputFormat != ctv.VAL_EMPTY {

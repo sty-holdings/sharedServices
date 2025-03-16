@@ -120,7 +120,7 @@ type TimePeriodValues struct {
 	Years      []int               `json:"years"`
 	Quarters   []int               `json:"quarters"`
 	Months     []int               `json:"months"`
-	Weeks      []int               `json:"weeks"`
+	Weeks      int                 `json:"weeks"`
 	Days       []int               `json:"days"`
 	TokenCount genai.UsageMetadata `json:"-"`
 }
