@@ -497,6 +497,19 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
+// getSundayDateMinus7Days returns the year, month, and day of a Sunday, weeks_ago weeks from today, minus 7 days.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getSundayDateMinus7Days(today time.Time, weeksAgo int) (year, month, day int) {
+	year, month, day = getSundayDate(today, weeksAgo)
+	sundayTime := time.Date(year, time.Month(month), day, 0, 0, 0, 0, today.Location()) //Create a time.Time from year, month, day.
+	minus7Days := sundayTime.AddDate(0, 0, -7)
+
+	return minus7Days.Year(), int(minus7Days.Month()), minus7Days.Day()
+}
+
 // PreviousSunday - calculates the year, month, and day of the previous Sunday.
 //
 //	Customer Messages: None
