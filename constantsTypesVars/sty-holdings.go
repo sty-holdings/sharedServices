@@ -97,7 +97,7 @@ type CategoryPromptComparison struct {
 
 type TimePeriodSpecialWordsPresent struct {
 	CurrentFlag      bool                `json:"current"`
-	DetailsFlag      bool                `json:"details"`
+	DetailFlag       bool                `json:"detail"`
 	LastFlag         bool                `json:"last"`
 	NextFlag         bool                `json:"next"`
 	PreviousFlag     bool                `json:"previous"`
