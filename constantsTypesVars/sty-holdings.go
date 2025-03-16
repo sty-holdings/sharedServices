@@ -104,7 +104,7 @@ type CategoryPromptComparisonWithResponse struct {
 		ComparisonQuestion bool                `json:"comparison_question"`
 		CountBySubject     map[string]int      `json:"count_by_subject"`
 		Prompt             string              `json:"prompt"`
-		QuestionSubject    []string            `json:"question_subject"`
+		QuestionSubject    []string            `json:"sentence_subject"`
 		SaasProvider       []string            `json:"saas_provider"`
 		Total              bool                `json:"total"`
 		TokenCount         genai.UsageMetadata `json:"-"`
