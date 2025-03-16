@@ -180,17 +180,6 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	)
 
 	switch topic {
-	case SI_TOPIC_AI_QUESTION:
-		switch key {
-		case SI_KEY_SIMPLE_ANSWER:
-			fallthrough
-		case SI_KEY_COMPLEX_ANSWER:
-			systemInstruction = geminiServicePtr.config.SystemInstructions.AIQuestion[key].Instruction
-			tOutputFormat = geminiServicePtr.config.SystemInstructions.AIQuestion[key].OutputFormat
-			tSetDate = geminiServicePtr.config.SystemInstructions.AIQuestion[key].SetDate
-		default:
-			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
-		}
 	case SI_TOPIC_ANALYZE_QUESTION:
 		switch key {
 		case SI_KEY_CATEGORY_PROMPY_COMPARISON:
