@@ -2,8 +2,6 @@ package sharedServices
 
 import (
 	"cloud.google.com/go/vertexai/genai"
-
-	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 )
 
 //goland:noinspection All
@@ -111,12 +109,6 @@ type CategoryPromptComparisonWithResponse struct {
 		Total              bool                `json:"total"`
 		TokenCount         genai.UsageMetadata `json:"-"`
 	} `json:"response"`
-}
-
-type SaaSResponse struct {
-	SaaSProvider string
-	SaaSData     string
-	ErrorInfo    errs.ErrorInfo
 }
 
 type TimePeriodSpecialWordsPresent struct {
