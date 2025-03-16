@@ -15,7 +15,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func RecordSubjectTiming(dkElapsedTime float64, environment string, extensionName string, subject string, firestoreClientPtr *firestore.Client, testMode bool) {
+func RecordSystemActionTiming(dkElapsedTime float64, environment string, extensionName string, systemAction string, firestoreClientPtr *firestore.Client, testMode bool) {
 
 	var (
 		tFields = make(map[any]interface{})
@@ -24,7 +24,7 @@ func RecordSubjectTiming(dkElapsedTime float64, environment string, extensionNam
 	tFields[ctv.FN_ELASPE_TIME_SECONDS] = dkElapsedTime
 	tFields[ctv.FN_ENVIRONMENT] = environment
 	tFields[ctv.FN_EXTENSION_NAME] = extensionName
-	tFields[ctv.FN_SUBJECT] = subject
+	tFields[ctv.FN_SYSTEM_ACTION] = systemAction
 	tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
 	if testMode == false {
 		fbs.SetDocument(firestoreClientPtr, ctv.DATASTORE_STATS_FUNCTION_TIMINGS, hlp.GenerateUUIDType1(true), tFields)

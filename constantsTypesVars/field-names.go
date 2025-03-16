@@ -245,6 +245,7 @@ const (
 	FN_SUBJECT                              = "subject"
 	FN_SUBTOTAL_FLAG                        = "subtotal"
 	FN_SUB_CATEGORY                         = "sub-category"
+	FN_SYSTEM_ACTION                        = "system_action"
 	FN_TEMP_DIRECTORY                       = "temporary_directory_fqd"
 	FN_TEST                                 = "test"
 	FN_TIMEZONE                             = "timezone"

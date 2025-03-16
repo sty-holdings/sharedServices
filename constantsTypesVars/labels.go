@@ -223,6 +223,7 @@ const (
 	LBL_SUBTOTAL_FLAG                         = "SUBTOTAL FLAG (subtotal):"
 	LBL_SUB_CATEGORY                          = "SUB-CATEGORY: "
 	LBL_SYMMETRIC_KEY                         = "SYMMETRIC KEY: "
+	LBL_SYSTEM_ACTION                         = "SYSTEM ACTION: "
 	LBL_SYSTEM_SETTINGS                       = "SYSTEM SETTINGS: "
 	LBL_TIME_PERIOD                           = "TIME PERIOD: "
 	LBL_TIME_RANGE                            = "TIME RANGE: "
