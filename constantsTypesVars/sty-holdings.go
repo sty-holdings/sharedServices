@@ -92,20 +92,19 @@ type CategoryPromptComparison struct {
 	SaasProvider          []string            `json:"saas_provider"`
 	SentenceSubject       []string            `json:"sentence_subject"`
 	SentenceSubjectAdverb map[string]int      `json:"sentence_subject_adverb"`
-	Total                 bool                `json:"total"`
 	TokenCount            genai.UsageMetadata `json:"-"`
 }
 
 type TimePeriodSpecialWordsPresent struct {
-	Current      bool                `json:"current"`
-	Details      bool                `json:"details"`
-	Last         bool                `json:"last"`
-	Next         bool                `json:"next"`
-	Previous     bool                `json:"previous"`
-	SubTotal     bool                `json:"subtotal"`
-	Today        bool                `json:"today"`
-	Transactions bool                `json:"transactions"`
-	TokenCount   genai.UsageMetadata `json:"-"`
+	CurrentFlag      bool                `json:"current"`
+	DetailsFlag      bool                `json:"details"`
+	LastFlag         bool                `json:"last"`
+	NextFlag         bool                `json:"next"`
+	PreviousFlag     bool                `json:"previous"`
+	SubTotalFlag     bool                `json:"subtotal"`
+	TodayFlag        bool                `json:"today"`
+	TransactionsFlag bool                `json:"transactions"`
+	TokenCount       genai.UsageMetadata `json:"-"`
 }
 
 type TimePeriodWordsPresent struct {
