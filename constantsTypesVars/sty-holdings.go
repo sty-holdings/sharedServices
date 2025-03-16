@@ -84,31 +84,16 @@ const (
 )
 
 type CategoryPromptComparison struct {
-	AdverbBySubject    map[string]int      `json:"adverb_by_subject"`
-	Category           []string            `json:"category"`
-	CompoundQuestion   bool                `json:"compound_question"`
-	ComparisonQuestion bool                `json:"comparison_question"`
-	CountBySubject     map[string]int      `json:"count_by_subject"`
-	Prompt             string              `json:"prompt"`
-	QuestionSubject    []string            `json:"sentence_subject"`
-	SaasProvider       []string            `json:"saas_provider"`
-	Total              bool                `json:"total"`
-	TokenCount         genai.UsageMetadata `json:"-"`
-}
-
-type CategoryPromptComparisonWithResponse struct {
-	Response struct {
-		AdverbBySubject    map[string]int      `json:"adverb_by_subject"`
-		Category           []string            `json:"category"`
-		CompoundQuestion   bool                `json:"compound_question"`
-		ComparisonQuestion bool                `json:"comparison_question"`
-		CountBySubject     map[string]int      `json:"count_by_subject"`
-		Prompt             string              `json:"prompt"`
-		QuestionSubject    []string            `json:"sentence_subject"`
-		SaasProvider       []string            `json:"saas_provider"`
-		Total              bool                `json:"total"`
-		TokenCount         genai.UsageMetadata `json:"-"`
-	} `json:"response"`
+	Category              []string            `json:"category"`
+	CompoundQuestion      bool                `json:"compound_question"`
+	ComparisonQuestion    bool                `json:"comparison_question"`
+	CountBySubject        map[string]int      `json:"count_by_subject"`
+	Prompt                string              `json:"prompt"`
+	SaasProvider          []string            `json:"saas_provider"`
+	SentenceSubject       []string            `json:"sentence_subject"`
+	SentenceSubjectAdverb map[string]int      `json:"sentence_subject_adverb"`
+	Total                 bool                `json:"total"`
+	TokenCount            genai.UsageMetadata `json:"-"`
 }
 
 type TimePeriodSpecialWordsPresent struct {
