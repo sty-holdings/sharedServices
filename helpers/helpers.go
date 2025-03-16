@@ -497,6 +497,29 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
+// PreviousSunday - calculates the year, month, and day of the previous Sunday.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func PreviousSunday(t time.Time) (year, month, day int) {
+	// Calculate the weekday of the given time.
+	weekday := t.Weekday()
+
+	// Calculate the number of days to subtract to reach the previous Sunday.
+	daysToSubtract := int(weekday)
+
+	// Subtract the days from the given time.
+	previousSunday := t.AddDate(0, 0, -daysToSubtract)
+
+	// Extract the year, month, and day from the previous Sunday.
+	year = previousSunday.Year()
+	month = int(previousSunday.Month())
+	day = previousSunday.Day()
+
+	return year, month, day
+}
+
 // GetMonth - returns the current month integer
 //
 //	Customer Messages: None
@@ -505,6 +528,32 @@ func GetDay() int {
 func GetMonth() int {
 
 	return int(time.Now().Month())
+}
+
+// getSundayDate returns the year, month, and day of a Sunday, weeks_ago weeks from today.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getSundayDate(today time.Time, weeksAgo int) (year, month, day int) {
+	// Calculate the weekday of the given time.
+	weekday := today.Weekday()
+
+	// Calculate the number of days to subtract to reach the Sunday of the current week.
+	daysToSubtractCurrentWeek := int(weekday)
+
+	// Calculate the total number of days to subtract.
+	totalDaysToSubtract := daysToSubtractCurrentWeek + (weeksAgo * 7)
+
+	// Subtract the days from the given time.
+	targetSunday := today.AddDate(0, 0, -totalDaysToSubtract)
+
+	// Extract the year, month, and day from the target Sunday.
+	year = targetSunday.Year()
+	month = int(targetSunday.Month())
+	day = targetSunday.Day()
+
+	return year, month, day
 }
 
 // GetYear - returns the current year integer
