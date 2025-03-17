@@ -95,6 +95,37 @@ type PSQLService struct {
 	ConnectionPoolPtrs map[string]*pgxpool.Pool
 }
 
+type DKCGACampaignPerformanceConsolidate struct {
+	STYHClientId                string  `db:"styh_client_id" json:"styh_client_id,omitempty"`
+	AccountName                 string  `db:"account_name" json:"account_name,omitempty"`
+	CampaignName                string  `db:"campaign_name" json:"campaign_name,omitempty"`
+	AccountID                   string  `db:"account_id" json:"account_id,omitempty"`
+	CampaignID                  string  `db:"campaign_id" json:"campaign_id,omitempty"`
+	DkYear                      int     `db:"dk_year" json:"dk_year,omitempty"`
+	DKQuarter                   int     `db:"dk_quarter" json:"dk_quarter,omitempty"`
+	DKMonth                     int     `db:"dk_month" json:"dk_month,omitempty"`
+	WeekOfDate                  string  `db:"week_of_date" json:"week_of_date,omitempty"`
+	ReportDate                  string  `db:"report_date" json:"report_date,omitempty"`
+	AmountSpend                 float64 `db:"amount_spend" json:"amount_spend,omitempty"`
+	CPC                         float64 `db:"cpc" json:"cpc,omitempty"`
+	CPM                         float64 `db:"cpm" json:"cpm,omitempty"`
+	CostPerConversion           float64 `db:"cost_per_conversion" json:"cost_per_conversion,omitempty"`
+	Impressions                 float64 `db:"impressions" json:"impressions,omitempty"`
+	Clicks                      float64 `db:"clicks" json:"clicks,omitempty"`
+	CTR                         float64 `db:"ctr" json:"ctr,omitempty"`
+	Conversions                 float64 `db:"conversions" json:"conversions,omitempty"`
+	ViewThroughConversions      float64 `db:"view_through_conversions" json:"view_through_conversions,omitempty"`
+	TotalAmountSpend            float64 `db:"total_amount_spend" json:"total_amount_spend,omitempty"`
+	AvgCPC                      float64 `db:"avg_cpc" json:"avg_cpc,omitempty"`
+	AvgCPM                      float64 `db:"avg_cpm" json:"avg_cpm,omitempty"`
+	AvgCostPerConversion        float64 `db:"avg_cost_per_conversion" json:"avg_cost_per_conversion,omitempty"`
+	TotalImpressions            float64 `db:"total_impressions" json:"total_impressions,omitempty"`
+	TotalClicks                 float64 `db:"total_clicks" json:"total_clicks,omitempty"`
+	AvgCTR                      float64 `db:"avg_ctr" json:"avg_ctr,omitempty"`
+	TotalConversions            float64 `db:"total_conversions" json:"total_conversions,omitempty"`
+	TotalViewThroughConversions float64 `db:"total_view_through_conversions" json:"total_view_through_conversions,omitempty"`
+}
+
 // DK Tables go here
 // DaveKnows tables used to provide information to users.
 type Campaigns struct {
