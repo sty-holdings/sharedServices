@@ -824,9 +824,29 @@ func GenerateUUIDType4(removeDashes bool) (myUUID string) {
 //	Customer Message: None
 //	Errors: None
 //	Verification: None
-// func GetDate() string {
-// 	return time.Now().Format("2006-01-02")
-// }
+func GetDate() string {
+
+	return time.Now().Format("2006-01-02")
+}
+
+// GetFormattedDate - builds a formatted date (yyyy-mm-dd)
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetFormattedDate(year int, month int, day int, locationPtr *time.Location) string {
+
+	return time.Date(
+		year,
+		time.Month(month),
+		day,
+		0,
+		0,
+		0,
+		0,
+		locationPtr,
+	).Format("2006-01-02")
+}
 
 // GetDateTimeWithLocation - returns the date/time (month day, year hh:mm:ss AM/PM format based on
 // the IANA Time Zone Database value.
