@@ -49,7 +49,7 @@ func buildTestGeminiInstance() (errorInfo errs.ErrorInfo) {
 	}
 
 	if errorInfo.Error = json.Unmarshal(tUniqueSettingsData, &halInstancePtr.extensionUniqueSettings); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_UNIQUE_SETTINGS, ctv.TXT_MARSHALL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_UNIQUE_SETTINGS, ctv.TXT_MARSHAL_FAILED))
 		return
 	}
 
@@ -100,7 +100,7 @@ func getGeminiConnection() (errorInfo errs.ErrorInfo) {
 	}
 
 	if errorInfo.Error = json.Unmarshal(tUniqueSettingsData, &halInstancePtr.extensionUniqueSettings); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_UNIQUE_SETTINGS, ctv.TXT_MARSHALL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_UNIQUE_SETTINGS, ctv.TXT_MARSHAL_FAILED))
 		return
 	}
 
