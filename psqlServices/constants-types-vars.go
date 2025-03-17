@@ -95,9 +95,115 @@ type PSQLService struct {
 	ConnectionPoolPtrs map[string]*pgxpool.Pool
 }
 
-// Tables go here
+// DK Tables go here
+// DaveKnows tables used to provide information to users.
+type Campaigns struct {
+	StyhClientID           string    `db:"styh_client_id"` // UUID as string
+	AccountAccountName     string    `db:"account_account_name"`
+	CampaignCampaignName   string    `db:"campaign_campaign_name"`
+	AccountAccountID       string    `db:"account_account_id"`
+	CampaignCampaignID     string    `db:"campaign_campaign_id"`
+	CampaignCampaignStatus string    `db:"campaign_campaign_status"`
+	CampaignStartDate      time.Time `db:"campaign_start_date"`
+	CampaignEndDate        time.Time `db:"campaign_end_date"`
+	CampaignBudgetAmount   float64   `db:"campaign_budget_amount"`
+}
+type DKCGACampaignPerformanceDailyRow struct {
+	STYHClientId           string  `db:"styh_client_id"`
+	AccountName            string  `db:"account_name"`
+	CampaignName           string  `db:"campaign_name"`
+	ReportDate             string  `db:"report_date"`
+	AccountID              string  `db:"account_id"`
+	CampaignID             string  `db:"campaign_id"`
+	AmountSpend            float64 `db:"amount_spend"`
+	CPC                    float64 `db:"cpc"`
+	CPM                    float64 `db:"cpm"`
+	CostPerConversion      float64 `db:"cost_per_conversion"`
+	Impressions            float64 `db:"impressions"`
+	Clicks                 float64 `db:"clicks"`
+	CTR                    float64 `db:"ctr"`
+	Conversions            float64 `db:"conversions"`
+	ViewThroughConversions float64 `db:"view_through_conversions"`
+}
 
-type CouplerGoogleAds struct {
+type DKCGACampaignPerformanceMonthlyRow struct {
+	STYHClientId                string  `db:"styh_client_id"`
+	AccountName                 string  `db:"account_name"`
+	CampaignName                string  `db:"campaign_name"`
+	dkYear                      int     `db:"dk_year"`
+	dkMonth                     int     `db:"dk_month"`
+	AccountID                   string  `db:"account_id"`
+	CampaignID                  string  `db:"campaign_id"`
+	TotalAmountSpend            float64 `db:"total_amount_spend"`
+	AvgCPC                      float64 `db:"avg_cpc"`
+	AvgCPM                      float64 `db:"avg_cpm"`
+	AvgCostPerConversion        float64 `db:"avg_cost_per_conversion"`
+	TotalImpressions            float64 `db:"total_impressions"`
+	TotalClicks                 float64 `db:"total_clicks"`
+	AvgCTR                      float64 `db:"avg_ctr"`
+	TotalConversions            float64 `db:"total_conversions"`
+	TotalViewThroughConversions float64 `db:"total_view_through_conversions"`
+}
+
+type DKCGACampaignPerformanceQuarterlyRow struct {
+	STYHClientId                string  `db:"styh_client_id"`
+	AccountName                 string  `db:"account_name"`
+	CampaignName                string  `db:"campaign_name"`
+	dkYear                      int     `db:"dk_year"`
+	dkQuarter                   int     `db:"dk_quarter"`
+	AccountID                   string  `db:"account_id"`
+	CampaignID                  string  `db:"campaign_id"`
+	TotalAmountSpend            float64 `db:"total_amount_spend"`
+	AvgCPC                      float64 `db:"avg_cpc"`
+	AvgCPM                      float64 `db:"avg_cpm"`
+	AvgCostPerConversion        float64 `db:"avg_cost_per_conversion"`
+	TotalImpressions            float64 `db:"total_impressions"`
+	TotalClicks                 float64 `db:"total_clicks"`
+	AvgCTR                      float64 `db:"avg_ctr"`
+	TotalConversions            float64 `db:"total_conversions"`
+	TotalViewThroughConversions float64 `db:"total_view_through_conversions"`
+}
+
+type DKCGACampaignPerformanceWeeklyRow struct {
+	STYHClientId                string  `db:"styh_client_id"`
+	AccountName                 string  `db:"account_name"`
+	CampaignName                string  `db:"campaign_name"`
+	WeekOfDate                  string  `db:"week_of_date"`
+	AccountID                   string  `db:"account_id"`
+	CampaignID                  string  `db:"campaign_id"`
+	TotalAmountSpend            float64 `db:"total_amount_spend"`
+	AvgCPC                      float64 `db:"avg_cpc"`
+	AvgCPM                      float64 `db:"avg_cpm"`
+	AvgCostPerConversion        float64 `db:"avg_cost_per_conversion"`
+	TotalImpressions            float64 `db:"total_impressions"`
+	TotalClicks                 float64 `db:"total_clicks"`
+	AvgCTR                      float64 `db:"avg_ctr"`
+	TotalConversions            float64 `db:"total_conversions"`
+	TotalViewThroughConversions float64 `db:"total_view_through_conversions"`
+}
+
+type DKCGACampaignPerformanceYearlyRow struct {
+	STYHClientId                string  `db:"styh_client_id"`
+	AccountName                 string  `db:"account_name"`
+	CampaignName                string  `db:"campaign_name"`
+	dkYear                      int     `db:"dk_year"`
+	AccountID                   string  `db:"account_id"`
+	CampaignID                  string  `db:"campaign_id"`
+	TotalAmountSpend            float64 `db:"total_amount_spend"`
+	AvgCPC                      float64 `db:"avg_cpc"`
+	AvgCPM                      float64 `db:"avg_cpm"`
+	AvgCostPerConversion        float64 `db:"avg_cost_per_conversion"`
+	TotalImpressions            float64 `db:"total_impressions"`
+	TotalClicks                 float64 `db:"total_clicks"`
+	AvgCTR                      float64 `db:"avg_ctr"`
+	TotalConversions            float64 `db:"total_conversions"`
+	TotalViewThroughConversions float64 `db:"total_view_through_conversions"`
+}
+
+// Coupler Tables go here
+// Structs to support the Coupler.io create tables
+
+type CouplerGoogleAdsRow struct {
 	AccountName                                           string
 	ActionItems                                           string
 	AdGroup                                               string
@@ -289,24 +395,8 @@ type CouplerGoogleAds struct {
 	CustomerID                                            int64
 }
 
-type DKCGACampaignPerformanceDailyRow struct {
-	AccountName            string  `db:"account_name"`
-	CampaignName           string  `db:"campaign_name"`
-	ReportDate             string  `db:"report_date"`
-	AccountID              string  `db:"account_id"`
-	CampaignID             string  `db:"campaign_id"`
-	AmountSpend            float64 `db:"amount_spend"`
-	CPC                    float64 `db:"cpc"`
-	CPM                    float64 `db:"cpm"`
-	CostPerConversion      float64 `db:"cost_per_conversion"`
-	Impressions            float64 `db:"impressions"`
-	Clicks                 float64 `db:"clicks"`
-	CTR                    float64 `db:"ctr"`
-	Conversions            float64 `db:"conversions"`
-	ViewThroughConversions float64 `db:"view_through_conversions"`
-}
-
-type DKCGACampaignPerformanceRow struct {
+// This is used for the Coupler.io service
+type CouplerCampaignPerformanceRow struct {
 	AccountAccountName                string    `db:"account__account_name"`
 	AccountAccountID                  string    `db:"account__account_id"`
 	ReportDate                        time.Time `db:"report__date"`
@@ -327,7 +417,7 @@ type DKCGACampaignPerformanceRow struct {
 	ConversionsViewThroughConversions float64   `db:"conversions__view_through_conversions"`
 }
 
-type CouplerGoogleAdsCampaigns struct {
+type CouplerGoogleAdsCampaignsRow struct {
 	AccountName                                             string
 	AccessibleBiddingStrategy                               string
 	AdServingOptimizationStatus                             string
@@ -439,7 +529,7 @@ type CouplerGoogleAdsCampaigns struct {
 	CustomerID                                              int64
 }
 
-type CouplerLinkedInCompany struct {
+type CouplerLinkedInCompanyRow struct {
 	ReportPage                   string
 	ReportPageID                 string
 	ReportDate                   time.Time
