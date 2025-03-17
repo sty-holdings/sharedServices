@@ -9,9 +9,10 @@ type STYHClient struct {
 	CreateTimestamp struct {
 		Time time.Time `json:"__time__"`
 	} `firebase:"create_timestamp" json:"create_timestamp"`
-	Email         string          `firebase:"email" json:"email"`
-	FirstName     string          `firebase:"first_name" json:"first_name"`
-	LastName      string          `firebase:"last_name" json:"last_name"`
+	Email         string `firebase:"email" json:"email"`
+	FirstName     string `firebase:"first_name" json:"first_name"`
+	LastName      string `firebase:"last_name" json:"last_name"`
+	LocationPtr   *time.Location
 	MyGoogleAds   GoogleAps       `firebase:"my_google_ads" json:"my_google_ads"`
 	OnBoarded     bool            `firebase:"on_boarded" json:"on_boarded"`
 	SaasProfile   UserSaaSProfile `firebase:"saas_profile" json:"saas_profile"`

@@ -2,6 +2,7 @@ package sharedServices
 
 import (
 	"encoding/json"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
@@ -82,6 +83,10 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 
 	if value, ok = tUserInfo[ctv.FN_TIMEZONE]; ok {
 		clientStruct.Timezone = value.(string)
+		if clientStruct.LocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.Timezone); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, clientStruct.Timezone))
+			return
+		}
 	}
 
 	if value, ok = tUserInfo[ctv.FN_UID]; ok {
