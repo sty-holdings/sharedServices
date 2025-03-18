@@ -19,3 +19,12 @@ type STYHClient struct {
 	Timezone      string   `firebase:"timezone" json:"timezone"`
 	Uid           string   `firebase:"uid" json:"uid"`
 }
+
+type NewUser struct {
+	Email       string `json:"email,omitempty"`
+	FirstName   string `json:"firstName,omitempty"`
+	LastName    string `json:"lastName,omitempty"`
+	CompanyName string `json:"companyName,omitempty"`
+	Timezone    string `json:"timezone,omitempty"`
+	UId         string `json:"uId,omitempty"`
+}

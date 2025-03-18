@@ -10,6 +10,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	fbs "github.com/sty-holdings/sharedServices/v2025/firebaseServices"
+	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 )
 
 // GetClientStruct - will retrieve the client record and return a struct.
@@ -17,7 +18,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, uId string, testMode bool) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, uId string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData  []byte
@@ -55,17 +56,6 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		clientStruct.OnBoarded = value.(bool)
 	}
 
-	if value, ok = tUserInfo[ctv.FN_SAAS_PROFILE]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProfile); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-	}
-
 	if value, ok = tUserInfo[ctv.FN_SAAS_PROVIDERS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SAAS_PROFILE, ctv.TXT_MARSHAL_FAILED))
@@ -96,16 +86,31 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	return
 }
 
-// SaaSProviderPopulated - determines is a SaaS provider exists.
+// ProcessConfigureNewUser - add a new user to the users datastore
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func SaaSProviderPopulated(clientStruct STYHClient) bool {
+func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 
-	if len(clientStruct.SaasProviders) > ctv.VAL_ZERO {
-		return true
+	var (
+		errorInfo errs.ErrorInfo
+		tUserInfo = make(map[any]interface{})
+	)
+
+	tUserInfo[ctv.FN_COMPANY_NAME] = newUser.CompanyName
+	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+	tUserInfo[ctv.FN_EMAIL] = newUser.Email
+	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
+	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
+	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
+	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
+	tUserInfo[ctv.FN_UID] = newUser.UId
+	tUserInfo[ctv.FN_ON_BOARDED] = false
+
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, ctv.DATASTORE_USERS, newUser.UId, tUserInfo); errorInfo.Error != nil {
+		errs.PrintErrorInfo(errorInfo)
 	}
 
-	return false
+	return
 }
