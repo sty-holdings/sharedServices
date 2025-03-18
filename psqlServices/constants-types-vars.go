@@ -128,6 +128,56 @@ type DKCGACampaignPerformanceConsolidate struct {
 
 // DK Tables go here
 // DaveKnows tables used to provide information to users.
+
+// AnalysisQuestionResults represents the dka.analysis_question_results table.
+type AnalysisQuestionResults struct {
+	AnalysisID              string    `db:"analysis_id" json:"analysis_id"`
+	CreateTimestamp         time.Time `db:"create_timestamp" json:"create_timestamp"`
+	AnalysisStatus          string    `db:"analysis_status" json:"analysis_status"`
+	ElapseTimeSeconds       float64   `db:"elapse_time_seconds" json:"elapse_time_seconds"`
+	TimePeriodDayValues     int64     `db:"time_period_day_values" json:"time_period_day_values"`
+	TimePeriodMonthValues   int64     `db:"time_period_month_values" json:"time_period_month_values"`
+	TimePeriodQuarterValues int64     `db:"time_period_quarter_values" json:"time_period_quarter_values"`
+	TimePeriodWeekValues    int64     `db:"time_period_week_values" json:"time_period_week_values"`
+	TimePeriodYearValues    int64     `db:"time_period_year_values" json:"time_period_year_values"`
+	ComparisonQuestionFlag  bool      `db:"comparison_question_flag" json:"comparison_question_flag"`
+	CurrentFlag             bool      `db:"current_flag" json:"current_flag"`
+	DayFlag                 bool      `db:"day_flag" json:"day_flag"`
+	DetailFlag              bool      `db:"detail_flag" json:"detail_flag"`
+	LastFlag                bool      `db:"last_flag" json:"last_flag"`
+	MonthFlag               bool      `db:"month_flag" json:"month_flag"`
+	NextFlag                bool      `db:"next_flag" json:"next_flag"`
+	PreviousFlag            bool      `db:"previous_flag" json:"previous_flag"`
+	QuarterFlag             bool      `db:"quarter_flag" json:"quarter_flag"`
+	SubtotalFlag            bool      `db:"subtotal_flag" json:"subtotal_flag"`
+	TodayFlag               bool      `db:"today_flag" json:"today_flag"`
+	TransactionFlag         bool      `db:"transaction_flag" json:"transaction_flag"`
+	WeekFlag                bool      `db:"week_flag" json:"week_flag"`
+	YearFlag                bool      `db:"year_flag" json:"year_flag"`
+	Category                string    `db:"category" json:"category"`
+	QuestionSubjects        string    `db:"question_subjects" json:"question_subjects"`
+	GeneratedPrompt         string    `db:"generated_prompt" json:"generated_prompt"`
+	UserQuestion            string    `db:"user_question" json:"user_question"`
+}
+
+// AnalysisTokenCounts represents the dka.analysis_token_counts table.
+type AnalysisTokenCounts struct {
+	AnalysisID          string `db:"analysis_id" json:"analysis_id"`
+	TokenType           string `db:"token_type" json:"token_type"`
+	CandidateTokenCount int64  `db:"candidate_token_count" json:"candidate_token_count"`
+	PromptTokenCount    int64  `db:"prompt_token_count" json:"prompt_token_count"`
+	TotalTokenCount     int64  `db:"total_token_count" json:"total_token_count"`
+}
+
+// GenerateAnswersResults represents the dka.generate_answers_results table.
+type GenerateAnswersResults struct {
+	AnalysisID        string    `db:"analysis_id" json:"analysis_id"`
+	ElapseTimeSeconds float64   `db:"elapse_time_seconds" json:"elapse_time_seconds"`
+	CreateTimestamp   time.Time `db:"create_timestamp" json:"create_timestamp"`
+	Answer            string    `db:"answer" json:"answer"`
+	AnswerStatus      string    `db:"answer_status" json:"answer_status"`
+}
+
 type Campaigns struct {
 	StyhClientID           string    `db:"styh_client_id"` // UUID as string
 	AccountAccountName     string    `db:"account_account_name"`
