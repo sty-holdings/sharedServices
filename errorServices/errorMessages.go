@@ -77,7 +77,7 @@ const (
 	MESSAGE_JSON_INVALID                       = "The message body is not valid JSON."
 	MESSAGE_NAMESPACE_INVALID                  = "The Message namespace value is invalid."
 	NATS_CONNECTION_FAILED                     = "Connecting to NATS server failed."
-	NATS_HEADER_UID_EMPTY                      = "The NATS message header must contain a map entry with uid and it must be populated."
+	NATS_HEADER_UID_EMPTY                      = "The NATS message header must contain a map entry with UID and it must be populated."
 	NATS_HEADER_STYH_CLIENT_ID_EMPTY           = "The NATS message header must contain a map entry with styh_client_id and it must be populated."
 	NATS_URL_INVALID                           = "The NATS URL value is invalid."
 	NATS_ZERO                                  = "The port value is zero. This is not allowed. Recommended values are 4222 and 9222."
@@ -195,8 +195,8 @@ const (
 	UNSUPPORTED_TRANSFER_METHOD                = "The transfer method is not supported."
 	UNMARSHAL_FAILED                           = "Unable to unmarshal data"
 	USER_MISSING                               = "The user is not in the system."
-	UID_INVALID                                = "The uId is invalid."
-	UID_MISSING                                = "The uId is missing."
+	UID_INVALID                                = "The UID is invalid."
+	UID_MISSING                                = "The UID is missing."
 	USER_ALREADY_EXISTS                        = "The user already exists in the system."
 	USER_ALREADY_CONFIRMED_EMAIL               = "The user has already been confirmed by email."
 	USER_ALREADY_CONFIRMED_PHONE               = "The user has already been confirmed by phone."
@@ -398,8 +398,8 @@ var (
 	ErrUnsupportedSubject                    = errors.New(UNSUPPORTED_SUBJECT)
 	ErrUnsupportedTransferMethod             = errors.New(UNSUPPORTED_TRANSFER_METHOD)
 	ErrUserAccountMissing                    = errors.New(USER_MISSING)
-	ErrUIdInvalid                            = errors.New(UID_INVALID)
-	ErrUIdMissing                            = errors.New(UID_MISSING)
+	ErrUIDInvalid                            = errors.New(UID_INVALID)
+	ErrUDdMissing                            = errors.New(UID_MISSING)
 	ErrUserAlreadyExists                     = errors.New(USER_ALREADY_EXISTS)
 	ErrVersionInvalid                        = errors.New(VERSION_INVALID)
 	ErrZeroInvalid                           = errors.New(ZERO_INVALID)

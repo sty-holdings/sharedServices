@@ -18,7 +18,7 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, uId string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, UID string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData  []byte
@@ -30,9 +30,9 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	if tUserInfo, errorInfo = fbs.GetFirebaseUserInfo(
 		firebaseAuthPtr,
 		firestoreClientPtr,
-		uId,
+		UID,
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIdLabelValue(uId, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(UID, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
 		return
 	}
 
@@ -80,7 +80,7 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	}
 
 	if value, ok = tUserInfo[ctv.FN_UID]; ok {
-		clientStruct.Uid = value.(string)
+		clientStruct.UID = value.(string)
 	}
 
 	return
@@ -105,10 +105,10 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
 	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
 	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
-	tUserInfo[ctv.FN_UID] = newUser.UId
+	tUserInfo[ctv.FN_UID] = newUser.UID
 	tUserInfo[ctv.FN_ON_BOARDED] = false
 
-	if errorInfo = fbs.SetDocument(firestoreClientPtr, ctv.DATASTORE_USERS, newUser.UId, tUserInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, ctv.DATASTORE_USERS, newUser.UID, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 

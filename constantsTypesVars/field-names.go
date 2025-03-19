@@ -295,7 +295,7 @@ const (
 	FN_TRANSFER_METHOD                      = "transfer_method"
 	FN_TRANSFER_STATUS                      = "transfer_status"
 	FN_TWI_RATE                             = "twi_rate"
-	FN_UID                                  = "uid"
+	FN_UID                                  = "UID"
 	FN_UPDATED_ADDRESS                      = "updated_address"
 	FN_URL                                  = "url"
 	FN_USERNAME                             = "username"

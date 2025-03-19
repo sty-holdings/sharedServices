@@ -32,7 +32,7 @@ import (
 // - ErrDecryption: If the ciphertext could not be decrypted.
 // Verifications: None
 func Decrypt(
-	uId string,
+	UID string,
 	keyB64 string,
 	valueB64 string,
 ) (
@@ -50,7 +50,7 @@ func Decrypt(
 		tPlaintext  []byte
 	)
 
-	if errorInfo = checkEncryptDecryptParameters(uId, keyB64, valueB64); errorInfo.Error != nil {
+	if errorInfo = checkEncryptDecryptParameters(UID, keyB64, valueB64); errorInfo.Error != nil {
 		return
 	}
 
@@ -63,12 +63,12 @@ func Decrypt(
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, UID))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, UID))
 		return
 	}
 
@@ -76,7 +76,7 @@ func Decrypt(
 	tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
 
 	if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_UID, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_UID, UID))
 		return
 	}
 
@@ -91,7 +91,7 @@ func Decrypt(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptToByte(
-	uId string,
+	UID string,
 	keyB64 string,
 	valueB64 string,
 ) (
@@ -103,7 +103,7 @@ func DecryptToByte(
 		tDecryptedValue string
 	)
 
-	if tDecryptedValue, errorInfo = Decrypt(uId, keyB64, valueB64); errorInfo.Error == nil {
+	if tDecryptedValue, errorInfo = Decrypt(UID, keyB64, valueB64); errorInfo.Error == nil {
 		decryptedValue = []byte(tDecryptedValue)
 	}
 
@@ -116,7 +116,7 @@ func DecryptToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptByteToByte(
-	uId string,
+	UID string,
 	keyB64 string,
 	valueB64 []byte,
 ) (
@@ -124,7 +124,7 @@ func DecryptByteToByte(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedValue, errorInfo = DecryptToByte(uId, keyB64, string(valueB64))
+	decryptedValue, errorInfo = DecryptToByte(UID, keyB64, string(valueB64))
 
 	return
 }
@@ -135,7 +135,7 @@ func DecryptByteToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptByteToString(
-	uId string,
+	UID string,
 	keyB64 string,
 	valueB64 []byte,
 ) (
@@ -143,7 +143,7 @@ func DecryptByteToString(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Decrypt(uId, keyB64, string(valueB64))
+	decryptedMessage, errorInfo = Decrypt(UID, keyB64, string(valueB64))
 
 	return
 }
@@ -163,7 +163,7 @@ func DecryptByteToString(
 // - ErrDecryption: If the ciphertext could not be decrypted.
 // Verifications: None
 func Encrypt(
-	uId string,
+	UID string,
 	keyB64 string,
 	value string,
 ) (
@@ -179,22 +179,22 @@ func Encrypt(
 		tNonce      []byte
 	)
 
-	if errorInfo = checkEncryptDecryptParameters(uId, keyB64, value); errorInfo.Error != nil {
+	if errorInfo = checkEncryptDecryptParameters(UID, keyB64, value); errorInfo.Error != nil {
 		return
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_B64, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_B64, UID))
 		return
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, UID))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, uId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, UID))
 		return
 	}
 
@@ -214,7 +214,7 @@ func Encrypt(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptToByte(
-	uId string,
+	UID string,
 	keyB64 string,
 	value string,
 ) (
@@ -226,7 +226,7 @@ func EncryptToByte(
 		tEncryptedMessageB64 string
 	)
 
-	if tEncryptedMessageB64, errorInfo = Encrypt(uId, keyB64, value); errorInfo.Error == nil {
+	if tEncryptedMessageB64, errorInfo = Encrypt(UID, keyB64, value); errorInfo.Error == nil {
 		encryptedValueB64 = []byte(tEncryptedMessageB64)
 	}
 
@@ -239,7 +239,7 @@ func EncryptToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptByteToByte(
-	uId string,
+	UID string,
 	keyB64 string,
 	value []byte,
 ) (
@@ -247,7 +247,7 @@ func EncryptByteToByte(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	encryptedValueB64, errorInfo = EncryptToByte(uId, keyB64, string(value))
+	encryptedValueB64, errorInfo = EncryptToByte(UID, keyB64, string(value))
 
 	return
 }
@@ -258,7 +258,7 @@ func EncryptByteToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptByteToString(
-	uId string,
+	UID string,
 	keyB64 string,
 	encryptedValueB64 []byte,
 ) (
@@ -266,7 +266,7 @@ func EncryptByteToString(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Encrypt(uId, keyB64, string(encryptedValueB64))
+	decryptedMessage, errorInfo = Encrypt(UID, keyB64, string(encryptedValueB64))
 
 	return
 }
@@ -434,9 +434,9 @@ func RemoveTLSTemporaryFiles(
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func checkEncryptDecryptParameters(uId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
+func checkEncryptDecryptParameters(UID string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(uId, errs.ErrRequiredParameterMissing, ctv.FN_UID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(UID, errs.ErrRequiredParameterMissing, ctv.FN_UID); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlp.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
