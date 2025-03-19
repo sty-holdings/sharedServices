@@ -13,8 +13,6 @@ import (
 	"cloud.google.com/go/vertexai/genai"
 	"google.golang.org/api/option"
 
-	"cloud.google.com/go/ai/generativelanguage/apiv1beta/generativelanguagepb"
-
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
@@ -109,21 +107,21 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 		tFloat32 = float32(tFloat64)
 		geminiServicePtr.modelPtrs[worker].SafetySettings = []*genai.SafetySetting{
 			{
-				Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_HATE_SPEECH),
-				Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
+				Category:  genai.HarmCategoryHarassment,
+				Threshold: genai.HarmBlockLowAndAbove,
 			},
 			{
-				Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_SEXUALLY_EXPLICIT),
-				Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
+				Category:  genai.HarmCategoryHateSpeech,
+				Threshold: genai.HarmBlockLowAndAbove,
 			},
-			//{
-			//	Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_DANGEROUS_CONTENT),
-			//	Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
-			//},
-			//{
-			//	Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_HARASSMENT),
-			//	Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
-			//},
+			{
+				Category:  genai.HarmCategoryDangerousContent,
+				Threshold: genai.HarmBlockLowAndAbove,
+			},
+			{
+				Category:  genai.HarmCategoryHarassment,
+				Threshold: genai.HarmBlockLowAndAbove,
+			},
 		}
 	}
 
