@@ -399,7 +399,7 @@ var (
 	ErrUnsupportedTransferMethod             = errors.New(UNSUPPORTED_TRANSFER_METHOD)
 	ErrUserAccountMissing                    = errors.New(USER_MISSING)
 	ErrUIDInvalid                            = errors.New(UID_INVALID)
-	ErrUDdMissing                            = errors.New(UID_MISSING)
+	ErrUIDMissing                            = errors.New(UID_MISSING)
 	ErrUserAlreadyExists                     = errors.New(USER_ALREADY_EXISTS)
 	ErrVersionInvalid                        = errors.New(VERSION_INVALID)
 	ErrZeroInvalid                           = errors.New(ZERO_INVALID)
