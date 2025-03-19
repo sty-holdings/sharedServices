@@ -119,7 +119,7 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 				Threshold: genai.HarmBlockLowAndAbove,
 			},
 			{
-				Category:  genai.HarmCategoryHarassment,
+				Category:  genai.HarmCategorySexuallyExplicit,
 				Threshold: genai.HarmBlockLowAndAbove,
 			},
 		}
