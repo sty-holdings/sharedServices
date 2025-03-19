@@ -112,14 +112,14 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 				Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_HATE_SPEECH),
 				Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
 			},
-			{
-				Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_SEXUALLY_EXPLICIT),
-				Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
-			},
-			{
-				Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_DANGEROUS_CONTENT),
-				Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
-			},
+			//{
+			//	Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_SEXUALLY_EXPLICIT),
+			//	Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
+			//},
+			//{
+			//	Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_DANGEROUS_CONTENT),
+			//	Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
+			//},
 			//{
 			//	Category:  genai.HarmCategory(generativelanguagepb.HarmCategory_HARM_CATEGORY_HARASSMENT),
 			//	Threshold: genai.HarmBlockThreshold(generativelanguagepb.SafetySetting_BLOCK_LOW_AND_ABOVE),
