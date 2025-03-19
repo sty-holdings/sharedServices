@@ -508,12 +508,12 @@ func makeRequestReplyWithHeader(
 			ctv.LBL_UID,
 			tRequestMessagePtr.Header.Get(ctv.FN_UID),
 		)
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(UIDtRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(UIDtRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 
@@ -572,12 +572,12 @@ func makeRequestReplyWithMessage(
 			ctv.LBL_UID,
 			requestMessagePtr.Header.Get(ctv.FN_UID),
 		)
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(UIDrequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(UIDrequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 
