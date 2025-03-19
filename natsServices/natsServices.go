@@ -109,14 +109,14 @@ func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
 	keyB64 string,
 	styhClientId string,
 	subject string,
-	UID string,
+	styhUserId string,
 	timeOutInSec int,
 ) (
 	dkReply DKReply,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	natsServicePtr.userInfo.UID = UID
+	natsServicePtr.userInfo.STYHUserId = styhUserId
 	natsServicePtr.userInfo.STYHClientId = styhClientId
 	natsServicePtr.userInfo.KeyB64 = keyB64
 	dkReply, errorInfo = makeRequestReplyWithHeader(dkRequest, natsServicePtr, subject, timeOutInSec)
@@ -492,9 +492,9 @@ func makeRequestReplyWithHeader(
 		Header:  make(nats.Header),
 		Subject: subject,
 	}
-	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.UID)
+	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.STYHUserId)
 	tRequestMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, natsServicePtr.userInfo.STYHClientId)
-	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.UID, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
+	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.STYHUserId, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
 		return
 	}
 
@@ -633,7 +633,10 @@ func sendReplyWithHeader(
 	}
 
 	if tReplyJSON, errorInfo.Error = json.Marshal(dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDSubjectLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildUIDSystemActionLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+		)
 		return
 	}
 
@@ -647,7 +650,7 @@ func sendReplyWithHeader(
 			ctv.LBL_SUBJECT,
 			requestMessagePtr.Subject,
 		)
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDSubjectLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_NATS, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildUIDSystemActionLabelValue(requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_NATS, ctv.TXT_FAILED))
 	}
 
 	return

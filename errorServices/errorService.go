@@ -86,9 +86,9 @@ func BuildLabelValue(label string, value string) (additionalInfo string) {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildUIDLabelValue(UID string, label string, value string) (additionalInfo string) {
+func BuildUIDLabelValue(styhUserId string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("UID: %s %s %s.", UID, label, value)
+	return fmt.Sprintf("STYH User Id: %s %s %s.", styhUserId, label, value)
 }
 
 // BuildUIDSystemActionLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
@@ -96,9 +96,9 @@ func BuildUIDLabelValue(UID string, label string, value string) (additionalInfo 
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildUIDSystemActionLabelValue(UID string, systemAction string, label string, value string) (additionalInfo string) {
+func BuildUIDSystemActionLabelValue(styhUserId string, systemAction string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("UID: %s Subject: %s %s %s.", UID, systemAction, label, value)
+	return fmt.Sprintf("STYH User Id: %s Subject: %s %s %s.", styhUserId, systemAction, label, value)
 }
 
 // PrintError - will output error information using this format:

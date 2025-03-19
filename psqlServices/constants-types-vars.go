@@ -179,7 +179,7 @@ type GenerateAnswersResults struct {
 }
 
 type Campaigns struct {
-	StyhClientID           string    `db:"styh_client_id"` // UUID as string
+	STYHClientId           string    `db:"styh_client_id"` // UUID as string
 	AccountAccountName     string    `db:"account_account_name"`
 	CampaignCampaignName   string    `db:"campaign_campaign_name"`
 	AccountAccountID       string    `db:"account_account_id"`

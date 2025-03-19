@@ -156,18 +156,14 @@ func GetFirebaseUserInfo(
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
 
+	// Todo Added insert into data collection table
 	//This can not use the Timing service.
-	go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
-
-		var (
-			tFields = make(map[any]interface{})
-		)
-
-		tFields[ctv.FN_ELASPE_TIME_SECONDS] = time.Since(xStartTime).Seconds()
-		tFields[ctv.FN_FUNCTION_NAME] = functionName
-		tFields[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-		SetDocument(firestoreClientPtr, ctv.DATASTORE_STATS_FUNCTION_TIMINGS, hlp.GenerateUUIDType1(true), tFields)
-	}(xStartTime, tFunctionName, firestoreClientPtr)
+	//go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
+	//
+	//	var (
+	//		tFields = make(map[any]interface{})
+	//	)
+	//}(xStartTime, tFunctionName, firestoreClientPtr)
 
 	return
 }

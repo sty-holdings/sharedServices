@@ -15,9 +15,9 @@ type STYHClient struct {
 	LocationPtr   *time.Location
 	OnBoarded     bool     `firebase:"on_boarded" json:"on_boarded"`
 	SaasProviders []string `firestore:"saas_providers,array"json:"saas_providers"`
-	StyhClientId  string   `firebase:"styh_client_id" json:"styh_client_id"`
+	STYHClientId  string   `firebase:"styh_client_id" json:"styh_client_id"`
 	Timezone      string   `firebase:"timezone" json:"timezone"`
-	UID           string   `firebase:"UID" json:"UID"`
+	STYHUserId    string   `firebase:"sty_user_id" json:"sty_user_id"`
 }
 
 type NewUser struct {
@@ -26,5 +26,5 @@ type NewUser struct {
 	LastName    string `json:"lastName,omitempty"`
 	CompanyName string `json:"companyName,omitempty"`
 	Timezone    string `json:"timezone,omitempty"`
-	UID         string `json:"uId,omitempty"` // The json uId is outside the STYH control, so don't change it.
+	STYHUserId  string `json:"sty_user_id,omitempty"`
 }

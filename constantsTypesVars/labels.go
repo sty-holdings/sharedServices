@@ -244,6 +244,7 @@ const (
 	LBL_TRAILING_YEARS                        = "TRAILING YEARS: "
 	LBL_TRANSACTION_FLAG                      = "TRANSACTION FLAG (transaction): "
 	LBL_UID                                   = "UID: "
+	LBL_STYH_USER_ID                          = "STYH USER ID: "
 	LBL_UNIQUE_SETTINGS                       = "UNIQUE SETTINGS: "
 	LBL_UNIQUE_SETTINGS_FILENAME              = "UNIQUE SETTINGS FILENAME: "
 	LBL_USERNAME                              = "USERNAME: "

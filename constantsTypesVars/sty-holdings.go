@@ -130,5 +130,5 @@ type TimePeriodValues struct {
 type UserInfo struct {
 	KeyB64       string
 	STYHClientId string
-	UID          string
+	STYHUserId   string
 }

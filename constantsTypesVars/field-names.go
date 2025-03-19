@@ -241,6 +241,7 @@ const (
 	FN_STRIPE_LOCK                          = "stripe_lock"
 	FN_STYH_CLIENT_ID                       = "styh_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY               = "custom:secret_key"
+	FN_STYH_USER_ID                         = "styh_user_id"
 	FN_SUB                                  = "sub"
 	FN_SUBJECT                              = "subject"
 	FN_SUBTOTAL_FLAG                        = "subtotal"
