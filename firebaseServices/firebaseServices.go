@@ -5,9 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"runtime"
 	"strings"
-	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -16,7 +14,6 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
@@ -139,10 +136,7 @@ func GetFirebaseUserInfo(
 ) {
 
 	var (
-		tFunction, _, _, _       = runtime.Caller(0)
-		tFunctionName            = runtime.FuncForPC(tFunction).Name()
 		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
-		xStartTime               = time.Now()
 	)
 
 	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
