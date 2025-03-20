@@ -327,7 +327,7 @@ func IsExtensionValid(extension string) bool {
 		fallthrough
 	case ctv.EXTENSION_HAL:
 		fallthrough
-	case ctv.EXTENSION_SAAS_PROFILE:
+	case ctv.EXTENSION_QTESTER:
 		return true
 	default:
 		return false
