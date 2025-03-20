@@ -35,6 +35,7 @@ const (
 	LBL_CONFIG_GOOGLE_ADDS                    = "GOOGLE ADS CONFIG: "
 	LBL_CONFIG_GRPC_SERVER                    = "GRPC SERVER CONFIG: "
 	LBL_CONFIG_GRPC_CLIENT                    = "GRPC CLIENT CONFIG: "
+	LBL_CONFIG_PSQL                           = "PSQL CONFIG: "
 	LBL_CONFIG_SENDGRID                       = "SENDGRID CONFIG: "
 	LBL_CONFIG_STRIPE                         = "STRIPE CONFIG: "
 	LBL_CURRENCY                              = "CURRENCY: "
