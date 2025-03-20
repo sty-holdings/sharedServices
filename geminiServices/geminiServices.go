@@ -186,6 +186,54 @@ func (geminiServicePtr *GeminiService) GenerateContent(
 	return
 }
 
+// GenerateContentForQuestion - takes inputs and submits them to the AI engine, parses the output, and returns the results and token counts
+// Model pools are stored in local variable modelPoolNames. Values are "pool-0", "pool-1", "pool-2", "pool-3". One of these must be provided.
+//
+//	Customer Messages: None
+//	Errors: returned by GenerateContent
+//	Verifications: None
+func (geminiServicePtr *GeminiService) GenerateContentForQuestion(
+	prompt string, pool string, systemInstruction string, additionalInstructions string,
+) (geminiResponse GeminiResponse) {
+
+	var (
+		tGenerateContentResponsePtr *genai.GenerateContentResponse
+		tInstruction                string
+		tResponseParts              []genai.Part
+	)
+
+	tInstruction = fmt.Sprintf("%s %s", systemInstruction, additionalInstructions)
+	geminiServicePtr.modelPtrs[pool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
+
+	if tGenerateContentResponsePtr, geminiResponse.ErrorInfo.Error = geminiServicePtr.modelPtrs[pool].GenerateContent(
+		CTXBackground, genai.Text(prompt),
+	); geminiResponse.ErrorInfo.Error != nil {
+		geminiResponse.ErrorInfo = errs.NewErrorInfo(geminiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
+		return
+	}
+
+	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
+	for _, part := range tResponseParts {
+		geminiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
+		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "json", "")
+		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "\n", "")
+		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "  ", " ")
+		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "```", "")
+	}
+
+	geminiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
+
+	if geminiServicePtr.debugOn {
+		log.Printf("Pool: %s\n", pool)
+		log.Printf("SI Key: %s\n", geminiResponse.SIKey)
+		log.Printf("Response: %s\n", geminiResponse.Response)
+		log.Printf("token count: %d\n", geminiResponse.TokenCount)
+		log.Printf("Error: %d\n", geminiResponse.ErrorInfo)
+	}
+
+	return
+}
+
 // loadSystemInstruction - using the system instruction topic and key, the instruction will be returned
 //
 //	Customer Messages: None
