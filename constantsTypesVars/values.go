@@ -17,7 +17,6 @@ const (
 	VAL_NO_CHARGE_DATA       = "{\"dk_charges\":null}"
 	VAL_NONE                 = "none"
 	VAL_NOT_FOUND            = "not found"
-	VAL_NOT_SUPPORTED        = "not-supported"
 	VAL_NULL                 = "null"
 	VAL_ONE                  = 1
 	VAL_ONE_HUNDRED          = 100
