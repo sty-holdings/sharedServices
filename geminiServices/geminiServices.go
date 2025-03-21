@@ -2,7 +2,6 @@ package sharedServices
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -12,6 +11,7 @@ import (
 
 	"cloud.google.com/go/vertexai/genai"
 	"google.golang.org/api/option"
+	"gopkg.in/yaml.v3"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -249,11 +249,9 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	switch topic {
 	case SI_TOPIC_ANALYZE_QUESTION:
 		switch key {
-		case SI_KEY_CATEGORY_PROMPY_COMPARISON:
+		case SI_KEY_CATEGORY_SENTENCE:
 			fallthrough
-		case SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT:
-			fallthrough
-		case SI_KEY_TIME_PERIOD_WORDS_PRESENT:
+		case SI_KEY_SPECIAL_WORDS:
 			fallthrough
 		case SI_KEY_TIME_PERIOD_VALUES:
 			systemInstruction = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].Instruction
@@ -309,17 +307,17 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.LBL_CONFIG_GEMINI_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(geminiConfigFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_READ_FAILED))
 		return
 	}
 
-	if errorInfo.Error = json.Unmarshal(tConfigData, &geminiConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename))
+	if errorInfo.Error = yaml.Unmarshal(tConfigData, &geminiConfig); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 

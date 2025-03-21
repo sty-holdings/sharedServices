@@ -88,6 +88,7 @@ const (
 	TXT_PROCESS_MANUALLY             = "Process transfer manually."
 	TXT_PROTECTED                    = "protected"
 	TXT_PULL_FAILED                  = "pull failed."
+	TXT_READ_FAILED                  = "file read failed."
 	TXT_QUARTER                      = "quarter"
 	TXT_REGISTERED                   = "registered."
 	TXT_SAAS_PROVIDER_FAILED         = "pulling SaaS provider failed."

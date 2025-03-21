@@ -85,10 +85,8 @@ const (
 	COMBINATION_YEAR_MONTH_DAY              = "10101"
 )
 
-type CategoryPromptComparison struct {
+type CategorySentence struct {
 	Category              []string            `json:"category"`
-	CompoundQuestion      bool                `json:"compound_question"`
-	ComparisonQuestion    bool                `json:"comparison_question"`
 	CountBySubject        map[string]int      `json:"count_by_subject"`
 	Prompt                string              `json:"prompt"`
 	SaasProvider          []string            `json:"saas_provider"`
@@ -97,34 +95,35 @@ type CategoryPromptComparison struct {
 	TokenCount            genai.UsageMetadata `json:"-"`
 }
 
-type TimePeriodSpecialWordsPresent struct {
-	CurrentFlag      bool                `json:"current"`
-	DetailFlag       bool                `json:"detail"`
-	LastFlag         bool                `json:"last"`
-	NextFlag         bool                `json:"next"`
-	PreviousFlag     bool                `json:"previous"`
-	SubTotalFlag     bool                `json:"subtotal"`
-	TodayFlag        bool                `json:"today"`
-	TransactionsFlag bool                `json:"transactions"`
-	TokenCount       genai.UsageMetadata `json:"-"`
-}
-
-type TimePeriodWordsPresent struct {
-	Year       bool                `json:"year"`
-	Quarter    bool                `json:"quarter"`
-	Month      bool                `json:"month"`
-	Week       bool                `json:"week"`
-	Day        bool                `json:"day"`
-	TokenCount genai.UsageMetadata `json:"-"`
+type SpecialWords struct {
+	AverageFlag     bool                `json:"average"`
+	CompoundFlag    bool                `json:"compound"`
+	ComparisonFlag  bool                `json:"comparison"`
+	CountFlag       bool                `json:"count"`
+	DetailFlag      bool                `json:"detail"`
+	ForecastFlag    bool                `json:"forecast"`
+	MaximumFlag     bool                `json:"maximum"`
+	MinimumFlag     bool                `json:"minimum"`
+	PercentageFlag  bool                `json:"percentage"`
+	ReportFlag      bool                `json:"report"`
+	SubTotalFlag    bool                `json:"subtotal"`
+	SummaryFlag     bool                `json:"summary"`
+	TransactionFlag bool                `json:"transaction"`
+	TotalFlag       bool                `json:"total"`
+	TrendFlag       bool                `json:"trend"`
+	TokenCount      genai.UsageMetadata `json:"-"`
 }
 
 type TimePeriodValues struct {
-	Years      []int               `json:"years"`
-	Quarters   []int               `json:"quarters"`
-	Months     []int               `json:"months"`
-	Weeks      int                 `json:"weeks"`
-	Days       []int               `json:"days"`
-	TokenCount genai.UsageMetadata `json:"-"`
+	Years        []int               `json:"year_values"`
+	Quarters     []int               `json:"quarter_values"`
+	Months       []int               `json:"month_values"`
+	Weeks        []int               `json:"week_values"`
+	Days         []int               `json:"day_values"`
+	ToDate       bool                `json:"to_date"`
+	RelativeTime string              `json:"relative_time"`
+	SundayDate   []string            `json:"sunday_date"`
+	TokenCount   genai.UsageMetadata `json:"-"`
 }
 
 type UserInfo struct {

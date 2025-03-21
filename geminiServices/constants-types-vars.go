@@ -16,21 +16,20 @@ const (
 //goland:noinspection All
 const (
 	// SI = System Instruction
-	SI_KEY_CATEGORY_PROMPY_COMPARISON        = "category-prompt-comparison"
-	SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT = "time-period-special-words-present"
-	SI_KEY_TIME_PERIOD_WORDS_PRESENT         = "time-period-words-present"
-	SI_KEY_TIME_PERIOD_VALUES                = "time-period-values"
-	SI_KEY_BUSINESS_ANALYST                  = "business-analyst"
-	SI_KEY_MARKETING_ANALYST                 = "marketing-analyst"
-	SI_KEY_NOT_SUPPORTED                     = "not-supported"
+	SI_KEY_CATEGORY_SENTENCE  = "category_sentence"
+	SI_KEY_SPECIAL_WORDS      = "special_words"
+	SI_KEY_TIME_PERIOD_VALUES = "time_period_values"
+	SI_KEY_BUSINESS_ANALYST   = "business_analyst"
+	SI_KEY_MARKETING_ANALYST  = "marketing_analyst"
+	SI_KEY_NOT_SUPPORTED      = "not_supported"
 )
 
 type GeminiConfig struct {
-	MaxOutputTokens    string             `json:"max_output_tokens"`
-	ModelName          string             `json:"model_name"`
-	SetTopProbability  string             `json:"set_top_probability"`
-	SystemInstructions SystemInstructions `json:"system_instructions"`
-	Temperature        string             `json:"temperature"`
+	MaxOutputTokens    string                    `json:"max_output_tokens"`
+	ModelName          string                    `json:"model_name"`
+	SetTopProbability  string                    `json:"set_top_probability"`
+	SystemInstructions map[string]InstructionSet `json:"system_instructions"`
+	Temperature        string                    `json:"temperature"`
 }
 
 type GeminiService struct {
@@ -46,11 +45,6 @@ type InstructionSet struct {
 	SetDate      bool   `json:"set_date"`
 }
 
-type SystemInstructions struct {
-	AnalyzeQuestion map[string]InstructionSet `json:"analyze-question"`
-	GenerateAnswer  map[string]InstructionSet `json:"generate-answer"`
-}
-
 type GeminiResponse struct {
 	Response   string
 	SIKey      string
@@ -63,13 +57,11 @@ var (
 		"pool-0",
 		"pool-1",
 		"pool-2",
-		"pool-3",
 	}
 
 	SITopicAnalyzeQuestionKeys = []string{
-		SI_KEY_CATEGORY_PROMPY_COMPARISON,
-		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT,
-		SI_KEY_TIME_PERIOD_WORDS_PRESENT,
+		SI_KEY_CATEGORY_SENTENCE,
+		SI_KEY_SPECIAL_WORDS,
 		SI_KEY_TIME_PERIOD_VALUES,
 	}
 
@@ -81,10 +73,9 @@ var (
 
 	siTopicKeyPoolAssignment = map[string]string{
 		// SI_TOPIC_ANALYZE_QUESTION
-		SI_KEY_CATEGORY_PROMPY_COMPARISON:        "pool-0",
-		SI_KEY_TIME_PERIOD_SPECIAL_WORDS_PRESENT: "pool-1",
-		SI_KEY_TIME_PERIOD_WORDS_PRESENT:         "pool-2",
-		SI_KEY_TIME_PERIOD_VALUES:                "pool-3",
+		SI_KEY_CATEGORY_SENTENCE:  "pool-0",
+		SI_KEY_SPECIAL_WORDS:      "pool-1",
+		SI_KEY_TIME_PERIOD_VALUES: "pool-2",
 		// SI_TOPIC_GENERATE_ANSWER
 		SI_KEY_BUSINESS_ANALYST:  "pool-0",
 		SI_KEY_MARKETING_ANALYST: "pool-0",

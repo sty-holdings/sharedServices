@@ -81,6 +81,16 @@ func BuildLabelValue(label string, value string) (additionalInfo string) {
 	return fmt.Sprintf("%s %s.", label, value)
 }
 
+// BuildLabelSubLabelValueMessage - builds a string using the label, sub-label, value and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildLabelSubLabelValueMessage(label string, subLabel string, value string, message string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s %s %s %s.", label, subLabel, value, message)
+}
+
 // BuildUIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None

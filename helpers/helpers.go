@@ -719,29 +719,29 @@ func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
 //		Customer Messages: None
 //		Errors: None
 //		Verifications: None
-func CalculateTimePeriodWordsFlagCombination(wordsPresent ctv.TimePeriodWordsPresent) string {
+func CalculateTimePeriodWordsFlagCombination() string {
 
-	var (
-		tFlagCombination uint8
-	)
+	//var (
+	//	tFlagCombination uint8
+	//)
+	//
+	//if wordsPresent.Year {
+	//	tFlagCombination |= 1 << ctv.FLAG_YEARS
+	//}
+	//if wordsPresent.Quarter {
+	//	tFlagCombination |= 1 << ctv.FLAG_QUARTERS
+	//}
+	//if wordsPresent.Month {
+	//	tFlagCombination |= 1 << ctv.FLAG_MONTHS
+	//}
+	//if wordsPresent.Week {
+	//	tFlagCombination |= 1 << ctv.FLAG_WEEKS
+	//}
+	//if wordsPresent.Day {
+	//	tFlagCombination |= 1 << ctv.FLAG_DAYS
+	//}
 
-	if wordsPresent.Year {
-		tFlagCombination |= 1 << ctv.FLAG_YEARS
-	}
-	if wordsPresent.Quarter {
-		tFlagCombination |= 1 << ctv.FLAG_QUARTERS
-	}
-	if wordsPresent.Month {
-		tFlagCombination |= 1 << ctv.FLAG_MONTHS
-	}
-	if wordsPresent.Week {
-		tFlagCombination |= 1 << ctv.FLAG_WEEKS
-	}
-	if wordsPresent.Day {
-		tFlagCombination |= 1 << ctv.FLAG_DAYS
-	}
-
-	return fmt.Sprintf("%05b", tFlagCombination)
+	return fmt.Sprintf("%05b")
 
 }
 
