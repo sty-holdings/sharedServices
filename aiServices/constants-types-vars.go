@@ -24,7 +24,7 @@ const (
 	SI_KEY_NOT_SUPPORTED      = "not_supported"
 )
 
-type GeminiConfig struct {
+type AIConfig struct {
 	MaxOutputTokens    string                    `json:"max_output_tokens"`
 	ModelName          string                    `json:"model_name"`
 	SetTopProbability  string                    `json:"set_top_probability"`
@@ -32,11 +32,11 @@ type GeminiConfig struct {
 	Temperature        string                    `json:"temperature"`
 }
 
-type GeminiService struct {
+type AIService struct {
 	clientPtr *genai.Client
 	debugOn   bool
 	modelPtrs map[string]*genai.GenerativeModel
-	config    GeminiConfig
+	config    AIConfig
 }
 
 type InstructionSet struct {
