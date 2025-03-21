@@ -153,7 +153,7 @@ func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorI
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckValueNotEmpty(value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckValueNotEmpty(extensionName string, value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
