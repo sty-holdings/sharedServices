@@ -104,7 +104,7 @@ const (
 	TXT_SERVICE_FIREBASE             = "Firebase"
 	TXT_SERVICE_FIREBASE_AUTH        = "Firebase Auth"
 	TXT_SERVICE_FIRESTORE            = "Firestore"
-	TXT_SERVICE_ai                   = "ai"
+	TXT_SERVICE_AI                   = "ai"
 	TXT_SERVICE_PSQL                 = "PSQL"
 	TXT_SET_FAILED                   = "set failed"
 	TXT_SUBSCRIPTION_FAILED          = "subscription failed"
