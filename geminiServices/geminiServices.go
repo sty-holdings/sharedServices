@@ -33,10 +33,10 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 		tGeminiConfig GeminiConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(gcpCredentialsFilename, errs.ErrRequiredParameterMissing, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, gcpCredentialsFilename, errs.ErrRequiredParameterMissing, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -272,11 +272,11 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 			tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
 			tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
 		default:
-			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
 			return
 		}
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
+		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
 		return
 	}
 
@@ -285,7 +285,7 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	}
 	if tSetDate {
 		if locationPtr == nil {
-			errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_TIMEZONE, ctv.TXT_IS_MISSING))
+			errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_TIMEZONE, ctv.TXT_IS_MISSING))
 			return
 		}
 		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
@@ -307,17 +307,23 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.LBL_CONFIG_GEMINI_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.LBL_CONFIG_GEMINI_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(geminiConfigFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_READ_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_GEMINI_SERVICE, ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_READ_FAILED),
+		)
 		return
 	}
 
 	if errorInfo.Error = yaml.Unmarshal(tConfigData, &geminiConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_GEMINI_SERVICE, ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_UNMARSHAL_FAILED),
+		)
 		return
 	}
 
@@ -331,22 +337,32 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 //	Verifications: validateConfiguration
 func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.MaxOutputTokens, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.MaxOutputTokens, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.ModelName, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MODEL_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.ModelName, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MODEL_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(geminiConfig.SetTopProbability, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SET_TOP_K); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.SetTopProbability, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.AnalyzeQuestion, errs.ErrRequiredParameterMissing, ctv.FN_SI_ANALYZE_QUESTION); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckMapLengthGTZero(
+		ctv.LBL_GEMINI_SERVICE,
+		geminiConfig.SystemInstructions.AnalyzeQuestion,
+		errs.ErrRequiredParameterMissing,
+		ctv.FN_SI_ANALYZE_QUESTION,
+	); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(geminiConfig.SystemInstructions.GenerateAnswer, errs.ErrRequiredParameterMissing, ctv.FN_SI_GENERATE_ANSWER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckMapLengthGTZero(
+		ctv.LBL_GEMINI_SERVICE,
+		geminiConfig.SystemInstructions.GenerateAnswer,
+		errs.ErrRequiredParameterMissing,
+		ctv.FN_SI_GENERATE_ANSWER,
+	); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(geminiConfig.Temperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE)
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.Temperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE)
 
 	return
 }

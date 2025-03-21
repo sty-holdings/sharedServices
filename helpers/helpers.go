@@ -114,7 +114,7 @@ func Base64Encode(value string) string {
 func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -125,10 +125,10 @@ func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (err
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckMapLengthGTZero[K comparable, V any](value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -142,7 +142,7 @@ func CheckMapLengthGTZero[K comparable, V any](value map[K]V, err error, fieldLa
 func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_NIL))
 	}
 
 	return
@@ -156,7 +156,7 @@ func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorI
 func CheckValueNotEmpty(extensionName string, value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -296,12 +296,12 @@ func ConvertDateTimeToTimestamp(dateTime string, timezone string) (timestamp tim
 	)
 
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 
 	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04:05", dateTime, tLocationPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(dateTime, ctv.TXT_IS_INVALID))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, dateTime, ctv.TXT_IS_INVALID))
 	}
 
 	return
@@ -368,78 +368,6 @@ func DetermineDaysInMonth(year, month int) int {
 	default:
 		return 31
 	}
-}
-
-// DetermineEndTime - will set the end time for the start.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func DetermineEndEndTime(
-	endDate string,
-	timezone string,
-) (
-	endBy string,
-	errorInfo errs.ErrorInfo,
-) {
-
-	var (
-		tLocationPtr *time.Location
-		tEndBy       time.Time
-	)
-
-	if errorInfo = CheckValueNotEmpty(endDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
-		return
-	}
-	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
-		return
-	}
-
-	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
-		return
-	}
-	tEndBy, errorInfo.Error = time.ParseInLocation("2006-01-02", endDate, tLocationPtr)
-
-	endBy = fmt.Sprintf("%s %s", tEndBy.Format("2006-01-02"), ctv.VAL_START_DAY)
-
-	return
-}
-
-// DetermineStartTime - will set the start time for the start.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func DetermineStartTime(
-	startDate string,
-	timezone string,
-) (
-	startAt string,
-	errorInfo errs.ErrorInfo,
-) {
-
-	var (
-		tLocationPtr *time.Location
-		tStart       time.Time
-	)
-
-	if errorInfo = CheckValueNotEmpty(startDate, errs.ErrTimezoneNotSupported, ctv.LBL_END_DATE); errorInfo.Error != nil {
-		return
-	}
-	if errorInfo = CheckValueNotEmpty(timezone, errs.ErrTimezoneNotSupported, ctv.LBL_TIMEZONE); errorInfo.Error != nil {
-		return
-	}
-
-	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
-		return
-	}
-	tStart, errorInfo.Error = time.ParseInLocation("2006-01-02", startDate, tLocationPtr)
-
-	startAt = fmt.Sprintf("%s %s", tStart.Format("2006-01-02"), ctv.VAL_START_DAY)
-
-	return
 }
 
 // DoesFieldExist - tests the struct for the field name.
@@ -875,7 +803,7 @@ func GetDateTimeWithLocation(timezone string) (myDateTime string, errorInfo errs
 func GetLocationTimePtr(timezone string) (locationPtr *time.Location, errorInfo errs.ErrorInfo) {
 
 	if locationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 

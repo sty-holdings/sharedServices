@@ -7,6 +7,7 @@ import (
 	"log"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
+	pi "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 //goland:noinspection GoSnakeCaseUsage
@@ -30,7 +31,7 @@ func PrintDebugFunctionInfo(
 ) {
 
 	var (
-		tFunctionInfo = GetFunctionInfo(1)
+		tFunctionInfo = pi.GetFunctionInfo(1)
 	)
 
 	if debugModeOn {
@@ -58,7 +59,7 @@ func PrintDebugLine(
 ) {
 
 	var (
-		tFunctionInfo = GetFunctionInfo(1)
+		tFunctionInfo = pi.GetFunctionInfo(1)
 	)
 
 	if message == ctv.VAL_EMPTY {

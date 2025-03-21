@@ -212,7 +212,7 @@ func TestMakeRequestReplyNoHeaderInsecure(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Secure connection.",
 			arguments: arguments{
 				instanceName: "scott-test-connection",
-				dkRequest:    []byte(ctv.NCI_PING),
+				dkRequest:    []byte(ctv.SYSTEM_ACTION_PING),
 			},
 			wantError: false,
 		},
@@ -236,7 +236,7 @@ func TestMakeRequestReplyNoHeaderInsecure(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if _, errorInfo = makeRequestReplyNoHeaderInsecure(ts.arguments.dkRequest, tNatsServicePtr, ctv.SUB_GEMINI_ANALYZE_QUESTION, 5); errorInfo.Error != nil {
+				if _, errorInfo = makeRequestReplyNoHeaderInsecure(ts.arguments.dkRequest, tNatsServicePtr, ctv.VAL_EMPTY, 5); errorInfo.Error != nil {
 					gotError = true
 				} else {
 					gotError = false

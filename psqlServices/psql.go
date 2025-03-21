@@ -37,7 +37,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 		tConnectionConfig PSQLConnectionConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(configFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, configFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -87,7 +87,7 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	)
 
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRANSACTION, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL, batchName, ctv.TXT_FAILED))
 		return
 	}
 
@@ -106,7 +106,7 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 			case "time.Time":
 				value = fmt.Sprintf("'%s'", value)
 			default:
-				errorInfo = errs.NewErrorInfo(errs.ErrDateTypeInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_BATCH, fmt.Sprintf("%s%s %s", ctv.LBL_DATA_TYPE, tDataType, ctv.TXT_FAILED)))
+				errorInfo = errs.NewErrorInfo(errs.ErrDateTypeInvalid, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_BATCH, fmt.Sprintf("%s%s %s", ctv.LBL_DATA_TYPE, tDataType, ctv.TXT_FAILED)))
 				_ = pTransaction.Rollback(CTXBackground) // ErrorInfo is not checked, because the data is bad and either way the data will be reloaded.
 				return
 			}
@@ -125,7 +125,7 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	fmt.Println(pCommandTag)
 
 	if errorInfo.Error = pTransaction.Commit(CTXBackground); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_COMMIT, errs.BuildLabelValue(batchName, ctv.TXT_FAILED)))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_PSQL, ctv.LBL_PSQL_COMMIT, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
 	}
 
 	return
@@ -146,7 +146,7 @@ func (psqlService *PSQLService) TruncateTable(database string, schema string, ta
 
 	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
 	if _, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_TRUNCATE, fmt.Sprintf("%s.%s %s", schema, tableName, ctv.TXT_FAILED)))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_PSQL, ctv.LBL_PSQL_TRUNCATE, schema, tableName, ctv.TXT_FAILED))
 	}
 
 	return
@@ -193,7 +193,7 @@ func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool
 	)
 
 	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(buildConnectionString(config)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_PARSE_CONFIG, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_PARSE_CONFIG, ctv.TXT_FAILED))
 		return
 	}
 
@@ -212,7 +212,7 @@ func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool
 	}
 
 	if connectionPoolPtr, errorInfo.Error = pgxpool.NewWithConfig(CTXBackground, tConfigPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_CONNECTION, ctv.TXT_FAILED))
 		return
 	}
 
@@ -233,13 +233,13 @@ func loadTLSCABundle(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, erro
 	)
 
 	if tCABundleFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
 		return
 	}
 
 	caCertPoolPtr = x509.NewCertPool()
 	if ok := caCertPoolPtr.AppendCertsFromPEM(tCABundleFile); !ok {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
 	}
 
 	return
@@ -254,12 +254,9 @@ func loadTLSCertKeyPair(tlsConfig jwts.TLSInfo) (cert tls.Certificate, errorInfo
 
 	if cert, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, fmt.Sprintf(
-				"%s, %s", errs.BuildLabelValue(ctv.LBL_TLS_CERTIFICATE_FILENAME, tlsConfig.TLSCertFQN), errs.BuildLabelValue(
-					ctv.LBL_TLS_PRIVATE_KEY_FILENAME,
-					tlsConfig.TLSPrivateKey,
-				),
-			),
+			errorInfo.Error, errs.BuildLabelSubLabelValueMessage(
+				ctv.LBL_PSQL, ctv.LBL_TLS_CERTIFICATE_FILENAME, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, ctv.VAL_EMPTY, tlsConfig.TLSPrivateKey,
+			), // The tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN values are not output for security.
 		)
 	}
 
@@ -277,17 +274,17 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(configFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, configFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
 		return
 	}
 
 	if errorInfo.Error = yaml.Unmarshal(tConfigData, &config); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
 		return
 	}
 
@@ -299,18 +296,18 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	if errorInfo = hlps.CheckArrayLengthGTZero(config.DBName, errs.ErrPSQLDBNameEmpty, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(config.Host, errs.ErrPSQLHostEmpty, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.Host, errs.ErrPSQLHostEmpty, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
 		return
 	}
 	if config.MaxConnections <= ctv.VAL_ZERO && config.MaxConnections >= ctv.VAL_ONE_HUNDRED {
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLMaxConnectionsInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_MAX_CONNECTIONS, strconv.Itoa(config.Port)))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLMaxConnectionsInvalid, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_MAX_CONNECTIONS, strconv.Itoa(config.Port)))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(config.Host, errs.ErrPSQLPasswordEmpty, ctv.LBL_PSQL_PASSWORD); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.Host, errs.ErrPSQLPasswordEmpty, ctv.LBL_PSQL_PASSWORD); errorInfo.Error != nil {
 		return
 	}
 	if config.Port != ctv.VAL_PSQL_PORT {
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLPortInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_PORT, strconv.Itoa(config.Port)))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLPortInvalid, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_PORT, strconv.Itoa(config.Port)))
 		return
 	}
 	switch config.SSLMode {
@@ -321,29 +318,29 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	case PSQL_SSL_MODE_PREFER:
 		fallthrough
 	case PSQL_SSL_MODE_REQUIRED:
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLSSLModeNotAllowed, errs.BuildLabelValue(ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLSSLModeNotAllowed, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
 		return
 	case PSQL_SSL_MODE_VERIFY:
-		if errorInfo = hlps.CheckValueNotEmpty(config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 			return
 		}
 	case PSQL_SSL_MODE_VERIFY_FULL:
-		if errorInfo = hlps.CheckValueNotEmpty(config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = hlps.CheckValueNotEmpty(config.PSQLTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.PSQLTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = hlps.CheckValueNotEmpty(config.PSQLTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.PSQLTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 			return
 		}
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
 	}
 	if config.Timeout < ctv.VAL_ONE && config.Timeout >= ctv.VAL_FIVE {
-		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_PSQL_TIMEOUT, strconv.Itoa(config.Timeout)))
+		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_TIMEOUT, strconv.Itoa(config.Timeout)))
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(config.UserName, errs.ErrPSQLUserEmpty, ctv.LBL_PSQL_USER_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_PSQL, config.UserName, errs.ErrPSQLUserEmpty, ctv.LBL_PSQL_USER_NAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -362,13 +359,13 @@ func isConnectionActive(connectionPtr *pgxpool.Pool, dbName string) (errorInfo e
 	)
 
 	if connectionPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLConnFalied, errs.BuildLabelValue(ctv.LBL_PSQL_DBNAME, dbName))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLConnFalied, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_DBNAME, dbName))
 		return
 	}
 
 	tRows, errorInfo.Error = connectionPtr.Query(CTXBackground, CHECK_STAT_ACTIVITY, dbName)
 	if errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrPSQLConnFalied, errs.BuildLabelValue(ctv.LBL_PSQL_DBNAME, dbName))
+		errorInfo = errs.NewErrorInfo(errs.ErrPSQLConnFalied, errs.BuildLabelValue(ctv.LBL_PSQL, ctv.LBL_PSQL_DBNAME, dbName))
 	}
 	defer tRows.Close()
 

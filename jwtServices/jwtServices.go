@@ -55,7 +55,7 @@ func Decrypt(
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_KEY_B64, ctv.TXT_DECODE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_JWT_SERVICE, ctv.LBL_KEY_B64, ctv.TXT_DECODE_FAILED))
 		return
 	}
 	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(valueB64); errorInfo.Error != nil {
@@ -436,13 +436,13 @@ func RemoveTLSTemporaryFiles(
 //	Verifications: None
 func checkEncryptDecryptParameters(styhUserId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(styhUserId, errs.ErrRequiredParameterMissing, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, styhUserId, errs.ErrRequiredParameterMissing, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlp.CheckValueNotEmpty(keyB64, errs.ErrRequiredParameterMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, keyB64, errs.ErrRequiredParameterMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlp.CheckValueNotEmpty(value, errs.ErrRequiredParameterMissing, ctv.FN_VALUE_B64)
+	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, value, errs.ErrRequiredParameterMissing, ctv.FN_VALUE_B64)
 
 	return
 }

@@ -202,7 +202,13 @@ func TestBatchInsert(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
-				if errorInfo = tPSQLServicePtr.BatchInsert(DB_GOOGLE_ADS, ts.arguments.role, ts.arguments.batchName, ts.arguments.insertStatement, ts.arguments.insertValues); errorInfo.Error != nil {
+				if errorInfo = tPSQLServicePtr.BatchInsert(
+					DB_COUPLER_GOOGLE_ADS,
+					ts.arguments.role,
+					ts.arguments.batchName,
+					ts.arguments.insertStatement,
+					ts.arguments.insertValues,
+				); errorInfo.Error != nil {
 					gotError = true
 				} else {
 					gotError = false

@@ -140,7 +140,7 @@ func GetFirebaseUserInfo(
 	)
 
 	if _, errorInfo = FindFirebaseAuthUser(authPtr, username); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_USERNAME, username))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_USER_NAME, username))
 		return
 	}
 

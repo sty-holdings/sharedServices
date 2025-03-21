@@ -91,7 +91,7 @@ func BuildLabelSubLabelValueMessage(extensionName string, label string, subLabel
 	return fmt.Sprintf("%s %s%s%s %s.", extensionName, label, subLabel, value, message)
 }
 
-// BuildUIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildSTYHUserIdLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None

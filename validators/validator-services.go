@@ -98,15 +98,15 @@ func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.Error
 	}
 
 	if filename == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(fileLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, ctv.TXT_IS_EMPTY))
 		return
 	}
 	if DoesFileExist(fqn) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, filename))
 		return
 	}
 	if IsFileReadable(fqn) == false { // File is not readable
-		errorInfo = errs.NewErrorInfo(errs.ErrFileUnreadable, errs.BuildLabelValue(fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrFileUnreadable, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, filename))
 	}
 
 	return
