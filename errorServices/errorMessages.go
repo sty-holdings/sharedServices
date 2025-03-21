@@ -12,6 +12,7 @@ const (
 	EMPTY_ADDRESS_STATE                     = "The state is empty information. Please review the addrss fields."
 	EMPTY_ADDRESS_STREET                    = "The street is empty information. Please review the addrss fields."
 	EMPTY_ADDRESS_ZIP_CODE                  = "The zip code is empty information. Please review the addrss fields."
+	EMPTY_ANALYZE_QUESTION_CATEGORY         = "The category is empty information. Please review the analyze question fields."
 	EMPTY_CONFIG_FILENAME                   = "The configuration filename is empty."
 	EMPTY_EMAIL                             = "The email address is empty."
 	EMPTY_ERROR                             = "ERROR empty"
@@ -208,6 +209,7 @@ var (
 	ErrEmptyAddressState                  = errors.New(EMPTY_ADDRESS_STATE)
 	ErrEmptyAddressStreet                 = errors.New(EMPTY_ADDRESS_STREET)
 	ErrEmptyAddressZipCode                = errors.New(EMPTY_ADDRESS_ZIP_CODE)
+	ErrEmptyAnalyzeQuestionCategory       = errors.New(EMPTY_ANALYZE_QUESTION_CATEGORY)
 	ErrEmptyConfigFilename                = errors.New(EMPTY_CONFIG_FILENAME)
 	ErrEmptyEmail                         = errors.New(EMPTY_EMAIL)
 	ErrEmptyError                         = errors.New(EMPTY_ERROR)
