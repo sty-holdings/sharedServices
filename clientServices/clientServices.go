@@ -32,7 +32,7 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		firestoreClientPtr,
 		styhUserId,
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_CLIENT_SERVICE, styhUserId, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_CLIENT, styhUserId, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
 		return
 	}
 
@@ -58,11 +58,11 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 
 	if value, ok = tUserInfo[ctv.FN_SAAS_PROVIDERS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_CLIENT_SERVICE, ctv.LBL_SAAS_PROVIDER, ctv.TXT_MARSHAL_FAILED))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_MARSHAL_FAILED))
 			return
 		}
 		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_CLIENT_SERVICE, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
 			return
 		}
 	}
@@ -74,7 +74,7 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 	if value, ok = tUserInfo[ctv.FN_TIMEZONE]; ok {
 		clientStruct.Timezone = value.(string)
 		if clientStruct.LocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.Timezone); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_CLIENT_SERVICE, ctv.LBL_TIMEZONE, clientStruct.Timezone))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.Timezone))
 			return
 		}
 	}

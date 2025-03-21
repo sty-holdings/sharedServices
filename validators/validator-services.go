@@ -98,15 +98,15 @@ func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.Error
 	}
 
 	if filename == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, ctv.TXT_IS_EMPTY))
 		return
 	}
 	if DoesFileExist(fqn) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, filename))
 		return
 	}
 	if IsFileReadable(fqn) == false { // File is not readable
-		errorInfo = errs.NewErrorInfo(errs.ErrFileUnreadable, errs.BuildLabelValue(ctv.LBL_VALIDATORS, fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileUnreadable, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, filename))
 	}
 
 	return
@@ -605,11 +605,11 @@ func IsStruct(v interface{}) bool {
 func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 
 	if directory == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, ctv.TXT_DIRECTORY_PARAM_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, ctv.TXT_DIRECTORY_PARAM_EMPTY)
 		return
 	}
 	if DoesDirectoryExist(directory) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, directory))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, directory))
 	}
 
 	return
@@ -675,15 +675,15 @@ func GetMapKeyPopulatedError(finding string) (errorInfo errs.ErrorInfo) {
 
 	switch strings.ToLower(finding) {
 	case ctv.TXT_EMPTY:
-		errorInfo = errs.NewErrorInfo(errs.ErrMapIsEmpty, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, ctv.VAL_EMPTY)
 	case ctv.TXT_MISSING_KEY:
-		errorInfo = errs.NewErrorInfo(errs.ErrMapIsMissingKey, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMapKey, ctv.VAL_EMPTY)
 	case ctv.TXT_MISSING_VALUE:
-		errorInfo = errs.NewErrorInfo(errs.ErrMapIsMissingValue, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMapValue, ctv.VAL_EMPTY)
 	case ctv.VAL_EMPTY:
 		fallthrough
 	default:
-		errs.NewErrorInfo(errs.ErrMapIsMissingValue, "The 'finding' argument is empty.")
+		errs.NewErrorInfo(errs.ErrEmptyVariableMapValue, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, "GetMapKeyPopulatedError", "The 'finding' argument is empty."))
 	}
 
 	return

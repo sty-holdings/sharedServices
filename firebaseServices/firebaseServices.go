@@ -107,13 +107,13 @@ func GetFirebaseIdTokenPayload(
 
 	tokenPayload = make(map[any]interface{})
 	if tIdTokenPtr, errorInfo = GetIdTokenPtr(authPtr, idToken); errorInfo.Error == nil {
-		tokenPayload[PAYLOAD_SUBJECT_FN] = tIdTokenPtr.Subject
-		tokenPayload[PAYLOAD_CLAIMS_FN] = tIdTokenPtr.Claims
-		tokenPayload[PAYLOAD_AUDIENCE_FN] = tIdTokenPtr.Audience
-		tokenPayload[PAYLOAD_REQUESTOR_ID_FN] = tIdTokenPtr.UID
-		tokenPayload[PAYLOAD_EXPIRES_FN] = tIdTokenPtr.Expires
-		tokenPayload[PAYLOAD_ISSUER_FN] = tIdTokenPtr.Issuer
-		tokenPayload[PAYLOAD_ISSUED_AT_FN] = tIdTokenPtr.IssuedAt
+		tokenPayload[JWT_PAYLOAD_SUBJECT_FN] = tIdTokenPtr.Subject
+		tokenPayload[JWT_PAYLOAD_CLAIMS_FN] = tIdTokenPtr.Claims
+		tokenPayload[JWT_PAYLOAD_AUDIENCE_FN] = tIdTokenPtr.Audience
+		tokenPayload[JWT_PAYLOAD_REQUESTOR_ID_FN] = tIdTokenPtr.UID
+		tokenPayload[JWT_PAYLOAD_EXPIRES_FN] = tIdTokenPtr.Expires
+		tokenPayload[JWT_PAYLOAD_ISSUER_FN] = tIdTokenPtr.Issuer
+		tokenPayload[JWT_PAYLOAD_ISSUED_AT_FN] = tIdTokenPtr.IssuedAt
 	} else {
 		errorInfo.Error = errors.New(fmt.Sprintf("The provided idTokenPtr is invalid. ERROR: %v", errorInfo.Error.Error()))
 	}
@@ -265,7 +265,7 @@ func ValidateFirebaseJWTPayload(
 	)
 
 	if tFindings = vals.AreMapKeysValuesPopulated(tokenPayload); tFindings != ctv.TXT_YES {
-		errorInfo = errs.NewErrorInfo(errs.ErrMapIsMissingKey, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMapValue, ctv.VAL_EMPTY)
 	} else {
 		if audience == ctv.VAL_EMPTY || issuer == ctv.VAL_EMPTY {
 			errorInfo.Error = errors.New(
@@ -273,26 +273,26 @@ func ValidateFirebaseJWTPayload(
 					"Require information is missing! %v: '%v' %v: '%v'",
 					ctv.FN_AUDIENCE_CAP,
 					audience,
-					ctv.FN_ISSUER,
+					ctv.FN_JWT_ISSUER,
 					issuer,
 				),
 			)
 		} else {
 			for key, value := range tokenPayload {
 				switch strings.ToUpper(key.(string)) {
-				case PAYLOAD_AUDIENCE_FN:
+				case JWT_PAYLOAD_AUDIENCE_FN:
 					if value != audience {
 						errorInfo.Error = errors.New("The audience of the ID Token is invalid.")
 						log.Println(errorInfo.Error.Error())
 					}
-				case PAYLOAD_ISSUER_FN:
+				case JWT_PAYLOAD_ISSUER_FN:
 					if value != issuer {
 						errorInfo.Error = errors.New("The issuer of the ID Token is invalid.")
 						log.Println(errorInfo.Error.Error())
 					}
-				case PAYLOAD_SUBJECT_FN:
+				case JWT_PAYLOAD_SUBJECT_FN:
 					tSubject = value.(string)
-				case PAYLOAD_REQUESTOR_ID_FN:
+				case JWT_PAYLOAD_REQUESTOR_ID_FN:
 					username = value.(string)
 				}
 			}

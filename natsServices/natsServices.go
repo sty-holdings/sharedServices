@@ -29,10 +29,10 @@ func NewNATSService(
 	config NATSConfiguration,
 ) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, extensionName, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, extensionName, errs.ErrEmptyRequiredParameter, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, config.NATSURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, errs.ErrEmptyRequiredParameter, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
 
@@ -210,13 +210,13 @@ func (natsServicePtr *NATSService) Subscribe(
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
 
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 		return
 	}
 
 	if subscriptionPtr, errorInfo.Error = natsServicePtr.connPtr.Subscribe(subject, handler); errorInfo.Error != nil {
 		log.Printf("ALERT %v: Subscribe failed on subject: %v", natsServicePtr.instanceName, subject)
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_NATS, tFunctionName, ctv.TXT_SUBSCRIPTION_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_NATS, tFunctionName, ctv.TXT_SUBSCRIPTION_FAILED))
 		return
 	}
 	log.Printf("%v Subscribed to subject: %v", natsServicePtr.instanceName, subject)
@@ -243,10 +243,10 @@ func buildInstanceName(
 		tHostName string
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, ctv.LBL_INSTANCE_NAME, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, ctv.LBL_INSTANCE_NAME, errs.ErrEmptyRequiredParameter, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, natsURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, natsURL, errs.ErrEmptyRequiredParameter, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
 
@@ -275,11 +275,11 @@ func buildURLWithPort(
 	)
 
 	if url == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprint(ctv.FN_URL))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprint(ctv.FN_URL))
 		return
 	}
 	if tNATSPort == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreatThanZero, fmt.Sprint(ctv.FN_PORT))
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, fmt.Sprint(ctv.FN_PORT))
 		return
 	}
 
@@ -312,28 +312,28 @@ func getConnection(
 		tURL string
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, instanceName, errs.ErrRequiredParameterMissing, ctv.LBL_INSTANCE_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, instanceName, errs.ErrEmptyRequiredParameter, ctv.LBL_INSTANCE_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, config.NATSURL, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, errs.ErrEmptyRequiredParameter, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, config.NATSPort, errs.ErrRequiredParameterMissing, ctv.LBL_NATS_PORT); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSPort, errs.ErrEmptyRequiredParameter, ctv.LBL_NATS_PORT); errorInfo.Error != nil {
 		return
 	}
 	if vals.DoesFileExist(config.NATSCredentialsFilename) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_NATS, ctv.LBL_FILENAME, config.NATSCredentialsFilename))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_NATS, ctv.LBL_FILENAME, config.NATSCredentialsFilename))
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSCertFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCertFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCertFQN))
 		return
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSPrivateKeyFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSPrivateKeyFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSPrivateKeyFQN))
 		return
 	}
 	if vals.DoesFileExist(config.NATSTLSInfo.TLSCABundleFQN) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, errs.BuildLabelValue(ctv.LBL_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_NATS, ctv.LBL_FILENAME, config.NATSTLSInfo.TLSCABundleFQN))
 		return
 	}
 
@@ -375,10 +375,10 @@ func getConnection(
 //	Verifications: None
 func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequest DKRequest, errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrPointerMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrEmptyPointer, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, keyB64, errs.ErrPointerMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, errs.ErrEmptyPointer, ctv.FN_KEY_B64); errorInfo.Error != nil {
 		return
 	}
 
@@ -410,16 +410,16 @@ func makeRequestReplyNoHeaderInsecure(
 		tRequestMessagePtr *nats.Msg
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, string(dkRequest), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), errs.ErrEmptyRequiredParameter, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, subject, errs.ErrRequiredParameterMissing, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, errs.ErrEmptyRequiredParameter, ctv.VAL_EMPTY); errorInfo.Error != nil {
 		return
 	}
 
@@ -440,13 +440,13 @@ func makeRequestReplyNoHeaderInsecure(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 
@@ -478,16 +478,16 @@ func makeRequestReplyWithHeader(
 		tRequestMessagePtr *nats.Msg
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, string(dkRequest), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), errs.ErrEmptyRequiredParameter, ctv.LBL_DK_REQEST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, subject, errs.ErrRequiredParameterMissing, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, errs.ErrEmptyRequiredParameter, ctv.VAL_EMPTY); errorInfo.Error != nil {
 		return
 	}
 
@@ -513,13 +513,13 @@ func makeRequestReplyWithHeader(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 
@@ -554,16 +554,16 @@ func makeRequestReplyWithMessage(
 		tReplyMessagePtr *nats.Msg
 	)
 
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrPointerMissing, ctv.LBL_NATS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrPointerMissing, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrEmptyRequiredParameter, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, subject, errs.ErrRequiredParameterMissing, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, errs.ErrEmptyRequiredParameter, ctv.VAL_EMPTY); errorInfo.Error != nil {
 		return
 	}
 
@@ -580,13 +580,13 @@ func makeRequestReplyWithMessage(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
 		return
 	}
 
@@ -619,19 +619,19 @@ func sendReplyWithHeader(
 	)
 
 	if dkReply.ErrorInfo.Error == nil {
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, string(dkReply.Reply), errs.ErrRequiredParameterMissing, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkReply.Reply), errs.ErrEmptyRequiredParameter, ctv.LBL_DK_REPLY); errorInfo.Error != nil {
 			return
 		}
 	}
 	if dkReply.Reply == nil {
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, dkReply.ErrorInfo.Message, errs.ErrRequiredParameterMissing, ctv.LBL_ERROR_MESSAGE); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, dkReply.ErrorInfo.Message, errs.ErrEmptyRequiredParameter, ctv.LBL_ERROR_MESSAGE); errorInfo.Error != nil {
 			return
 		}
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_NATS, keyB64, errs.ErrRequiredParameterMissing, ctv.LBL_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, errs.ErrEmptyRequiredParameter, ctv.LBL_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrRequiredParameterMissing, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrEmptyRequiredParameter, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 		return
 	}
 
@@ -644,7 +644,7 @@ func sendReplyWithHeader(
 	if tReplyJSON, errorInfo.Error = json.Marshal(dkReply); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSystemActionSTYHUserIdLabelValue(ctv.LBL_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+			errs.BuildSystemActionSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED),
 		)
 		return
 	}
@@ -661,7 +661,7 @@ func sendReplyWithHeader(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error, errs.BuildSystemActionSTYHUserIdLabelValue(
-				ctv.LBL_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_NATS,
+				ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_SERVICE_NATS,
 				ctv.TXT_FAILED,
 			),
 		)

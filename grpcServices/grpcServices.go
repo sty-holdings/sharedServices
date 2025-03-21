@@ -37,7 +37,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		tConfig   GRPCConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, configFilename, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -64,7 +64,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	if tListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", servicePtr.Host, servicePtr.Port)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
 		return
 	}
 	servicePtr.GRPCListenerPtr = &tListener
@@ -74,7 +74,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 			return
 		}
 		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
-		errorInfo = hlps.CheckPointerNotNil(servicePtr.GRPCServerPtr, errs.ErrPointerMissing, ctv.FN_GRPC_SERVER_POINTER)
+		errorInfo = hlps.CheckPointerNotNil(servicePtr.GRPCServerPtr, errs.ErrEmptyPointer, ctv.FN_GRPC_SERVER_POINTER)
 	}
 
 	return
@@ -97,17 +97,17 @@ func NewGRPCClient(
 	//	tDailOption grpc.DialOption
 	//)
 
-	//if errorInfo = hlps.CheckValueNotEmpty(ctv.EXT_SERVICE_GRPC_SERVER, errs.ErrRequiredParameterMissing, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	//if errorInfo = hlps.CheckValueNotEmpty(ctv.EXT_SERVICE_GRPC_SERVER, errs.ErrEmptyRequiredParameter, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 	//	return
 	//}
-	//if errorInfo = hlps.CheckValueNotEmpty(config.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	//if errorInfo = hlps.CheckValueNotEmpty(config.GRPCHost, errs.ErrEmptyRequiredParameter, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 	//	return
 	//}
 	//if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
 	//	errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
 	//	return
 	//}
-	//if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	//if errorInfo = hlps.CheckValueNotEmpty(config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 	//	return
 	//}
 	//if config.GRPCTimeout <= ctv.VAL_ZERO {
@@ -148,17 +148,17 @@ func loadConfig(configFilename string) (grpcConfig GRPCConfig, errorInfo errs.Er
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, configFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, configFilename, errs.ErrEmptyRequiredParameter, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_CONFIG_EXTENSION_FILENAME, configFilename))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tConfigData, &grpcConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_EXTENSION_CONFIG_FILENAME, configFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_CONFIG_EXTENSION_FILENAME, configFilename))
 		return
 	}
 
@@ -178,13 +178,13 @@ func LoadTLSCABundle(tlsConfig jwts.TLSInfo) (dailOption grpc.DialOption, errorI
 	)
 
 	if tCABundleFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
 		return
 	}
 
 	tCACertPoolPtr = x509.NewCertPool()
 	if ok := tCACertPoolPtr.AppendCertsFromPEM(tCABundleFile); !ok {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
 	}
 
 	config := &tls.Config{
@@ -192,7 +192,7 @@ func LoadTLSCABundle(tlsConfig jwts.TLSInfo) (dailOption grpc.DialOption, errorI
 	}
 
 	if dailOption = grpc.WithTransportCredentials(credentials.NewTLS(config)); dailOption == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrDialOptionFailed, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_DIAL_OPTION, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedGrpcDialOption, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_DIAL_OPTION, ctv.TXT_FAILED))
 	}
 
 	return
@@ -212,18 +212,18 @@ func LoadTLSCredentialsCACertKey(tlsConfig jwts.TLSInfo) (creds credentials.Tran
 	)
 
 	if tServerCA, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileUnreadable, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedReadFile, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
 		return
 	}
 	tCertPool = x509.NewCertPool()
 	if tCertPool.AppendCertsFromPEM(tServerCA) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrCABundleLoadingFailed, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedTlsRootCaLoading, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
 		return
 	}
 
 	if tServerCert, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_GRPC_SERVICE, ctv.LBL_TLS_CERTIFICATE_FILENAME, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+			errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_GRPC, ctv.LBL_TLS_CERTIFICATE_FILENAME, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 		) // // The tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN values are not output for security.
 	}
 
@@ -240,24 +240,24 @@ func LoadTLSCredentialsCACertKey(tlsConfig jwts.TLSInfo) (creds credentials.Tran
 
 func validateConfig(config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, config.GRPCHost, errs.ErrRequiredParameterMissing, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, config.GRPCHost, errs.ErrEmptyRequiredParameter, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
 	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
-		errorInfo = errs.NewErrorInfo(errs.ErrGRPCPortInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGrpcPort, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, config.GRPCTLSInfo.TLSCertFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, config.GRPCTLSInfo.TLSCertFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GRPC_SERVICE, config.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrRequiredParameterMissing, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, config.GRPCTLSInfo.TLSPrivateKeyFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if config.GRPCTimeout < ctv.VAL_ONE {
-		errorInfo = errs.NewErrorInfo(errs.ErrGRPCTimeoutInvalid, errs.BuildLabelValue(ctv.LBL_GRPC_SERVICE, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGrpcTimeout, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
 	}
 
 	return

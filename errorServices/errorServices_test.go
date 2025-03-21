@@ -30,7 +30,7 @@ func TestNewErrorInfo(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 		},
 	}
@@ -68,7 +68,7 @@ func TestPrintError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied - No Output Mode",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: "",
 		},
@@ -84,7 +84,7 @@ func TestPrintError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied - Display Output Mode",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_DISPLAY,
 		},
@@ -100,7 +100,7 @@ func TestPrintError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied - Log Output Mode",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_LOG,
 		},
@@ -139,7 +139,7 @@ func TestPrintErrorInfo(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: "",
 		},
@@ -155,7 +155,7 @@ func TestPrintErrorInfo(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_LOG,
 		},
@@ -171,7 +171,7 @@ func TestPrintErrorInfo(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_DISPLAY,
 		},
@@ -202,7 +202,7 @@ func TestOutputError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: "",
 		},
@@ -210,7 +210,7 @@ func TestOutputError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_LOG,
 		},
@@ -218,7 +218,7 @@ func TestOutputError(tPtr *testing.T) {
 			name: ctv.TEST_POSITIVE_SUCCESS + "Data Supplied",
 			arguments: arguments{
 				additionalInfo: ctv.TXT_EMPTY,
-				myError:        ErrErrorMissing,
+				myError:        ErrEmptyError,
 			},
 			outputMode: ctv.MODE_OUTPUT_DISPLAY,
 		},
@@ -244,7 +244,7 @@ func TestNewError(tPtr *testing.T) {
 
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
-			if errorInfo = newError(buf, ErrErrorMissing); errorInfo.Error == nil {
+			if errorInfo = newError(buf, ErrEmptyError); errorInfo.Error == nil {
 				tPtr.Errorf(FORMAT_EXPECTED_ERROR, tFunctionName, ctv.VAL_EMPTY)
 			}
 			if errorInfo = newError(buf, nil); errorInfo.Error != nil {

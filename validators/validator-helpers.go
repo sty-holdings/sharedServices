@@ -10,10 +10,14 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 )
 
+// This must be here in addition to the helpers area. Moving to Helpers will cause a circular reference.
+
 // Base64Decode - will decode a base64 string to a string. If there is an error,
 // the first 20 characters of the base64 string are logged.
 // REMINDER: If the base64 string has sensitivity information, empty out the
 // ErrorInfo.AdditionalInfo field before logging or outputting the error.
+//
+// This must be here in addition to the helpers area. Moving to Helpers will cause a circular reference.
 //
 //	Customer Messages: None
 //	Errors: error returned by StdEncoding.DecodeString
@@ -30,9 +34,13 @@ func Base64Decode(base64Value string) (
 	return
 }
 
+// This must be here in addition to the helpers area. Moving to Helpers will cause a circular reference.
+
 // PrependWorkingDirectory - will add the working directory.
 // if the filename first character is a /, the passed value will be returned
 // unmodified.
+//
+// This must be here in addition to the helpers area. Moving to Helpers will cause a circular reference.
 //
 //	Customer Messages: None
 //	Errors: None

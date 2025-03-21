@@ -55,7 +55,7 @@ func Decrypt(
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_JWT_SERVICE, ctv.LBL_KEY_B64, ctv.TXT_DECODE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_JWT, ctv.LBL_KEY_B64, ctv.TXT_DECODE_FAILED))
 		return
 	}
 	if tCiphertext, errorInfo.Error = base64.StdEncoding.DecodeString(valueB64); errorInfo.Error != nil {
@@ -63,7 +63,7 @@ func Decrypt(
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhUserId))
 		return
 	}
 
@@ -189,7 +189,7 @@ func Encrypt(
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECODED_KEY, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhUserId))
 		return
 	}
 
@@ -379,7 +379,7 @@ func GenerateSymmetricKey() (
 	tKey = make([]byte, 32)
 	binary.LittleEndian.PutUint64(tKey, uint64(seed))
 	if _, errorInfo.Error = rand.Reader.Read(tKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_SYMMETRIC_KEY, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%s%s", ctv.LBL_JWT_SYMMETRIC_KEY, ctv.TXT_SERVICE_FAILED))
 		errs.PrintErrorInfo(errorInfo)
 	}
 
@@ -436,13 +436,13 @@ func RemoveTLSTemporaryFiles(
 //	Verifications: None
 func checkEncryptDecryptParameters(styhUserId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, styhUserId, errs.ErrRequiredParameterMissing, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, styhUserId, errs.ErrEmptyRequiredParameter, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, keyB64, errs.ErrRequiredParameterMissing, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, errs.ErrEmptyRequiredParameter, ctv.FN_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_JWT_SERVICE, value, errs.ErrRequiredParameterMissing, ctv.FN_VALUE_B64)
+	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, value, errs.ErrEmptyRequiredParameter, ctv.FN_VALUE_B64)
 
 	return
 }

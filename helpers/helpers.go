@@ -114,7 +114,7 @@ func Base64Encode(value string) string {
 func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -128,7 +128,7 @@ func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (err
 func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -142,7 +142,7 @@ func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K
 func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_NIL))
 	}
 
 	return
@@ -156,7 +156,7 @@ func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorI
 func CheckValueNotEmpty(extensionName string, value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -296,12 +296,12 @@ func ConvertDateTimeToTimestamp(dateTime string, timezone string) (timestamp tim
 	)
 
 	if tLocationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 
 	if timestamp, errorInfo.Error = time.ParseInLocation("2006-01-02 15:04:05", dateTime, tLocationPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, dateTime, ctv.TXT_IS_INVALID))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateTime, ctv.TXT_IS_INVALID))
 	}
 
 	return
@@ -344,7 +344,7 @@ func CreateAndRedirectLogOutput(logDirectory, redirectTo string) (
 		logFileHandlerPtr, logFQN, errorInfo = createLogFile(logDirectory)
 		log.SetOutput(io.MultiWriter(os.Stdout, logFileHandlerPtr))
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrServerNameMissing, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyProgramName, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -803,7 +803,7 @@ func GetDateTimeWithLocation(timezone string) (myDateTime string, errorInfo errs
 func GetLocationTimePtr(timezone string) (locationPtr *time.Location, errorInfo errs.ErrorInfo) {
 
 	if locationPtr, errorInfo.Error = time.LoadLocation(timezone); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_HELPERS, ctv.LBL_TIMEZONE, timezone))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_TIMEZONE, timezone))
 		return
 	}
 
@@ -838,7 +838,7 @@ func GetJSONFile(
 	)
 
 	if tJSONFileData, errorInfo.Error = os.ReadFile(jsonFileFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrConfigFileMissing, tAdditionalInfo)
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyConfigFilename, tAdditionalInfo)
 	}
 
 	if errorInfo.Error = json.Unmarshal(tJSONFileData, &jsonFilePtr); errorInfo.Error != nil {
@@ -1046,7 +1046,7 @@ func RedirectLogOutput(
 	case ctv.MODE_OUTPUT_LOG_DISPLAY:
 		log.SetOutput(io.MultiWriter(os.Stdout, inLogFileHandlerPtr))
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrRedirectModeInvalid, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidRedirectMode, fmt.Sprintf("%v%v", ctv.LBL_REDIRECT, redirectTo))
 	}
 
 	return
@@ -1061,12 +1061,12 @@ func RemoveFile(fqn string) (errorInfo errs.ErrorInfo) {
 
 	// This doesn't use the coreValidator.DoesFileExist by design.
 	if _, err := os.Stat(fqn); err != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileDoesntExist, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_HELPERS, ctv.VAL_EMPTY, ctv.LBL_FILENAME, fqn, ctv.TXT_DELETE_FAILED))
 		return
 	}
 
 	if errorInfo.Error = os.Remove(fqn); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFileRemovalFailed, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileRemoval, fmt.Sprintf("%v%v", ctv.LBL_FILENAME, fqn))
 		return
 	}
 
@@ -1134,7 +1134,7 @@ func WriteFile(
 ) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo.Error = os.WriteFile(fqn, fileData, filePermissions); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v %v%v", errs.ErrFileCreationFailed.Error(), ctv.LBL_FILENAME, fqn))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_HELPERS, ctv.VAL_EMPTY, ctv.LBL_FILENAME, fqn, ctv.TXT_CREATE_FAILED))
 	}
 
 	return
@@ -1175,7 +1175,7 @@ func createLogFile(logFQD string) (
 	)
 
 	if vlds.IsDirectoryFullyQualified(logFQD) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrDirectoryNotFullyQualified, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, logFQD))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSDirectoryNotFullyQualified, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_LOG_DIRECTORY, logFQD))
 		return
 	}
 

@@ -21,7 +21,7 @@ func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPService, erro
 		tGCPConfig GCPConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, geminiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -51,17 +51,17 @@ func loadGCPConfig(gcpConfigFilename string) (gcpConfig GCPConfig, errorInfo err
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(gcpConfigFilename)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GCP_SERVIER, ctv.LBL_EXTENSION_CONFIG_FILENAME, gcpConfigFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GCP_SERVIER, ctv.LBL_CONFIG_EXTENSION_FILENAME, gcpConfigFilename))
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tConfigData, &gcpConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GCP_SERVIER, ctv.LBL_EXTENSION_CONFIG_FILENAME, gcpConfigFilename))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_GCP_SERVIER, ctv.LBL_CONFIG_EXTENSION_FILENAME, gcpConfigFilename))
 		return
 	}
 
@@ -75,16 +75,16 @@ func loadGCPConfig(gcpConfigFilename string) (gcpConfig GCPConfig, errorInfo err
 //	Verifications: validateConfiguration
 func validateGCPConfig(gcpConfig GCPConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPCredentialFilename, errs.ErrRequiredParameterMissing, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPCredentialFilename, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = vals.DoesFileExistsAndReadable(gcpConfig.GCPCredentialFilename, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPLocation, errs.ErrRequiredParameterMissing, ctv.FN_GCP_LOCATION); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPLocation, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_LOCATION); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPProjectID, errs.ErrRequiredParameterMissing, ctv.FN_GCP_PROJECT_ID)
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, gcpConfig.GCPProjectID, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_PROJECT_ID)
 
 	return
 }

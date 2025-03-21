@@ -33,10 +33,10 @@ func NewGeminiService(gcpCredentialsFilename string, gcpProjectId string, gcpLoc
 		tGeminiConfig GeminiConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, gcpCredentialsFilename, errs.ErrRequiredParameterMissing, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, gcpCredentialsFilename, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -85,21 +85,21 @@ func (geminiServicePtr *GeminiService) buildModelPool() (errorInfo errs.ErrorInf
 	for _, worker := range modelPoolNames {
 		geminiServicePtr.modelPtrs[worker] = geminiServicePtr.clientPtr.GenerativeModel(geminiServicePtr.config.ModelName)
 		if tInt64, errorInfo.Error = strconv.ParseInt(geminiServicePtr.config.MaxOutputTokens, 10, 32); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errs.ErrIntegerInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidInteger, fmt.Sprintf("%s%s\n", ctv.LBL_AI_MAX_OUTPUT_TOKENS, geminiServicePtr.config.MaxOutputTokens))
 			return
 		}
 		tInt32 = int32(tInt64)
 		geminiServicePtr.modelPtrs[worker].MaxOutputTokens = &tInt32
 
 		if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.SetTopProbability, 64); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_SET_TOP_PROBABILITY, geminiServicePtr.config.SetTopProbability))
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidFloat, fmt.Sprintf("%s%s\n", ctv.LBL_AI_SET_TOP_PROBABILITY, geminiServicePtr.config.SetTopProbability))
 			return
 		}
 		tFloat32 = float32(tFloat64)
 		geminiServicePtr.modelPtrs[worker].SetTopP(tFloat32)
 
 		if tFloat64, errorInfo.Error = strconv.ParseFloat(geminiServicePtr.config.Temperature, 64); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errs.ErrFloatInvalid, fmt.Sprintf("%s%s\n", ctv.LBL_GEMINI_TEMPERATURE, geminiServicePtr.config.Temperature))
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidFloat, fmt.Sprintf("%s%s\n", ctv.LBL_AI_TEMPERATURE, geminiServicePtr.config.Temperature))
 			return
 		}
 		tFloat32 = float32(tFloat64)
@@ -254,11 +254,11 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 		case SI_KEY_SPECIAL_WORDS:
 			fallthrough
 		case SI_KEY_TIME_PERIOD_VALUES:
-			systemInstruction = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].Instruction
-			tOutputFormat = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].OutputFormat
-			tSetDate = geminiServicePtr.config.SystemInstructions.AnalyzeQuestion[key].SetDate
+			systemInstruction = geminiServicePtr.config.SystemInstructions[key].Instruction
+			tOutputFormat = geminiServicePtr.config.SystemInstructions[key].OutputFormat
+			tSetDate = geminiServicePtr.config.SystemInstructions[key].SetDate
 		default:
-			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidSystemInstructionKey, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_AI_SYSTEM_INSTRUCTION_KEY, topic))
 			return
 		}
 	case SI_TOPIC_GENERATE_ANSWER:
@@ -268,15 +268,15 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 		case SI_KEY_MARKETING_ANALYST:
 			fallthrough
 		case SI_KEY_NOT_SUPPORTED:
-			systemInstruction = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].Instruction
-			tOutputFormat = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].OutputFormat
-			tSetDate = geminiServicePtr.config.SystemInstructions.GenerateAnswer[key].SetDate
+			systemInstruction = geminiServicePtr.config.SystemInstructions[key].Instruction
+			tOutputFormat = geminiServicePtr.config.SystemInstructions[key].OutputFormat
+			tSetDate = geminiServicePtr.config.SystemInstructions[key].SetDate
 		default:
-			errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionKeyInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_KEY, topic))
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidSystemInstructionKey, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_AI_SYSTEM_INSTRUCTION_KEY, topic))
 			return
 		}
 	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrSystemInstructionTopicInvalid, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_GEMINI_SYSTEM_INSTRUCTION_TOPIC, topic))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidSystemInstructionTopic, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_AI_SYSTEM_INSTRUCTION_TOPIC, topic))
 		return
 	}
 
@@ -285,7 +285,7 @@ func (geminiServicePtr *GeminiService) loadSystemInstruction(locationPtr *time.L
 	}
 	if tSetDate {
 		if locationPtr == nil {
-			errorInfo = errs.NewErrorInfo(errs.ErrRequiredParameterMissing, errs.BuildLabelValue(ctv.LBL_GEMINI_SERVICE, ctv.LBL_TIMEZONE, ctv.TXT_IS_MISSING))
+			errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_TIMEZONE, ctv.TXT_IS_MISSING))
 			return
 		}
 		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
@@ -307,14 +307,14 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfigFilename, errs.ErrRequiredParameterMissing, ctv.LBL_CONFIG_GEMINI_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_AI_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
 	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(geminiConfigFilename)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_GEMINI_SERVICE, ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_READ_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, geminiConfigFilename, ctv.TXT_READ_FAILED),
 		)
 		return
 	}
@@ -322,7 +322,7 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 	if errorInfo.Error = yaml.Unmarshal(tConfigData, &geminiConfig); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_GEMINI_SERVICE, ctv.LBL_CONFIG_GEMINI, ctv.LBL_EXTENSION_CONFIG_FILENAME, geminiConfigFilename, ctv.TXT_UNMARSHAL_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, geminiConfigFilename, ctv.TXT_UNMARSHAL_FAILED),
 		)
 		return
 	}
@@ -337,32 +337,32 @@ func loadGeminiConfig(geminiConfigFilename string) (geminiConfig GeminiConfig, e
 //	Verifications: validateConfiguration
 func validateGeminiConfig(geminiConfig GeminiConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.MaxOutputTokens, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfig.MaxOutputTokens, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.ModelName, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_MODEL_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfig.ModelName, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MODEL_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.SetTopProbability, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_SET_TOP_K); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfig.SetTopProbability, errs.ErrEmptyRequiredParameter, ctv.FN_AI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckMapLengthGTZero(
-		ctv.LBL_GEMINI_SERVICE,
-		geminiConfig.SystemInstructions.AnalyzeQuestion,
-		errs.ErrRequiredParameterMissing,
-		ctv.FN_SI_ANALYZE_QUESTION,
+		ctv.LBL_SERVICE_AI,
+		geminiConfig.SystemInstructions,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_ANALYZE_QUESTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckMapLengthGTZero(
-		ctv.LBL_GEMINI_SERVICE,
-		geminiConfig.SystemInstructions.GenerateAnswer,
-		errs.ErrRequiredParameterMissing,
-		ctv.FN_SI_GENERATE_ANSWER,
+		ctv.LBL_SERVICE_AI,
+		geminiConfig.SystemInstructions,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_GENERATE_ANSWER,
 	); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GEMINI_SERVICE, geminiConfig.Temperature, errs.ErrRequiredParameterMissing, ctv.FN_GEMINI_TEMPERATURE)
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, geminiConfig.Temperature, errs.ErrEmptyRequiredParameter, ctv.FN_AI_TEMPERATURE)
 
 	return
 }

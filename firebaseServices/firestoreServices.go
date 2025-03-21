@@ -71,7 +71,7 @@ func doesDocumentExist(documentReferencePtr *firestore.DocumentRef) bool {
 // FindDocument - Returns an error for documents not found, but it doesn't print the error to the log.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrRequiredArgumentMissing, errs.ErrDocumentNotFound, errs.ErrServiceFailedFIRESTORE
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument
 //	Verifications: None
 func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryParameters ...NameValueQuery) (found bool, documentSnapshotPtr *firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 
@@ -80,12 +80,12 @@ func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryP
 	)
 
 	if datastore == ctv.VAL_EMPTY || len(queryParameters) < 1 {
-		errorInfo.Error = errs.ErrRequiredArgumentMissing
+		errorInfo.Error = errs.ErrEmptyRequiredParameter
 	} else {
 		tQuery = firestoreClientPtr.Collection(datastore).Query
 		for _, parameter := range queryParameters {
 			if parameter.FieldName == ctv.VAL_EMPTY || parameter.FieldValue == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, ctv.VAL_EMPTY)
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, ctv.VAL_EMPTY)
 				break
 			} else {
 				tQuery = tQuery.Where(parameter.FieldName, ctv.OPER_EQUAL_SIGN, parameter.FieldValue)
@@ -99,10 +99,10 @@ func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryP
 			documentSnapshotPtr, errorInfo.Error = tDocuments.Next()
 			if errorInfo.Error != nil {
 				if errors.Is(errorInfo.Error, iterator.Done) {
-					errorInfo = errs.NewErrorInfo(errs.ErrDocumentNotFound, NOT_FOUND_MAYBE_CORRECT)
+					errorInfo = errs.NewErrorInfo(errs.ErrNoFoundDocument, NOT_FOUND_MAYBE_CORRECT)
 					break
 				} else {
-					errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedFIRESTORE, ctv.VAL_EMPTY)
+					errorInfo = errs.NewErrorInfo(errs.ErrFailedServiceFirestore, ctv.VAL_EMPTY)
 					break
 				}
 			}
@@ -120,7 +120,7 @@ func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryP
 // If no documents are found, the documents will have a count of zero.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrRequiredArgumentMissing
+//	Errors: errs.ErrEmptyRequiredParameter
 //	Verifications: None
 func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (documents []*firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 
@@ -129,14 +129,14 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 	)
 
 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY {
-		errorInfo.Error = errs.ErrRequiredArgumentMissing
+		errorInfo.Error = errs.ErrEmptyRequiredParameter
 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v", firestoreClientPtr, datastore)
 		errs.PrintErrorInfo(errorInfo)
 	} else {
 		tCollectionReferencePtr = firestoreClientPtr.Collection(datastore)
 		documents, errorInfo.Error = tCollectionReferencePtr.Documents(CTXBackground).GetAll()
 		if documents == nil && errorInfo.Error == nil {
-			errorInfo.Error = errs.ErrDocumentsNoneFound
+			errorInfo.Error = errs.ErrNoFoundDocument
 		}
 	}
 
@@ -147,7 +147,7 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 // If no documents are found, the documents will have a count of zero.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrRequiredArgumentMissing, errs.ErrDocumentsNoneFound, errs.ErrServiceFailedFIRESTORE
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrDocumentsNoneFound, errs.ErrServiceFailedFIRESTORE
 //	Verifications: None
 // func GetAllDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 //
@@ -160,7 +160,7 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || fieldName == ctv.VAL_EMPTY || fieldValue == nil {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v Field Name: %v Field Value: %v", firestoreClientPtr, datastore, fieldName, fieldValue)
 // 		errs.PrintError(errorInfo)
 // 	} else {
@@ -185,7 +185,7 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 // If no documents are found, the documents variable will have a zero length.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrRequiredArgumentMissing
+//	Errors: errs.ErrEmptyRequiredParameter
 //	Verifications: None
 // func GetSomeDocumentsWhere(firestoreClientPtr *firestoreServices.Client, datastore, fieldName string, fieldValue interface{}, offset, recordCount int) (documents []*firestoreServices.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 //
@@ -198,7 +198,7 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if firestoreClientPtr == nil || datastore == ctv.VAL_EMPTY || fieldName == ctv.VAL_EMPTY || fieldValue == nil {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 		errorInfo.AdditionalInfo = fmt.Sprintf("Firestore Client Pointer: %v Datastore: %v Field Name: %v Field Value: %v", firestoreClientPtr, datastore, fieldName, fieldValue)
 // 		errs.PrintError(errorInfo)
 // 	} else {
@@ -221,7 +221,7 @@ func GetDocumentById(firestoreClientPtr *firestore.Client, datastore string, doc
 	} else {
 		if documentSnapshotPtr, errorInfo.Error = firestoreClientPtr.Doc(datastore + "/" + documentId).Get(CTXBackground); documentSnapshotPtr == nil || errorInfo.Error != nil {
 			if strings.Contains(errorInfo.Error.Error(), ctv.TXT_NOT_FOUND) {
-				errorInfo.Error = errs.ErrDocumentNotFound
+				errorInfo.Error = errs.ErrNoFoundDocument
 			}
 			documentSnapshotPtr = nil
 		}
@@ -265,7 +265,7 @@ func getDocumentRef(firestoreClientPtr *firestore.Client, datastore, documentId 
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v", datastore, parentDocumentId, subCollectionName)
@@ -294,7 +294,7 @@ func getDocumentRef(firestoreClientPtr *firestore.Client, datastore, documentId 
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v/%v", datastore, parentDocumentId, subCollectionName, documentId)
@@ -316,13 +316,13 @@ func getDocumentRef(firestoreClientPtr *firestore.Client, datastore, documentId 
 func GetFirestoreClientConnection(appPtr *firebase.App) (firestoreClientPtr *firestore.Client, errorInfo errs.ErrorInfo) {
 
 	if appPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFirebaseAppConnectionFailed, "Firebase appPtr is nil.")
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedFunctionConnection, errs.BuildLabelValue(ctv.LBL_SERVICE_FIREBASE, ctv.LBL_FIREBASE_APP, ctv.TXT_POINTER_IS_NIL))
 		return
 	}
 
 	// firestoreClientPtr is in the function definition because error is passed up the stack by Firebase/Firestore
 	if firestoreClientPtr, errorInfo.Error = appPtr.Firestore(context.Background()); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFirestoreClientFailed, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedServiceFirestore, ctv.VAL_EMPTY)
 		return
 	}
 
@@ -372,13 +372,13 @@ func RemoveDocument(firestoreClientPtr *firestore.Client, datastore string, quer
 			}
 			if errorInfo.Error != nil {
 				errorInfo.AdditionalInfo = fmt.Sprintf("An error occurred trying to remove a document. Error: %v", errorInfo.Error)
-				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+				errorInfo.Error = errs.ErrFailedServiceFirestore
 				//errs.PrintError(errorInfo)
 				// todo handle error & notification
 			}
 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(tDocument.Ref.ID).Delete(CTXBackground); errorInfo.Error != nil {
 				errorInfo.AdditionalInfo = fmt.Sprintf("%v Failed: Investigate, there is something wrong! Error: %v", tFunctionName, errorInfo.Error.Error())
-				errorInfo.Error = errs.ErrServiceFailedFIRESTORE
+				errorInfo.Error = errs.ErrFailedServiceFirestore
 				//errs.PrintError(errorInfo)
 				// todo Handle error and Notification
 			}
@@ -399,19 +399,19 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
 	if datastore == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
 		return
 	}
 	if documentId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
 	if arrayElement == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
 	if vlds.IsStruct(arrayElement) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
 	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(
@@ -471,7 +471,7 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 // RemoveDocumentFromSubCollection
 //
 //	Customer Messages: None
-//	Errors: errs.ErrRequiredArgumentMissing
+//	Errors: errs.ErrEmptyRequiredParameter
 //	Verification: Check datastore, parentDocumentId, and subCollectionName are populated
 // func RemoveDocumentFromSubCollection(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName string) (errorInfo errs.ErrorInfo) {
 //
@@ -485,7 +485,7 @@ func RemoveDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 	} else {
 // 		tDocumentRefIterPtr = firestoreClientPtr.Collection(datastore).Doc(parentDocumentId).Collection(subCollectionName).DocumentRefs(CTXBackground)
 // 		for {
@@ -520,20 +520,20 @@ func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId str
 		return
 	}
 	if firestoreClientPtr == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.TXT_SERVICE_FIRESTORE, ctv.TXT_SERVICE_FAILED))
 		return
 	}
 	if datastore == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
 		return
 	}
 	if documentId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
 
 	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Set(CTXBackground, hlp.ConvertMapAnyToMapString(nameValues)); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrServiceFailedFIRESTORE, ctv.VAL_EMPTY)
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedServiceFirebase, errs.BuildLabelValue(ctv.LBL_SERVICE_FIREBASE, ctv.LBL_DOCUMENT_ID, ctv.TXT_SET_FAILED))
 		return
 	}
 
@@ -593,11 +593,11 @@ func UpdateDocument(firestoreClientPtr *firestore.Client, datastore, documentId 
 	}
 
 	if datastore == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
 		return
 	}
 	if documentId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
 	if tUpdateFields, errorInfo = buildFirestoreUpdate(nameValues); errorInfo.Error == nil {
@@ -620,19 +620,19 @@ func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
 	if datastore == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
 		return
 	}
 	if documentId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
 	if arrayElement == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
 	//if vlds.IsStruct(arrayElement) == false {
-	//	errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
+	//	errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 	//	return
 	//}
 
@@ -658,11 +658,11 @@ func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, doc
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
 	if datastore == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DATASTORE, ctv.TXT_IS_MISSING))
 		return
 	}
 	if documentId == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrRequiredArgumentMissing, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_DOCUMENT_ID, ctv.TXT_IS_MISSING))
 		return
 	}
 
@@ -676,7 +676,7 @@ func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, doc
 // UpdateDocumentFromSubCollectionByDocumentId
 //
 //	Customer Messages: None
-//	Errors: ErrRequiredArgumentMissing, Any error from Firestore
+//	Errors: ErrEmptyRequiredParameter, Any error from Firestore
 //	Verifications: None
 // func UpdateDocumentFromSubCollectionByDocumentId(firestoreClientPtr *firestoreServices.Client, datastore, parentDocumentId, subCollectionName, documentId string, updateFields []firestoreServices.Update) (errorInfo errs.ErrorInfo) {
 //
@@ -689,7 +689,7 @@ func UpdateDocumentMergeAll(firestoreClientPtr *firestore.Client, datastore, doc
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
-// 		errorInfo.Error = errs.ErrRequiredArgumentMissing
+// 		errorInfo.Error = errs.ErrEmptyRequiredParameter
 // 		log.Println(errorInfo.Error)
 // 	} else {
 // 		tPath = fmt.Sprintf("%v/%v/%v/%v", datastore, parentDocumentId, subCollectionName, documentId)

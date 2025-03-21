@@ -140,7 +140,7 @@ func PrintError(
 
 	runtime.Stack(buf, false)
 	if myError == nil {
-		errorInfo = newError(buf, ErrErrorMissing)
+		errorInfo = newError(buf, ErrEmptyError)
 	} else {
 		errorInfo = newError(buf, myError)
 	}
@@ -158,7 +158,7 @@ func PrintError(
 // If the outputMode is display, the color will be red. The default is to output to the log.
 //
 //	Customer Messages: None
-//	Errors: ErrErrorMissing
+//	Errors: ErrEmptyError
 //	Verifications: None
 func PrintErrorInfo(errorInfo ErrorInfo) {
 
@@ -168,7 +168,7 @@ func PrintErrorInfo(errorInfo ErrorInfo) {
 
 	runtime.Stack(buf, false)
 	if errorInfo.Error == nil {
-		errorInfo = newError(buf, ErrErrorMissing)
+		errorInfo = newError(buf, ErrEmptyError)
 	}
 
 	outputError(errorInfo)
