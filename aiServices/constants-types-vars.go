@@ -45,7 +45,7 @@ type InstructionSet struct {
 	SetDate      bool   `json:"set_date"`
 }
 
-type GeminiResponse struct {
+type aiResponse struct {
 	Response   string
 	SIKey      string
 	TokenCount genai.UsageMetadata

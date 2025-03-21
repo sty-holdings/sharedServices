@@ -28,7 +28,7 @@ var (
 //goland:noinspection ALL
 )
 
-func buildTestGeminiInstance() (errorInfo errs.ErrorInfo) {
+func buildTestaiInstance() (errorInfo errs.ErrorInfo) {
 
 	var (
 		tUniqueSettingsData []byte
@@ -63,8 +63,8 @@ func buildTestGeminiInstance() (errorInfo errs.ErrorInfo) {
 	if errorInfo = getFirebaseConnection(); errorInfo.Error != nil {
 		log.Fatalln("FB connection failed")
 	}
-	if errorInfo = getGeminiConnection(); errorInfo.Error != nil {
-		log.Fatalln("GEMINI connection failed")
+	if errorInfo = getaiConnection(); errorInfo.Error != nil {
+		log.Fatalln("ai connection failed")
 	}
 	if errorInfo = getFBUser(); errorInfo.Error != nil {
 		log.Fatalln("FB Auth User retrieval failed")
@@ -88,7 +88,7 @@ func getFirebaseConnection() (errorInfo errs.ErrorInfo) {
 	return
 }
 
-func getGeminiConnection() (errorInfo errs.ErrorInfo) {
+func getaiConnection() (errorInfo errs.ErrorInfo) {
 
 	var (
 		tUniqueSettingsData []byte
@@ -108,7 +108,7 @@ func getGeminiConnection() (errorInfo errs.ErrorInfo) {
 		return
 	}
 
-	if halInstancePtr.geminiConnectionPtr, errorInfo.Error = genai.NewClient(
+	if halInstancePtr.aiConnectionPtr, errorInfo.Error = genai.NewClient(
 		context.Background(), halInstancePtr.extensionUniqueSettings.UniqueSettings.GCPProjectId, halInstancePtr.extensionUniqueSettings.UniqueSettings.GCPLocation,
 		option.WithCredentialsFile(halInstancePtr.extensionUniqueSettings.UniqueSettings.GCPCredentialFilename),
 	); errorInfo.Error != nil {

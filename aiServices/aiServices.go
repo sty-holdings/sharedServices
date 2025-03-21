@@ -136,7 +136,7 @@ func (aiServicePtr *AIService) buildModelPool() (errorInfo errs.ErrorInfo) {
 func (aiServicePtr *AIService) GenerateContent(
 	locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
 	systemInstructionKey string, additionalInstructions string,
-) (geminiResponse GeminiResponse) {
+) (aiResponse aiResponse) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
@@ -150,37 +150,37 @@ func (aiServicePtr *AIService) GenerateContent(
 		tPromptData += fmt.Sprintf("%s %s ", source, data)
 	}
 
-	if tInstruction, geminiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); geminiResponse.ErrorInfo.Error != nil {
+	if tInstruction, aiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(locationPtr, systemInstructionTopic, systemInstructionKey); aiResponse.ErrorInfo.Error != nil {
 		return
 	}
 	tInstruction = fmt.Sprintf("%s %s", tInstruction, additionalInstructions)
 	aiServicePtr.modelPtrs[tPool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
-	if tGenerateContentResponsePtr, geminiResponse.ErrorInfo.Error = aiServicePtr.modelPtrs[tPool].GenerateContent(
+	if tGenerateContentResponsePtr, aiResponse.ErrorInfo.Error = aiServicePtr.modelPtrs[tPool].GenerateContent(
 		CTXBackground, genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
-	); geminiResponse.ErrorInfo.Error != nil {
-		geminiResponse.ErrorInfo = errs.NewErrorInfo(geminiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
+	); aiResponse.ErrorInfo.Error != nil {
+		aiResponse.ErrorInfo = errs.NewErrorInfo(aiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
 	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
 	for _, part := range tResponseParts {
-		geminiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "json", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "\n", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "  ", " ")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "```", "")
+		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "json", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "  ", " ")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "```", "")
 	}
 
-	geminiResponse.SIKey = systemInstructionKey
-	geminiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
+	aiResponse.SIKey = systemInstructionKey
+	aiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
 
 	if aiServicePtr.debugOn {
 		log.Printf("Pool: %s\n", tPool)
-		log.Printf("SI Key: %s\n", geminiResponse.SIKey)
-		log.Printf("Response: %s\n", geminiResponse.Response)
-		log.Printf("token count: %d\n", geminiResponse.TokenCount)
-		log.Printf("Error: %d\n", geminiResponse.ErrorInfo)
+		log.Printf("SI Key: %s\n", aiResponse.SIKey)
+		log.Printf("Response: %s\n", aiResponse.Response)
+		log.Printf("token count: %d\n", aiResponse.TokenCount)
+		log.Printf("Error: %d\n", aiResponse.ErrorInfo)
 	}
 
 	return
@@ -194,7 +194,7 @@ func (aiServicePtr *AIService) GenerateContent(
 //	Verifications: None
 func (aiServicePtr *AIService) GenerateContentForQuestion(
 	prompt string, pool string, systemInstruction string, additionalInstructions string,
-) (geminiResponse GeminiResponse) {
+) (aiResponse aiResponse) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
@@ -205,30 +205,30 @@ func (aiServicePtr *AIService) GenerateContentForQuestion(
 	tInstruction = fmt.Sprintf("%s %s", systemInstruction, additionalInstructions)
 	aiServicePtr.modelPtrs[pool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
 
-	if tGenerateContentResponsePtr, geminiResponse.ErrorInfo.Error = aiServicePtr.modelPtrs[pool].GenerateContent(
+	if tGenerateContentResponsePtr, aiResponse.ErrorInfo.Error = aiServicePtr.modelPtrs[pool].GenerateContent(
 		CTXBackground, genai.Text(prompt),
-	); geminiResponse.ErrorInfo.Error != nil {
-		geminiResponse.ErrorInfo = errs.NewErrorInfo(geminiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
+	); aiResponse.ErrorInfo.Error != nil {
+		aiResponse.ErrorInfo = errs.NewErrorInfo(aiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
 		return
 	}
 
 	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
 	for _, part := range tResponseParts {
-		geminiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "json", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "\n", "")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "  ", " ")
-		geminiResponse.Response = strings.ReplaceAll(geminiResponse.Response, "```", "")
+		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "json", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "  ", " ")
+		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "```", "")
 	}
 
-	geminiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
+	aiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
 
 	if aiServicePtr.debugOn {
 		log.Printf("Pool: %s\n", pool)
-		log.Printf("SI Key: %s\n", geminiResponse.SIKey)
-		log.Printf("Response: %s\n", geminiResponse.Response)
-		log.Printf("token count: %d\n", geminiResponse.TokenCount)
-		log.Printf("Error: %d\n", geminiResponse.ErrorInfo)
+		log.Printf("SI Key: %s\n", aiResponse.SIKey)
+		log.Printf("Response: %s\n", aiResponse.Response)
+		log.Printf("token count: %d\n", aiResponse.TokenCount)
+		log.Printf("Error: %d\n", aiResponse.ErrorInfo)
 	}
 
 	return
@@ -296,7 +296,7 @@ func (aiServicePtr *AIService) loadSystemInstruction(locationPtr *time.Location,
 
 // Private methods below here
 
-// loadAIConfig - reads, and returns a gemini service pointer
+// loadAIConfig - reads, and returns a ai service pointer
 //
 //	Customer Messages: None
 //	Errors: error returned by ReadConfigFile or validateConfiguration
@@ -330,7 +330,7 @@ func loadAIConfig(AIConfigFilename string) (AIConfig AIConfig, errorInfo errs.Er
 	return
 }
 
-// validateAIConfig - validates the gemini service configuration
+// validateAIConfig - validates the ai service configuration
 //
 //	Customer Messages: None
 //	Errors: error returned by ReadConfigFile or validateConfiguration

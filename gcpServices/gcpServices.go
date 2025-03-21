@@ -15,17 +15,17 @@ import (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewGCPService(geminiConfigFilename string) (gcpServicePtr *GCPService, errorInfo errs.ErrorInfo) {
+func NewGCPService(aiConfigFilename string) (gcpServicePtr *GCPService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tGCPConfig GCPConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, geminiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVIER, aiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
-	if tGCPConfig, errorInfo = loadGCPConfig(geminiConfigFilename); errorInfo.Error != nil {
+	if tGCPConfig, errorInfo = loadGCPConfig(aiConfigFilename); errorInfo.Error != nil {
 		return
 	}
 
