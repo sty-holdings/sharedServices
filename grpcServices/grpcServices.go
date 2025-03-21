@@ -74,7 +74,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 			return
 		}
 		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
-		errorInfo = hlps.CheckPointerNotNil(servicePtr.GRPCServerPtr, errs.ErrEmptyPointer, ctv.FN_GRPC_SERVER_POINTER)
+		errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC, servicePtr.GRPCServerPtr, errs.ErrEmptyPointer, ctv.FN_GRPC_SERVER_POINTER)
 	}
 
 	return
@@ -192,7 +192,7 @@ func LoadTLSCABundle(tlsConfig jwts.TLSInfo) (dailOption grpc.DialOption, errorI
 	}
 
 	if dailOption = grpc.WithTransportCredentials(credentials.NewTLS(config)); dailOption == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrFailedGrpcDialOption, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_DIAL_OPTION, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errs.ErrFailedGRPCDialOption, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_DIAL_OPTION, ctv.TXT_FAILED))
 	}
 
 	return
@@ -244,7 +244,7 @@ func validateConfig(config GRPCConfig) (errorInfo errs.ErrorInfo) {
 		return
 	}
 	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGrpcPort, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC, config.GRPCTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
@@ -257,7 +257,7 @@ func validateConfig(config GRPCConfig) (errorInfo errs.ErrorInfo) {
 		return
 	}
 	if config.GRPCTimeout < ctv.VAL_ONE {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGrpcTimeout, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
 	}
 
 	return
