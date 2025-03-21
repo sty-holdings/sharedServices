@@ -68,6 +68,9 @@ const (
 	EXISTS_SHORT_URL_ALREADY                = "The short URL already exists in the system."
 	EXISTS_STYH_USER_NAME_ALREADY           = "The STYH user name already exists in the system."
 	FAILED_DECODE_STRING                    = "Unable to decode the string."
+	FAILED_EXTENSION_DIGITS                 = "DIGITS Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_HAL                    = "HAL Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_QTESTER                = "QTESTER Extension has failed. Investigate right away!"
 	FAILED_FUNCTION_ANALYZE_QUESTION        = "The analyze question function has failed."
 	FAILED_FUNCTION_CONNECTION              = "The connection failed."
 	FAILED_FUNCTION_GENERATE_ANSWER         = "The generate answer function has failed."
@@ -81,9 +84,8 @@ const (
 	FAILED_MARSHAL                          = "Unable to marshal data"
 	FAILED_NATS_CONNECTION                  = "Connecting to NATS server failed."
 	FAILED_PARSE_VALUE                      = "Unable to parse the value provided."
-	FAILED_PROGRAM_DIGITS                   = "DIGITS program has failed. Investigate right away!"
-	FAILED_PROGRAM_HAL                      = "HAL program has failed. Investigate right away!"
-	FAILED_PROGRAM_QTESTER                  = "QTESTER program has failed. Investigate right away!"
+	FAILED_PROGRAM_CONNECT_SERVER           = "The program Connect Server has failed. Investigate right away!"
+	FAILED_PROGRAM_SERVER                   = "The program server has failed. Investigate right away!"
 	FAILED_PSQL_CONN                        = "No database connection has been established."
 	FAILED_PSQL_LOGIN                       = "The PSQL supplied login credentials failed."
 	FAILED_READ_FILE                        = "Unable to read file."
@@ -261,6 +263,9 @@ var (
 	ErrExistsShortUrlAlready              = errors.New(EXISTS_SHORT_URL_ALREADY)
 	ErrExistsStyhUserNameAlready          = errors.New(EXISTS_STYH_USER_NAME_ALREADY)
 	ErrFailedDecodeString                 = errors.New(FAILED_DECODE_STRING)
+	ErrFailedExtensionDigits              = errors.New(FAILED_EXTENSION_DIGITS)
+	ErrFailedExtensionHal                 = errors.New(FAILED_EXTENSION_HAL)
+	ErrFailedExtensionQtester             = errors.New(FAILED_EXTENSION_QTESTER)
 	ErrFailedFunctionAnalyzeQuestion      = errors.New(FAILED_FUNCTION_ANALYZE_QUESTION)
 	ErrFailedFunctionConnection           = errors.New(FAILED_FUNCTION_CONNECTION)
 	ErrFailedFunctionGenerateAnswer       = errors.New(FAILED_FUNCTION_GENERATE_ANSWER)
@@ -274,9 +279,8 @@ var (
 	ErrFailedMarshal                      = errors.New(FAILED_MARSHAL)
 	ErrFailedNatsConnection               = errors.New(FAILED_NATS_CONNECTION)
 	ErrFailedParseValue                   = errors.New(FAILED_PARSE_VALUE)
-	ErrFailedProgramDigits                = errors.New(FAILED_PROGRAM_DIGITS)
-	ErrFailedProgramHal                   = errors.New(FAILED_PROGRAM_HAL)
-	ErrFailedProgramQtester               = errors.New(FAILED_PROGRAM_QTESTER)
+	ErrFailedProgramConnectServer         = errors.New(FAILED_PROGRAM_CONNECT_SERVER)
+	ErrFailedProgramServer                = errors.New(FAILED_PROGRAM_SERVER)
 	ErrFailedPsqlConn                     = errors.New(FAILED_PSQL_CONN)
 	ErrFailedPsqlLogin                    = errors.New(FAILED_PSQL_LOGIN)
 	ErrFailedReadFile                     = errors.New(FAILED_READ_FILE)
