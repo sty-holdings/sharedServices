@@ -136,7 +136,7 @@ func (aiServicePtr *AIService) buildModelPool() (errorInfo errs.ErrorInfo) {
 func (aiServicePtr *AIService) GenerateContent(
 	locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
 	systemInstructionKey string, additionalInstructions string,
-) (aiResponse aiResponse) {
+) (aiResponse AIResponse) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
@@ -194,7 +194,7 @@ func (aiServicePtr *AIService) GenerateContent(
 //	Verifications: None
 func (aiServicePtr *AIService) GenerateContentForQuestion(
 	prompt string, pool string, systemInstruction string, additionalInstructions string,
-) (aiResponse aiResponse) {
+) (aiResponse AIResponse) {
 
 	var (
 		tGenerateContentResponsePtr *genai.GenerateContentResponse
