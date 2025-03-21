@@ -25,12 +25,6 @@ const (
 
 //goland:noinspection All
 const (
-	ROLE_COUPLER_GOOGLE_ADS_ACCESS = "coupler_google_ads_access"
-	ROLE_ANSWER_ACCESS             = "answers_access"
-)
-
-//goland:noinspection All
-const (
 	DB_ANSWERS            = "answers"
 	DB_COUPLER_GOOGLE_ADS = "coupler_google_ads"
 )

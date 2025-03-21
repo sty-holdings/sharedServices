@@ -188,7 +188,7 @@ func TestBatchInsert(tPtr *testing.T) {
 				batchName:       "Batch 1",
 				insertStatement: INSERT_DAILY_PERFORMANCE,
 				insertValues:    rowValues,
-				role:            "coupler_google_ads_access",
+				role:            "coupler",
 			},
 			wantError: false,
 		},

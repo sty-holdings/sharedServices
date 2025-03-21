@@ -211,6 +211,7 @@ const (
 	FN_SAAS_PROVIDERS                       = "saas_providers"
 	FN_SAAS_PROVIDER_CLIENT_ID              = "saas_provider_client_id"
 	FN_SAAS_PROVIDER_KEY_INFO               = "saas_provider_key_info"
+	FN_SAAS_PROVIDER_SELECTED               = "saas_provider_selected"
 	FN_SAAS_SUPPORTED_PROVIDERS             = "saas_supported_providers"
 	FN_SECRET_KEY                           = "secret_key"
 	FN_SENTENCE_SUBJECT                     = "sentence_subject"
