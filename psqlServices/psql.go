@@ -296,7 +296,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 
 func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(config.DBName, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBName, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, errs.ErrEmptyServerHostName, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
