@@ -95,7 +95,7 @@ const (
 	TXT_SAAS_PROVIDERS_SUPPORTED     = "supported saas providers"
 	TXT_SECURE_CONNECTION_FAILED     = "Secure connection request failed."
 	TXT_SERVER                       = "server"
-	TXT_SERVICE_FAILED               = " service failed."
+	TXT_SERVICE_FAILED               = "service failed."
 	TXT_SERVICE_FIREBASE             = "Firebase"
 	TXT_SERVICE_FIREBASE_AUTH        = "Firebase Auth"
 	TXT_SERVICE_FIRESTORE            = "Firestore"
