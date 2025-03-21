@@ -54,7 +54,6 @@ const (
 	EMPTY_STYH_USER_ID                      = "The STYH User Id is empty."
 	EMPTY_STYH_USER_NAME                    = "You must provide a user name."
 	EMPTY_SYSTEM_ACTION                     = "The system action is empty."
-	EMPTY_TIME_FRAME                        = "In order to answer your question, it must have a timeframe, such as the year, month, today, a date, etc."
 	EMPTY_TLS_CERTIFICATE_FILENAME          = "The TLS certificate filename is empty."
 	EMPTY_TLS_PRIVATE_KEY_FILENAME          = "The TLS private key filename is empty."
 	EMPTY_TLS_ROOT_CA_FILENAME              = "The Root CA filename is empty."
@@ -170,6 +169,7 @@ const (
 	JWT_ACCESS_TOKEN_EXPIRED                = "The access token has expired."
 	JWT_REFRESH_TOKEN_EXPIRED               = "The refresh token has expired."
 	LESS_THAN_ZERO                          = "The value must be less than zero."
+	MISSING_TIME_FRAME                      = "In order to answer your question, it must have a timeframe, such as the year, month, today, a date, etc."
 	NO_FOUND_DOCUMENT                       = "No document was not found."
 	NO_FOUND_SHORT_URL                      = "The short URL was not found."
 	NO_FOUND_STORAGE_BUCKET                 = "The storage bucket was not found."
@@ -250,7 +250,6 @@ var (
 	ErrEmptyStyhUserId                    = errors.New(EMPTY_STYH_USER_ID)
 	ErrEmptyStyhUserName                  = errors.New(EMPTY_STYH_USER_NAME)
 	ErrEmptySystemAction                  = errors.New(EMPTY_SYSTEM_ACTION)
-	ErrEmptyTimeFrame                     = errors.New(EMPTY_TIME_FRAME)
 	ErrEmptyTlsCertificateFilename        = errors.New(EMPTY_TLS_CERTIFICATE_FILENAME)
 	ErrEmptyTlsPrivateKeyFilename         = errors.New(EMPTY_TLS_PRIVATE_KEY_FILENAME)
 	ErrEmptyTlsRootCaFilename             = errors.New(EMPTY_TLS_ROOT_CA_FILENAME)
@@ -366,6 +365,7 @@ var (
 	ErrJwtAccessTokenExpired              = errors.New(JWT_ACCESS_TOKEN_EXPIRED)
 	ErrJwtRefreshTokenExpired             = errors.New(JWT_REFRESH_TOKEN_EXPIRED)
 	ErrLessThanZero                       = errors.New(LESS_THAN_ZERO)
+	ErrMissingTimeFrame                   = errors.New(MISSING_TIME_FRAME)
 	ErrNoFoundDocument                    = errors.New(NO_FOUND_DOCUMENT)
 	ErrNoFoundShortURL                    = errors.New(NO_FOUND_SHORT_URL)
 	ErrNoFoundStorageBucket               = errors.New(NO_FOUND_STORAGE_BUCKET)
