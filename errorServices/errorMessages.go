@@ -175,6 +175,7 @@ const (
 	NO_FOUND_STORAGE_BUCKET                 = "The storage bucket was not found."
 	NO_SUPPORT_TIMEZONE                     = "The timezone is not supported."
 	NO_DATA_FOUND                           = "No data found."
+	OS_DIRECTORY_DOESNT_EXIST               = "The directory doesn't exist."
 	OS_DIRECTORY_NOT_FULLY_QUALIFIED        = "The directory doesn't start and end with slash."
 	OS_EMPTY_BUFFER                         = "The buffer is empty"
 	OS_FILE_CREATION                        = "Create the file failed."
@@ -370,6 +371,7 @@ var (
 	ErrNoFoundStorageBucket               = errors.New(NO_FOUND_STORAGE_BUCKET)
 	ErrNoSupportTimezone                  = errors.New(NO_SUPPORT_TIMEZONE)
 	ErrNoDataFound                        = errors.New(NO_DATA_FOUND)
+	ErrOSDirectoryDoesntExist             = errors.New(OS_DIRECTORY_DOESNT_EXIST)
 	ErrOSDirectoryNotFullyQualified       = errors.New(OS_DIRECTORY_NOT_FULLY_QUALIFIED)
 	ErrOSEmptyBuffer                      = errors.New(OS_EMPTY_BUFFER)
 	ErrOSFileCreation                     = errors.New(OS_FILE_CREATION)

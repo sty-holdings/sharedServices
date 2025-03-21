@@ -81,6 +81,26 @@ func BuildLabelValue(extensionName string, label string, value string) (addition
 	return fmt.Sprintf("%s %s%s.", extensionName, label, value)
 }
 
+// BuildLabelValueMessage - builds a string using the label, value amd message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildLabelValueMessage(extensionName string, label string, value string, message string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s %s%s %s.", extensionName, label, value, message)
+}
+
+// BuildLabelSubLabelValue - builds a string using the label, sub-label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildLabelSubLabelValue(extensionName string, label string, subLabel string, value string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s %s%s%s.", extensionName, label, subLabel, value)
+}
+
 // BuildLabelSubLabelValueMessage - builds a string using the label, sub-label, value and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
@@ -101,6 +121,16 @@ func BuildSTYHUserIdLabelValue(extensionName string, styhUserId string, label st
 	return fmt.Sprintf("%s STYH User Id: %s %s %s.", extensionName, styhUserId, label, value)
 }
 
+// BuildSTYHUserIdLabelValueMessage - builds a string using the UID, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildSTYHUserIdLabelValueMessage(extensionName string, styhUserId string, label string, value string, message string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s STYH User Id: %s %s%s %s.", extensionName, styhUserId, label, value, message)
+}
+
 // BuildSystemActionLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
@@ -111,6 +141,16 @@ func BuildSystemActionLabelValue(extensionName string, systemAction string, labe
 	return fmt.Sprintf("%s System Action: %s %s%s.", extensionName, systemAction, label, value)
 }
 
+// BuildSystemActionLabelValueMessage - builds a string using the UID, system action, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildSystemActionLabelValueMessage(extensionName string, systemAction string, label string, value string, message string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s System Action: %s %s%s %s.", extensionName, systemAction, label, value, message)
+}
+
 // BuildSystemActionSTYHUserIdLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
@@ -119,6 +159,17 @@ func BuildSystemActionLabelValue(extensionName string, systemAction string, labe
 func BuildSystemActionSTYHUserIdLabelValue(extensionName string, styhUserId string, systemAction string, label string, value string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s System Action: %s STYH User Id: %s %s%s.", extensionName, styhUserId, systemAction, label, value)
+}
+
+// BuildSystemActionSTYHUserIdLabelValueMessage - builds a string using the UID, system action, label, value, and message.
+// This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s", ...).
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func BuildSystemActionSTYHUserIdLabelValueMessage(extensionName string, styhUserId string, systemAction string, label string, value string, message string) (additionalInfo string) {
+
+	return fmt.Sprintf("%s System Action: %s STYH User Id: %s %s%s %s.", extensionName, systemAction, styhUserId, label, value, message)
 }
 
 // PrintError - will output error information using this format:
