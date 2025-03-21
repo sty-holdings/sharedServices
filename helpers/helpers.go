@@ -111,10 +111,10 @@ func Base64Encode(value string) string {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckArrayLengthGTZero[T any](extensionName string, value []T, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -128,7 +128,7 @@ func CheckArrayLengthGTZero[T any](value []T, err error, fieldLabel string) (err
 func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fieldLabel, ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -139,10 +139,10 @@ func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func CheckPointerNotNil(value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckPointerNotNil(extensionName string, value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fieldLabel, ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fieldLabel, ctv.TXT_IS_NIL))
 	}
 
 	return

@@ -161,6 +161,7 @@ const (
 	FN_POINTER                    = "any_pointer"
 	FN_PORT                       = "port"
 	FN_PRIVATE_KEY                = "PrivateKey"
+	FN_PROGRAM_NAME               = "program_name"
 	FN_PROMPT                     = "prompt"
 	FN_PROMPT_TOKEN_COUNT         = "prompt_token_count"
 	FN_PROVIDED_AML_PHOTO         = "provided_aml_photo"
