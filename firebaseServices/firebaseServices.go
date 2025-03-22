@@ -34,9 +34,9 @@ func NewFirebaseApp(credentialsFQN string) (
 	// DO NOT DELETE
 	// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
 	// Case 10319546 has been filed with Firebase Support
-	//if appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)); errorInfo.Error != nil {
+	// if appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)); errorInfo.Error != nil {
 	//	errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.ErrServiceFailedFIREBASE.Error())
-	//}
+	// }
 	// END DO NOT DELETE
 	appPtr, errorInfo.Error = firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN))
 
@@ -77,9 +77,9 @@ func GetFirebaseAppAuthConnection(credentialsFQN string) (
 	// DO NOT DELETE
 	// This code will not work because the underlying firebase.NewApp(CTXBackground, nil, option.WithCredentialsFile(credentialsFQN)) will always return an object.
 	// Case 10319546 has been filed with Firebase Support
-	//if appPtr, errorInfo = NewFirebaseApp(credentialsLocation); errorInfo.Error == nil {
+	// if appPtr, errorInfo = NewFirebaseApp(credentialsLocation); errorInfo.Error == nil {
 	//	authPtr, errorInfo = GetFirebaseAuthConnection(appPtr)
-	//}
+	// }
 	// END DO NOT DELETE
 
 	appPtr, errorInfo = NewFirebaseApp(credentialsFQN)
@@ -144,20 +144,20 @@ func GetFirebaseUserInfo(
 		return
 	}
 
-	if tUserDocumentSnapshotPtr, errorInfo = GetDocumentById(firestoreClientPtr, ctv.DATASTORE_USERS, username); errorInfo.Error != nil {
+	if tUserDocumentSnapshotPtr, errorInfo = GetDocumentById(firestoreClientPtr, DATASTORE_USERS, username); errorInfo.Error != nil {
 		return
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
 
 	// Todo Added insert into data collection table
-	//This can not use the Timing service.
-	//go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
+	// This can not use the Timing service.
+	// go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
 	//
 	//	var (
 	//		tFields = make(map[any]interface{})
 	//	)
-	//}(xStartTime, tFunctionName, firestoreClientPtr)
+	// }(xStartTime, tFunctionName, firestoreClientPtr)
 
 	return
 }
