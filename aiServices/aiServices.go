@@ -208,13 +208,17 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 	case SI_TOPIC_ANALYZE_QUESTION:
 		switch key {
 		case SI_KEY_CATEGORY_SENTENCE:
-			fallthrough
+			systemInstruction = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.SetDate
 		case SI_KEY_SPECIAL_WORDS:
-			fallthrough
+			systemInstruction = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.SpecialWords.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.SpecialWords.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.SpecialWords.SetDate
 		case SI_KEY_TIME_PERIOD_VALUES:
-			systemInstruction = aiServicePtr.config.SystemInstructions[key].Instruction
-			tOutputFormat = aiServicePtr.config.SystemInstructions[key].OutputFormat
-			tSetDate = aiServicePtr.config.SystemInstructions[key].SetDate
+			systemInstruction = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.TimePeriodValues.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.TimePeriodValues.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.TimePeriodValues.SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrInvalidSystemInstructionKey, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_AI_SYSTEM_INSTRUCTION_KEY, topic))
 			return
@@ -222,13 +226,17 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 	case SI_TOPIC_GENERATE_ANSWER:
 		switch key {
 		case SI_KEY_BUSINESS_ANALYST:
-			fallthrough
+			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.SetDate
 		case SI_KEY_MARKETING_ANALYST:
-			fallthrough
+			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.MarketingAnalyst.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.GenerateAnswer.MarketingAnalyst.SetDate
 		case SI_KEY_NOT_SUPPORTED:
-			systemInstruction = aiServicePtr.config.SystemInstructions[key].Instruction
-			tOutputFormat = aiServicePtr.config.SystemInstructions[key].OutputFormat
-			tSetDate = aiServicePtr.config.SystemInstructions[key].SetDate
+			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.NotSupported.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.NotSupported.OutputFormat
+			tSetDate = aiServicePtr.config.SystemInstructions.GenerateAnswer.NotSupported.SetDate
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrInvalidSystemInstructionKey, errs.BuildLabelValue(ctv.LBL_SERVICE_AI, ctv.LBL_AI_SYSTEM_INSTRUCTION_KEY, topic))
 			return
