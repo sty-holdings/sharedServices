@@ -134,8 +134,13 @@ func (aiServicePtr *AIService) buildModelPool() (errorInfo errs.ErrorInfo) {
 //	Errors: returned by GenerateContent, returned by loadSystemInstruction
 //	Verifications: None
 func (aiServicePtr *AIService) GenerateContent(
-	extensionName string, locationPtr *time.Location, prompt string, promptData map[string]string, systemInstructionTopic string,
-	systemInstructionKey string, additionalInstructions string,
+	extensionName string,
+	locationPtr *time.Location,
+	prompt string,
+	promptData map[string]string,
+	systemInstructionTopic string,
+	systemInstructionKey string,
+	additionalInstructions string,
 ) (aiResponse AIResponse) {
 
 	var (
@@ -186,71 +191,7 @@ func (aiServicePtr *AIService) GenerateContent(
 	return
 }
 
-// GenerateContentForQuestion - takes inputs and submits them to the AI engine, parses the output, and returns the results and token counts
-// Model pools are stored in local variable modelPoolNames. Values are "pool-0", "pool-1", "pool-2", "pool-3". One of these must be provided.
-// This method using the location of America/Los_Angeles and doesn't have an override.
-//
-//	Customer Messages: None
-//	Errors: returned by GenerateContent
-//	Verifications: None
-func (aiServicePtr *AIService) GenerateContentForQuestion(
-	extensionName string,
-	prompt string,
-	promptData map[string]string,
-	systemInstructionTopic string,
-	systemInstructionKey string,
-	additionalInstructions string,
-) (aiResponse AIResponse) {
-
-	var (
-		tGenerateContentResponsePtr *genai.GenerateContentResponse
-		tInstruction                string
-		tPool                       = siTopicKeyPoolAssignment[systemInstructionKey]
-		tPromptData                 string
-		tResponseParts              []genai.Part
-	)
-
-	for source, data := range promptData {
-		tPromptData += fmt.Sprintf("%s %s ", source, data)
-	}
-
-	if tInstruction, aiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(extensionName, nil, systemInstructionTopic, systemInstructionKey); aiResponse.ErrorInfo.Error != nil {
-		return
-	}
-	tInstruction = fmt.Sprintf("%s %s", tInstruction, additionalInstructions)
-	aiServicePtr.modelPtrs[tPool].SystemInstruction = &genai.Content{Parts: []genai.Part{genai.Text(tInstruction)}}
-
-	if tGenerateContentResponsePtr, aiResponse.ErrorInfo.Error = aiServicePtr.modelPtrs[tPool].GenerateContent(
-		CTXBackground, genai.Text(fmt.Sprintf("%s %s", prompt, tPromptData)),
-	); aiResponse.ErrorInfo.Error != nil {
-		aiResponse.ErrorInfo = errs.NewErrorInfo(aiResponse.ErrorInfo.Error, ctv.VAL_EMPTY)
-		return
-	}
-
-	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
-	for _, part := range tResponseParts {
-		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "json", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "  ", " ")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "```", "")
-	}
-
-	aiResponse.SIKey = systemInstructionKey
-	aiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
-
-	if aiServicePtr.debugOn {
-		log.Printf("Pool: %s\n", tPool)
-		log.Printf("SI Key: %s\n", aiResponse.SIKey)
-		log.Printf("Response: %s\n", aiResponse.Response)
-		log.Printf("token count: %d\n", aiResponse.TokenCount)
-		log.Printf("Error: %d\n", aiResponse.ErrorInfo)
-	}
-
-	return
-}
-
-// loadSystemInstruction - using the system instruction topic and key, the instruction will be returned. If locationPtr is nil,
+// loadSystemInstruction - using the system instruction topic and key, the instruction will be returned. If SetDate is true and locationPtr is nil,
 // the default loc, err := time.LoadLocation("America/Los_Angeles") will be used.
 //
 //	Customer Messages: None
@@ -298,7 +239,7 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 	}
 
 	if tOutputFormat != ctv.VAL_EMPTY {
-		systemInstruction = fmt.Sprintf("%s %s", systemInstruction, tOutputFormat)
+		systemInstruction = fmt.Sprintf("%s OUTPUT: %s", systemInstruction, tOutputFormat)
 	}
 	if tSetDate {
 		if locationPtr == nil {
@@ -306,7 +247,7 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(extensionName, ctv.LBL_TIMEZONE_LOCATION, ctv.TXT_FAILED))
 			}
 		}
-		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("today %s timezone: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
+		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("TODAY: %s TIMEZONE: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
 	}
 
 	return
