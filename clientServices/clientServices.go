@@ -108,7 +108,7 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 	tUserInfo[ctv.FN_STYH_USER_ID] = newUser.STYHUserId
 	tUserInfo[ctv.FN_ON_BOARDED] = false
 
-	if errorInfo = fbs.SetDocument(firestoreClientPtr, DATASTORE_USERS, newUser.STYHUserId, tUserInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.STYHUserId, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 
