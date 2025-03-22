@@ -12,3 +12,8 @@ const (
 	JWT_PAYLOAD_ISSUER_FN       = "ISSUER"
 	JWT_PAYLOAD_ISSUED_AT_FN    = "ISSUED_AT"
 )
+
+//goland:noinspection All
+const (
+	DATASTORE_USERS = "users"
+)

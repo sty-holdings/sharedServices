@@ -318,20 +318,14 @@ func IsEmpty(value interface{}) bool {
 //	Errors: None
 //	Verifications: None
 func IsExtensionValid(extension string) bool {
-	switch extension {
-	case ctv.EXTENSION_ADMIN:
-		fallthrough
-	case ctv.EXTENSION_DIGITS:
-		fallthrough
-	case ctv.EXTENSION_DK_CLIENT:
-		fallthrough
-	case ctv.EXTENSION_HAL:
-		fallthrough
-	case ctv.EXTENSION_QTESTER:
-		return true
-	default:
-		return false
+
+	for _, extensionName := range ctv.ExtensionList {
+		if strings.ToLower(extension) == strings.ToLower(extensionName) {
+			return true
+		}
 	}
+
+	return false
 }
 
 // IsFileReadable - tries to open the file using 0644 permissions
@@ -503,6 +497,22 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 	return len(myMap) > 0
 }
 
+// IsServiceValid - checks if the value is a valid service
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsServiceValid(service string) bool {
+
+	for _, serviceName := range ctv.ServiceList {
+		if strings.ToLower(service) == strings.ToLower(serviceName) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // IsStruct - will determine if the variable is a struct.
 //
 //	Customer Messages: None
@@ -511,6 +521,22 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 func IsStruct(v interface{}) bool {
 
 	return reflect.TypeOf(v).Kind() == reflect.Struct
+}
+
+// IsSystemActionValid - checks if the value is a valid system action
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsSystemActionValid(service string) bool {
+
+	for _, systemActionName := range ctv.SystemActionList {
+		if strings.ToLower(service) == strings.ToLower(systemActionName) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // IsMessagePrefixValid - is case-insensitive
