@@ -25,11 +25,18 @@ const (
 )
 
 type AIConfig struct {
-	MaxOutputTokens    string                    `json:"max_output_tokens"`
-	ModelName          string                    `json:"model_name"`
-	SetTopProbability  string                    `json:"set_top_probability"`
-	SystemInstructions map[string]InstructionSet `json:"system_instructions"`
-	Temperature        string                    `json:"temperature"`
+	MaxOutputTokens    string             `json:"max_output_tokens"`
+	ModelName          string             `json:"model_name"`
+	SetTopProbability  string             `json:"set_top_probability"`
+	SystemInstructions SystemInstructions `yaml:"system_instructions"`
+	Temperature        string             `json:"temperature"`
+}
+
+type AIResponse struct {
+	Response   string
+	SIKey      string
+	TokenCount genai.UsageMetadata
+	ErrorInfo  errs.ErrorInfo
 }
 
 type AIService struct {
@@ -39,17 +46,27 @@ type AIService struct {
 	config    AIConfig
 }
 
+type AnalyzeQuestions struct {
+	CategorySentence InstructionSet `yaml:"category_sentence"`
+	SpecialWords     InstructionSet `yaml:"special_words"`
+	TimePeriodValues InstructionSet `yaml:"time_period_values"`
+}
+
+type GenerateAnswer struct {
+	BusinessAnalyst  InstructionSet `yaml:"business_analyst"`
+	MarketingAnalyst InstructionSet `yaml:"marketing_analyst"`
+	NotSupported     InstructionSet `yaml:"not_supported"`
+}
+
 type InstructionSet struct {
 	Instruction  string `json:"instruction"`
 	OutputFormat string `json:"output_format"`
 	SetDate      bool   `json:"set_date"`
 }
 
-type AIResponse struct {
-	Response   string
-	SIKey      string
-	TokenCount genai.UsageMetadata
-	ErrorInfo  errs.ErrorInfo
+type SystemInstructions struct {
+	AnalyzeQuestions AnalyzeQuestions `yaml:"analyze_questions"`
+	GenerateAnswer   GenerateAnswer   `yaml:"generate_answer"`
 }
 
 var (
