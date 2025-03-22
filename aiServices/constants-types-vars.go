@@ -36,7 +36,7 @@ type AIService struct {
 	clientPtr *genai.Client
 	debugOn   bool
 	modelPtrs map[string]*genai.GenerativeModel
-	Config    AIConfig
+	config    AIConfig
 }
 
 type InstructionSet struct {
