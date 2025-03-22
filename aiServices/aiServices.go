@@ -313,19 +313,51 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfig.SetTopProbability, errs.ErrEmptyRequiredParameter, ctv.FN_AI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(
+	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions,
+		AIConfig.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction,
 		errs.ErrEmptyRequiredParameter,
-		ctv.FN_ANALYZE_QUESTION,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckMapLengthGTZero(
+	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions,
+		AIConfig.SystemInstructions.AnalyzeQuestions.SpecialWords.Instruction,
 		errs.ErrEmptyRequiredParameter,
-		ctv.FN_GENERATE_ANSWER,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
+	); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(
+		ctv.LBL_SERVICE_AI,
+		AIConfig.SystemInstructions.AnalyzeQuestions.TimePeriodValues.Instruction,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
+	); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(
+		ctv.LBL_SERVICE_AI,
+		AIConfig.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
+	); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(
+		ctv.LBL_SERVICE_AI,
+		AIConfig.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
+	); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(
+		ctv.LBL_SERVICE_AI,
+		AIConfig.SystemInstructions.GenerateAnswer.NotSupported.Instruction,
+		errs.ErrEmptyRequiredParameter,
+		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
