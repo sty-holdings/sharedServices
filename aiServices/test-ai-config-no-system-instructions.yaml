@@ -1,0 +1,4 @@
+max_output_tokens: "2048"
+model_name: "gemini-2.0-flash"
+set_top_probability: "0.5"
+temperature: "0.0"

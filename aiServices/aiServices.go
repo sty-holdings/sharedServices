@@ -185,7 +185,7 @@ func (aiServicePtr *AIService) GenerateContent(
 		log.Printf("SI Key: %s\n", aiResponse.SIKey)
 		log.Printf("Response: %s\n", aiResponse.Response)
 		log.Printf("token count: %d\n", aiResponse.TokenCount)
-		log.Printf("Error: %d\n", aiResponse.ErrorInfo)
+		log.Printf("Error: %v\n", aiResponse.ErrorInfo)
 	}
 
 	return
@@ -268,28 +268,28 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 //	Customer Messages: None
 //	Errors: error returned by ReadConfigFile or validateConfiguration
 //	Verifications: validateConfiguration
-func loadAIConfig(AIConfigFilename string) (AIConfig AIConfig, errorInfo errs.ErrorInfo) {
+func loadAIConfig(aiConfigFilename string) (aiConfig AIConfig, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfigFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_AI_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_AI_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
-	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(AIConfigFilename)); errorInfo.Error != nil {
+	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(aiConfigFilename)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, AIConfigFilename, ctv.TXT_READ_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, aiConfigFilename, ctv.TXT_READ_FAILED),
 		)
 		return
 	}
 
-	if errorInfo.Error = yaml.Unmarshal(tConfigData, &AIConfig); errorInfo.Error != nil {
+	if errorInfo.Error = yaml.Unmarshal(tConfigData, &aiConfig); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, AIConfigFilename, ctv.TXT_UNMARSHAL_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_AI, ctv.LBL_CONFIG_AI, ctv.LBL_CONFIG_EXTENSION_FILENAME, aiConfigFilename, ctv.TXT_UNMARSHAL_FAILED),
 		)
 		return
 	}

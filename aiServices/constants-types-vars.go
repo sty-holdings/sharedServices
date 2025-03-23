@@ -25,11 +25,11 @@ const (
 )
 
 type AIConfig struct {
-	MaxOutputTokens    string             `json:"max_output_tokens"`
-	ModelName          string             `json:"model_name"`
-	SetTopProbability  string             `json:"set_top_probability"`
+	MaxOutputTokens    string             `yaml:"max_output_tokens"`
+	ModelName          string             `yaml:"model_name"`
+	SetTopProbability  string             `yaml:"set_top_probability"`
 	SystemInstructions SystemInstructions `yaml:"system_instructions"`
-	Temperature        string             `json:"temperature"`
+	Temperature        string             `yaml:"temperature"`
 }
 
 type AIResponse struct {

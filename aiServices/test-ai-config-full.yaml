@@ -1,0 +1,61 @@
+max_output_tokens": "2048"
+model_name": "gemini-2.0-flash"
+set_top_probability": "0.5"
+system_instructions:
+  analyze_questions:
+    category_sentence:
+      instruction:  "user_saas_provider: %s {\"prompt\": \"The user's question\",
+          \"category\": [ \"List all category apply account-management | acquisition | customer | lead-generation | marketing | operations | retention | sales | training | unsupported if none\" ],
+          \"count_by_subject\": [ { \"subject\": \"sentence_subject. If none, omit key-value\", \"count\": \"count number associated subject. If none, omit key-value\"} ],
+          \"prompt\": prompt corrected,
+          \"saas_provider_selected\": \"select from 'user_saas_provider' base category account-management=none | acquisition=google-ads | conversion=google-ads | customer=stripe | 
+          lead-generation=google-ads | marketing=google-ads | operations=string | retention=none | sales=stripe | unsupported=none | training=none\",
+          \"sentence_subject\": [\"List subjects found sentence. If no subject 'none'.\" ],
+          \"sentence_subject_adverb\": { [ \"subject\": \"adverb or adjective describing the subject If none, none\", ] }}"
+      output_format: ""
+      set_date: false
+    special_words:
+      instruction: "{
+          \"average\": determine prompt average or mean t | f,
+          \"comparison\": determine prompt comparison t | f,
+          \"compound\": False question contains multiple parts t | f,
+          \"count\": determine prompt numerical tally t | f,
+          \"detail\": determine prompt specific details or granular info t | f,
+          \"forecast\": determine prompt prediction or projection t | f,
+          \"maximum\": determine prompt high or large t | f,
+          \"minimum\": determine prompt low or small t | f,
+          \"percentage\": determine prompt proportion of 100 t | f,
+          \"report\": determine prompt presentation or info t | f,
+          \"subtotal\": determine prompt partial sum or intermediate calculation t | f,
+          \"summary\": determine prompt overview or main points t | f,
+          \"transaction\": determine prompt business or financial transaction t | f,
+          \"total\": determine prompt sum or final calculation t | f,
+          \"trend\": determine prompt analysis patterns or change t | f}"
+      output_format: ""
+      set_date: false
+    time_period_values:
+      instruction: "today: %s {
+        \"year_values\": determine value []int [] if none,
+        \"quarter_values\": determine value each 'year_values' []int [] if none,
+        \"month_values\": determine value each 'year_values' or 'quarter_values' []int [] if none,
+        \"week_values\": determine week +/- each 'year_values' or 'quarter_values' or 'month_values' match nbr 'year_values' or 'quarter_values' or 'month_values' []int [] if none,
+        \"day_values\": determine value each 'year_values' or 'quarter_values' or 'month_values' []int [] if none,
+        \"to_date\": determine question explicitly or implicitly period extending present date t | f,
+        \"relative_time\": determine the relative time period. Values: 'current', 'previous', 'next', 'last', 'today' or none,
+        \"sunday_date\": use 'weeks_values' for 'year_values', 'quarter_values', 'month_values'  calculate 'sunday_date'}"
+      output_format:
+      set_date: false
+  generate_answer:
+    business_analyst:
+      instruction: "business analyst expert, assuming data provide all exists time period, no data say no data, time period = zero mean no sales "
+      output_format: "use sentence structure, split currency, no json output, no field names"
+      set_date: false
+    marketing_analyst:
+      instruction: "marketing analyst expert, assuming data provide all exists time period, no data say no data"
+      output_format: "use sentence structure, split time period, accounts, campaigns, ads, no json output, no field names"
+      set_date: false
+    not_supported:
+      instruction": "short simply answer as possible"
+      output_format": "mobile, human readable"
+      set_date": false
+temperature: "0.0"
