@@ -115,6 +115,11 @@ var (
 		VAL_SERVICE_SENDGRID,
 	}
 
+	SupportedSaaSProviders = []string{
+		VAL_SERVICE_GOOGLE_ADS,
+		VAL_SERVICE_STRIPE,
+	}
+	
 	SystemActionList = []string{
 		VAL_SYSTEM_ACTION_CONFIG_NEW_USER,
 		VAL_SYSTEM_ACTION_GET_MY_ANSWERS,
