@@ -114,7 +114,7 @@ func Base64Encode(value string) string {
 func CheckArrayLengthGTZero[T any](extensionName string, value []T, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf(" %s", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -128,7 +128,7 @@ func CheckArrayLengthGTZero[T any](extensionName string, value []T, err error, f
 func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf(" %s", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -142,7 +142,7 @@ func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K
 func CheckPointerNotNil(extensionName string, value interface{}, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf(" %s", fieldLabel), ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_NIL))
 	}
 
 	return
@@ -156,7 +156,7 @@ func CheckPointerNotNil(extensionName string, value interface{}, err error, fiel
 func CheckValueNotEmpty(extensionName string, value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf(" %s", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
 	}
 
 	return
