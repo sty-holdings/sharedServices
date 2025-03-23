@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"cloud.google.com/go/vertexai/genai"
+	"github.com/goccy/go-yaml"
 	"google.golang.org/api/option"
-	"gopkg.in/yaml.v3"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"

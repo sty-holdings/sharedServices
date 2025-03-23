@@ -1,6 +1,6 @@
-max_output_tokens": "2048"
-model_name": "gemini-2.0-flash"
-set_top_probability": "0.5"
+max_output_tokens: "2048"
+model_name: "gemini-2.0-flash"
+set_top_probability: "0.5"
 system_instructions:
   analyze_questions:
     category_sentence:
@@ -43,8 +43,8 @@ system_instructions:
         \"to_date\": determine question explicitly or implicitly period extending present date t | f,
         \"relative_time\": determine the relative time period. Values: 'current', 'previous', 'next', 'last', 'today' or none,
         \"sunday_date\": use 'weeks_values' for 'year_values', 'quarter_values', 'month_values'  calculate 'sunday_date'}"
-      output_format:
-      set_date: false
+      output_format: ""
+      set_date: true
   generate_answer:
     business_analyst:
       instruction: "business analyst expert, assuming data provide all exists time period, no data say no data, time period = zero mean no sales "
@@ -55,7 +55,7 @@ system_instructions:
       output_format: "use sentence structure, split time period, accounts, campaigns, ads, no json output, no field names"
       set_date: false
     not_supported:
-      instruction": "short simply answer as possible"
-      output_format": "mobile, human readable"
-      set_date": false
+      instruction: "short simply answer as possible"
+      output_format: "mobile, human readable"
+      set_date: false
 temperature: "0.0"
