@@ -33,26 +33,44 @@ const (
 
 //goland:noinspection All
 const (
-	VAL_ZERO        = 0
-	VAL_ONE         = 1
-	VAL_TWO         = 2
-	VAL_THREE       = 3
-	VAL_FOUR        = 4
-	VAL_FIVE        = 5
-	VAL_SIX         = 6
-	VAL_SEVEN       = 7
-	VAL_NINE        = 9
-	VAL_EIGHT       = 8
-	VAL_TEN         = 10
-	VAL_TWENTY      = 20
-	VAL_THIRTY      = 30
-	VAL_FOURTY      = 40
-	VAL_FIFTY       = 50
-	VAL_SIXTY       = 60
-	VAL_SEVENTY     = 70
-	VAL_EIGHTY      = 80
-	VAL_NINETY      = 90
-	VAL_ONE_HUNDRED = 100
+	VAL_ZERO         = 0
+	VAL_ONE          = 1
+	VAL_TWO          = 2
+	VAL_THREE        = 3
+	VAL_FOUR         = 4
+	VAL_FIVE         = 5
+	VAL_SIX          = 6
+	VAL_SEVEN        = 7
+	VAL_EIGHT        = 8
+	VAL_NINE         = 9
+	VAL_TEN          = 10
+	VAL_ELEVEN       = 11
+	VAL_TWELVE       = 12
+	VAL_THIRTEEN     = 13
+	VAL_FOURTEEN     = 14
+	VAL_FIFTEEN      = 15
+	VAL_SIXTEEN      = 16
+	VAL_SEVENTEEN    = 17
+	VAL_EIGHTEEN     = 18
+	VAL_NINETEEN     = 19
+	VAL_TWENTY       = 20
+	val_TWENTY_ONE   = 21
+	VAL_TWENTY_TWO   = 22
+	VAL_TWENTY_THREE = 23
+	VAL_TWENTY_FOUR  = 24
+	VAL_TWENTY_FIVE  = 25
+	VAL_TWENTY_SIX   = 26
+	VAL_TWENTY_SEVEN = 27
+	VAL_TWENTY_EIGHT = 28
+	VAL_TWENTY_NINE  = 29
+	VAL_THIRTY       = 30
+	VAL_FOURTY       = 40
+	VAL_FIFTY        = 50
+	VAL_SIXTY        = 60
+	VAL_SEVENTY      = 70
+	VAL_EIGHTY       = 80
+	VAL_NINETY       = 90
+	VAL_ONE_HUNDRED  = 100
 )
 
 //goland:noinspection All
@@ -119,7 +137,7 @@ var (
 		VAL_SERVICE_GOOGLE_ADS,
 		VAL_SERVICE_STRIPE,
 	}
-	
+
 	SystemActionList = []string{
 		VAL_SYSTEM_ACTION_CONFIG_NEW_USER,
 		VAL_SYSTEM_ACTION_GET_MY_ANSWERS,
