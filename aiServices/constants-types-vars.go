@@ -61,7 +61,7 @@ type GenerateAnswer struct {
 type InstructionSet struct {
 	Instruction  string `json:"instruction"`
 	OutputFormat string `json:"output_format"`
-	SetDate      bool   `json:"set_date"`
+	SetDate      string `json:"set_date"`
 }
 
 type SystemInstructions struct {
