@@ -27,7 +27,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, AIConfigFilename string, debugOn bool) (aiServicePtr *AIService, errorInfo errs.ErrorInfo) {
+func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, aiConfigFilename string, debugOn bool) (aiServicePtr *AIService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tAIConfig AIConfig
@@ -36,11 +36,11 @@ func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocatio
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, gcpCredentialsFilename, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
-	if tAIConfig, errorInfo = loadAIConfig(AIConfigFilename); errorInfo.Error != nil {
+	if tAIConfig, errorInfo = loadAIConfig(aiConfigFilename); errorInfo.Error != nil {
 		return
 	}
 
@@ -302,20 +302,20 @@ func loadAIConfig(aiConfigFilename string) (aiConfig AIConfig, errorInfo errs.Er
 //	Customer Messages: None
 //	Errors: error returned by ReadConfigFile or validateConfiguration
 //	Verifications: validateConfiguration
-func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
+func validateAIConfig(aiConfig AIConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfig.MaxOutputTokens, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.MaxOutputTokens, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfig.ModelName, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MODEL_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.ModelName, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MODEL_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfig.SetTopProbability, errs.ErrEmptyRequiredParameter, ctv.FN_AI_SET_TOP_K); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.SetTopProbability, errs.ErrEmptyRequiredParameter, ctv.FN_AI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction,
+		aiConfig.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
@@ -323,7 +323,7 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.AnalyzeQuestions.SpecialWords.Instruction,
+		aiConfig.SystemInstructions.AnalyzeQuestions.SpecialWords.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
@@ -331,7 +331,7 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.AnalyzeQuestions.TimePeriodValues.Instruction,
+		aiConfig.SystemInstructions.AnalyzeQuestions.TimePeriodValues.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
@@ -339,7 +339,7 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction,
+		aiConfig.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
@@ -347,7 +347,7 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction,
+		aiConfig.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
@@ -355,13 +355,13 @@ func validateAIConfig(AIConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		AIConfig.SystemInstructions.GenerateAnswer.NotSupported.Instruction,
+		aiConfig.SystemInstructions.GenerateAnswer.NotSupported.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, AIConfig.Temperature, errs.ErrEmptyRequiredParameter, ctv.FN_AI_TEMPERATURE)
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.Temperature, errs.ErrEmptyRequiredParameter, ctv.FN_AI_TEMPERATURE)
 
 	return
 }
