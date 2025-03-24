@@ -247,7 +247,7 @@ const (
 	FN_TOKEN_PAYLOAD              = "tokenPayload"
 	FN_TOKEN_REFRESH              = "refreshToken"
 	FN_TOKEN_TYPE                 = "tokenType"
-	FN_TOTAL_FLAG                 = "total_flag"
+	FN_TOTAL_FLAG                 = "total"
 	FN_TOTAL_TOKEN_COUNT          = "total_token_count"
 	FN_TRANSACTION_FLAG           = "transaction"
 	FN_TREND_FLAG                 = "trend"
