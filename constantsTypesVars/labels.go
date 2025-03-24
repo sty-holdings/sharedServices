@@ -196,6 +196,7 @@ const (
 	LBL_REPLY_TYPE                  = "REPLY TYPE: "
 	LBL_REQUEST                     = "REQUEST: "
 	LBL_RESPONSE                    = "RESPONSE: "
+	LBL_ROW_NUMBER                  = "ROW NUMBER: "
 	LBL_SAAS_PROVIDER               = "SAAS PROVIDER: "
 	LBL_SENDER_ADDRESS              = "SENDER ADDRESS: "
 	LBL_SENDER_NAME                 = "SENDER NAME: "
