@@ -6,6 +6,7 @@ import (
 
 //goland:noinspection ALL
 const (
+	ARRAY_SIZE_EXCEEDED                     = "The array size is to large. Please review the array size."
 	AWS_SSM_PARAMETERS                      = "GetParameters returned invalid parameter names. Check AWS SSM Parameter Manager."
 	EMPTY_ADDRESS_CITY                      = "The city is empty information. Please review the addrss fields."
 	EMPTY_ADDRESS_POSTAL_CODE               = "The postal code is empty information. Please review the addrss fields."
@@ -203,6 +204,7 @@ const (
 
 //goland:noinspection ALL
 var (
+	ErrArraySizeExceeded                  = errors.New(ARRAY_SIZE_EXCEEDED)
 	ErrAwsSsmParameters                   = errors.New(AWS_SSM_PARAMETERS)
 	ErrEmptyAddressCity                   = errors.New(EMPTY_ADDRESS_CITY)
 	ErrEmptyAddressPostalCode             = errors.New(EMPTY_ADDRESS_POSTAL_CODE)

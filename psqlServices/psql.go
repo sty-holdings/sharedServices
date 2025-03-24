@@ -74,7 +74,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	return
 }
 
-func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string) (errorInfo errs.ErrorInfo) {
+func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, values [][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pCommandTag  pgconn.CommandTag
@@ -82,6 +82,23 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 		tQueueString string
 	)
 
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, errs.ErrEmptyRequiredParameter, ctv.LBL_DATABASE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, batchName, errs.ErrEmptyRequiredParameter, ctv.LBL_PSQL_BATCH); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, insertStatement, errs.ErrEmptyRequiredParameter, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, values, errs.ErrEmptyRequiredParameter, ctv.LBL_VALUE); errorInfo.Error != nil {
+		return
+	}
+	if len(values) > ctv.VAL_ONE_HUNDRED {
+		errorInfo = errs.NewErrorInfo(errs.ErrArraySizeExceeded, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_BATCH, "values [][]any", ctv.TXT_IS_INVALID))
+		return
+	}
+	
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_SERVICE_PSQL, batchName, ctv.TXT_FAILED))
 		return
@@ -92,10 +109,22 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	}
 	tQueueString += insertStatement
 
-	if pCommandTag, errorInfo.Error = pTransaction.Exec(CTXBackground, tQueueString); errorInfo.Error != nil {
-		return
+	for idx, row := range values {
+		if pCommandTag, errorInfo.Error = pTransaction.Exec(CTXBackground, insertStatement, row...); errorInfo.Error != nil {
+			return
+		}
+		if pCommandTag.RowsAffected() != ctv.VAL_ONE {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED),
+			)
+			errs.PrintErrorInfo(errorInfo)
+			if errorInfo.Error = pTransaction.Rollback(CTXBackground); errorInfo.Error != nil {
+				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_COMMIT, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
+				errs.PrintErrorInfo(errorInfo)
+			}
+			return
+		}
 	}
-	fmt.Println(pCommandTag)
 
 	if errorInfo.Error = pTransaction.Commit(CTXBackground); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_COMMIT, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
