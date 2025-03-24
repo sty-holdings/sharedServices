@@ -134,6 +134,22 @@ func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K
 	return
 }
 
+// CheckMissingFieldsInMap - compares two lists and returns missing fields
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func CheckMissingFieldsInMap(data map[string]any, requiredFields []string) (missingFields []string) {
+
+	for _, field := range requiredFields {
+		if _, exists := data[field]; !exists || data[field] == nil || data[field] == "" {
+			missingFields = append(missingFields, field)
+		}
+	}
+
+	return missingFields
+}
+
 // CheckPointerNotNil - validates that the pointer is not nil. If the pointer is nil, then an error message is returned. The field label starts with ctv.LBL_ or ctv.FN_.
 //
 //	Customer Messages: None
