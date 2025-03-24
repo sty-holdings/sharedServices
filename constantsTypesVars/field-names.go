@@ -223,6 +223,7 @@ const (
 	FN_SUB_CATEGORY               = "sub-category"
 	FN_SUB_TOTAL_FLAG             = "subtotal"
 	FN_SUMMARY_FLAG               = "summary"
+	FN_SUNDAY_DATE                = "sunday_date"
 	FN_SYSTEM_ACTION              = "system_action"
 	FN_TEMP_DIRECTORY             = "temporary_directory_fqd"
 	FN_TEST                       = "test"
