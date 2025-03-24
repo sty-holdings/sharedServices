@@ -27,7 +27,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, aiConfigFilename string, debugOn bool) (aiServicePtr *AIService, errorInfo errs.ErrorInfo) {
+func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocation string, aiConfigFilename string) (aiServicePtr *AIService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tAIConfig AIConfig
@@ -50,7 +50,7 @@ func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocatio
 
 	aiServicePtr = &AIService{
 		config:  tAIConfig,
-		debugOn: debugOn,
+		debugOn: tAIConfig.DebugModeOn,
 	}
 
 	if aiServicePtr.clientPtr, errorInfo.Error = genai.NewClient(

@@ -25,6 +25,7 @@ const (
 )
 
 type AIConfig struct {
+	DebugModeOn        bool               `json:"debug_mode_on"`
 	MaxOutputTokens    string             `yaml:"max_output_tokens"`
 	ModelName          string             `yaml:"model_name"`
 	SetTopProbability  string             `yaml:"set_top_probability"`
