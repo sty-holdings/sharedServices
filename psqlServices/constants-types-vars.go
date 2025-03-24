@@ -25,8 +25,8 @@ const (
 
 //goland:noinspection All
 const (
-	DB_ANSWERS            = "answers"
-	DB_COUPLER_GOOGLE_ADS = "coupler_google_ads"
+	DATABASE_ANSWERS            = "answers"
+	DATABASE_COUPLER_GOOGLE_ADS = "coupler_google_ads"
 )
 
 //goland:noinspection All
