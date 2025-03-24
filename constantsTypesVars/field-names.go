@@ -181,6 +181,7 @@ const (
 	FN_QUARTER_VALUES             = "quarter_values"
 	FN_QUESTION                   = "question"
 	FN_QUESTION_ANALYSIS_ID       = "question_analysis_id"
+	FN_RECORD_NUMBER              = "record_number"
 	FN_REFUND                     = "refund"
 	FN_RELATIVE_TIME              = "relative_time"
 	FN_RELEASE_STATUS             = "release_status"
