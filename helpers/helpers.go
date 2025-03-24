@@ -431,6 +431,16 @@ func DollarsToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
+// GetBatchName - returns a batch name for grouping actions
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetBatchName(extensionName string, number int) string {
+
+	return fmt.Sprintf("%s%d %s", extensionName, number, fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
+}
+
 // GetDay - returns the current day of the month integer
 //
 //	Customer Messages: None
