@@ -45,6 +45,7 @@ const (
 	FN_AWS_USER_CONFIRMED_EMAIL   = "confirmed_email"
 	FN_AWS_USER_CONFIRMED_PHONEL  = "confirmed_phone"
 	FN_BALANCE                    = "Balance"
+	FN_BATCH_NAME                 = "batch_name"
 	FN_BIRTHDATE                  = "birthdate"
 	FN_CANDIDATE_TOKEN_COUNT      = "candidate_token_count"
 	FN_CATEGORY                   = "category"
