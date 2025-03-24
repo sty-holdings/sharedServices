@@ -112,6 +112,7 @@ const (
 	INVALID_BASE64                          = "The base64 string is invalid."
 	INVALID_COGNITO_SECRET_BLOCK            = "Unable to decode challenge parameter 'SECRET_BLOCK'."
 	INVALID_COGNITO_USERPOOL_ID             = "User Pool ID must be in format: '<region>_<pool name>'"
+	INVALID_COUNT                           = "The cound is invalid."
 	INVALID_CURRENCY                        = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
 	INVALID_DATE_TYPE                       = "Data Type is not supported."
 	INVALID_DOMAIN                          = "The domain value is invalid."
@@ -310,6 +311,7 @@ var (
 	ErrInvalidBase64                      = errors.New(INVALID_BASE64)
 	ErrInvalidCognitoSecretBlock          = errors.New(INVALID_COGNITO_SECRET_BLOCK)
 	ErrInvalidCognitoUserpoolID           = errors.New(INVALID_COGNITO_USERPOOL_ID)
+	ErrInvalidCount                       = errors.New(INVALID_COUNT)
 	ErrInvalidCurrency                    = errors.New(INVALID_CURRENCY)
 	ErrInvalidDateType                    = errors.New(INVALID_DATE_TYPE)
 	ErrInvalidDomain                      = errors.New(INVALID_DOMAIN)
