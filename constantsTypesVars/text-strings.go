@@ -39,6 +39,7 @@ const (
 	TXT_DIRECTORY_DOES_NOT_EXIST     = "Directory doesn't exist"
 	TXT_DIRECTORY_EXISTS             = "Directory exists"
 	TXT_DIRECTORY_PARAM_EMPTY        = "Directory parameter is empty"
+	TXT_DOES_NOT_MATCH               = "doesn't match expected value"
 	TXT_EMAIL                        = "email"
 	TXT_EMPTY                        = "empty"
 	TXT_ENDING_EXECUTION             = "ending execution"

@@ -37,6 +37,7 @@ const (
 	LBL_CATEGORY_SUB                = "SUB-CATEGORY: "
 	LBL_CIPHER_MAC                  = "CIPHER MAC: "
 	LBL_CIPHER_NONCE                = "CIPHER NONCE: "
+	LBL_COLUMN_NUMBER               = "COLUMN NUMBER: "
 	LBL_CONFIG_AI                   = "AI CONFIG: "
 	LBL_CONFIG_AI_FILENAME          = "AI CONFIG FILENAME: "
 	LBL_CONFIG_BASE                 = "BASE CONFIG: "
