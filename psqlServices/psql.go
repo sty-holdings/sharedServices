@@ -6,8 +6,6 @@ import (
 	"crypto/x509"
 	"fmt"
 	"os"
-	"reflect"
-
 	"strconv"
 
 	"github.com/goccy/go-yaml"
@@ -76,14 +74,12 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	return
 }
 
-func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, rowValues map[int][]any) (errorInfo errs.ErrorInfo) {
+func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string) (errorInfo errs.ErrorInfo) {
 
 	var (
-		pCommandTag   pgconn.CommandTag
-		pTransaction  pgx.Tx
-		tQueueString  string
-		tDataType     string
-		tInsertValues string
+		pCommandTag  pgconn.CommandTag
+		pTransaction pgx.Tx
+		tQueueString string
 	)
 
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
@@ -94,33 +90,7 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	if role != ctv.VAL_EMPTY {
 		tQueueString = fmt.Sprintf(SET_ROLE, role)
 	}
-	for _, rvs := range rowValues {
-		for idx, value := range rvs {
-			tDataType = reflect.TypeOf(value).String()
-			switch tDataType {
-			case "int":
-			case "int64":
-			case "float64":
-			case "string":
-				value = fmt.Sprintf("'%s'", value)
-			case "time.Time":
-				value = fmt.Sprintf("'%s'", value)
-			default:
-				errorInfo = errs.NewErrorInfo(
-					errs.ErrInvalidDateType,
-					errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_BATCH, fmt.Sprintf("%s%s %s", ctv.LBL_DATA_TYPE, tDataType, ctv.TXT_FAILED)),
-				)
-				_ = pTransaction.Rollback(CTXBackground) // ErrorInfo is not checked, because the data is bad and either way the data will be reloaded.
-				return
-			}
-			if idx == 0 {
-				tInsertValues = fmt.Sprintf("%v", value)
-			} else {
-				tInsertValues = fmt.Sprintf("%v, %v", tInsertValues, value)
-			}
-		}
-		tQueueString += fmt.Sprintf(insertStatement, tInsertValues)
-	}
+	tQueueString += insertStatement
 
 	if pCommandTag, errorInfo.Error = pTransaction.Exec(CTXBackground, tQueueString); errorInfo.Error != nil {
 		return
