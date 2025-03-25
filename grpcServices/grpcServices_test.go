@@ -105,7 +105,7 @@ func TestNewGRPCClient(tPtr *testing.T) {
 		{
 			name: ctv.TEST_POSITIVE_SUCCESS + "Insecure connection.",
 			arguments: arguments{
-				filename: "/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/connect-server/config/hal/run-on-mac/test-local-grpc-client-config.json",
+				filename: "config/test-local-grpc-client-config.json",
 			},
 			wantError: false,
 		},

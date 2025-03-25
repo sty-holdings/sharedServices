@@ -2,6 +2,7 @@ package sharedServices
 
 import (
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -25,6 +26,7 @@ type GRPCService struct {
 	Host            string
 	Port            int
 	Secure          SecureSettings
+	Timeout         time.Duration
 }
 
 // If both ServerSide and Mutual are false, then it is the default NoClient.

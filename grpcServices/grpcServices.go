@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -92,8 +93,9 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tConfig     GRPCConfig
-		tDailOption grpc.DialOption
+		tConfig      GRPCConfig
+		tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.GRPCHost, strconv.Itoa(tConfig.GRPCPort))
+		tDailOption  grpc.DialOption
 	)
 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_EXTENSION_QTESTER, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_GRPC_CLIENT_FILENAME); errorInfo.Error != nil {
@@ -104,21 +106,26 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		return
 	}
 
+	if errorInfo = validateConfig(tConfig); errorInfo.Error != nil {
+		return
+	}
+
 	gRPCServicePtr = &GRPCService{
 		DebugOn: tConfig.GRPCDebug,
 		Secure: SecureSettings{
 			ServerSide: tConfig.GRPCSecure.ServerSide,
 			Mutual:     tConfig.GRPCSecure.Mutual,
 		},
-		Host: tConfig.GRPCHost,
-		Port: tConfig.GRPCPort,
+		Host:    tConfig.GRPCHost,
+		Port:    tConfig.GRPCPort,
+		Timeout: time.Duration(tConfig.GRPCTimeout) * time.Second,
 	}
 
 	if tDailOption, errorInfo = LoadTLSCABundle(tConfig.GRPCTLSInfo); errorInfo.Error != nil {
 		return
 	}
 
-	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(fmt.Sprintf("%s:%s", tConfig.GRPCHost, strconv.Itoa(tConfig.GRPCPort)), tDailOption); errorInfo.Error != nil {
+	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(tGRPCAddress, tDailOption); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_CLIENT, ctv.TXT_FAILED))
 	}
 
