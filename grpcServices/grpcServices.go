@@ -94,7 +94,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 
 	var (
 		tConfig      GRPCConfig
-		tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.GRPCHost, strconv.Itoa(tConfig.GRPCPort))
+		tGRPCAddress string
 		tDailOption  grpc.DialOption
 	)
 
@@ -108,6 +108,10 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 
 	if errorInfo = validateConfig(tConfig); errorInfo.Error != nil {
 		return
+	}
+
+	if tConfig.GRPCDebug {
+		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
 	}
 
 	gRPCServicePtr = &GRPCService{
@@ -124,6 +128,8 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	if tDailOption, errorInfo = LoadTLSCABundle(tConfig.GRPCTLSInfo); errorInfo.Error != nil {
 		return
 	}
+
+	tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.GRPCHost, strconv.Itoa(tConfig.GRPCPort))
 
 	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(tGRPCAddress, tDailOption); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC, ctv.LBL_GRPC_CLIENT, ctv.TXT_FAILED))
