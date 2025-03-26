@@ -65,7 +65,7 @@ func (AnalyzedQuestionResults) TableName() string {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func (psqlServicePtr *PSQLService) InsertAnalyzedQuestions(analyzedQuestionBatch []map[int]ctv.AnalyzedQuestion, batchName string, elapseTime float64, fileTag string) (
+func (psqlServicePtr *PSQLService) InsertAnalyzedQuestions(analyzedQuestionBatch []ctv.AnalyzedQuestion, batchName string, elapseTime float64, fileTag string) (
 	errorInfo errs.ErrorInfo,
 ) {
 
