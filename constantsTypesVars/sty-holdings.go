@@ -89,7 +89,6 @@ type CategorySentence struct {
 	Category              []string            `json:"category"`
 	CountBySubject        map[string]int      `json:"count_by_subject"`
 	Prompt                string              `json:"prompt"`
-	SaasProvider          []string            `json:"saas_provider"`
 	SentenceSubject       []string            `json:"sentence_subject"`
 	SentenceSubjectAdverb map[string]int      `json:"sentence_subject_adverb"`
 	TokenCount            genai.UsageMetadata `json:"-"`
