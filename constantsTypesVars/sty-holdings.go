@@ -94,8 +94,11 @@ type AnalyzedQuestion struct {
 }
 
 type CategorySentence struct {
-	Category              []string            `json:"category"`
-	CountBySubject        []map[string]int    `json:"count_by_subject"`
+	Category       []string `json:"category"`
+	CountBySubject []struct {
+		Subject string `json:"subject"`
+		Count   string `json:"count"`
+	} `json:"count_by_subject"`
 	Prompt                string              `json:"prompt"`
 	SentenceSubject       []string            `json:"sentence_subject"`
 	SentenceSubjectAdverb map[string]int      `json:"sentence_subject_adverb"`
