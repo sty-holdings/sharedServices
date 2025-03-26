@@ -99,10 +99,13 @@ type CategorySentence struct {
 		Subject string `json:"subject"`
 		Count   string `json:"count"`
 	} `json:"count_by_subject"`
-	Prompt                string              `json:"prompt"`
-	SentenceSubject       []string            `json:"sentence_subject"`
-	SentenceSubjectAdverb map[string]int      `json:"sentence_subject_adverb"`
-	TokenCount            genai.UsageMetadata `json:"-"`
+	Prompt                string   `json:"prompt"`
+	SentenceSubject       []string `json:"sentence_subject"`
+	SentenceSubjectAdverb []struct {
+		Subject string `json:"subject"`
+		Adverb  string `json:"adverb"`
+	} `json:"sentence_subject_adverb"`
+	TokenCount genai.UsageMetadata `json:"-"`
 }
 
 type SpecialWords struct {
