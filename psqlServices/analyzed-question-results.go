@@ -31,7 +31,7 @@ type AnalyzedQuestionResults struct {
 	TotalFlag                           bool      `gorm:"type:BOOLEAN"`
 	TransactionFlag                     bool      `gorm:"type:BOOLEAN"`
 	TrendFlag                           bool      `gorm:"type:BOOLEAN"`
-	AIPrompt                            string    `gorm:"type:VARCHAR(1024)"`
+	AIPrompt                            string    `gorm:"column:ai_prompt;type:VARCHAR(1024)"`
 	Category                            string    `gorm:"type:VARCHAR(255)"`
 	CountBySubject                      string    `gorm:"type:VARCHAR(255)"`
 	RelativeTimeWord                    string    `gorm:"type:VARCHAR(255)"`
