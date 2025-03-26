@@ -4,6 +4,7 @@ package sharedServices
 
 //goland:noinspection ALL
 const (
+	TXT_ARE                          = "are"
 	TXT_ARE_EMPTY                    = "are empty"
 	TXT_ARE_MISSING                  = "are missing"
 	TXT_ARE_OK                       = "are ok"
@@ -58,6 +59,7 @@ const (
 	TXT_INSERT_FAILED                = "insert failed"
 	TXT_INTO                         = "into"
 	TXT_INVALID                      = "invalid"
+	TXT_IS                           = "is"
 	TXT_IS_EMPTY                     = "is empty"
 	TXT_IS_INVALID                   = "is invalid"
 	TXT_IS_MISSING                   = "is missing"
