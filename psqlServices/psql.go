@@ -61,7 +61,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	return
 }
 
-func (psqlService *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, values [][]any) (errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) BatchInsert(database string, role string, batchName string, insertStatement string, values [][]any) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pCommandTag  pgconn.CommandTag
@@ -86,7 +86,10 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 		return
 	}
 
-	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
+	if pTransaction, errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].BeginTx(
+		CTXBackground,
+		pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite},
+	); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_SERVICE_PSQL, batchName, ctv.TXT_FAILED))
 		return
 	}
@@ -120,21 +123,21 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 	return
 }
 
-func (psqlService *PSQLService) Close() {
+func (psqlServicePtr *PSQLService) Close() {
 
-	for _, connectionPtr := range psqlService.ConnectionPoolPtrs {
+	for _, connectionPtr := range psqlServicePtr.ConnectionPoolPtrs {
 		connectionPtr.Close()
 	}
 }
 
-func (psqlService *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pStatement string
 	)
 
 	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
-	if _, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
+	if _, errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRUNCATE, schema, tableName, ctv.TXT_FAILED))
 	}
 

@@ -85,6 +85,14 @@ const (
 	COMBINATION_YEAR_MONTH_DAY              = "10101"
 )
 
+type AnalyzedQuestion struct {
+	AnalysisId       string           `json:"AnalysisId"`
+	UserQuestion     string           `json:"user_question"`
+	CategorySentence CategorySentence `json:"category_sentence"`
+	SpecialWords     SpecialWords     `json:"special_words"`
+	TimePeriodValues TimePeriodValues `json:"q_time_period_values"`
+}
+
 type CategorySentence struct {
 	Category              []string            `json:"category"`
 	CountBySubject        map[string]int      `json:"count_by_subject"`
