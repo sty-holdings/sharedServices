@@ -1,4 +1,4 @@
-use_gorm: false
+use_gorm: true
 psql_db_names:
   - "coupler_google_ads"
   - "answers"

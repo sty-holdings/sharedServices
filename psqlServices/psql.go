@@ -2,8 +2,7 @@ package sharedServices
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
+	"database/sql"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,18 +11,19 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
-	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
 var (
 	CTXBackground = context.Background()
 )
 
-// NewPSQLServer - builds a reusable PostgreSQL Service to access Postgres databases.
+// NewPSQLServer - builds a reusable PGX or GORM PostgreSQL Service to access Postgres databases.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -31,8 +31,7 @@ var (
 func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tConfig           PSQLConfig
-		tConnectionConfig PSQLConnectionConfig
+		tConfig PSQLConfig
 	)
 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
@@ -48,25 +47,13 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	}
 
 	servicePtr = &PSQLService{
-		DebugOn:            tConfig.Debug,
-		ConnectionPoolPtrs: make(map[string]*pgxpool.Pool),
+		DebugOn: tConfig.Debug,
 	}
+	servicePtr.GORMPoolPtrs = make(map[string]*gorm.DB)
+	servicePtr.ConnectionPoolPtrs = make(map[string]*pgxpool.Pool)
 
-	tConnectionConfig = PSQLConnectionConfig{
-		Debug:          tConfig.Debug,
-		Host:           tConfig.Host,
-		MaxConnections: tConfig.MaxConnections,
-		Password:       tConfig.Password,
-		Port:           tConfig.Port,
-		SSLMode:        tConfig.SSLMode,
-		PSQLTLSInfo:    tConfig.PSQLTLSInfo,
-		Timeout:        tConfig.Timeout,
-		UserName:       tConfig.UserName,
-	}
-
-	for _, database := range tConfig.DBName {
-		tConnectionConfig.DBName = database
-		if servicePtr.ConnectionPoolPtrs[database], errorInfo = getConnection(tConnectionConfig); errorInfo.Error != nil {
+	for _, databaseName := range tConfig.DBNames {
+		if servicePtr.ConnectionPoolPtrs[databaseName], servicePtr.GORMPoolPtrs[databaseName], errorInfo = getConnection(tConfig, databaseName); errorInfo.Error != nil {
 			return
 		}
 	}
@@ -98,7 +85,7 @@ func (psqlService *PSQLService) BatchInsert(database string, role string, batchN
 		errorInfo = errs.NewErrorInfo(errs.ErrArraySizeExceeded, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_BATCH, "values [][]any", ctv.TXT_IS_INVALID))
 		return
 	}
-	
+
 	if pTransaction, errorInfo.Error = psqlService.ConnectionPoolPtrs[database].BeginTx(CTXBackground, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, AccessMode: pgx.ReadWrite}); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_SERVICE_PSQL, batchName, ctv.TXT_FAILED))
 		return
@@ -162,10 +149,21 @@ func (psqlService *PSQLService) TruncateTable(database string, schema string, ta
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func buildConnectionString(config PSQLConnectionConfig) (dbConnString string) {
+func buildConnectionString(config PSQLConfig, databaseName string) string {
 
-	return fmt.Sprintf(PSQL_CONN_STRING, config.DBName, config.Host, config.MaxConnections, config.Password, config.Port, config.SSLMode, config.Timeout, config.UserName)
-
+	return fmt.Sprintf(
+		PSQL_CONN_STRING,
+		databaseName,
+		config.Host,
+		config.Password,
+		config.Port,
+		config.SSLMode,
+		config.PSQLTLSInfo.TLSCABundleFQN,
+		config.PSQLTLSInfo.TLSCertFQN,
+		config.PSQLTLSInfo.TLSPrivateKeyFQN,
+		config.Timeout,
+		config.UserName,
+	)
 }
 
 // getConnection - will create a connection pool and connect to a database.
@@ -186,31 +184,42 @@ func buildConnectionString(config PSQLConnectionConfig) (dbConnString string) {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool, errorInfo errs.ErrorInfo) {
+func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *pgxpool.Pool, gormPoolPtr *gorm.DB, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCACertPoolPtr *x509.CertPool
-		tCert          tls.Certificate
-		tConfigPtr     *pgxpool.Config
+		tConfigPtr        *pgxpool.Config
+		tConnectionString string
+		tDialector        gorm.Dialector
 	)
 
-	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(buildConnectionString(config)); errorInfo.Error != nil {
+	tConnectionString = buildConnectionString(config, databaseName)
+
+	if config.UsingGORM {
+		tDialector = postgres.New(
+			postgres.Config{
+				DSN:                  tConnectionString,
+				PreferSimpleProtocol: false, // This is the default and provided here for documentation. Only change to true is there are issues.
+			},
+		)
+
+		if gormPoolPtr, errorInfo.Error = gorm.Open(
+			tDialector, &gorm.Config{
+				PrepareStmt:     true,
+				CreateBatchSize: 100,
+			},
+		); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_GORM_CONNECTION, ctv.TXT_FAILED))
+			return
+		}
+
+		errorInfo = isGORMConnectionActive(gormPoolPtr)
+
+		return
+	}
+
+	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(tConnectionString); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_PARSE_CONFIG, ctv.TXT_FAILED))
 		return
-	}
-
-	if tCACertPoolPtr, errorInfo = loadTLSCABundle(config.PSQLTLSInfo); errorInfo.Error != nil {
-		return
-	}
-	if tCert, errorInfo = loadTLSCertKeyPair(config.PSQLTLSInfo); errorInfo.Error != nil {
-		return
-	}
-
-	tConfigPtr.ConnConfig.TLSConfig = &tls.Config{
-		RootCAs:            tCACertPoolPtr,
-		Certificates:       []tls.Certificate{tCert},
-		InsecureSkipVerify: false,
-		ServerName:         tConfigPtr.ConnConfig.Host,
 	}
 
 	if connectionPoolPtr, errorInfo.Error = pgxpool.NewWithConfig(CTXBackground, tConfigPtr); errorInfo.Error != nil {
@@ -218,49 +227,7 @@ func getConnection(config PSQLConnectionConfig) (connectionPoolPtr *pgxpool.Pool
 		return
 	}
 
-	errorInfo = isConnectionActive(connectionPoolPtr, config.DBName)
-
-	return
-}
-
-// loadTLSCABundle - loads the CA Bundle certificate into a x509 certificate pool.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func loadTLSCABundle(tlsConfig jwts.TLSInfo) (caCertPoolPtr *x509.CertPool, errorInfo errs.ErrorInfo) {
-
-	var (
-		tCABundleFile []byte
-	)
-
-	if tCABundleFile, errorInfo.Error = os.ReadFile(tlsConfig.TLSCABundleFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_TLS_CA_BUNDLE_FILENAME, tlsConfig.TLSCABundleFQN))
-		return
-	}
-
-	caCertPoolPtr = x509.NewCertPool()
-	if ok := caCertPoolPtr.AppendCertsFromPEM(tCABundleFile); !ok {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_TLS_CA_CERT_POOL, ctv.TXT_FAILED))
-	}
-
-	return
-}
-
-// loadTLSCertKeyPair - load the x509 certificate, and private key
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func loadTLSCertKeyPair(tlsConfig jwts.TLSInfo) (cert tls.Certificate, errorInfo errs.ErrorInfo) {
-
-	if cert, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, errs.BuildLabelSubLabelValueMessage(
-				ctv.LBL_SERVICE_PSQL, ctv.LBL_TLS_CERTIFICATE_FILENAME, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, ctv.VAL_EMPTY, tlsConfig.TLSPrivateKey,
-			), // The tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN values are not output for security.
-		)
-	}
+	errorInfo = isConnectionActive(connectionPoolPtr, databaseName)
 
 	return
 }
@@ -295,7 +262,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 
 func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBName, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, errs.ErrEmptyServerHostName, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
@@ -320,12 +287,10 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	case PSQL_SSL_MODE_PREFER:
 		fallthrough
 	case PSQL_SSL_MODE_REQUIRED:
+		fallthrough
+	case PSQL_SSL_MODE_VERIFY:
 		errorInfo = errs.NewErrorInfo(errs.ErrPSQLSSLModeNotAllowed, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
 		return
-	case PSQL_SSL_MODE_VERIFY:
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
-			return
-		}
 	case PSQL_SSL_MODE_VERIFY_FULL:
 		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 			return
@@ -370,6 +335,29 @@ func isConnectionActive(connectionPtr *pgxpool.Pool, dbName string) (errorInfo e
 		errorInfo = errs.NewErrorInfo(errs.ErrFailedPsqlConn, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_DBNAME, dbName))
 	}
 	defer tRows.Close()
+
+	return
+}
+
+// isGORMConnectionActive - checks the GORM connection by querying the database.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func isGORMConnectionActive(connectionPtr *gorm.DB) (errorInfo errs.ErrorInfo) {
+
+	var (
+		sqlDB *sql.DB
+	)
+
+	if sqlDB, errorInfo.Error = connectionPtr.DB(); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_GORM_CONNECTION, ctv.TXT_FAILED))
+		return
+	}
+
+	if errorInfo.Error = sqlDB.Ping(); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_GORM_CONNECTION, ctv.TXT_FAILED))
+	}
 
 	return
 }

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	rowValues = map[int][]any{
+	rowValues = [][]any{
 		1: {123, "Search", "My Campaign 1", "2025/08/23", 100, int64(10000), 1.0, 2.50, 250.00, 25.00, 50.00, 0.02, 1000.00},
 		2: {456, "Display", "Product Ads", "2025/08/23", 50, int64(5000), 0.5, 1.25, 62.50, 12.50, 25.00, 0.01, 500.00},
 		3: {789, "Video", "Brand Awareness", "2025/08/23", 200, int64(20000), 2.0, 0.75, 150.00, 7.50, 75.00, 0.03, 1500.00},
@@ -162,12 +162,53 @@ func TestPostgresql(tPtr *testing.T) {
 	}
 }
 
+func TestGORMConnection(tPtr *testing.T) {
+	type args struct {
+		configFilename string
+	}
+
+	var (
+		errorInfo errs.ErrorInfo
+		gotError  bool
+	)
+
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Connecting to Postgresql Server using GORM",
+			args: args{
+				configFilename: "test_gorm_connection.yaml",
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if _, errorInfo = NewPSQLServer(ts.args.configFilename); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantErr {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+			},
+		)
+	}
+}
+
 func TestBatchInsert(tPtr *testing.T) {
 
 	type arguments struct {
 		batchName       string
 		insertStatement string
-		insertValues    map[int][]any
+		insertValues    [][]any
 		role            string
 	}
 
@@ -203,7 +244,7 @@ func TestBatchInsert(tPtr *testing.T) {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
 				if errorInfo = tPSQLServicePtr.BatchInsert(
-					DB_COUPLER_GOOGLE_ADS,
+					DATABASE_COUPLER_GOOGLE_ADS,
 					ts.arguments.role,
 					ts.arguments.batchName,
 					ts.arguments.insertStatement,

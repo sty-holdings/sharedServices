@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"gorm.io/gorm"
 
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
@@ -17,7 +18,7 @@ const (
 	PSQL_SSL_MODE_VERIFY      = "verify-ca"
 	PSQL_SSL_MODE_VERIFY_FULL = "verify-full"
 	//
-	PSQL_CONN_STRING = "dbname=%s host=%s pool_max_conns=%d password=%s port=%d sslmode=%s connect_timeout=%d user=%s"
+	PSQL_CONN_STRING = "dbname=%s host=%s password=%s port=%d sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s connect_timeout=%d user=%s"
 	//
 	SET_ROLE       = "SET ROLE %s;\n"
 	TRUNCATE_TABLE = "TRUNCATE TABLE %s.%s;\n"
@@ -59,7 +60,8 @@ const (
 )
 
 type PSQLConfig struct {
-	DBName         []string     `json:"psql_db_names" yaml:"psql_db_names"`
+	UsingGORM      bool         `json:"use_gorm" yaml:"use_gorm"`
+	DBNames        []string     `json:"psql_db_names" yaml:"psql_db_names"`
 	Debug          bool         `json:"psql_debug" yaml:"psql_debug"`
 	Host           string       `json:"psql_host" yaml:"psql_host"`
 	MaxConnections int          `json:"pgsql_max_connections" yaml:"pgsql_max_connections"`
@@ -71,22 +73,10 @@ type PSQLConfig struct {
 	UserName       string       `json:"psql_user_name" yaml:"psql_user_name"`
 }
 
-type PSQLConnectionConfig struct {
-	DBName         string
-	Debug          bool
-	Host           string
-	MaxConnections int
-	Password       string
-	Port           int
-	SSLMode        string
-	PSQLTLSInfo    jwts.TLSInfo
-	Timeout        int
-	UserName       string
-}
-
 type PSQLService struct {
 	DebugOn            bool
 	ConnectionPoolPtrs map[string]*pgxpool.Pool
+	GORMPoolPtrs       map[string]*gorm.DB
 }
 
 type DKCGACampaignPerformanceConsolidate struct {
