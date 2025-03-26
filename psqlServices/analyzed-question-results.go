@@ -1,6 +1,8 @@
 package sharedServices
 
 import (
+	"encoding/json"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -70,36 +72,112 @@ func (psqlServicePtr *PSQLService) InsertAnalyzedQuestions(analyzedQuestionBatch
 ) {
 
 	var (
-		batchRows        []AnalyzedQuestionResults
-		analyzedQuestion ctv.AnalyzedQuestion
-		result           *gorm.DB
+		batchRows                 []AnalyzedQuestionResults
+		analyzedQuestion          ctv.AnalyzedQuestion
+		result                    *gorm.DB
+		tCountBySubject           []byte
+		tSentenceSubjectAdverb    []byte
+		tTimePeriodValuesYears    []byte
+		tTimePeriodValuesQuarters []byte
+		tTimePeriodValuesMonths   []byte
+		tTimePeriodValuesWeeks    []byte
+		tTimePeriodValuesDays     []byte
 	)
 
 	for _, analyzedQuestion = range analyzedQuestionBatch {
+		if tCountBySubject, errorInfo.Error = json.Marshal(analyzedQuestion.CategorySentence.CountBySubject); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_COUNT_BY_SUBJECT, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if tSentenceSubjectAdverb, errorInfo.Error = json.Marshal(analyzedQuestion.CategorySentence.SentenceSubjectAdverb); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_SENTENCE_SUBJECT_ADVERB, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if tTimePeriodValuesYears, errorInfo.Error = json.Marshal(analyzedQuestion.TimePeriodValues.Years); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_TIME_PERIOD_VALUES, ctv.TXT_YEAR, ctv.TXT_MARSHAL_FAILED),
+			)
+			return
+		}
+		if tTimePeriodValuesQuarters, errorInfo.Error = json.Marshal(analyzedQuestion.TimePeriodValues.Quarters); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_TIME_PERIOD_VALUES, ctv.TXT_QUARTER, ctv.TXT_MARSHAL_FAILED),
+			)
+			return
+		}
+		if tTimePeriodValuesMonths, errorInfo.Error = json.Marshal(analyzedQuestion.TimePeriodValues.Months); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_TIME_PERIOD_VALUES, ctv.TXT_MONTH, ctv.TXT_MARSHAL_FAILED),
+			)
+			return
+		}
+		if tTimePeriodValuesWeeks, errorInfo.Error = json.Marshal(analyzedQuestion.TimePeriodValues.Weeks); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_TIME_PERIOD_VALUES, ctv.TXT_WEEK, ctv.TXT_MARSHAL_FAILED),
+			)
+			return
+		}
+		if tTimePeriodValuesDays, errorInfo.Error = json.Marshal(analyzedQuestion.TimePeriodValues.Days); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(ctv.VAL_SERVICE_PSQL, ctv.LBL_ANALYZE_QUESTION, ctv.FN_TIME_PERIOD_VALUES, ctv.TXT_DAY, ctv.TXT_MARSHAL_FAILED),
+			)
+			return
+		}
+
 		batchRows = append(
 			batchRows, AnalyzedQuestionResults{
 				AnalysisID:        analyzedQuestion.AnalysisId,
 				CreateTimestamp:   time.Now().UTC(),
 				ElapseTimeSeconds: elapseTime,
-				AverageFlag:       analyzedQuestion.SpecialWords.AverageFlag,
-				ComparisonFlag:    analyzedQuestion.SpecialWords.ComparisonFlag,
-				CompoundFlag:      analyzedQuestion.SpecialWords.CompoundFlag,
-				CountFlag:         analyzedQuestion.SpecialWords.CountFlag,
-				DetailFlag:        analyzedQuestion.SpecialWords.DetailFlag,
-				ForecastFlag:      analyzedQuestion.SpecialWords.ForecastFlag,
-				MaximumFlag:       analyzedQuestion.SpecialWords.MaximumFlag,
-				MinimumFlag:       analyzedQuestion.SpecialWords.MinimumFlag,
-				PercentageFlag:    analyzedQuestion.SpecialWords.PercentageFlag,
-				ReportFlag:        analyzedQuestion.SpecialWords.ReportFlag,
-				SubtotalFlag:      analyzedQuestion.SpecialWords.SubTotalFlag,
-				SummaryFlag:       analyzedQuestion.SpecialWords.SummaryFlag,
-				ToDateFlag:        analyzedQuestion.TimePeriodValues.ToDate,
-				TotalFlag:         analyzedQuestion.SpecialWords.TotalFlag,
-				TransactionFlag:   analyzedQuestion.SpecialWords.TransactionFlag,
-				TrendFlag:         analyzedQuestion.SpecialWords.TrendFlag,
-				AIPrompt:          analyzedQuestion.CategorySentence.Prompt,
-				UserPrompt:        analyzedQuestion.UserQuestion,
-				BatchName:         batchName,
+				//
+				AverageFlag:     analyzedQuestion.SpecialWords.AverageFlag,
+				ComparisonFlag:  analyzedQuestion.SpecialWords.ComparisonFlag,
+				CompoundFlag:    analyzedQuestion.SpecialWords.CompoundFlag,
+				CountFlag:       analyzedQuestion.SpecialWords.CountFlag,
+				DetailFlag:      analyzedQuestion.SpecialWords.DetailFlag,
+				ForecastFlag:    analyzedQuestion.SpecialWords.ForecastFlag,
+				MaximumFlag:     analyzedQuestion.SpecialWords.MaximumFlag,
+				MinimumFlag:     analyzedQuestion.SpecialWords.MinimumFlag,
+				PercentageFlag:  analyzedQuestion.SpecialWords.PercentageFlag,
+				ReportFlag:      analyzedQuestion.SpecialWords.ReportFlag,
+				SubtotalFlag:    analyzedQuestion.SpecialWords.SubTotalFlag,
+				SummaryFlag:     analyzedQuestion.SpecialWords.SummaryFlag,
+				ToDateFlag:      analyzedQuestion.TimePeriodValues.ToDate,
+				TotalFlag:       analyzedQuestion.SpecialWords.TotalFlag,
+				TransactionFlag: analyzedQuestion.SpecialWords.TransactionFlag,
+				TrendFlag:       analyzedQuestion.SpecialWords.TrendFlag,
+				//
+				AIPrompt:              analyzedQuestion.CategorySentence.Prompt,
+				Category:              strings.Join(analyzedQuestion.CategorySentence.Category, ctv.TXT_COLUMN_SEPARATOR),
+				CountBySubject:        string(tCountBySubject),
+				RelativeTimeWord:      analyzedQuestion.TimePeriodValues.RelativeTime,
+				SentenceSubject:       strings.Join(analyzedQuestion.CategorySentence.SentenceSubject, ctv.TXT_COLUMN_SEPARATOR),
+				SentenceSubjectAdverb: string(tSentenceSubjectAdverb),
+				UserPrompt:            analyzedQuestion.UserQuestion,
+				//
+				CategorySentenceCandidateTokenCount: int(analyzedQuestion.CategorySentence.TokenCount.CandidatesTokenCount),
+				CategorySentencePromptTokenCount:    int(analyzedQuestion.CategorySentence.TokenCount.PromptTokenCount),
+				CategorySentenceTotalTokenCount:     int(analyzedQuestion.CategorySentence.TokenCount.TotalTokenCount),
+				SpecialWordsCandidateTokenCount:     int(analyzedQuestion.SpecialWords.TokenCount.CandidatesTokenCount),
+				SpecialWordsPromptTokenCount:        int(analyzedQuestion.SpecialWords.TokenCount.PromptTokenCount),
+				SpecialWordsTotalTokenCount:         int(analyzedQuestion.SpecialWords.TokenCount.TotalTokenCount),
+				TimePeriodValuesCandidateTokenCount: int(analyzedQuestion.TimePeriodValues.TokenCount.CandidatesTokenCount),
+				TimePeriodValuesPromptTokenCount:    int(analyzedQuestion.TimePeriodValues.TokenCount.PromptTokenCount),
+				TimePeriodValuesTotalTokenCount:     int(analyzedQuestion.TimePeriodValues.TokenCount.TotalTokenCount),
+				//
+				ValuesYear:    string(tTimePeriodValuesYears),
+				ValuesQuarter: string(tTimePeriodValuesQuarters),
+				ValuesMonth:   string(tTimePeriodValuesMonths),
+				ValuesWeek:    string(tTimePeriodValuesWeeks),
+				ValuesDay:     string(tTimePeriodValuesDays),
+				SundayDate:    strings.Join(analyzedQuestion.TimePeriodValues.SundayDate, ctv.TXT_COLUMN_SEPARATOR),
+				//
+				BatchName: batchName,
 			},
 		)
 

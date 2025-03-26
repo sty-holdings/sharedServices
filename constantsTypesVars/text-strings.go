@@ -15,6 +15,7 @@ const (
 	TXT_AWS_SYSTEM_MANAGER           = "AWS System Manager (SSM)"
 	TXT_BAD                          = "bad"
 	TXT_BYPASS                       = "bypass"
+	TXT_COLUMN_SEPARATOR             = ", "
 	TXT_CREATE_FAILED                = "create failed"
 	TXT_DATATYPE_BOOL                = "bool"
 	TXT_DATATYPE_COMPLEX128          = "complex128"
