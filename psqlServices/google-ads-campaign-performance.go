@@ -142,6 +142,26 @@ func (CampaignPerformanceYearly) TableName() string {
 	return "google_ads.campaign_performance_yearly"
 }
 
+func (psqlServicePtr *PSQLService) GetGoogleAdsCampaignData(styhClientId string, year int) (googleData []GoogleAdsCampaign) {
+
+	var (
+		tx *gorm.DB
+	)
+
+	tx = psqlServicePtr.GORMPoolPtrs[DATABASE_ANSWERS].Where("styh_client_id = ?", styhClientId, year).Find(&googleData)
+
+	if psqlServicePtr.DebugOn {
+		log.Printf("Rows: %d\n", tx.RowsAffected)
+	}
+
+	// Handle the error
+	if tx.Error != nil {
+		fmt.Printf("--> Error: %s", tx.Error.Error())
+	}
+
+	return
+}
+
 func (psqlServicePtr *PSQLService) GetGoogleAdsYearlyData(styhClientId string, year int) (googleData []CampaignPerformanceYearly) {
 
 	var (
@@ -162,7 +182,7 @@ func (psqlServicePtr *PSQLService) GetGoogleAdsYearlyData(styhClientId string, y
 	return
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsQuarterData(styhClientId string, year int, quarter int) (googleData []CampaignPerformanceYearly) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsQuarterData(styhClientId string, year int, quarter int) (googleData []CampaignPerformanceQuarterly) {
 
 	var (
 		tx *gorm.DB
@@ -182,7 +202,7 @@ func (psqlServicePtr *PSQLService) GetGoogleAdsQuarterData(styhClientId string, 
 	return
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsMonthData(styhClientId string, year int, month int) (googleData []CampaignPerformanceYearly) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsMonthData(styhClientId string, year int, month int) (googleData []CampaignPerformanceMonthly) {
 
 	var (
 		tx *gorm.DB
@@ -202,7 +222,7 @@ func (psqlServicePtr *PSQLService) GetGoogleAdsMonthData(styhClientId string, ye
 	return
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsWeekData(styhClientId string, startOfWeek string) (googleData []CampaignPerformanceYearly) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsWeekData(styhClientId string, startOfWeek string) (googleData []GoogleAdsCampaignPerformanceWeekly) {
 
 	var (
 		tx *gorm.DB
@@ -222,7 +242,7 @@ func (psqlServicePtr *PSQLService) GetGoogleAdsWeekData(styhClientId string, sta
 	return
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsDayData(styhClientId string, year int, month int, day int) (googleData []CampaignPerformanceYearly) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsDayData(styhClientId string, year int, month int, day int) (googleData []CampaignPerformanceDaily) {
 
 	var (
 		tx *gorm.DB
