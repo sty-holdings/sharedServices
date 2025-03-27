@@ -222,6 +222,7 @@ const (
 	LBL_SERVICE_STRIPE              = "STRIPE SERVICE: "
 	LBL_SERVICE_VALIDATORS          = "VALIDATORS SERVICE: "
 	LBL_SIGNAL                      = "SIGNAL: "
+	LBL_START_OF_WEEK               = "START OF WEEK: "
 	LBL_STATUS                      = "STATUS: "
 	LBL_STATUS_ANALYSIS             = "ANALYSIS STATUS: "
 	LBL_STATUS_HTTP                 = "HTTP STATUS CODE: "
