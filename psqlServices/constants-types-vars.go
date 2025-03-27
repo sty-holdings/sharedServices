@@ -5,8 +5,6 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"gorm.io/gorm"
-
-	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
 //goland:noinspection ALL
@@ -60,19 +58,35 @@ const (
 )
 
 type PSQLConfig struct {
-	UsingGORM      bool         `json:"use_gorm" yaml:"use_gorm"`
-	DBNames        []string     `json:"psql_db_names" yaml:"psql_db_names"`
-	Debug          bool         `json:"psql_debug" yaml:"psql_debug"`
-	Host           string       `json:"psql_host" yaml:"psql_host"`
-	MaxConnections int          `json:"pgsql_max_connections" yaml:"pgsql_max_connections"`
-	Password       string       `json:"psql_password" yaml:"psql_password"`
-	Port           int          `json:"psql_port" yaml:"psql_port"`
-	SSLMode        string       `json:"psql_ssl_mode" yaml:"psql_ssl_mode"`
-	PSQLTLSInfo    jwts.TLSInfo `json:"psql_tls_info" yaml:"psql_tls_info"`
-	Timeout        int          `json:"psql_timeout" yaml:"psql_timeout"`
-	UserName       string       `json:"psql_user_name" yaml:"psql_user_name"`
+	GORM struct {
+		UseGorm  bool `yaml:"use_gorm"`
+		LoggerOn bool `yaml:"logger_on"`
+	} `yaml:"gorm"`
+	PsqlDbNames  []string `yaml:"psql_db_names"`
+	PsqlDebug    bool     `yaml:"psql_debug"`
+	PsqlHost     string   `yaml:"psql_host"`
+	PsqlPassword string   `yaml:"psql_password"`
+	PsqlPort     int      `yaml:"psql_port"`
+	PsqlSslMode  string   `yaml:"psql_ssl_mode"`
+	PsqlTLSInfo  struct {
+		TLSCertificateFqn string `yaml:"tls_certificate_fqn"`
+		TLSPrivateKeyFqn  string `yaml:"tls_private_key_fqn"`
+		TLSCaBundleFqn    string `yaml:"tls_ca_bundle_fqn"`
+	} `yaml:"psql_tls_info"`
+	PsqlTimeout  int    `yaml:"psql_timeout"`
+	PsqlUserName string `yaml:"psql_user_name"`
 }
-
+DBNames        []string     `json:"psql_db_names" yaml:"psql_db_names"`
+Debug          bool         `json:"psql_debug" yaml:"psql_debug"`
+Host           string       `json:"psql_host" yaml:"psql_host"`
+MaxConnections int          `json:"pgsql_max_connections" yaml:"pgsql_max_connections"`
+Password       string       `json:"psql_password" yaml:"psql_password"`
+Port           int          `json:"psql_port" yaml:"psql_port"`
+SSLMode        string       `json:"psql_ssl_mode" yaml:"psql_ssl_mode"`
+PSQLTLSInfo    jwts.TLSInfo `json:"psql_tls_info" yaml:"psql_tls_info"`
+Timeout        int          `json:"psql_timeout" yaml:"psql_timeout"`
+UserName       string       `json:"psql_user_name" yaml:"psql_user_name"`
+}
 type PSQLService struct {
 	DebugOn            bool
 	ConnectionPoolPtrs map[string]*pgxpool.Pool
