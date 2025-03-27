@@ -113,6 +113,8 @@ const (
 	TXT_SET_FAILED                   = "set failed"
 	TXT_SUBSCRIPTION_FAILED          = "subscription failed"
 	TXT_TIME_FRAME_UNKNOWN           = "time frame is unknown"
+	TXT_THIS                         = "this"
+	TXT_THESE                        = "these"
 	TXT_TRUE                         = "true"
 	TXT_TURNED_ON                    = "turned on"
 	TXT_UNKNOWN                      = "unknown"
