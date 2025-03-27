@@ -63,6 +63,7 @@ const (
 	FN_CITY                                     = "city"
 	FN_CLIENT_ID                                = "client_id"
 	FN_CLIENT_KEY                               = "client_key"
+	FN_COMING_FLAG                              = "coming"
 	FN_COMPANY_NAME                             = "company_name"
 	FN_COMPARISON_FLAG                          = "comparison"
 	FN_COMPARISON_QUESTION                      = "comparison_question"
