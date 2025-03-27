@@ -30,14 +30,13 @@ func (CampaignPerformanceYearly) TableName() string {
 	return "google_ads.campaign_performance_yearly"
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsYearlyData(styhClientId string, year int) (googleData string) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsYearlyData(styhClientId string, year int) (googleData []CampaignPerformanceYearly) {
 
 	var (
-		tx      *gorm.DB
-		results []CampaignPerformanceYearly
+		tx *gorm.DB
 	)
 
-	tx = psqlServicePtr.GORMPoolPtrs[DATABASE_ANSWERS].Where("styh_client_id = ? and dk_year = ?", styhClientId, year).Find(&results)
+	tx = psqlServicePtr.GORMPoolPtrs[DATABASE_ANSWERS].Where("styh_client_id = ? and dk_year = ?", styhClientId, year).Find(&googleData)
 
 	if psqlServicePtr.DebugOn {
 		log.Printf("Rows: %d\n", tx.RowsAffected)
