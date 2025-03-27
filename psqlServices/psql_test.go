@@ -203,6 +203,49 @@ func TestGORMConnection(tPtr *testing.T) {
 	}
 }
 
+func TestGetGoogleAdsYearlyData(tPtr *testing.T) {
+	type args struct {
+		configFilename string
+	}
+
+	var (
+		errorInfo  errs.ErrorInfo
+		gotError   bool
+		servicePtr *PSQLService
+	)
+
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: ctv.TEST_POSITIVE_SUCCESS + "Connecting to Postgresql Server using GORM",
+			args: args{
+				configFilename: "test_gorm_connection.yaml",
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, ts := range tests {
+		tPtr.Run(
+			ts.name, func(t *testing.T) {
+				if servicePtr, errorInfo = NewPSQLServer(ts.args.configFilename); errorInfo.Error != nil {
+					gotError = true
+				} else {
+					gotError = false
+				}
+				if gotError != ts.wantErr {
+					tPtr.Error(ts.name)
+					tPtr.Error(errorInfo)
+				}
+				_ = servicePtr.GetGoogleAdsYearlyData("f56cbbf5-ea53-11ef-88f5-005056564fc5", 2025)
+			},
+		)
+	}
+}
+
 func TestBatchInsert(tPtr *testing.T) {
 
 	type arguments struct {
@@ -244,7 +287,7 @@ func TestBatchInsert(tPtr *testing.T) {
 		tPtr.Run(
 			ts.name, func(t *testing.T) {
 				if errorInfo = tPSQLServicePtr.BatchInsert(
-					DATABASE_COUPLER_GOOGLE_ADS,
+					DATABASE_DATA_PULL,
 					ts.arguments.role,
 					ts.arguments.batchName,
 					ts.arguments.insertStatement,

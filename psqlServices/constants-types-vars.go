@@ -26,27 +26,8 @@ const (
 
 //goland:noinspection All
 const (
-	DATABASE_ANSWERS            = "answers"
-	DATABASE_COUPLER_GOOGLE_ADS = "coupler_google_ads"
-)
-
-//goland:noinspection All
-const (
-	SCHEMA_DKA   = "dka"
-	SCHEMA_DKCGA = "dkcga"
-)
-
-//goland:noinspection All
-const (
-	TBL_CAMPAIGN_PERFORMANCE_DAILY     = "campaign_performance_daily"
-	TBL_CAMPAIGN_PERFORMANCE_WEEKLY    = "campaign_performance_weekly"
-	TBL_CAMPAIGN_PERFORMANCE_MONTHLY   = "campaign_performance_monthly"
-	TBL_CAMPAIGN_PERFORMANCE_QUARTERLY = "campaign_performance_quarterly"
-	TBL_CAMPAIGN_PERFORMANCE_YEARLY    = "campaign_performance_yearly"
-	TBL_CAMPAIGNS                      = "campaigns"
-	TBL_COUPLER_GOOGLE_ADS             = "coupler_google_ads"
-	TBL_COUPLER_LINKEDIN_COMPANY       = "coupler_linkedin_company"
-	TBL_COUPLER_CAMPAIGN_PERFORMANCE   = "coupler_campaign_performance"
+	DATABASE_ANSWERS   = "answers"
+	DATABASE_DATA_PULL = "data_pull"
 )
 
 //goland:noinspection All

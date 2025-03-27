@@ -1,8 +1,10 @@
-use_gorm: true
+gorm:
+  use_gorm: true
+  logger_on: true
 psql_db_names:
-  - "coupler_google_ads"
+  - "data_pull"
   - "answers"
-psql_debug: false
+psql_debug: true
 psql_host: "dev.daveknows.net"
 psql_password: "jadfiu345pihha65yef34ppirh08GGfadgiahowe4w"
 psql_port: 5432
