@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/goccy/go-yaml"
 	"github.com/jackc/pgx/v5"
@@ -13,6 +15,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -190,6 +193,7 @@ func buildConnectionString(config PSQLConfig, databaseName string) string {
 func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *pgxpool.Pool, gormPoolPtr *gorm.DB, errorInfo errs.ErrorInfo) {
 
 	var (
+		newLogger         logger.Interface
 		tConfigPtr        *pgxpool.Config
 		tConnectionString string
 		tDialector        gorm.Dialector
@@ -197,7 +201,18 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 
 	tConnectionString = buildConnectionString(config, databaseName)
 
-	if config.UsingGORM {
+	if config.GORM.UseGorm {
+		if config.GORM.LoggerOn {
+			newLogger = logger.New(
+				log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+				logger.Config{
+					SlowThreshold: time.Second, // Slow SQL threshold
+					LogLevel:      logger.Info, // Log level
+					Colorful:      true,        // Enable color
+				},
+			)
+		}
+
 		tDialector = postgres.New(
 			postgres.Config{
 				DSN:                  tConnectionString,
@@ -207,8 +222,9 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 
 		if gormPoolPtr, errorInfo.Error = gorm.Open(
 			tDialector, &gorm.Config{
-				PrepareStmt:     true,
 				CreateBatchSize: 100,
+				Logger:          newLogger,
+				PrepareStmt:     true,
 			},
 		); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_GORM_CONNECTION, ctv.TXT_FAILED))
