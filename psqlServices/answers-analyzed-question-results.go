@@ -59,7 +59,7 @@ type AnalyzedQuestionResults struct {
 }
 
 func (AnalyzedQuestionResults) TableName() string {
-	return "dka.analyzed_question_results"
+	return "dkstats.analyzed_question_results"
 }
 
 // InsertAnalyzedQuestions - populates a batch (max: 100) of rows and inserts them into the answers database
