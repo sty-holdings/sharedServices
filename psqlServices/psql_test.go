@@ -240,7 +240,7 @@ func TestGetGoogleAdsYearlyData(tPtr *testing.T) {
 					tPtr.Error(ts.name)
 					tPtr.Error(errorInfo)
 				}
-				_ = servicePtr.GetGoogleAdsYearlyData("f56cbbf5-ea53-11ef-88f5-005056564fc5", 2025)
+				_ = servicePtr.GetGoogleAdsYearData("f56cbbf5-ea53-11ef-88f5-005056564fc5", 2025)
 			},
 		)
 	}

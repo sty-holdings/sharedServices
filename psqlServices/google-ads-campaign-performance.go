@@ -162,7 +162,7 @@ func (psqlServicePtr *PSQLService) GetGoogleAdsCampaignData(styhClientId string,
 	return
 }
 
-func (psqlServicePtr *PSQLService) GetGoogleAdsYearlyData(styhClientId string, year int) (googleData []CampaignPerformanceYearly) {
+func (psqlServicePtr *PSQLService) GetGoogleAdsYearData(styhClientId string, year int) (googleData []CampaignPerformanceYearly) {
 
 	var (
 		tx *gorm.DB
