@@ -119,6 +119,8 @@ const (
 	TXT_TURNED_ON                    = "turned on"
 	TXT_UNKNOWN                      = "unknown"
 	TXT_UNMARSHAL_FAILED             = "unmarshaling failed"
+	TXT_VENDOR                       = "vendor"
+	TXT_VENDORS                      = "vendors"
 	TXT_WEEK                         = "week"
 	TXT_YEAR                         = "year"
 	TXT_YES                          = "yes"
