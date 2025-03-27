@@ -225,7 +225,7 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 		}
 	case SI_TOPIC_GENERATE_ANSWER:
 		switch key {
-		case SI_KEY_BUSINESS_ANALYST:
+		case SI_KEY_FINANCIAL_ANALYST:
 			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction
 			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.OutputFormat
 			tSetDate, _ = strconv.ParseBool(aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.SetDate)

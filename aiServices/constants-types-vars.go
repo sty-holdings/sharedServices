@@ -19,7 +19,7 @@ const (
 	SI_KEY_CATEGORY_SENTENCE  = "category_sentence"
 	SI_KEY_SPECIAL_WORDS      = "special_words"
 	SI_KEY_TIME_PERIOD_VALUES = "time_period_values"
-	SI_KEY_BUSINESS_ANALYST   = "business_analyst"
+	SI_KEY_FINANCIAL_ANALYST  = "financial_analyst"
 	SI_KEY_MARKETING_ANALYST  = "marketing_analyst"
 	SI_KEY_NOT_SUPPORTED      = "not_supported"
 )
@@ -84,7 +84,7 @@ var (
 	}
 
 	SITopicGenerateAnswerKeys = []string{
-		SI_KEY_BUSINESS_ANALYST,
+		SI_KEY_FINANCIAL_ANALYST,
 		SI_KEY_MARKETING_ANALYST,
 		SI_KEY_NOT_SUPPORTED,
 	}
@@ -95,7 +95,7 @@ var (
 		SI_KEY_SPECIAL_WORDS:      "pool-1",
 		SI_KEY_TIME_PERIOD_VALUES: "pool-2",
 		// SI_TOPIC_GENERATE_ANSWER
-		SI_KEY_BUSINESS_ANALYST:  "pool-0",
+		SI_KEY_FINANCIAL_ANALYST: "pool-0",
 		SI_KEY_MARKETING_ANALYST: "pool-0",
 		SI_KEY_NOT_SUPPORTED:     "pool-0",
 	}
