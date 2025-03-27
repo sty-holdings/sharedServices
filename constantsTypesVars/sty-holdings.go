@@ -118,6 +118,8 @@ type SpecialWords struct {
 	MaximumFlag     bool                `json:"maximum"`
 	MinimumFlag     bool                `json:"minimum"`
 	PercentageFlag  bool                `json:"percentage"`
+	PredictionFlag  bool                `json:"predict"`
+	RecommendFlag   bool                `json:"recommend"`
 	ReportFlag      bool                `json:"report"`
 	SubTotalFlag    bool                `json:"subtotal"`
 	SummaryFlag     bool                `json:"summary"`
