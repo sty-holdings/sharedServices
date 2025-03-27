@@ -167,6 +167,7 @@ const (
 	FN_PID_DIRECTORY                            = "pid_directory"
 	FN_POINTER                                  = "any_pointer"
 	FN_PORT                                     = "port"
+	FN_PREVIOUS_FLAG                            = "previous"
 	FN_PRIVATE_KEY                              = "PrivateKey"
 	FN_PROGRAM_NAME                             = "program_name"
 	FN_PROMPT                                   = "prompt"
