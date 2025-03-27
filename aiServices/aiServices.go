@@ -226,9 +226,9 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locat
 	case SI_TOPIC_GENERATE_ANSWER:
 		switch key {
 		case SI_KEY_FINANCIAL_ANALYST:
-			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction
-			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.OutputFormat
-			tSetDate, _ = strconv.ParseBool(aiServicePtr.config.SystemInstructions.GenerateAnswer.BusinessAnalyst.SetDate)
+			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.FinancialAnalyst.Instruction
+			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.FinancialAnalyst.OutputFormat
+			tSetDate, _ = strconv.ParseBool(aiServicePtr.config.SystemInstructions.GenerateAnswer.FinancialAnalyst.SetDate)
 		case SI_KEY_MARKETING_ANALYST:
 			systemInstruction = aiServicePtr.config.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction
 			tOutputFormat = aiServicePtr.config.SystemInstructions.GenerateAnswer.MarketingAnalyst.OutputFormat
@@ -339,7 +339,7 @@ func validateAIConfig(aiConfig AIConfig) (errorInfo errs.ErrorInfo) {
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
-		aiConfig.SystemInstructions.GenerateAnswer.BusinessAnalyst.Instruction,
+		aiConfig.SystemInstructions.GenerateAnswer.FinancialAnalyst.Instruction,
 		errs.ErrEmptyRequiredParameter,
 		ctv.FN_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {

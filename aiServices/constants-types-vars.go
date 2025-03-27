@@ -54,7 +54,7 @@ type AnalyzeQuestions struct {
 }
 
 type GenerateAnswer struct {
-	BusinessAnalyst  InstructionSet `yaml:"business_analyst"`
+	FinancialAnalyst InstructionSet `yaml:"financial_analyst"`
 	MarketingAnalyst InstructionSet `yaml:"marketing_analyst"`
 	NotSupported     InstructionSet `yaml:"not_supported"`
 }
