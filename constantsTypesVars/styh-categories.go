@@ -11,5 +11,5 @@ const (
 	CAT_RETENTION          = "retention"
 	CAT_SALES              = "sales"
 	CAT_TRAINING           = "training"
-	CAT_NOT_SUPPORTED      = "not-supported"
+	CAT_NOT_SUPPORTED      = "unsupported"
 )
