@@ -65,6 +65,7 @@ const (
 	LBL_CONFIG_STRIPE_FILENAME      = "STRIPE CONFIG FILENAME: "
 	LBL_COUNT_BY_SUBJECT            = "count_by_subject"
 	LBL_CURRENCY                    = "CURRENCY: "
+	LBL_DATA_PULL                   = "DATA PULL: "
 	LBL_DATABASE                    = "DATABASE: "
 	LBL_DATASTORE                   = "DATASTORE: "
 	LBL_DATA_TYPE                   = "DATA TYPE: "
