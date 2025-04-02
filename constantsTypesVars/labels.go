@@ -229,6 +229,7 @@ const (
 	LBL_STATUS                      = "STATUS: "
 	LBL_STATUS_ANALYSIS             = "ANALYSIS STATUS: "
 	LBL_STATUS_HTTP                 = "HTTP STATUS CODE: "
+	LBL_STRIPE_KEY                  = "STRIPE KEY: "
 	LBL_STYH_CLIENT_ID              = "STYH CLIENT_ID: "
 	LBL_STYH_USER_ID                = "STYH USER ID: "
 	LBL_STYH_USER_NAME              = "STYH USER_NAME: "
