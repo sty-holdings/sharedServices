@@ -24,6 +24,7 @@ const (
 	EMPTY_JWT_REFRESH_TOKEN                 = "The refresh token is empty."
 	EMPTY_KEY_PRIVATE                       = "The private key  is empty."
 	EMPTY_KEY_PUBLIC                        = "The public key  is empty."
+	EMPTY_KEY_SAAS_PROVIDER                 = "The SaaS Provider key is empty."
 	EMPTY_LOAD_EXTENSIONS                   = "There must be at least one extension entry in the configuration file."
 	EMPTY_NAME_FIRST                        = "The first name is empty."
 	EMPTY_NAME_FIRST_LAST                   = "Either the first last name field is empty."
@@ -44,6 +45,7 @@ const (
 	EMPTY_REQUIRED_PARAMETER                = "A required parameter is empty."
 	EMPTY_SAAS_PROVIDER                     = "The SaaS provider field is empty"
 	EMPTY_SAAS_SUPPORTED_PROVIDER           = "The suppported SaaS provider field is empty."
+	EMPTY_SECRET_SAAS_PROVIDER              = "The SaaS provider secret is empty."
 	EMPTY_SECURITY_PRIVATE_KEY_FILENAME     = "The private key filename is empty."
 	EMPTY_SECURITY_PUBLIC_KEY_FILENAME      = "The public key filename is empty."
 	EMPTY_SERVER_HOST_NAME                  = "The server host name is empty."
@@ -223,6 +225,7 @@ var (
 	ErrEmptyJwtRefreshToken               = errors.New(EMPTY_JWT_REFRESH_TOKEN)
 	ErrEmptyKeyPrivate                    = errors.New(EMPTY_KEY_PRIVATE)
 	ErrEmptyKeyPublic                     = errors.New(EMPTY_KEY_PUBLIC)
+	ErrEmptyKeySaaSProvider               = errors.New(EMPTY_KEY_SAAS_PROVIDER)
 	ErrEmptyLoadExtensions                = errors.New(EMPTY_LOAD_EXTENSIONS)
 	ErrEmptyNameFirst                     = errors.New(EMPTY_NAME_FIRST)
 	ErrEmptyNameFirstLast                 = errors.New(EMPTY_NAME_FIRST_LAST)
@@ -243,6 +246,7 @@ var (
 	ErrEmptyRequiredParameter             = errors.New(EMPTY_REQUIRED_PARAMETER)
 	ErrEmptySaasProvider                  = errors.New(EMPTY_SAAS_PROVIDER)
 	ErrEmptySaasSupportedProvider         = errors.New(EMPTY_SAAS_SUPPORTED_PROVIDER)
+	ErrEmptySecretSaaSProvider            = errors.New(EMPTY_SECRET_SAAS_PROVIDER)
 	ErrEmptySecurityPrivateKeyFilename    = errors.New(EMPTY_SECURITY_PRIVATE_KEY_FILENAME)
 	ErrEmptySecurityPublicKeyFilename     = errors.New(EMPTY_SECURITY_PUBLIC_KEY_FILENAME)
 	ErrEmptyServerHostName                = errors.New(EMPTY_SERVER_HOST_NAME)
