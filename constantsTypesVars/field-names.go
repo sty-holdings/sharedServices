@@ -128,6 +128,7 @@ const (
 	FN_GRPC_SERVER_POINTER                      = "grpc_server_pointer"
 	FN_GRPC_TIMEOUT                             = "grpc_timeout"
 	FN_HTTP_TLS_INFO                            = "http_tls_info"
+	FN_ITERATOR_POINTER                         = "tIterPtr"
 	FN_JSON_STRING                              = "json_string"
 	FN_JWT                                      = "JWT"
 	FN_JWT_ISSUER                               = "issuer"

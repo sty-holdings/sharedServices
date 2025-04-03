@@ -134,6 +134,7 @@ const (
 	LBL_HTTP_BODY                   = "HTTP BODY: "
 	LBL_IDENTITY_PROVIDER           = "IDENTITY PROVIDER: "
 	LBL_INSTANCE_NAME               = "INSTANCE NAME: "
+	LBL_ITERATOR_POINTER            = "ITERATOR POINTER: "
 	LBL_JWT_SYMMETRIC_KEY           = "SYMMETRIC KEY: "
 	LBL_JWT_TOKEN                   = "TOKEN: "
 	LBL_JWT_TOKEN_TYPE              = "TOKEN TYPE: "
