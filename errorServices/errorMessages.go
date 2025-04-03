@@ -116,7 +116,8 @@ const (
 	INVALID_COGNITO_USERPOOL_ID             = "User Pool ID must be in format: '<region>_<pool name>'"
 	INVALID_COUNT                           = "The cound is invalid."
 	INVALID_CURRENCY                        = "The curreny type is not supported. See https://github.com/sty-holdings/sharedServices/v2025/constsTypesVars"
-	INVALID_DATE_TYPE                       = "Data Type is not supported."
+	INVALID_DATA_TYPE                       = "Data Type is not supported."
+	INVALID_DATE                            = "The date is invalid."
 	INVALID_DOMAIN                          = "The domain value is invalid."
 	INVALID_EMAIL_ADDRESS_LENGTH            = "The email address length must be greater than 2 and less than 255."
 	INVALID_ENVIRNOMENT                     = "The environment value is invalid."
@@ -317,7 +318,8 @@ var (
 	ErrInvalidCognitoUserpoolID           = errors.New(INVALID_COGNITO_USERPOOL_ID)
 	ErrInvalidCount                       = errors.New(INVALID_COUNT)
 	ErrInvalidCurrency                    = errors.New(INVALID_CURRENCY)
-	ErrInvalidDateType                    = errors.New(INVALID_DATE_TYPE)
+	ErrInvalidDataType                    = errors.New(INVALID_DATA_TYPE)
+	ErrInvalidDate                        = errors.New(INVALID_DATE)
 	ErrInvalidDomain                      = errors.New(INVALID_DOMAIN)
 	ErrInvalidEmailAddressLength          = errors.New(INVALID_EMAIL_ADDRESS_LENGTH)
 	ErrInvalidEnvirnoment                 = errors.New(INVALID_ENVIRNOMENT)
