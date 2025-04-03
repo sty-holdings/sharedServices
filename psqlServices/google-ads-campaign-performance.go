@@ -5,16 +5,15 @@ import (
 	"log"
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type GoogleAdsCampaign struct {
-	StyhClientID   uuid.UUID `gorm:"type:UUID"`
+	StyhClientId   string    `gorm:"type:uuid;not null"`
 	AccountName    string    `gorm:"type:VARCHAR(255)"`
 	CampaignName   string    `gorm:"type:VARCHAR(255)"`
-	AccountID      *string   `gorm:"type:VARCHAR(255)"`
-	CampaignID     *string   `gorm:"type:VARCHAR(255)"`
+	AccountID      string    `gorm:"type:VARCHAR(255)"`
+	CampaignID     string    `gorm:"type:VARCHAR(255)"`
 	CampaignStatus string    `gorm:"type:VARCHAR(255)"`
 	StartDate      time.Time `gorm:"type:date;default:CURRENT_DATE"`
 	EndDate        time.Time `gorm:"type:date;default:CURRENT_DATE"`
@@ -26,12 +25,12 @@ func (GoogleAdsCampaign) TableName() string {
 }
 
 type CampaignPerformanceDaily struct {
-	StyhClientID           uuid.UUID `gorm:"type:uuid"`
+	StyhClientId           string    `gorm:"type:uuid;not null"`
 	AccountName            string    `gorm:"type:VARCHAR(255)"`
 	CampaignName           string    `gorm:"type:VARCHAR(255)"`
 	ReportDate             time.Time `gorm:"type:date;default:CURRENT_DATE"`
-	AccountID              *string   `gorm:"type:VARCHAR(255)"`
-	CampaignID             *string   `gorm:"type:VARCHAR(255)"`
+	AccountID              string    `gorm:"type:VARCHAR(255)"`
+	CampaignID             string    `gorm:"type:VARCHAR(255)"`
 	AmountSpend            float64   `gorm:"type:double precision;default:0.0"`
 	Cpc                    float64   `gorm:"type:double precision;default:0.0"`
 	Cpm                    float64   `gorm:"type:double precision;default:0.0"`
@@ -49,13 +48,13 @@ func (CampaignPerformanceDaily) TableName() string {
 }
 
 type CampaignPerformanceMonthly struct {
-	StyhClientID                *string `gorm:"type:UUID"`
-	AccountName                 *string `gorm:"type:VARCHAR(255)"`
-	CampaignName                *string `gorm:"type:VARCHAR(255)"`
+	StyhClientId                string  `gorm:"type:uuid;not null"`
+	AccountName                 string  `gorm:"type:VARCHAR(255)"`
+	CampaignName                string  `gorm:"type:VARCHAR(255)"`
 	DkYear                      int     `gorm:"type:integer;default:0"`
 	DkMonth                     int     `gorm:"type:integer;default:0"`
-	AccountID                   *string `gorm:"type:VARCHAR(255)"`
-	CampaignID                  *string `gorm:"type:VARCHAR(255)"`
+	AccountID                   string  `gorm:"type:VARCHAR(255)"`
+	CampaignID                  string  `gorm:"type:VARCHAR(255)"`
 	TotalAmountSpend            float64 `gorm:"type:double precision;default:0.0"`
 	AvgCpc                      float64 `gorm:"type:double precision;default:0.0"`
 	AvgCpm                      float64 `gorm:"type:double precision;default:0.0"`
@@ -73,13 +72,13 @@ func (CampaignPerformanceMonthly) TableName() string {
 }
 
 type CampaignPerformanceQuarterly struct {
-	StyhClientID                *string `gorm:"type:UUID"`
-	AccountName                 *string `gorm:"type:VARCHAR(255)"`
-	CampaignName                *string `gorm:"type:VARCHAR(255)"`
+	StyhClientId                string  `gorm:"type:uuid;not null"`
+	AccountName                 string  `gorm:"type:VARCHAR(255)"`
+	CampaignName                string  `gorm:"type:VARCHAR(255)"`
 	DkYear                      int     `gorm:"type:integer;default:0"`
 	DkQuarter                   int     `gorm:"type:integer;default:0"`
-	AccountID                   *string `gorm:"type:VARCHAR(255)"`
-	CampaignID                  *string `gorm:"type:VARCHAR(255)"`
+	AccountID                   string  `gorm:"type:VARCHAR(255)"`
+	CampaignID                  string  `gorm:"type:VARCHAR(255)"`
 	TotalAmountSpend            float64 `gorm:"type:double precision;default:0.0"`
 	AvgCpc                      float64 `gorm:"type:double precision;default:0.0"`
 	AvgCpm                      float64 `gorm:"type:double precision;default:0.0"`
@@ -97,21 +96,21 @@ func (CampaignPerformanceQuarterly) TableName() string {
 }
 
 type GoogleAdsCampaignPerformanceWeekly struct {
-	StyhClientID                *uuid.UUID `gorm:"type:UUID"`
-	AccountName                 *string    `gorm:"type:VARCHAR(255)"`
-	CampaignName                *string    `gorm:"type:VARCHAR(255)"`
-	WeekOfDate                  time.Time  `gorm:"type:date;default:CURRENT_DATE"`
-	AccountID                   *string    `gorm:"type:VARCHAR(255)"`
-	CampaignID                  *string    `gorm:"type:VARCHAR(255)"`
-	TotalAmountSpend            float64    `gorm:"type:double precision;default:0.0"`
-	AvgCpc                      float64    `gorm:"type:double precision;default:0.0"`
-	AvgCpm                      float64    `gorm:"type:double precision;default:0.0"`
-	AvgCostPerConversion        float64    `gorm:"type:double precision;default:0.0"`
-	TotalImpressions            float64    `gorm:"type:double precision;default:0.0"`
-	TotalClicks                 float64    `gorm:"type:double precision;default:0.0"`
-	AvgCtr                      float64    `gorm:"type:double precision;default:0.0"`
-	TotalConversions            float64    `gorm:"type:double precision;default:0.0"`
-	TotalViewThroughConversions float64    `gorm:"type:double precision;default:0.0"`
+	StyhClientId                string    `gorm:"type:uuid;not null"`
+	AccountName                 string    `gorm:"type:VARCHAR(255)"`
+	CampaignName                string    `gorm:"type:VARCHAR(255)"`
+	WeekOfDate                  time.Time `gorm:"type:date;default:CURRENT_DATE"`
+	AccountID                   string    `gorm:"type:VARCHAR(255)"`
+	CampaignID                  string    `gorm:"type:VARCHAR(255)"`
+	TotalAmountSpend            float64   `gorm:"type:double precision;default:0.0"`
+	AvgCpc                      float64   `gorm:"type:double precision;default:0.0"`
+	AvgCpm                      float64   `gorm:"type:double precision;default:0.0"`
+	AvgCostPerConversion        float64   `gorm:"type:double precision;default:0.0"`
+	TotalImpressions            float64   `gorm:"type:double precision;default:0.0"`
+	TotalClicks                 float64   `gorm:"type:double precision;default:0.0"`
+	AvgCtr                      float64   `gorm:"type:double precision;default:0.0"`
+	TotalConversions            float64   `gorm:"type:double precision;default:0.0"`
+	TotalViewThroughConversions float64   `gorm:"type:double precision;default:0.0"`
 }
 
 // TableName overrides the table name used by GoogleAdsCampaignPerformanceWeekly
@@ -120,21 +119,21 @@ func (GoogleAdsCampaignPerformanceWeekly) TableName() string {
 }
 
 type CampaignPerformanceYearly struct {
-	StyhClientID                string   `gorm:"type:uuid;not null"`
-	AccountName                 string   `gorm:"type:VARCHAR(255);not null"`
-	CampaignName                string   `gorm:"type:VARCHAR(255);not null"`
-	DkYear                      int      `gorm:"type:integer;not null"`
-	AccountID                   *string  `gorm:"type:VARCHAR(255)"`
-	CampaignID                  *string  `gorm:"type:VARCHAR(255)"`
-	TotalAmountSpend            *float64 `gorm:"type:double precision"`
-	AvgCpc                      *float64 `gorm:"type:double precision"`
-	AvgCpm                      *float64 `gorm:"type:double precision"`
-	AvgCostPerConversion        *float64 `gorm:"type:double precision"`
-	TotalImpressions            *float64 `gorm:"type:double precision"`
-	TotalClicks                 *float64 `gorm:"type:double precision"`
-	Ctr                         *float64 `gorm:"type:double precision"`
-	TotalConversions            *float64 `gorm:"type:double precision"`
-	TotalViewThroughConversions *float64 `gorm:"type:double precision"`
+	StyhClientId                string  `gorm:"type:uuid;not null"`
+	AccountName                 string  `gorm:"type:VARCHAR(255);not null"`
+	CampaignName                string  `gorm:"type:VARCHAR(255);not null"`
+	DkYear                      int     `gorm:"type:integer;not null"`
+	AccountID                   string  `gorm:"type:VARCHAR(255)"`
+	CampaignID                  string  `gorm:"type:VARCHAR(255)"`
+	TotalAmountSpend            float64 `gorm:"type:double precision"`
+	AvgCpc                      float64 `gorm:"type:double precision"`
+	AvgCpm                      float64 `gorm:"type:double precision"`
+	AvgCostPerConversion        float64 `gorm:"type:double precision"`
+	TotalImpressions            float64 `gorm:"type:double precision"`
+	TotalClicks                 float64 `gorm:"type:double precision"`
+	Ctr                         float64 `gorm:"type:double precision"`
+	TotalConversions            float64 `gorm:"type:double precision"`
+	TotalViewThroughConversions float64 `gorm:"type:double precision"`
 }
 
 // TableName overrides the table name used by CampaignPerformanceYearly
