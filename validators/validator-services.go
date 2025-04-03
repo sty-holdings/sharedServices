@@ -182,6 +182,21 @@ func IsBase64Encode(base64Value string) bool {
 	return false
 }
 
+// IsDateValid - checks to see if the date string is valid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsDateValid(date string) bool {
+
+	if _, err := time.Parse("2006-01-02", date); err != nil {
+		return false
+	}
+
+	return true
+
+}
+
 // IsDirectoryFullyQualified - checks to see if the directory starts and ends with a slash.
 //
 //	Customer Messages: None
