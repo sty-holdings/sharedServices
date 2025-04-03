@@ -9,6 +9,7 @@ const (
 	VAL_END_DAY              = "23:59:59"
 	VAL_INVALID_FLAG_SETTING = "00000"
 	VAL_MID_NIGHT            = "23:59:59"
+	VAL_NA                   = "N/A"
 	VAL_NIL                  = "nil"
 	VAL_NONE                 = "none"
 	VAL_NOT_FOUND            = "not found"
