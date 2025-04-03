@@ -826,7 +826,14 @@ func TestGetUTCOffsetSeconds(tPtr *testing.T) {
 					gotError = false
 				} else {
 					gotError = true
-					errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, errs.BuildLabelValue(ctv.LBL_UTC_OFFSET, ts.arguments.UTCOffSet)))
+					errorInfo = errs.NewErrorInfo(
+						errorInfo.Error, fmt.Sprintf(
+							errs.FORMAT_EXPECTED_ERROR, tFunctionName, errs.BuildLabelValue(
+								ctv.LBL_EXTENSION_HAL, ctv.LBL_UTC_OFFSET,
+								ts.arguments.UTCOffSet,
+							),
+						),
+					)
 				}
 				if gotError != ts.wantError {
 					tPtr.Error(ts.name)
