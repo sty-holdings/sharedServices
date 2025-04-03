@@ -274,6 +274,20 @@ func ConvertMapStringToMapAny(mapIn map[string]interface{}) (mapOut map[any]inte
 	return
 }
 
+// ConvertStringToUUID - checks if string is a valid UUID and then converts it.
+//
+//	Customer Messages: None
+//	Errors: returned by uuid.Parse
+//	Verifications: None
+func ConvertStringToUUID(stringIn string) (uuidOut uuid.UUID, errorInfo errs.ErrorInfo) {
+
+	if uuidOut, errorInfo.Error = uuid.Parse(stringIn); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, stringIn, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
 // ConvertStructToMap - converts a given struct to a map by marshaling it into JSON and then unmarshalling it into a map.
 // If there is an error during the marshaling or unmarshalling process, the error information is returned.
 //
