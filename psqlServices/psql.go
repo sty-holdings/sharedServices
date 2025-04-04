@@ -159,7 +159,7 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchN
 	}
 
 	for idx, structure := range dataStructures {
-		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(structure); tResultsPtr.Error != nil {
+		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(&structure); tResultsPtr.Error != nil {
 			errorInfo = errs.NewErrorInfo(tResultsPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED))
 			errs.PrintErrorInfo(errorInfo)
 			break
