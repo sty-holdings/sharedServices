@@ -452,7 +452,7 @@ func DollarsToPennies(amount float64) (pennies int64) {
 //	Verifications: None
 func GetBatchName(extensionName string, additionalLabel string) string {
 
-	return fmt.Sprintf("%s%s %s", extensionName, additionalLabel, fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
+	return fmt.Sprintf("%s%s %s", extensionName, additionalLabel[strings.Index(additionalLabel, ctv.PARENTHESE_LEFT):], fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
 }
 
 // GetDay - returns the current day of the month integer
