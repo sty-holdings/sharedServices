@@ -182,6 +182,20 @@ func IsBase64Encode(base64Value string) bool {
 	return false
 }
 
+// IsDataTypeStruct - checks if a structure is a struct.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsDataTypeStruct(structure interface{}) bool {
+
+	if reflect.TypeOf(structure).Kind() == reflect.Struct {
+		return true
+	}
+
+	return false
+}
+
 // IsDateValid - checks to see if the date string is valid.
 //
 //	Customer Messages: None

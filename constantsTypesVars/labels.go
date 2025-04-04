@@ -176,6 +176,7 @@ const (
 	LBL_PSQL_DELETE                 = "PSQL DELETE: "
 	LBL_PSQL_HOST                   = "PSQL HOST: "
 	LBL_PSQL_INSERT                 = "PSQL INSERT: "
+	LBL_PSQL_INSERT_UPDATE          = "PSQL INSERT or UPDATE: "
 	LBL_PSQL_LOGIN                  = "PSQL LOGIN: "
 	LBL_PSQL_MAX_CONNECTIONS        = "PSQL MAX CONNECTIONS: "
 	LBL_PSQL_PARSE_CONFIG           = "PSQL PARSE CONFIG: "
