@@ -131,7 +131,7 @@ func (psqlServicePtr *PSQLService) BatchInsert(database string, role string, bat
 	return
 }
 
-func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, role string, batchName string, dataStructures []interface{}) (errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchName string, dataStructures []interface{}) (errorInfo errs.ErrorInfo) {
 
 	var (
 		tResultsPtr     *gorm.DB
@@ -175,14 +175,6 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, role s
 			errs.PrintErrorInfo(errorInfo)
 		}
 	}()
-
-	if role != ctv.VAL_EMPTY {
-		if errorInfo.Error = tTransactionPtr.Exec(fmt.Sprintf(SET_ROLE, role)).Error; errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_SET_ROLE, role, ctv.TXT_FAILED))
-			errs.PrintErrorInfo(errorInfo)
-			return
-		}
-	}
 
 	for idx, structure := range dataStructures {
 		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(structure); tResultsPtr.Error != nil {
