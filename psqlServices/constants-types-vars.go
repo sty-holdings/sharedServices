@@ -21,8 +21,8 @@ const (
 	//
 	PSQL_CONN_STRING = "dbname=%s host=%s password=%s port=%d sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s connect_timeout=%d user=%s"
 	//
-	SET_ROLE       = "SET ROLE %s;\n"
-	TRUNCATE_TABLE = "TRUNCATE TABLE %s.%s;\n"
+	SET_ROLE       = "SET ROLE ?;"
+	TRUNCATE_TABLE = "TRUNCATE TABLE ?;"
 )
 
 //goland:noinspection All
