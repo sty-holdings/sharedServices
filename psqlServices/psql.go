@@ -171,17 +171,11 @@ func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure 
 		tColumns[i] = clause.Column{Name: strings.TrimSpace(colName)}
 	}
 
-	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Clauses(
-		clause.OnConflict{
-			Columns:   tColumns,
-			DoUpdates: clause.Assignments(tAssignments),
-		},
-	).Create(structure); errorInfo.Error != nil {
+	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Create(structure); pResultPtr.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			pResultPtr.Error,
 			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, strings.Join(conflictColumns, ", "), ctv.TXT_FAILED),
 		)
-
 	}
 
 	return
