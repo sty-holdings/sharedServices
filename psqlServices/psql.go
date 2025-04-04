@@ -157,7 +157,24 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchN
 		errorInfo = errs.NewErrorInfo(tTransactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
 		return
 	}
-	defer func() {
+
+	for idx, structure := range dataStructures {
+		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(structure); tResultsPtr.Error != nil {
+			errorInfo = errs.NewErrorInfo(tResultsPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED))
+			errs.PrintErrorInfo(errorInfo)
+			break
+		}
+		if tResultsPtr.RowsAffected != ctv.VAL_ONE {
+			errorInfo = errs.NewErrorInfo(
+				errs.ErrPSQLNoDataInserted,
+				errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED),
+			)
+			errs.PrintErrorInfo(errorInfo)
+			break
+		}
+	}
+
+	if errorInfo.Error != nil {
 		if tRecover = recover(); tRecover != nil {
 			if tResultsPtr = tTransactionPtr.Rollback(); tResultsPtr.Error != nil {
 				errorInfo = errs.NewErrorInfo(
@@ -177,22 +194,6 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchN
 		if errorInfo.Error = tTransactionPtr.Commit().Error; errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_COMMIT, batchName, ctv.TXT_FAILED))
 			errs.PrintErrorInfo(errorInfo)
-		}
-	}()
-
-	for idx, structure := range dataStructures {
-		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(structure); tResultsPtr.Error != nil {
-			errorInfo = errs.NewErrorInfo(tResultsPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED))
-			errs.PrintErrorInfo(errorInfo)
-			return
-		}
-		if tResultsPtr.RowsAffected != ctv.VAL_ONE {
-			errorInfo = errs.NewErrorInfo(
-				errs.ErrPSQLNoDataInserted,
-				errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED),
-			)
-			errs.PrintErrorInfo(errorInfo)
-			return
 		}
 	}
 
