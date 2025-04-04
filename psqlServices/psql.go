@@ -159,9 +159,13 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchN
 	}
 	defer func() {
 		if tRecover = recover(); tRecover != nil {
-			tTransactionPtr.Rollback()
-			errorInfo = errs.NewErrorInfo(tTransactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED))
-			errs.PrintErrorInfo(errorInfo)
+			if tResultsPtr = tTransactionPtr.Rollback(); tResultsPtr.Error != nil {
+				errorInfo = errs.NewErrorInfo(
+					tTransactionPtr.Error,
+					errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED),
+				)
+				errs.PrintErrorInfo(errorInfo)
+			}
 		}
 		if errorInfo.Error != nil {
 			if errorInfo.Error = tTransactionPtr.Rollback().Error; errorInfo.Error != nil {
