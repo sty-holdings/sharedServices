@@ -131,80 +131,41 @@ func (psqlServicePtr *PSQLService) BatchInsert(database string, role string, bat
 	return
 }
 
-func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, batchName string, dataStructures []interface{}) (errorInfo errs.ErrorInfo) {
-
-	var (
-		tResultsPtr     *gorm.DB
-		tTransactionPtr *gorm.DB
-		tRecover        any
-	)
-
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, errs.ErrEmptyRequiredParameter, ctv.LBL_DATABASE); errorInfo.Error != nil {
-		return
-	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, batchName, errs.ErrEmptyRequiredParameter, ctv.LBL_PSQL_BATCH); errorInfo.Error != nil {
-		return
-	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, dataStructures, errs.ErrEmptyRequiredParameter, ctv.LBL_VALUE); errorInfo.Error != nil {
-		return
-	}
-	if len(dataStructures) > ctv.VAL_ONE_HUNDRED {
-		errorInfo = errs.NewErrorInfo(errs.ErrArraySizeExceeded, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_BATCH, "dataStructures"))
-		return
-	}
-
-	if tTransactionPtr = psqlServicePtr.GORMPoolPtrs[database].Begin(); tTransactionPtr.Error != nil {
-		errorInfo = errs.NewErrorInfo(tTransactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
-		return
-	}
-
-	for idx, structure := range dataStructures {
-		if tResultsPtr = tTransactionPtr.WithContext(CTXBackground).Create(&structure); tResultsPtr.Error != nil {
-			errorInfo = errs.NewErrorInfo(tResultsPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED))
-			errs.PrintErrorInfo(errorInfo)
-			break
-		}
-		if tResultsPtr.RowsAffected != ctv.VAL_ONE {
-			errorInfo = errs.NewErrorInfo(
-				errs.ErrPSQLNoDataInserted,
-				errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_BATCH_INSERT, ctv.LBL_RECORD_NUMBER, strconv.Itoa(idx), ctv.TXT_FAILED),
-			)
-			errs.PrintErrorInfo(errorInfo)
-			break
-		}
-	}
-
-	if errorInfo.Error != nil {
-		if tRecover = recover(); tRecover != nil {
-			if tResultsPtr = tTransactionPtr.Rollback(); tResultsPtr.Error != nil {
-				errorInfo = errs.NewErrorInfo(
-					tTransactionPtr.Error,
-					errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED),
-				)
-				errs.PrintErrorInfo(errorInfo)
-			}
-		}
-		if errorInfo.Error != nil {
-			if errorInfo.Error = tTransactionPtr.Rollback().Error; errorInfo.Error != nil {
-				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED))
-				errs.PrintErrorInfo(errorInfo)
-			}
-			return
-		}
-		if errorInfo.Error = tTransactionPtr.Commit().Error; errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_COMMIT, batchName, ctv.TXT_FAILED))
-			errs.PrintErrorInfo(errorInfo)
-		}
-	}
-
-	return
-}
-
 func (psqlServicePtr *PSQLService) Close() {
 
 	for _, connectionPtr := range psqlServicePtr.ConnectionPoolPtrs {
 		connectionPtr.Close()
 	}
+}
+
+func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, transactionPtr *gorm.DB) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tResultsPtr *gorm.DB
+	)
+
+	if transactionPtr.Error != nil {
+		if tResultsPtr = transactionPtr.Rollback(); tResultsPtr.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				transactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED),
+			)
+		}
+		return
+	}
+	if errorInfo.Error = transactionPtr.Commit().Error; errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_COMMIT, batchName, ctv.TXT_FAILED))
+	}
+
+	return
+}
+
+func (psqlServicePtr *PSQLService) StartTransaction(batchName string, database string) (transactionPtr *gorm.DB, errorInfo errs.ErrorInfo) {
+
+	if transactionPtr = psqlServicePtr.GORMPoolPtrs[database].Begin(); transactionPtr.Error != nil {
+		errorInfo = errs.NewErrorInfo(transactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
+	}
+
+	return
 }
 
 func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
