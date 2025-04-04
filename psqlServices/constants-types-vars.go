@@ -11,6 +11,9 @@ import (
 
 //goland:noinspection ALL
 const (
+	// Error Codes
+	PSQL_ERROR_DUPLICATE_KEY = 23505
+	//
 	PSQL_SSL_MODE_DISABLE     = "disable"
 	PSQL_SSL_MODE_ALLOW       = "allow"
 	PSQL_SSL_MODE_PREFER      = "prefer"
@@ -22,12 +25,6 @@ const (
 	//
 	SET_ROLE       = "SET ROLE %s;\n"
 	TRUNCATE_TABLE = "TRUNCATE TABLE %s.%s;\n"
-)
-
-//goland:noinspection All
-const (
-	DATABASE_ANSWERS   = "answers"
-	DATABASE_DATA_PULL = "data_pull"
 )
 
 //goland:noinspection All
