@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-yaml"
@@ -139,11 +140,12 @@ func (psqlServicePtr *PSQLService) BatchInsert(database string, role string, bat
 //	Customer Messages: None
 //	Errors: ErrEmptyRequiredParameter
 //	Verifications: None
-func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure interface{}, conflictColumn string) (errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure interface{}, conflictColumns []string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		pResultPtr   *gorm.DB
 		tAssignments = make(map[string]interface{})
+		tColumns     = make([]clause.Column, len(conflictColumns))
 		tFieldType   = reflect.TypeOf(structure)
 		tValues      = reflect.ValueOf(structure)
 	)
@@ -165,15 +167,19 @@ func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure 
 		tAssignments[fieldName] = tValues.Field(i).Interface()
 	}
 
+	for i, colName := range conflictColumns {
+		tColumns[i] = clause.Column{Name: strings.TrimSpace(colName)}
+	}
+
 	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Clauses(
 		clause.OnConflict{
-			Columns:   []clause.Column{{Name: conflictColumn}},
+			Columns:   tColumns,
 			DoUpdates: clause.Assignments(tAssignments),
 		},
 	).Create(structure); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			pResultPtr.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, conflictColumn, ctv.TXT_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, strings.Join(conflictColumns, ", "), ctv.TXT_FAILED),
 		)
 
 	}
