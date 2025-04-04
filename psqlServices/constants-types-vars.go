@@ -11,8 +11,6 @@ import (
 
 //goland:noinspection ALL
 const (
-	// Error Codes
-	PSQL_ERROR_DUPLICATE_KEY = 23505
 	//
 	PSQL_SSL_MODE_DISABLE     = "disable"
 	PSQL_SSL_MODE_ALLOW       = "allow"
