@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-yaml"
@@ -15,11 +17,13 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var (
@@ -136,6 +140,58 @@ func (psqlServicePtr *PSQLService) Close() {
 	for _, connectionPtr := range psqlServicePtr.ConnectionPoolPtrs {
 		connectionPtr.Close()
 	}
+}
+
+// InsertOrUpdateRow - will try to insert a row. If that fails, it will update the existing row. This requires that the struct has json column names.
+//
+//	Customer Messages: None
+//	Errors: ErrEmptyRequiredParameter
+//	Verifications: None
+func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure interface{}, conflictColumns []string) (errorInfo errs.ErrorInfo) {
+
+	var (
+		pResultPtr   *gorm.DB
+		tAssignments = make(map[string]interface{})
+		tColumns     = make([]clause.Column, len(conflictColumns))
+		tFieldType   = reflect.TypeOf(structure)
+		tValues      = reflect.ValueOf(structure)
+	)
+
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, errs.ErrEmptyRequiredParameter, ctv.LBL_DATABASE); errorInfo.Error != nil {
+		return
+	}
+	if vals.IsDataTypeStruct(structure) == false {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDataType, errs.BuildLabelValue(ctv.VAL_SERVICE_PSQL, ctv.LBL_DATA_TYPE, "not a struct"))
+		return
+	}
+
+	for i := 0; i < tFieldType.NumField(); i++ {
+		field := tFieldType.Field(i)
+		fieldName := field.Tag.Get("json") // Assuming you're using json tags for column names
+		if fieldName == "" {
+			fieldName = field.Name // Fallback to struct field name if json tag is missing
+		}
+		tAssignments[fieldName] = tValues.Field(i).Interface()
+	}
+
+	for i, colName := range conflictColumns {
+		tColumns[i] = clause.Column{Name: strings.TrimSpace(colName)}
+	}
+
+	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Clauses(
+		clause.OnConflict{
+			Columns:   tColumns,
+			DoUpdates: clause.Assignments(tAssignments),
+		},
+	).Create(&structure); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(
+			pResultPtr.Error,
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, strings.Join(conflictColumns, ", "), ctv.TXT_FAILED),
+		)
+
+	}
+
+	return
 }
 
 func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
