@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"reflect"
+	"runtime"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/goccy/go-yaml"
@@ -17,7 +16,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
@@ -150,11 +148,13 @@ func (psqlServicePtr *PSQLService) Close() {
 func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure interface{}, conflictColumns []string) (errorInfo errs.ErrorInfo) {
 
 	var (
-		pResultPtr   *gorm.DB
-		tAssignments = make(map[string]interface{})
-		tColumns     = make([]clause.Column, len(conflictColumns))
-		tFieldType   = reflect.TypeOf(structure)
-		tValues      = reflect.ValueOf(structure)
+		pResultPtr         *gorm.DB
+		tFunction, _, _, _ = runtime.Caller(0)
+		tFunctionName      = runtime.FuncForPC(tFunction).Name()
+		// tAssignments = make(map[string]interface{})
+		// tColumns     = make([]clause.Column, len(conflictColumns))
+		// tFieldType   = reflect.TypeOf(structure)
+		// tValues      = reflect.ValueOf(structure)
 	)
 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, errs.ErrEmptyRequiredParameter, ctv.LBL_DATABASE); errorInfo.Error != nil {
@@ -165,30 +165,37 @@ func (psqlServicePtr *PSQLService) InsertOrUpdateRow(database string, structure 
 		return
 	}
 
-	for i := 0; i < tFieldType.NumField(); i++ {
-		field := tFieldType.Field(i)
-		fieldName := field.Tag.Get("json") // Assuming you're using json tags for column names
-		if fieldName == "" {
-			fieldName = field.Name // Fallback to struct field name if json tag is missing
-		}
-		tAssignments[fieldName] = tValues.Field(i).Interface()
-	}
+	// for i := 0; i < tFieldType.NumField(); i++ {
+	// 	field := tFieldType.Field(i)
+	// 	fieldName := field.Tag.Get("json") // Assuming you're using json tags for column names
+	// 	if fieldName == "" {
+	// 		fieldName = field.Name // Fallback to struct field name if json tag is missing
+	// 	}
+	// 	tAssignments[fieldName] = tValues.Field(i).Interface()
+	// }
+	//
+	// for i, colName := range conflictColumns {
+	// 	tColumns[i] = clause.Column{Name: strings.TrimSpace(colName)}
+	// }
 
-	for i, colName := range conflictColumns {
-		tColumns[i] = clause.Column{Name: strings.TrimSpace(colName)}
-	}
+	// if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Clauses(
+	// 	clause.OnConflict{
+	// 		Columns:   tColumns,
+	// 		DoUpdates: clause.Assignments(tAssignments),
+	// 	},
+	// ).Create(&structure); errorInfo.Error != nil {
+	// 	errorInfo = errs.NewErrorInfo(
+	// 		pResultPtr.Error,
+	// 		errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, strings.Join(conflictColumns, ", "), ctv.TXT_FAILED),
+	// 	)
+	// }
 
-	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Clauses(
-		clause.OnConflict{
-			Columns:   tColumns,
-			DoUpdates: clause.Assignments(tAssignments),
-		},
-	).Create(&structure); errorInfo.Error != nil {
+	if pResultPtr = psqlServicePtr.GORMPoolPtrs[database].Create(&structure); pResultPtr.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			pResultPtr.Error,
-			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT_UPDATE, strings.Join(conflictColumns, ", "), ctv.TXT_FAILED),
+			errs.BuildLabelSubLabelValueMessage(ctv.LBL_EXTENSION_DIGITS, ctv.LBL_SERVICE_STRIPE, ctv.LBL_PSQL_INSERT, tFunctionName, ctv.TXT_FAILED),
 		)
-
+		return
 	}
 
 	return
