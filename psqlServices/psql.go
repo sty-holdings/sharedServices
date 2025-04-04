@@ -177,7 +177,7 @@ func (psqlServicePtr *PSQLService) BatchInsertGormStruct(database string, role s
 	}()
 
 	if role != ctv.VAL_EMPTY {
-		if errorInfo.Error = tTransactionPtr.Exec(SET_ROLE, role).Error; errorInfo.Error != nil {
+		if errorInfo.Error = tTransactionPtr.Exec(fmt.Sprintf(SET_ROLE, role)).Error; errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_SET_ROLE, role, ctv.TXT_FAILED))
 			errs.PrintErrorInfo(errorInfo)
 			return
