@@ -4,6 +4,7 @@ package sharedServices
 
 //goland:noinspection All
 const (
+	VAL_CHARGE               = "charge"
 	VAL_DETERMINE_SUBJECTS   = "determine-subjects"
 	VAL_EMPTY                = ""
 	VAL_END_DAY              = "23:59:59"
@@ -14,6 +15,7 @@ const (
 	VAL_NONE                 = "none"
 	VAL_NOT_FOUND            = "not found"
 	VAL_NULL                 = "null"
+	VAL_PAYOUT               = "payout"
 	VAL_START_DAY            = "00:00:00"
 	VAL_START_MONTH          = "-01 00:00:00"
 	VAL_TEST                 = "TEST"
