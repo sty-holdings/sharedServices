@@ -183,6 +183,41 @@ func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string,
 
 }
 
+// ExecuteStaticSQL - will execute a static SQL statement in a transaction.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (psqlServicePtr *PSQLService) ExecuteStaticSQL(callingExtension string, callingFunction string, database string, sqlStatement string, sqlType string, debugOn bool) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tResultPtr      *gorm.DB
+		tTransactionPtr *gorm.DB
+	)
+
+	if tTransactionPtr, errorInfo = psqlServicePtr.StartTransaction(ctv.VAL_EMPTY, database); errorInfo.Error != nil {
+		return
+	}
+	if tResultPtr = tTransactionPtr.Exec(sqlStatement); tResultPtr.Error != nil {
+		errorInfo = errs.NewErrorInfo(tResultPtr.Error, errs.BuildLabelSubLabelValueMessage(callingExtension, sqlType, ctv.LBL_FUNCTION_NAME, callingFunction, ctv.TXT_FAILED))
+		if tResultPtr = tTransactionPtr.Rollback(); tResultPtr.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(callingExtension, ctv.LBL_PSQL_ROLLBACK, ctv.LBL_FUNCTION_NAME, callingFunction, ctv.TXT_FAILED))
+			errs.PrintErrorInfo(errorInfo)
+		}
+		return
+	}
+	if tResultPtr = tTransactionPtr.Commit(); tResultPtr.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(callingExtension, ctv.LBL_PSQL_COMMIT, ctv.LBL_FUNCTION_NAME, callingFunction, ctv.TXT_FAILED))
+		return
+	}
+	if debugOn {
+		fmt.Printf("%s Function: %s effected %d records.\r", callingExtension, callingFunction, tResultPtr.RowsAffected)
+	}
+
+	return
+
+}
+
 //  Private Functions
 
 // buildConnectionString - returns the connection string based on the PSQL configuration.
