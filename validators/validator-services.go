@@ -211,6 +211,38 @@ func IsDateValid(date string) bool {
 
 }
 
+// IsDayValid checks if the provided day, month, and year represent a valid calendar date.
+// Returns true if the date is valid, otherwise false. Assumes the Gregorian calendar rules.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsDayValid(year int, month int, day int) bool {
+
+	if IsLeapYear(year) && month == 2 {
+		if day < ctv.VAL_ONE || day > ctv.VAL_TWENTY_NINE {
+			return false
+		}
+	}
+	if IsLeapYear(year) == false && month == 2 {
+		if day < ctv.VAL_ONE || day > ctv.VAL_TWENTY_EIGHT {
+			return false
+		}
+	}
+
+	if month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12 {
+		if day < ctv.VAL_ONE || day > ctv.VAL_THIRTY_ONE {
+			return false
+		}
+	} else {
+		if day < ctv.VAL_ONE || day > ctv.VAL_THIRTY {
+			return false
+		}
+	}
+
+	return true
+}
+
 // IsDirectoryFullyQualified - checks to see if the directory starts and ends with a slash.
 //
 //	Customer Messages: None
@@ -514,6 +546,28 @@ func IsJSONValid(jsonIn []byte) bool {
 	)
 
 	return json.Unmarshal(jsonIn, &jsonString) == nil
+}
+
+// IsLeapYear - determines if a given year is a leap year based on the Gregorian calendar rules.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsLeapYear(year int) bool {
+
+	// Rule 1: Divisible by 4
+	if year%4 != 0 {
+		return false
+	}
+
+	// Rule 2: Exception for century years (not divisible by 100 unless also by 400)
+	if year%100 == 0 {
+		// Rule 3: Divisible by 400
+		return year%400 == 0
+	}
+
+	// If divisible by 4 and not a century year (not divisible by 100), it's a leap year.
+	return true
 }
 
 // IsMapPopulated - will determine if the map is populated.

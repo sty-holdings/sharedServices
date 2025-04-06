@@ -18,7 +18,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	vlds "github.com/sty-holdings/sharedServices/v2025/validators"
+	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // AddMonths - will add the number of months and adjust the year.
@@ -249,7 +249,7 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 
 	mapOut = make(map[string]interface{})
 
-	if vlds.IsMapPopulated(mapIn) {
+	if vals.IsMapPopulated(mapIn) {
 		for key, value := range mapIn {
 			mapOut[key.(string)] = value
 		}
@@ -455,6 +455,21 @@ func GetBatchName(extensionName string, additionalLabel string) string {
 	return fmt.Sprintf("%s%s %s", extensionName, additionalLabel[strings.Index(additionalLabel, ctv.PARENTHESE_LEFT):], fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
 }
 
+// GetDateParts splits a date string in "YYYY-MM-DD" format into its individual components; returns an error if the format is invalid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetDateParts(dateString string) (dateParts []string, errorInfo errs.ErrorInfo) {
+
+	if dateParts = strings.Split(dateString, "-"); len(dateParts) != 3 {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_DATE, dateString))
+		return
+	}
+
+	return
+}
+
 // GetDay - returns the current day of the month as an integer
 //
 //	Customer Messages: None
@@ -475,33 +490,128 @@ func GetMonth() int {
 	return int(time.Now().Month())
 }
 
-// GetMonthFromDateString takes a date string in "yyyy-mm-dd" format and returns the month as an integer.
+// getDayFromDateParts takes date parts and returns the day as an integer.
+// It returns an error if the input string is not in the expected format or day is invalid for the given month and year.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo errs.ErrorInfo) {
+
+	if day, errorInfo.Error = strconv.Atoi(dayIn); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
+		return
+	}
+
+	if vals.IsDayValid(year, month, day) == false {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
+// getMonthFromDateString takes date parts and returns the month as an integer.
 // It returns an error if the input string is not in the expected format or month is invalid.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetMonthFromDateString(dateString string) (month int, errorInfo errs.ErrorInfo) {
+func getMonthFromDateParts(dateParts []string) (month int, errorInfo errs.ErrorInfo) {
 
-	var (
-		tParts []string
-	)
-
-	if tParts = strings.Split(dateString, "-"); len(tParts) != 3 {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_DATE, dateString))
-		return
-	}
-
-	if month, errorInfo.Error = strconv.Atoi(tParts[1]); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[1], ctv.TXT_NOT_CONVERTIBLE))
+	if month, errorInfo.Error = strconv.Atoi(dateParts[1]); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_NOT_CONVERTIBLE))
 		return
 	}
 
 	if month < 1 || month > 12 {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[1], ctv.TXT_IS_INVALID))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_IS_INVALID))
 	}
 
 	return
+}
+
+// GetQuarter determines the quarter of the year based on the provided month (1-12).
+// Returns the quarter as an integer or an error if the month is invalid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetQuarter(month int) (quarter int, errorInfo errs.ErrorInfo) {
+
+	switch month {
+	case 1, 2, 3:
+		quarter = 1
+	case 4, 5, 6:
+		quarter = 2
+	case 7, 8, 9:
+		quarter = 3
+	case 10, 11, 12:
+		quarter = 4
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, strconv.Itoa(month), ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
+// GetSundayFromYearMonthDay takes the year, month, and day as int values
+// and returns string for the Sunday of that week.
+// It assumes the input date parts represent a valid date.
+//
+//	Customer Messages: None
+//	Errors: Returns an error if the input string parts cannot be converted to integers.
+//	Verifications: None
+func GetSundayFromYearMonthDay(year int, month int, day int) (sundayDate string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tInputDate time.Time
+		tWeekday   time.Weekday
+	)
+
+	tInputDate = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
+
+	tWeekday = tInputDate.Weekday()
+
+	daysToSubtract := 0
+	if tWeekday != time.Sunday {
+		daysToSubtract = int(tWeekday)
+	}
+
+	tInputDate = tInputDate.AddDate(0, 0, -daysToSubtract)
+
+	sundayDate = tInputDate.Format("2006-01-02")
+
+	return
+}
+
+// GetSundayDateThisWeek returns the year, month, and day of the Sunday for the current week.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetSundayDateThisWeek() (year, month, day int) {
+	var (
+		today = time.Now()
+	)
+
+	// Calculate the weekday of today.
+	weekday := today.Weekday()
+
+	// Calculate the number of days to subtract to reach the Sunday.
+	daysToSubtract := 0
+	if weekday != time.Sunday {
+		daysToSubtract = int(weekday)
+	}
+
+	// Subtract the days from today to get the Sunday.
+	thisSunday := today.AddDate(0, 0, -daysToSubtract)
+
+	// Extract the year, month, and day.
+	year = thisSunday.Year()
+	month = int(thisSunday.Month())
+	day = thisSunday.Day()
+
+	return year, month, day
 }
 
 // GetSundayDateWeeksAgo returns the year, month, and day of a Sunday, weeks_ago weeks from today.
@@ -557,42 +667,51 @@ func GetYearEndDateTime(year int) string {
 	return t.Format("2006-01-02 15:04:05")
 }
 
-// GetYearFromDateString extracts the year from a date string in "yyyy-mm-dd" format and returns it as an integer, along with an error if the input is invalid or the year cannot be parsed.
+// getYearFromDateParts returns the year as an integer, along with an error if the input is invalid or the year cannot be parsed.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetYearFromDateString(dateString string) (year int, errorInfo errs.ErrorInfo) {
+func getYearFromDateParts(dateParts []string) (year int, errorInfo errs.ErrorInfo) {
 
-	var (
-		tParts []string
-	)
-
-	if tParts = strings.Split(dateString, "-"); len(tParts) != 3 {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_DATE, dateString))
-		return
-	}
-
-	if year, errorInfo.Error = strconv.Atoi(tParts[0]); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[0], ctv.TXT_NOT_CONVERTIBLE))
+	if year, errorInfo.Error = strconv.Atoi(dateParts[0]); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[0], ctv.TXT_NOT_CONVERTIBLE))
 	}
 
 	return
 }
 
-// GetYearMonthFromDateString takes a date string in "yyyy-mm-dd" format and returns the year and month as integers by calling the new functions.
-// It returns an error if the input string is not in the expected format or year/month is invalid.
+// GetYearQuarterMonthWeekDayFromString takes a date string in "yyyy-mm-dd" format and returns the year, quarter, month,
+// and day as integers. The function returns the date for Sunday for that week. It returns an error if the input string is not in the expected format or year/month is invalid.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetYearMonthFromDateString(dateString string) (year int, month int, errorInfo errs.ErrorInfo) {
+func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter int, month int, week string, day int, errorInfo errs.ErrorInfo) {
 
-	if year, errorInfo = GetYearFromDateString(dateString); errorInfo.Error != nil {
+	var (
+		tParts []string
+	)
+
+	if tParts, errorInfo = GetDateParts(dateString); errorInfo.Error != nil {
 		return
 	}
 
-	month, errorInfo = GetMonthFromDateString(dateString)
+	if year, errorInfo = getYearFromDateParts(tParts); errorInfo.Error != nil {
+		return
+	}
+	if month, errorInfo = getMonthFromDateParts(tParts); errorInfo.Error != nil {
+		return
+	}
+	if day, errorInfo = getDayFromDateParts(year, month, tParts[2]); errorInfo.Error != nil {
+		return
+	}
+	if quarter, errorInfo = GetQuarter(month); errorInfo.Error != nil {
+		return
+	}
+	if week, errorInfo = GetSundayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
+		return
+	}
 
 	return
 }
@@ -1283,7 +1402,7 @@ func createLogFile(logFQD string) (
 		tLogFileName string
 	)
 
-	if vlds.IsDirectoryFullyQualified(logFQD) == false {
+	if vals.IsDirectoryFullyQualified(logFQD) == false {
 		errorInfo = errs.NewErrorInfo(errs.ErrOSDirectoryNotFullyQualified, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_LOG_DIRECTORY, logFQD))
 		return
 	}
