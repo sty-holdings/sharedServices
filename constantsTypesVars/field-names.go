@@ -173,6 +173,7 @@ const (
 	FN_PORT                                     = "port"
 	FN_PREVIOUS_FLAG                            = "previous"
 	FN_PRIVATE_KEY                              = "PrivateKey"
+	FN_PROCESS_DATE                             = "processDate"
 	FN_PROGRAM_NAME                             = "program_name"
 	FN_PROMPT                                   = "prompt"
 	FN_PROMPT_TOKEN_COUNT                       = "prompt_token_count"

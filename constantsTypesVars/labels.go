@@ -167,6 +167,7 @@ const (
 	LBL_PID_DIRECTORY               = "PID DIRECTORY: "
 	LBL_PID_FILENAME                = "PID FILENAME: "
 	LBL_POINTER                     = "POINTER: "
+	LBL_PROCESS_DATE                = "PROCESS DATE: "
 	LBL_PROGRAM_DEBUG_MODE          = "PROGRAM DEBUG MODE: "
 	LBL_PROGRAM_NAME                = "PROGRAM NAME: "
 	LBL_PROGRAM_VERSION             = "PROGRAM VERSION: "
