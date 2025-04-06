@@ -73,6 +73,7 @@ const (
 	LBL_DATABASE                    = "DATABASE: "
 	LBL_DATASTORE                   = "DATASTORE: "
 	LBL_DATA_TYPE                   = "DATA TYPE: "
+	LBL_DATE                        = "DATE: "
 	LBL_DATE_DAY                    = "DAY: "
 	LBL_DATE_MONTH                  = "MONTH: "
 	LBL_DATE_QUARTER                = "QUARTER: "

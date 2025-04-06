@@ -82,6 +82,7 @@ const (
 	TXT_NO                           = "no"
 	TXT_NONE                         = "none"
 	TXT_NON_SECURE_CONNECTION_FAILED = "Non-secure connection request failed"
+	TXT_NOT_CONVERTIBLE              = "not convertible"
 	TXT_NOT_FOUND                    = "not found"
 	TXT_NOT_SUPPORTED                = "is not supported"
 	TXT_NO_DATA_FOUND                = "no data found"

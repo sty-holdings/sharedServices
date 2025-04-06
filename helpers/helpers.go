@@ -445,7 +445,7 @@ func DollarsToPennies(amount float64) (pennies int64) {
 // 	return
 // }
 
-// GetBatchName - returns a batch name for grouping actions
+// GetBatchName - returns a batch name for grouping actions. It uses the function name truncating everything before the first '('.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -455,7 +455,7 @@ func GetBatchName(extensionName string, additionalLabel string) string {
 	return fmt.Sprintf("%s%s %s", extensionName, additionalLabel[strings.Index(additionalLabel, ctv.PARENTHESE_LEFT):], fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
 }
 
-// GetDay - returns the current day of the month integer
+// GetDay - returns the current day of the month as an integer
 //
 //	Customer Messages: None
 //	Errors: None
@@ -465,7 +465,7 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
-// GetMonth - returns the current month integer
+// GetMonth - returns the current month as an integer
 //
 //	Customer Messages: None
 //	Errors: None
@@ -473,6 +473,35 @@ func GetDay() int {
 func GetMonth() int {
 
 	return int(time.Now().Month())
+}
+
+// GetMonthFromDateString takes a date string in "yyyy-mm-dd" format and returns the month as an integer.
+// It returns an error if the input string is not in the expected format or month is invalid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetMonthFromDateString(dateString string) (month int, errorInfo errs.ErrorInfo) {
+
+	var (
+		tParts []string
+	)
+
+	if tParts = strings.Split(dateString, "-"); len(tParts) != 3 {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_DATE, dateString))
+		return
+	}
+
+	if month, errorInfo.Error = strconv.Atoi(tParts[1]); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[1], ctv.TXT_NOT_CONVERTIBLE))
+		return
+	}
+
+	if month < 1 || month > 12 {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[1], ctv.TXT_IS_INVALID))
+	}
+
+	return
 }
 
 // GetSundayDateWeeksAgo returns the year, month, and day of a Sunday, weeks_ago weeks from today.
@@ -526,6 +555,46 @@ func GetYearEndDateTime(year int) string {
 	t := time.Date(year, 12, 31, 23, 59, 59, 0, time.UTC)
 
 	return t.Format("2006-01-02 15:04:05")
+}
+
+// GetYearFromDateString extracts the year from a date string in "yyyy-mm-dd" format and returns it as an integer, along with an error if the input is invalid or the year cannot be parsed.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearFromDateString(dateString string) (year int, errorInfo errs.ErrorInfo) {
+
+	var (
+		tParts []string
+	)
+
+	if tParts = strings.Split(dateString, "-"); len(tParts) != 3 {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_DATE, dateString))
+		return
+	}
+
+	if year, errorInfo.Error = strconv.Atoi(tParts[0]); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, tParts[0], ctv.TXT_NOT_CONVERTIBLE))
+	}
+
+	return
+}
+
+// GetYearMonthFromDateString takes a date string in "yyyy-mm-dd" format and returns the year and month as integers by calling the new functions.
+// It returns an error if the input string is not in the expected format or year/month is invalid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetYearMonthFromDateString(dateString string) (year int, month int, errorInfo errs.ErrorInfo) {
+
+	if year, errorInfo = GetYearFromDateString(dateString); errorInfo.Error != nil {
+		return
+	}
+
+	month, errorInfo = GetMonthFromDateString(dateString)
+
+	return
 }
 
 // GetYearStartDateTime - return the first date/time of the supplied year
