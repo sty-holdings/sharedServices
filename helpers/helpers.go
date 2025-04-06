@@ -645,6 +645,17 @@ func GetSundayDateWeeksAgo(weeksAgo int) (year, month, day int) {
 	return year, month, day
 }
 
+// GetUnixDateFromValues - takes year, month, day, hour, minute, and second as integers and returns the corresponding Unix timestamp (seconds since epoch).
+// For epoch date, hours, minutes and seconds must be zero.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetUnixDateFromValues(year int, month int, day int, hour int, minute int, second int) int64 {
+
+	return time.Date(year, time.Month(month), day, hour, minute, second, 0, time.UTC).Unix()
+}
+
 // GetYear - returns the current year integer
 //
 //	Customer Messages: None
