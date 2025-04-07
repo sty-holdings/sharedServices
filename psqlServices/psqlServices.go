@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-yaml"
@@ -131,6 +132,11 @@ func (psqlServicePtr *PSQLService) BatchInsert(database string, role string, bat
 	return
 }
 
+// Close - shuts down all active connections in the ConnectionPoolPtrs, releasing resources.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func (psqlServicePtr *PSQLService) Close() {
 
 	for _, connectionPtr := range psqlServicePtr.ConnectionPoolPtrs {
@@ -138,6 +144,11 @@ func (psqlServicePtr *PSQLService) Close() {
 	}
 }
 
+// CommitRollbackTransaction - handles the commit or rollback of a GORM transaction based on the presence of errors in the transaction. Returns detailed error info on failure.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, transactionPtr *gorm.DB) (errorInfo errs.ErrorInfo) {
 
 	var (
@@ -157,30 +168,6 @@ func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, t
 	}
 
 	return
-}
-
-func (psqlServicePtr *PSQLService) StartTransaction(batchName string, database string) (transactionPtr *gorm.DB, errorInfo errs.ErrorInfo) {
-
-	if transactionPtr = psqlServicePtr.GORMPoolPtrs[database].Begin(); transactionPtr.Error != nil {
-		errorInfo = errs.NewErrorInfo(transactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
-	}
-
-	return
-}
-
-func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
-
-	var (
-		pStatement string
-	)
-
-	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
-	if _, errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRUNCATE, schema, tableName, ctv.TXT_FAILED))
-	}
-
-	return
-
 }
 
 // ExecuteStaticSQL - will execute a static SQL statement in a transaction.
@@ -212,6 +199,72 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(callingExtension string, cal
 	}
 	if debugOn {
 		fmt.Printf("%s Function: %s effected %d records.\r", callingExtension, callingFunction, tResultPtr.RowsAffected)
+	}
+
+	return
+
+}
+
+// InsertUpdateUsingStaticSQL - executes an insert SQL and, on duplicate key error, executes an update SQL for a given database. Returns detailed error info on failure.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
+	callingExtension string,
+	callingService string,
+	functionName string,
+	databaseName string,
+	insertSQL string,
+	updateSQL string,
+	debugOn bool,
+) (errorInfo errs.ErrorInfo) {
+
+	if errorInfo = psqlServicePtr.ExecuteStaticSQL(callingExtension, functionName, databaseName, insertSQL, ctv.LBL_PSQL_INSERT, debugOn); errorInfo.Error != nil {
+		if strings.Contains(errorInfo.Error.Error(), errs.PSQL_ERROR_DUPLICATE_KEY) {
+			if errorInfo = psqlServicePtr.ExecuteStaticSQL(callingExtension, functionName, databaseName, updateSQL, ctv.LBL_PSQL_UPDATE, debugOn); errorInfo.Error != nil {
+				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(callingExtension, callingService, ctv.LBL_PSQL_UPDATE, ctv.VAL_EMPTY, ctv.TXT_FAILED))
+				return
+			}
+		} else {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error,
+				errs.BuildLabelSubLabelValueMessage(callingExtension, callingService, ctv.LBL_PSQL_INSERT, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+			)
+		}
+	}
+
+	return
+}
+
+// StartTransaction - initiates a GORM transaction for the specified database and batchName. Returns a transaction pointer and error information if the transaction fails to begin.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (psqlServicePtr *PSQLService) StartTransaction(batchName string, database string) (transactionPtr *gorm.DB, errorInfo errs.ErrorInfo) {
+
+	if transactionPtr = psqlServicePtr.GORMPoolPtrs[database].Begin(); transactionPtr.Error != nil {
+		errorInfo = errs.NewErrorInfo(transactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
+	}
+
+	return
+}
+
+// TruncateTable - clears all data from a specified table in the defined database and schema, while maintaining its structure. Returns an ErrorInfo object if the operation fails.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string, tableName string) (errorInfo errs.ErrorInfo) {
+
+	var (
+		pStatement string
+	)
+
+	pStatement = fmt.Sprintf(TRUNCATE_TABLE, pgx.Identifier{schema}.Sanitize(), pgx.Identifier{tableName}.Sanitize())
+	if _, errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].Exec(CTXBackground, pStatement); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRUNCATE, schema, tableName, ctv.TXT_FAILED))
 	}
 
 	return
@@ -349,6 +402,12 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 	return
 }
 
+// validateConfig - validates the given PSQLConfig object for completeness and correctness.
+// Returns an ErrorInfo object containing error details if validation fails.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
