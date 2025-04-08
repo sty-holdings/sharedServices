@@ -581,7 +581,7 @@ func GetSundaySaturdayFromYearMonthDay(year int, month int, day int) (sundayDate
 
 	sundayDate = tInputDate.Format("2006-01-02")
 
-	tInputDate = tInputDate.AddDate(0, 0, +7)
+	tInputDate = tInputDate.AddDate(0, 0, +6)
 
 	saturdayDate = tInputDate.Format("2006-01-02")
 
