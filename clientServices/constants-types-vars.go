@@ -17,6 +17,7 @@ type STYHClient struct {
 	SaasProviders []string `firestore:"saas_providers,array"json:"saas_providers"`
 	STYHClientId  string   `firebase:"styh_client_id" json:"styh_client_id"`
 	Timezone      string   `firebase:"timezone" json:"timezone"`
+	StripeKey     string   `firebase:"stripe_key" json:"stripe_key"`
 	STYHUserId    string   `firebase:"sty_user_id" json:"sty_user_id"`
 }
 
