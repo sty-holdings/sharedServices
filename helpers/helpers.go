@@ -554,7 +554,7 @@ func GetQuarter(month int) (quarter int, errorInfo errs.ErrorInfo) {
 	return
 }
 
-// GetSundayFromYearMonthDay takes the year, month, and day as int values
+// GetSundaySaturdayFromYearMonthDay takes the year, month, and day as int values
 // and returns string for the Sunday of that week.
 // It assumes the input date parts represent a valid date.
 //
@@ -724,10 +724,9 @@ func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter 
 	if quarter, errorInfo = GetQuarter(month); errorInfo.Error != nil {
 		return
 	}
-	if weekStart, errorInfo = GetSundayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
+	if weekStart, weekEnd, errorInfo = GetSundaySaturdayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
 		return
 	}
-	weekEnd = weekStart + 7 days
 
 	return
 }
