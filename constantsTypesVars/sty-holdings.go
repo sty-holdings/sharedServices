@@ -94,17 +94,17 @@ type AnalyzedQuestion struct {
 }
 
 type CategorySentence struct {
-	Category       []string `json:"category"`
+	Categories     []string `json:"categories"`
 	CountBySubject []struct {
 		Subject string `json:"subject"`
 		Count   string `json:"count"`
 	} `json:"count_by_subject"`
-	Prompt                string   `json:"prompt"`
-	SentenceSubject       []string `json:"sentence_subject"`
-	SentenceSubjectAdverb []struct {
+	Prompt                 string   `json:"prompt"`
+	SentenceSubjects       []string `json:"sentence_subjects"`
+	SentenceSubjectAdverbs []struct {
 		Subject string `json:"subject"`
 		Adverb  string `json:"adverb"`
-	} `json:"sentence_subject_adverb"`
+	} `json:"sentence_subjects_adverb"`
 	TokenCount genai.UsageMetadata `json:"-"`
 }
 
