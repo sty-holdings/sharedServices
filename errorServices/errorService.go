@@ -11,7 +11,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
-// NewErrorInfo - will return an ErrorInfo object.
+// NewErrorInfo - will return an ErrorInfo object. It does not send anything to the log or the console.
 //
 //	Customer Messages: None
 //	Errors: Missing values will be filled with 'MISSING'.
@@ -38,8 +38,6 @@ func NewErrorInfo(
 		errorInfo.AdditionalInfo = additionalInfo
 	}
 	errorInfo.Message = myError.Error()
-
-	outputError(errorInfo)
 
 	return
 }
