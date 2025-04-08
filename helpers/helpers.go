@@ -561,7 +561,7 @@ func GetQuarter(month int) (quarter int, errorInfo errs.ErrorInfo) {
 //	Customer Messages: None
 //	Errors: Returns an error if the input string parts cannot be converted to integers.
 //	Verifications: None
-func GetSundayFromYearMonthDay(year int, month int, day int) (sundayDate string, errorInfo errs.ErrorInfo) {
+func GetSundaySaturdayFromYearMonthDay(year int, month int, day int) (sundayDate string, saturdayDate string, errorInfo errs.ErrorInfo) {
 
 	var (
 		tInputDate time.Time
@@ -580,6 +580,10 @@ func GetSundayFromYearMonthDay(year int, month int, day int) (sundayDate string,
 	tInputDate = tInputDate.AddDate(0, 0, -daysToSubtract)
 
 	sundayDate = tInputDate.Format("2006-01-02")
+
+	tInputDate = tInputDate.AddDate(0, 0, +7)
+
+	saturdayDate = tInputDate.Format("2006-01-02")
 
 	return
 }
@@ -698,7 +702,7 @@ func getYearFromDateParts(dateParts []string) (year int, errorInfo errs.ErrorInf
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter int, month int, week string, day int, errorInfo errs.ErrorInfo) {
+func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter int, month int, weekStart string, weekEnd string, day int, errorInfo errs.ErrorInfo) {
 
 	var (
 		tParts []string
@@ -720,9 +724,10 @@ func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter 
 	if quarter, errorInfo = GetQuarter(month); errorInfo.Error != nil {
 		return
 	}
-	if week, errorInfo = GetSundayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
+	if weekStart, errorInfo = GetSundayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
 		return
 	}
+	weekEnd = weekStart + 7 days
 
 	return
 }
