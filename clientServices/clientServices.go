@@ -13,18 +13,78 @@ import (
 	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 )
 
-// GetClientStruct - will retrieve the client record and return a struct.
+// GetClientStruct parses userInfo map to populate and return an STYHClient struct and an errorInfo object if any issue arises during the process.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhUserId string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
 
 	var (
-		jsonData  []byte
-		ok        bool
+		jsonData []byte
+		ok       bool
+		value    interface{}
+	)
+
+	if value, ok = userInfo[ctv.FN_COMPANY_NAME]; ok {
+		clientStruct.CompanyName = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_EMAIL]; ok {
+		clientStruct.Email = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_FIRST_NAME]; ok {
+		clientStruct.FirstName = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_LAST_NAME]; ok {
+		clientStruct.LastName = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_ON_BOARDED]; ok {
+		clientStruct.OnBoarded = value.(bool)
+	}
+
+	if value, ok = userInfo[ctv.FN_SAAS_PROVIDERS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	if value, ok = userInfo[ctv.FN_STYH_CLIENT_ID]; ok {
+		clientStruct.STYHClientId = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_TIMEZONE]; ok {
+		clientStruct.Timezone = value.(string)
+		if clientStruct.LocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.Timezone); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.Timezone))
+			return
+		}
+	}
+
+	if value, ok = userInfo[ctv.FN_STYH_USER_ID]; ok {
+		clientStruct.STYHUserId = value.(string)
+	}
+
+	return
+}
+
+// GetClientStructUsingFirebase - retrieves user's client details from Firebase Auth and Firestore by styhUserId, populating an STYHClient struct or returning an error if any issues occur.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetClientUsingFirebase(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhUserId string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+
+	var (
 		tUserInfo map[string]interface{}
-		value     interface{}
 	)
 
 	if tUserInfo, errorInfo = fbs.GetFirebaseUserInfo(
@@ -36,52 +96,7 @@ func GetClientStruct(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore
 		return
 	}
 
-	if value, ok = tUserInfo[ctv.FN_COMPANY_NAME]; ok {
-		clientStruct.CompanyName = value.(string)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_EMAIL]; ok {
-		clientStruct.Email = value.(string)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_FIRST_NAME]; ok {
-		clientStruct.FirstName = value.(string)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_LAST_NAME]; ok {
-		clientStruct.LastName = value.(string)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_ON_BOARDED]; ok {
-		clientStruct.OnBoarded = value.(bool)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_SAAS_PROVIDERS]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-	}
-
-	if value, ok = tUserInfo[ctv.FN_STYH_CLIENT_ID]; ok {
-		clientStruct.STYHClientId = value.(string)
-	}
-
-	if value, ok = tUserInfo[ctv.FN_TIMEZONE]; ok {
-		clientStruct.Timezone = value.(string)
-		if clientStruct.LocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.Timezone); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.Timezone))
-			return
-		}
-	}
-
-	if value, ok = tUserInfo[ctv.FN_STYH_USER_ID]; ok {
-		clientStruct.STYHUserId = value.(string)
-	}
+	clientStruct, errorInfo = GetClientStruct(tUserInfo)
 
 	return
 }
