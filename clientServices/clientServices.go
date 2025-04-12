@@ -68,6 +68,10 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		}
 	}
 
+	if value, ok = userInfo[ctv.FN_STRIPE_KEY]; ok {
+		clientStruct.StripeKey = value.(string)
+	}
+
 	if value, ok = userInfo[ctv.FN_STYH_CLIENT_ID]; ok {
 		clientStruct.STYHClientId = value.(string)
 	}
