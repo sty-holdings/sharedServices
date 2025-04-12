@@ -126,6 +126,7 @@ const (
 	FN_GIN_MODE                                 = "gin_mode"
 	FN_GIN_URL_PORT                             = "gin_url_port"
 	FN_GIVEN_NAME                               = "given_name"
+	FN_GOOGLE_ADS_ACCOUNTS                      = "google_ads_accounts"
 	FN_GRPC_SERVER_POINTER                      = "grpc_server_pointer"
 	FN_GRPC_TIMEOUT                             = "grpc_timeout"
 	FN_HTTP_TLS_INFO                            = "http_tls_info"

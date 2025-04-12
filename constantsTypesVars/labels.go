@@ -125,6 +125,7 @@ const (
 	LBL_GENERATE_ANSWER             = "generate_answer"
 	LBL_GIN_MODE                    = "GIN MODE: "
 	LBL_GIN_URL_PORT                = "GIN URL & PORT: "
+	LBL_GOOGLE_ADS_ACCOUNTS         = "GOOGLE ADS ACCOUNTS: "
 	LBL_GORM_CONNECTION             = "GORM CONNECTION: "
 	LBL_GRPC_CLIENT                 = "GRPC CLIENT: "
 	LBL_GRPC_DIAL_OPTION            = "DIAL OPTION: "

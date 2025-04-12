@@ -38,6 +38,17 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		clientStruct.FirstName = value.(string)
 	}
 
+	if value, ok = userInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.GoogleAdsAccounts); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
 	if value, ok = userInfo[ctv.FN_LAST_NAME]; ok {
 		clientStruct.LastName = value.(string)
 	}
