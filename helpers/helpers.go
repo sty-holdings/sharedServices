@@ -240,6 +240,23 @@ func ConvertMapStringToString(mapIn map[string]string) (mapString string) {
 	return
 }
 
+// ConvertMapStringToString - takes an array of strings and returns a string for using by PSQL IN LIST
+// with a space.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertStringArrayToPSQLInList(values []string) (inList string) {
+
+	for _, value := range values {
+		inList += "'" + value + "', "
+	}
+
+	inList = strings.TrimSuffix(inList, ", ")
+
+	return
+}
+
 // ConvertMapAnyToMapString
 //
 //	Customer Messages: None
