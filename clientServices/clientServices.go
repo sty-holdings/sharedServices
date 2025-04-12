@@ -128,7 +128,10 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
 	tUserInfo[ctv.FN_EMAIL] = newUser.Email
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
+	tUserInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS] = []string{} // initialize Google Ads Accounts field
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
+	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{} // initialize SaaS Providers field
+	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY  // initialize Stripe Key field
 	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
 	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
 	tUserInfo[ctv.FN_STYH_USER_ID] = newUser.STYHUserId
