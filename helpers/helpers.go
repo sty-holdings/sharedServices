@@ -571,6 +571,32 @@ func GetQuarter(month int) (quarter int, errorInfo errs.ErrorInfo) {
 	return
 }
 
+// GetQuarterStartEndDate - determines the start and end dates of the given quarter in a specified year.
+// The function accepts the year and quarter as inputs and returns the respective dates as strings.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetQuarterStartEndDate(year int, quarter int) (quarterStart string, quarterEnd string) {
+
+	switch quarter {
+	case ctv.VAL_ONE:
+		quarterStart = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_ONE_START_DATE)
+		quarterEnd = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_ONE_END_DATE)
+	case ctv.VAL_TWO:
+		quarterStart = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_TWO_START_DATE)
+		quarterEnd = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_TWO_END_DATE)
+	case ctv.VAL_THREE:
+		quarterStart = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_THREE_START_DATE)
+		quarterEnd = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_THREE_END_DATE)
+	case ctv.VAL_FOUR:
+		quarterStart = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_FOUR_START_DATE)
+		quarterEnd = fmt.Sprintf("%d-%s", year, ctv.VAL_QUARTER_FOUR_END_DATE)
+	}
+
+	return
+}
+
 // GetSundaySaturdayFromYearMonthDay takes the year, month, and day as int values
 // and returns string for the Sunday of that week.
 // It assumes the input date parts represent a valid date.
