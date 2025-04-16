@@ -65,7 +65,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	return
 }
 
-// BatchInsert - will insert upto 100 records. The role is optional.
+// BatchInsert - will insert up to 100 records. The role is optional.
 //
 //	Customer Messages: None
 //	Errors: ErrEmptyRequiredParameter, returned by BeginTx, returned by Exec
@@ -325,17 +325,6 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 	tConnectionString = buildConnectionString(config, databaseName)
 
 	if config.GORM.UseGorm {
-		if config.GORM.LoggerOn {
-			newLogger = logger.New(
-				log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-				logger.Config{
-					SlowThreshold: time.Second, // Slow SQL threshold
-					LogLevel:      logger.Info, // Log level
-					Colorful:      true,        // Enable color
-				},
-			)
-		}
-
 		tDialector = postgres.New(
 			postgres.Config{
 				DSN:                  tConnectionString,
@@ -346,12 +335,23 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 		if gormPoolPtr, errorInfo.Error = gorm.Open(
 			tDialector, &gorm.Config{
 				CreateBatchSize: 100,
-				Logger:          newLogger,
 				PrepareStmt:     true,
 			},
 		); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_GORM_CONNECTION, ctv.TXT_FAILED))
 			return
+		}
+
+		if config.GORM.LoggerOn {
+			newLogger = logger.New(
+				log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+				logger.Config{
+					SlowThreshold: time.Second, // Slow SQL threshold
+					LogLevel:      logger.Info, // Log level
+					Colorful:      true,        // Enable color
+				},
+			)
+			gormPoolPtr.Logger = newLogger
 		}
 
 		errorInfo = isGORMConnectionActive(gormPoolPtr)
@@ -374,7 +374,7 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 	return
 }
 
-// loadPSQLConfig - reads, and returns a psql service pointer
+// loadPSQLConfig - reads and returns a psql service pointer
 //
 //	Customer Messages: None
 //	Errors: error returned by ReadConfigFile
