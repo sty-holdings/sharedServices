@@ -335,6 +335,7 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 		if gormPoolPtr, errorInfo.Error = gorm.Open(
 			tDialector, &gorm.Config{
 				CreateBatchSize: 100,
+				Logger:          logger.Default.LogMode(logger.Silent),
 				PrepareStmt:     true,
 			},
 		); errorInfo.Error != nil {
