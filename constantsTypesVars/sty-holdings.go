@@ -126,6 +126,7 @@ type SpecialWords struct {
 	TransactionFlag bool                `json:"transaction"`
 	TotalFlag       bool                `json:"total"`
 	TrendFlag       bool                `json:"trend"`
+	WeekFlag        bool                `json:"week"`
 	TokenCount      genai.UsageMetadata `json:"-"`
 }
 
