@@ -283,6 +283,7 @@ const (
 	FN_WEB_ASSETS_URL                           = "Web_Assets_URL"
 	FN_WEEK                                     = "week"
 	FN_WEEK_ENDING                              = "week_ending"
+	FN_WEEK_FLAG                                = "week"
 	FN_WEEK_OVER_WEEK                           = "week_over_week"
 	FN_WEEK_STARTING                            = "week_starting"
 	FN_WEEK_TO_DATE                             = "week_to_date"
