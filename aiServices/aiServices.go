@@ -167,11 +167,6 @@ func (aiServicePtr *AIService) GenerateContent(
 		return
 	}
 
-	if len(tGenerateContentResponsePtr.Candidates[0].Content.Parts) > ctv.VAL_ONE {
-		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", tGenerateContentResponsePtr.Candidates[0].Content.Parts[ctv.VAL_ZERO]), "  ", " ")
-	} else {
-
-	}
 	for _, part := range tGenerateContentResponsePtr.Candidates[0].Content.Parts {
 		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "json", "")
 		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "  ", " ")
