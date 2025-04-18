@@ -148,7 +148,6 @@ func (aiServicePtr *AIService) GenerateContent(
 		tInstruction                string
 		tPool                       = siTopicKeyPoolAssignment[systemInstructionKey]
 		tPromptData                 string
-		tResponseParts              []genai.Part
 	)
 
 	for source, data := range promptData {
@@ -168,13 +167,16 @@ func (aiServicePtr *AIService) GenerateContent(
 		return
 	}
 
-	tResponseParts = tGenerateContentResponsePtr.Candidates[0].Content.Parts
-	for _, part := range tResponseParts {
-		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "\n", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "json", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "  ", " ")
-		aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "```", "")
+	if len(tGenerateContentResponsePtr.Candidates[0].Content.Parts) > ctv.VAL_ONE {
+		aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", tGenerateContentResponsePtr.Candidates[0].Content.Parts[ctv.VAL_ZERO]), "  ", " ")
+	} else {
+		for _, part := range tGenerateContentResponsePtr.Candidates[0].Content.Parts {
+			aiResponse.Response = strings.ReplaceAll(fmt.Sprintf("%s", part), "  ", " ")
+			// aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
+			// aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "json", "")
+			// aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "\n", "")
+			// aiResponse.Response = strings.ReplaceAll(aiResponse.Response, "```", "")
+		}
 	}
 
 	aiResponse.SIKey = systemInstructionKey
