@@ -13,7 +13,7 @@ type STYHClient struct {
 	FirstName          string   `firebase:"first_name" json:"first_name"`
 	GoogleAdsAccounts  []string `firebase:"google_ads_accounts" json:"google_ads_accounts"`
 	LastName           string   `firebase:"last_name" json:"last_name"`
-	LinkedinPageIdList []string `firebase:"linkedin_page_ids" json:"linkedin_page_ids"`
+	LinkedinPageIdList []int64  `firebase:"linkedin_page_ids" json:"linkedin_page_ids"`
 	LocationPtr        *time.Location
 	OnBoarded          bool     `firebase:"on_boarded" json:"on_boarded"`
 	SaasProviders      []string `firestore:"saas_providers,array"json:"saas_providers"`
