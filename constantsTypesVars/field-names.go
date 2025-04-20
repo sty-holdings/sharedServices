@@ -143,6 +143,7 @@ const (
 	FN_LAST_NAME                                = "last_name"
 	FN_LAST_REFRESHED                           = "last_refreshed"
 	FN_LAST_UPDATE_TIMESTAMP                    = "last_update_timestamp"
+	FN_LINKEDIN_PAGE_IDS                        = "linkedin_page_ids"
 	FN_LOAD_EXTENSIONS                          = "load_extensions"
 	FN_LOG_DIRECTORY                            = "log_directory"
 	FN_MAXIMUM_FLAG                             = "maximum"

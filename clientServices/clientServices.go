@@ -53,6 +53,17 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		clientStruct.LastName = value.(string)
 	}
 
+	if value, ok = userInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.FN_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.LinkedinPageIdList); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.FN_LINKEDIN_PAGE_IDS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
 	if value, ok = userInfo[ctv.FN_ON_BOARDED]; ok {
 		clientStruct.OnBoarded = value.(bool)
 	}
@@ -134,8 +145,9 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS] = []string{} // initialize Google Ads Accounts field
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
-	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{} // initialize SaaS Providers field
-	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY  // initialize Stripe Key field
+	tUserInfo[ctv.FN_LINKEDIN_PAGE_IDS] = []string{} // initialize LinkedIn pages ids field
+	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{}    // initialize SaaS Providers field
+	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY     // initialize Stripe Key field
 	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
 	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
 	tUserInfo[ctv.FN_STYH_USER_ID] = newUser.STYHUserId

@@ -148,6 +148,7 @@ const (
 	LBL_KEY_DECODED                 = "DECODED KEY:"
 	LBL_KEY_PRIVATE                 = "PRIVATE KEY:"
 	LBL_KEY_PUBLIC                  = "PUBLIC KEY:"
+	LBL_LINKEDIN_PAGE_IDS           = "LINKEDIN PAGE IDS:"
 	LBL_LOGIN_TYPE                  = "LOGIN TYPE:"
 	LBL_LOG_DIRECTORY               = "LOG DIRECTORY:"
 	LBL_LOG_FULL_QUALIFIED_NAME     = "LOG FULL QUALIFIED NAME:"
