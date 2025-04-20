@@ -240,7 +240,7 @@ func ConvertMapStringToString(mapIn map[string]string) (mapString string) {
 	return
 }
 
-// ConvertMapStringToString - takes an array of strings and returns a string for using by PSQL IN LIST
+// ConvertStringArrayToPSQLInList - takes an array of strings and returns a string for using by PSQL IN LIST
 // with a space.
 //
 //	Customer Messages: None
@@ -250,6 +250,23 @@ func ConvertStringArrayToPSQLInList(values []string) (inList string) {
 
 	for _, value := range values {
 		inList += "'" + value + "', "
+	}
+
+	inList = strings.TrimSuffix(inList, ", ")
+
+	return
+}
+
+// ConvertIntArrayToPSQLInList - takes an array of integers and returns a string for using by PSQL IN LIST
+// with a space.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertIntArrayToPSQLInList(values []int64) (inList string) {
+
+	for _, value := range values {
+		inList += "'" + strconv.Itoa(int(value)) + "', "
 	}
 
 	inList = strings.TrimSuffix(inList, ", ")
