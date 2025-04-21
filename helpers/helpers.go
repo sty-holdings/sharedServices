@@ -264,7 +264,7 @@ func ConvertStringArrayToPSQLInList(values []string) (inList string) {
 //	Verifications: None
 func ConvertStringDateToTime(dateStringFormat string) (dateTimeFormat time.Time, errorInfo errs.ErrorInfo) {
 
-	if dateTimeFormat, errorInfo.Error = time.Parse("2026-04-01", dateStringFormat); errorInfo.Error != nil {
+	if dateTimeFormat, errorInfo.Error = time.Parse("2006-01-02", dateStringFormat); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateStringFormat, ctv.TXT_IS_INVALID))
 	}
 
