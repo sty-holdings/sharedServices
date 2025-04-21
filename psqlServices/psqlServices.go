@@ -233,9 +233,6 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 //	Errors: None
 //	Verifications: None
 func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
-	callingExtension string,
-	callingService string,
-	functionName string,
 	databaseName string,
 	insertSQL string,
 	updateSQL string,
@@ -244,13 +241,16 @@ func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
 	if errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
 		if strings.Contains(errorInfo.Error.Error(), errs.PSQL_ERROR_DUPLICATE_KEY) {
 			if errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, ctv.LBL_PSQL_UPDATE); errorInfo.Error != nil {
-				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(callingExtension, callingService, ctv.LBL_PSQL_UPDATE, ctv.VAL_EMPTY, ctv.TXT_FAILED))
+				errorInfo = errs.NewErrorInfo(
+					errorInfo.Error,
+					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_UPDATE, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+				)
 				return
 			}
 		} else {
 			errorInfo = errs.NewErrorInfo(
 				errorInfo.Error,
-				errs.BuildLabelSubLabelValueMessage(callingExtension, callingService, ctv.LBL_PSQL_INSERT, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+				errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_INSERT, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 			)
 		}
 	}
