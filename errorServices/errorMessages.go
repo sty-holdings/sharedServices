@@ -125,6 +125,7 @@ const (
 	INVALID_EXTENSION_SERVICE               = "The extension service name is invalid."
 	INVALID_FLAG_COMBINATION                = "The flag combination is invalid."
 	INVALID_FLOAT                           = "The float64 value is invalid."
+	INVALID_FUTURE_DATE                     = "The date is invalid because it is in the future."
 	INVALID_GIN_MODE                        = "The Gin mode is invalid."
 	INVALID_GRPC_PORT                       = "gRPC port value is invalid. The port value must be greater than 50050."
 	INVALID_GRPC_TIMEOUT                    = "gRPC time value is invalid. The timeout value must be greater than zero."
@@ -327,6 +328,7 @@ var (
 	ErrInvalidExtensionService            = errors.New(INVALID_EXTENSION_SERVICE)
 	ErrInvalidFlagCombination             = errors.New(INVALID_FLAG_COMBINATION)
 	ErrInvalidFloat                       = errors.New(INVALID_FLOAT)
+	ErrInvalidFutureDate                  = errors.New(INVALID_FUTURE_DATE)
 	ErrInvalidGinMode                     = errors.New(INVALID_GIN_MODE)
 	ErrInvalidGRPCPort                    = errors.New(INVALID_GRPC_PORT)
 	ErrInvalidGRPCTimeout                 = errors.New(INVALID_GRPC_TIMEOUT)
