@@ -211,6 +211,7 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 		}
 		return
 	}
+	rowsAffected = tResultPtr.RowsAffected
 	if tResultPtr = tTransactionPtr.Commit(); tResultPtr.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
@@ -220,7 +221,7 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 	}
 
 	if psqlServicePtr.DebugOn {
-		fmt.Printf("%s function %s %s %d records.\r", strings.ToUpper(ctv.VAL_SERVICE_PSQL), tFunctionName, sqlType, tResultPtr.RowsAffected)
+		fmt.Printf("%s function %s %s %d records.\r", strings.ToUpper(ctv.VAL_SERVICE_PSQL), tFunctionName, sqlType, rowsAffected)
 	}
 
 	return
@@ -239,20 +240,20 @@ func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
 ) (rowsAffected int64, sqltype string, errorInfo errs.ErrorInfo) {
 
 	sqltype = ctv.LBL_PSQL_INSERT
-	if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
+	if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, sqltype); errorInfo.Error != nil {
 		if strings.Contains(errorInfo.Error.Error(), errs.PSQL_ERROR_DUPLICATE_KEY) {
 			sqltype = ctv.LBL_PSQL_UPDATE
-			if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, ctv.LBL_PSQL_UPDATE); errorInfo.Error != nil {
+			if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, sqltype); errorInfo.Error != nil {
 				errorInfo = errs.NewErrorInfo(
 					errorInfo.Error,
-					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_UPDATE, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqltype, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 				)
 				return
 			}
 		} else {
 			errorInfo = errs.NewErrorInfo(
 				errorInfo.Error,
-				errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_INSERT, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+				errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqltype, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 			)
 		}
 	}
