@@ -157,6 +157,32 @@ func (psqlServicePtr *PSQLService) Close() {
 	}
 }
 
+// CommitRollbackTransaction - handles the commit or rollback of a GORM transaction based on the presence of errors in the transaction. Returns detailed error info on failure.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, transactionPtr *gorm.DB) (errorInfo errs.ErrorInfo) {
+
+	var (
+		tResultsPtr *gorm.DB
+	)
+
+	if transactionPtr.Error != nil {
+		if tResultsPtr = transactionPtr.Rollback(); tResultsPtr.Error != nil {
+			errorInfo = errs.NewErrorInfo(
+				transactionPtr.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_ROLLBACK, batchName, ctv.TXT_FAILED),
+			)
+		}
+		return
+	}
+	if errorInfo.Error = transactionPtr.Commit().Error; errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRANSACTION, ctv.LBL_PSQL_COMMIT, batchName, ctv.TXT_FAILED))
+	}
+
+	return
+}
+
 // ExecuteStaticSQL - will execute a static SQL statement in a transaction.
 //
 //	Customer Messages: None
