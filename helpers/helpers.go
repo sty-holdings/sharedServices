@@ -257,6 +257,20 @@ func ConvertStringArrayToPSQLInList(values []string) (inList string) {
 	return
 }
 
+// ConvertStringDateToTime - converts a string date to a time.Time object.
+//
+//	Customer Messages: None
+//	Errors: if parsing fails or invalid input is provided.
+//	Verifications: None
+func ConvertStringDateToTime(dateStringFormat string) (dateTimeFormat time.Time, errorInfo errs.ErrorInfo) {
+
+	if dateTimeFormat, errorInfo.Error = time.Parse("2026-04-01", dateStringFormat); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateStringFormat, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
 // ConvertIntArrayToPSQLInList - takes an array of integers and returns a string for using by PSQL IN LIST
 // with a space.
 //
