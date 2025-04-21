@@ -403,7 +403,17 @@ func IsFileReadable(fileName string) bool {
 	return false
 }
 
-// IsFutureYear - determines if the year is in the future
+// IsFutureDate - determines if the provided date occurs in the future.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func IsFutureDate(myDate time.Time) bool {
+
+	return myDate.After(time.Now())
+}
+
+// IsFutureMonth - determines if the month is in the future
 //
 //	Customer Messages: None
 //	Errors: None
