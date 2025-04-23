@@ -5,7 +5,30 @@ import (
 
 	"os"
 	"runtime"
+	"strings"
 )
+
+// GetMyFunctionInfo - retrieves information about the function that executed this function.
+// The level is set to 1, so it will always return information about the caller.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetMyFunctionInfo(trimPath bool) (functionInfo FunctionInfo) {
+
+	return GetFunctionInfo(1, trimPath)
+}
+
+// GetMyFunctionName - retrieves the name of the function that executed this function.
+// The level is set to 1, so it will always return information about the caller.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetMyFunctionName(trimPath bool) (functionName string) {
+
+	return GetFunctionName(1, trimPath)
+}
 
 // GetFunctionInfo - returns information about the function based on the level provided.
 //
@@ -13,19 +36,39 @@ import (
 //
 // 1 will return the caller of GetFunctionInfo
 //
-// 2+ will return the corresponding caller back up the chain.
+// 2+ will return the corresponding caller moving up the caller chain.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetFunctionInfo(level int) (functionInfo FunctionInfo) {
+func GetFunctionInfo(level int, trimPath bool) (functionInfo FunctionInfo) {
+
+	functionInfo.Name = GetFunctionName(level, trimPath)
+	_, functionInfo.FileName, functionInfo.LineNumber, _ = runtime.Caller(level)
+
+	if trimPath {
+		functionInfo.FileName = functionInfo.FileName[strings.LastIndex(functionInfo.FileName, "/")+1:]
+	}
+
+	return
+}
+
+// GetFunctionName - retrieves the name of the function at the specified stack level.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetFunctionName(level int, trimPath bool) (functionName string) {
 
 	var (
 		tFunction, _, _, _ = runtime.Caller(level)
 	)
 
-	functionInfo.Name = runtime.FuncForPC(tFunction).Name()
-	_, functionInfo.FileName, functionInfo.LineNumber, _ = runtime.Caller(level)
+	functionName = runtime.FuncForPC(tFunction).Name()
+
+	if trimPath {
+		functionName = functionName[strings.LastIndex(functionName, "/")+1:]
+	}
 
 	return
 }
@@ -36,6 +79,7 @@ func GetFunctionInfo(level int) (functionInfo FunctionInfo) {
 //	Errors: None
 //	Verifications: None
 func GetWorkingDirectory() (path string) {
+
 	path, _ = os.Getwd()
 
 	return

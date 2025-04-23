@@ -1422,7 +1422,7 @@ func SubtractMonths(year int, month int, monthsToSubtract int) (int, int) {
 }
 
 // TrimString - takes a search value, finds it in the string, and trims everything to the left of the search value.
-// If the search value is not found the data is returned.
+// If the search value is not found, the data is returned.
 //
 //	Customer Messages: None
 //	Errors: None

@@ -1,9 +1,11 @@
 package sharedServices
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	// "net/httpServices"
 	// "os"
@@ -13,42 +15,16 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
+	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-type HTTPConfiguration struct {
-	CredentialsFilename string       `json:"credentials_filename"`
-	GinMode             string       `json:"gin_mode"`
-	HTTPDomain          string       `json:"http_domain"`
-	MessageEnvironment  string       `json:"message_environment"`
-	Port                int          `json:"port"`
-	RequestedThreads    uint         `json:"requested_threads"`
-	RouteRegistry       []RouteInfo  `json:"route_registry"`
-	TLSInfo             jwts.TLSInfo `json:"tls_info"`
-}
-
-type RouteInfo struct {
-	Namespace   string `json:"namespace"`
-	Subject     string `json:"subject"`
-	Description string `json:"description"`
-}
-
-type HTTPService struct {
-	Config         HTTPConfiguration
-	CredentialsFQN string
-	HTTPServerPtr  *http.Server
-	Secure         bool
-}
-
-// NewHTTP - creates a new httpServices service using the provided extension values.
+// NewHTTPServer - creates a new httpServices service using the provided extension values.
 //
 //	Customer Messages: None
 //	Errors: error returned by validateConfiguration
 //	Verifications: validateConfiguration
-func NewHTTP(configFilename string) (
-	service HTTPService,
-	errorInfo errs.ErrorInfo,
-) {
+func NewHTTPServer(configFilename string) (httpServicePtr *HTTPServerService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tAdditionalInfo = fmt.Sprintf("%v%v", ctv.LBL_FILENAME, configFilename)
@@ -56,9 +32,9 @@ func NewHTTP(configFilename string) (
 		tConfigData     []byte
 	)
 
-	//if tConfigData, errorInfo = config.ReadConfigFile(hlp.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
+	// if tConfigData, errorInfo = config.ReadConfigFile(hlp.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
 	//	return
-	//}
+	// }
 
 	if errorInfo.Error = json.Unmarshal(tConfigData, &tConfig); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
@@ -69,19 +45,21 @@ func NewHTTP(configFilename string) (
 		return
 	}
 
-	service.Config = tConfig
-	service.CredentialsFQN = hlp.PrependWorkingDirectory(tConfig.CredentialsFilename)
+	httpServicePtr.Config = tConfig
+	httpServicePtr.CredentialsFQN = hlp.PrependWorkingDirectory(tConfig.CredentialsFilename)
 
 	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
 		tConfig.TLSInfo.TLSPrivateKey == ctv.VAL_EMPTY ||
 		tConfig.TLSInfo.TLSCABundle == ctv.VAL_EMPTY {
-		service.Secure = false
+		httpServicePtr.Secure = false
 	} else {
-		service.Secure = true
+		httpServicePtr.Secure = true
 	}
 
 	return
 }
+
+// Private methods
 
 //  Private Functions
 
@@ -129,7 +107,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		}
 	}
 	if len(config.RouteRegistry) == ctv.VAL_ZERO {
-		//errs.NewErrorInfo(errs.ErrSubjectsMissing, ctv.VAL_EMPTY)
+		// errs.NewErrorInfo(errs.ErrSubjectsMissing, ctv.VAL_EMPTY)
 	}
 
 	return
