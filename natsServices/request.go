@@ -4,24 +4,24 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 )
 
-//==============================
+// ==============================
 // Analyze Question
-//==============================
+// ==============================
 
 type AnalyzeQuestionRequest struct {
 	Question string `json:"question"`
 	Test     bool   `json:"test,omitempty"`
 }
 
-//==============================
+// ==============================
 // DK Generic
-//==============================
+// ==============================
 
 type DKRequest []byte
 
-//==============================
+// ==============================
 // Generate Answer
-//==============================
+// ==============================
 
 type GenerateAnswerRequest struct {
 	PromptData PromptInfo `json:"prompt_data"`
@@ -29,21 +29,24 @@ type GenerateAnswerRequest struct {
 
 type PromptInfo struct {
 	Question   string `json:"question"`
+	GoogleData string `json:"google_data"`
+	LinkedData string `json:"linkedin_data"`
+	PayPalData string `json:"paypal_data"`
 	StripeData string `json:"stripe_data"`
 }
 
-//==============================
+// ==============================
 // HAL
-//==============================
+// ==============================
 
 type GetMyAnswerRequest struct {
 	Question string `json:"question"`
 	Test     bool   `json:"test,omitempty"`
 }
 
-//==============================
+// ==============================
 // SaaS Profile
-//==============================
+// ==============================
 
 type SaaSProfileRequest struct {
 	Provider        string `json:"provider"`
@@ -51,9 +54,9 @@ type SaaSProfileRequest struct {
 	ProviderKeyInfo string `json:"providerKeyInfo"`
 }
 
-//==============================
+// ==============================
 // SendGrid - Twilio
-//==============================
+// ==============================
 
 type SendEmailRequest struct {
 	BodyPlain          string           `json:"body_plain,omitempty"`
@@ -70,9 +73,9 @@ type EmailRecipient struct {
 	Address string
 }
 
-//==============================
+// ==============================
 // Stripe
-//==============================
+// ==============================
 
 type BalanceRequest struct {
 	SaaSKey string `json:"saas_key"`

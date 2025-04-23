@@ -119,6 +119,7 @@ const (
 	VAL_SERVICE_GRPC_SERVER = "grpc-server"
 	VAL_SERVICE_GRPC_CLIENT = "grpc-client"
 	VAL_SERVICE_LINKEDIN    = "linkedin"
+	VAL_SERVICE_PAYPAL      = "paypal"
 	VAL_SERVICE_PSQL        = "psql"
 	VAL_SERVICE_SENDGRID    = "sendgrid"
 	VAL_SERVICE_STRIPE      = "stripe"
@@ -156,6 +157,8 @@ var (
 
 	SupportedSaaSProviders = []string{
 		VAL_SERVICE_GOOGLE_ADS,
+		VAL_SERVICE_LINKEDIN,
+		VAL_SERVICE_PAYPAL,
 		VAL_SERVICE_STRIPE,
 	}
 

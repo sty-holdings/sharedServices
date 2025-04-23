@@ -97,6 +97,7 @@ const (
 	FAILED_SERVICE_FIREBASE                 = "FIREBASE service has failed. Investigate right away!"
 	FAILED_SERVICE_FIRESTORE                = "FIRESTORE service has failed. Investigate right away!"
 	FAILED_SERVICE_NATS                     = "NATS Connect service has failed. Investigate right away!"
+	FAILED_SERVICE_PAYPAL                   = "PAYPAL service has failed. Investigate right away!"
 	FAILED_SERVICE_PLAID                    = "PLAID service has failed. Investigate right away!"
 	FAILED_SERVICE_PSQL                     = "POSTGRES service has failed. Investigate right away!"
 	FAILED_SERVICE_SENDGRID                 = "SENDGRID service has failed. Investigate right away!"
@@ -300,6 +301,7 @@ var (
 	ErrFailedServiceFirebase              = errors.New(FAILED_SERVICE_FIREBASE)
 	ErrFailedServiceFirestore             = errors.New(FAILED_SERVICE_FIRESTORE)
 	ErrFailedServiceNats                  = errors.New(FAILED_SERVICE_NATS)
+	ErrFailedServicePayPal                = errors.New(FAILED_SERVICE_PAYPAL)
 	ErrFailedServicePlaid                 = errors.New(FAILED_SERVICE_PLAID)
 	ErrFailedServicePsql                  = errors.New(FAILED_SERVICE_PSQL)
 	ErrFailedServiceSendgrid              = errors.New(FAILED_SERVICE_SENDGRID)
