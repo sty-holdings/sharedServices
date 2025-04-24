@@ -48,7 +48,7 @@ func buildFirestoreUpdate(nameValues map[any]interface{}) (firestoreUpdateFields
 			firestoreUpdateFields = append(firestoreUpdateFields, tUpdate)
 		}
 	} else {
-		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding, true)
 	}
 
 	return
@@ -373,13 +373,13 @@ func RemoveDocument(firestoreClientPtr *firestore.Client, datastore string, quer
 			if errorInfo.Error != nil {
 				errorInfo.AdditionalInfo = fmt.Sprintf("An error occurred trying to remove a document. Error: %v", errorInfo.Error)
 				errorInfo.Error = errs.ErrFailedServiceFirestore
-				//errs.PrintError(errorInfo)
+				// errs.PrintError(errorInfo)
 				// todo handle error & notification
 			}
 			if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(tDocument.Ref.ID).Delete(CTXBackground); errorInfo.Error != nil {
 				errorInfo.AdditionalInfo = fmt.Sprintf("%v Failed: Investigate, there is something wrong! Error: %v", tFunctionName, errorInfo.Error.Error())
 				errorInfo.Error = errs.ErrFailedServiceFirestore
-				//errs.PrintError(errorInfo)
+				// errs.PrintError(errorInfo)
 				// todo Handle error and Notification
 			}
 		}
@@ -516,7 +516,7 @@ func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId str
 	)
 
 	if vlds.AreMapKeysPopulated(nameValues) == false {
-		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding, true)
 		return
 	}
 	if firestoreClientPtr == nil {
@@ -552,7 +552,7 @@ func SetDocument(firestoreClientPtr *firestore.Client, datastore, documentId str
 // 	errs.PrintDebugTrail(tFunctionName)
 //
 // 	if tFinding = coreValidators.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.GOOD {
-// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding)
+// 		errorInfo.Error = errs.GetMapKeyPopulatedError(tFinding, true)
 // 	} else {
 // 		// if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
 // 		if datastore == ctv.VAL_EMPTY || parentDocumentId == ctv.VAL_EMPTY || subCollectionName == ctv.VAL_EMPTY || documentId == ctv.VAL_EMPTY {
@@ -588,7 +588,7 @@ func UpdateDocument(firestoreClientPtr *firestore.Client, datastore, documentId 
 	errorInfo.AdditionalInfo = fmt.Sprintf("Datastore: %v Document Id: %v", datastore, documentId)
 
 	if tFinding = vlds.AreMapKeysValuesPopulated(nameValues); tFinding != ctv.TXT_GOOD {
-		errorInfo = vlds.GetMapKeyPopulatedError(tFinding)
+		errorInfo = vlds.GetMapKeyPopulatedError(tFinding, true)
 		return
 	}
 
@@ -631,10 +631,10 @@ func UpdateDocumentArrayField(firestoreClientPtr *firestore.Client, datastore, d
 		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 		return
 	}
-	//if vlds.IsStruct(arrayElement) == false {
+	// if vlds.IsStruct(arrayElement) == false {
 	//	errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, fmt.Sprintf("%s%s", ctv.LBL_ARRAY_ELEMENT, ctv.TXT_IS_MISSING))
 	//	return
-	//}
+	// }
 
 	if _, errorInfo.Error = firestoreClientPtr.Collection(datastore).Doc(documentId).Update(
 		CTXBackground, []firestore.Update{

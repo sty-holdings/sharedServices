@@ -544,11 +544,11 @@ func IsIPv6Valid(ipAddress any) bool {
 	return false
 }
 
-// IsJSONValid - checks if the data provide is valid JSON.
+// IsJSONValid - checks if the provided byte array is a valid JSON.
 //
 //	Customer Messages: None
 //	Errors: None
-//	Verifications: None
+//	Verifications: vals.JsonString
 func IsJSONValid(jsonIn []byte) bool {
 
 	var (
@@ -558,7 +558,7 @@ func IsJSONValid(jsonIn []byte) bool {
 	return json.Unmarshal(jsonIn, &jsonString) == nil
 }
 
-// IsLeapYear - determines if a given year is a leap year based on the Gregorian calendar rules.
+// IsLeapYear - determines if a given year is a leap year.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -580,7 +580,7 @@ func IsLeapYear(year int) bool {
 	return true
 }
 
-// IsMapPopulated - will determine if the map is populated.
+// IsMapPopulated - checks if the provided map is not empty.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -590,11 +590,11 @@ func IsMapPopulated(myMap map[any]interface{}) bool {
 	return len(myMap) > 0
 }
 
-// IsServiceValid - checks if the value is a valid service
+// IsServiceValid - checks if a given service string matches any service in the ServiceList.
 //
 //	Customer Messages: None
 //	Errors: None
-//	Verifications: None
+//	Verifications: strings.
 func IsServiceValid(service string) bool {
 
 	for _, serviceName := range ctv.ServiceList {
@@ -606,7 +606,7 @@ func IsServiceValid(service string) bool {
 	return false
 }
 
-// IsStruct - will determine if the variable is a struct.
+// IsStruct - checks if the given value is of kind 'struct'.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -616,11 +616,11 @@ func IsStruct(v interface{}) bool {
 	return reflect.TypeOf(v).Kind() == reflect.Struct
 }
 
-// IsSystemActionValid - checks if the value is a valid system action
+// IsSystemActionValid - checks if a given service is a valid system action.
 //
 //	Customer Messages: None
 //	Errors: None
-//	Verifications: None
+//	Verifications: ctv.SystemActionList
 func IsSystemActionValid(service string) bool {
 
 	for _, systemActionName := range ctv.SystemActionList {
@@ -716,11 +716,11 @@ func IsSystemActionValid(service string) bool {
 // 	return
 // }
 
-// ValidateDirectory - validates that the directory value is not empty and the value exists on the file system
+// ValidateDirectory - validates if the provided directory exists and is not empty.
 //
 //	Customer Messages: None
-//	Errors: None
-//	Verifications: None
+//	Errors: errs.ErrEmptyRequiredParameter if the directory is empty or does not exist.
+//	Verifications: DoesDirectoryExist.
 func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 
 	if directory == ctv.VAL_EMPTY {
@@ -763,10 +763,20 @@ func ValidateDirectory(directory string) (errorInfo errs.ErrorInfo) {
 
 // Private methods below here
 
+// isEmptyString - checks if a string is empty.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func isEmptyString(value string) bool {
 	return value == ""
 }
 
+// isEmptyCollection - checks if a slice, array, map, or channel is empty or nil.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func isEmptyCollection(value interface{}) bool {
 	v := reflect.ValueOf(value)
 	if v.Kind() == reflect.Slice || v.Kind() == reflect.Array || v.Kind() == reflect.Map || v.Kind() == reflect.Chan {
@@ -775,6 +785,11 @@ func isEmptyCollection(value interface{}) bool {
 	return false
 }
 
+// isEmptyPointer - determines if the provided pointer value is nil.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
 func isEmptyPointer(value interface{}) bool {
 	v := reflect.ValueOf(value)
 	if v.Kind() == reflect.Ptr {
@@ -783,10 +798,10 @@ func isEmptyPointer(value interface{}) bool {
 	return false
 }
 
-// GetMapKeyPopulatedError - builds ...
+// GetMapKeyPopulatedError - returns an ErrorInfo object based on the given finding and trimPath flag.
 //
 //	Customer Messages: None
-//	Errors: None
+//	Errors: errs.Err if finding corresponds to recognized map key/value errors.
 //	Verifications: None
 func GetMapKeyPopulatedError(finding string, trimPath bool) (errorInfo errs.ErrorInfo) {
 
