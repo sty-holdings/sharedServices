@@ -27,7 +27,7 @@ func GetMyFunctionInfo(trimPath bool) (functionInfo FunctionInfo) {
 //	Verifications: None
 func GetMyFunctionName(trimPath bool) (functionName string) {
 
-	return GetFunctionName(1, trimPath)
+	return GetFunctionName(2, trimPath)
 }
 
 // GetFunctionInfo - returns information about the function based on the level provided.
