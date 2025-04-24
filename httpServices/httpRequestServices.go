@@ -6,9 +6,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	// "net/httpServices"
-	// "os"
-	// "time"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -16,6 +13,11 @@ import (
 	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
+// NewHTTPGetRequest - sends an HTTP GET request with specified headers and query parameters.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedHttpRequest, or errors from underlying HTTP functions
+//	Verifications: hlps.CheckValueNotEmpty, HTTPRequestService.parseURL, HTTPRequestService.buildRawQuery
 func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySettings map[string]string) (body []byte, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -32,7 +34,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 		clientPtr: &http.Client{},
 	}
 
-	if errorInfo = tServicePtr.parseURL(myURL); errorInfo.Error != nil {
+	if errorInfo = tServicePtr.parseURL(fmt.Sprintf("%s%s", PAYPAL_API_BASE_URL, myURL)); errorInfo.Error != nil {
 		return
 	}
 
