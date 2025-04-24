@@ -168,6 +168,7 @@ const (
 	LBL_NATS_URL                    = "NATS URL:"
 	LBL_ON_BOARDED                  = "ON BOARDED:"
 	LBL_PASSWORD                    = "PASSWORD:"
+	LBL_PAYPAL_ACCESS_TOKEN         = "PAYPAL ACCESS TOKEN:"
 	LBL_PAYPAL_CLIENT_ID            = "PAYPAL CLIENT ID:"
 	LBL_PAYPAL_CLIENT_SECRET        = "PAYPAL CLIENT SECRET:"
 	LBL_PID_DIRECTORY               = "PID DIRECTORY:"

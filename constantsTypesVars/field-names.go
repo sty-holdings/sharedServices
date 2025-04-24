@@ -165,6 +165,7 @@ const (
 	FN_ON_BOARDED                               = "on_boarded"
 	FN_PARAMETER_TYPE                           = "parameterType"
 	FN_PASSWORD                                 = "password"
+	FN_PAYPAL_ACCESS_TOKEN                      = "paypal_access_token"
 	FN_PAYPAL_CLIENT_ID                         = "paypal_client_id"
 	FN_PAYPAL_CLIENT_SECRET                     = "paypal_client_secret"
 	FN_PERCENTAGE_FLAG                          = "percentage"
