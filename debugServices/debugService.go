@@ -28,10 +28,11 @@ const (
 func PrintDebugFunctionInfo(
 	debugModeOn bool,
 	outputMode string,
+	trimPath bool,
 ) {
 
 	var (
-		tFunctionInfo = pi.GetFunctionInfo(1)
+		tFunctionInfo = pi.GetFunctionInfo(1, trimPath)
 	)
 
 	if debugModeOn {
@@ -53,13 +54,14 @@ func PrintDebugFunctionInfo(
 //	Errors: None
 //	Verifications: None
 func PrintDebugLine(
-	message string,
 	debugModeOn bool,
+	message string,
 	outputMode string,
+	trimPath bool,
 ) {
 
 	var (
-		tFunctionInfo = pi.GetFunctionInfo(1)
+		tFunctionInfo = pi.GetFunctionInfo(1, trimPath)
 	)
 
 	if message == ctv.VAL_EMPTY {

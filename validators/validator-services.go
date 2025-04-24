@@ -788,9 +788,9 @@ func isEmptyPointer(value interface{}) bool {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetMapKeyPopulatedError(finding string) (errorInfo errs.ErrorInfo) {
+func GetMapKeyPopulatedError(finding string, trimPath bool) (errorInfo errs.ErrorInfo) {
 
-	pi.GetFunctionInfo(1)
+	pi.GetFunctionInfo(1, trimPath)
 
 	switch strings.ToLower(finding) {
 	case ctv.TXT_EMPTY:

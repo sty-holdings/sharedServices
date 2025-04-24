@@ -77,7 +77,7 @@ func TestPrintDebugFunctionInfo(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			tFunctionName, func(t *testing.T) {
-				PrintDebugFunctionInfo(ts.arguments.debugModeOn, ts.arguments.outputMode)
+				PrintDebugFunctionInfo(ts.arguments.debugModeOn, ts.arguments.outputMode, true)
 			},
 		)
 	}
@@ -154,7 +154,7 @@ func TestPrintDebugLine(tPtr *testing.T) {
 	for _, ts := range tests {
 		tPtr.Run(
 			tFunctionName, func(t *testing.T) {
-				PrintDebugLine(ts.arguments.message, ts.arguments.debugModeOn, ts.arguments.outputMode)
+				PrintDebugLine(ts.arguments.debugModeOn, ts.arguments.message, ts.arguments.outputMode, true)
 			},
 		)
 	}
