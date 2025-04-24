@@ -4,6 +4,7 @@ package sharedServices
 
 //goland:noinspection All
 const (
+	VAL_ALL                      = "all"
 	VAL_CHARGE                   = "charge"
 	VAL_DETERMINE_SUBJECTS       = "determine-subjects"
 	VAL_EMPTY                    = ""
