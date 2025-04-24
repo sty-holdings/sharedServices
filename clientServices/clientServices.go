@@ -13,10 +13,10 @@ import (
 	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
 )
 
-// GetClientStruct parses userInfo map to populate and return an STYHClient struct and an errorInfo object if any issue arises during the process.
+// GetClientStruct - constructs an STYHClient instance from the provided map.
 //
 //	Customer Messages: None
-//	Errors: None
+//	Errors: errs.ErrorInfo
 //	Verifications: None
 func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
 
@@ -66,6 +66,13 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 
 	if value, ok = userInfo[ctv.FN_ON_BOARDED]; ok {
 		clientStruct.OnBoarded = value.(bool)
+	}
+
+	if value, ok = userInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
+		clientStruct.PayPalClientId = value.(string)
+	}
+	if value, ok = userInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
+		clientStruct.PayPalClientSecret = value.(string)
 	}
 
 	if value, ok = userInfo[ctv.FN_SAAS_PROVIDERS]; ok {
@@ -127,11 +134,11 @@ func GetClientUsingFirebase(firebaseAuthPtr *auth.Client, firestoreClientPtr *fi
 	return
 }
 
-// ProcessConfigureNewUser - add a new user to the users datastore
+// ProcessConfigureNewUser - configures and saves a new user record in Firestore.
 //
 //	Customer Messages: None
-//	Errors: None
-//	Verifications: None
+//	Errors: errs.Err if Firestore document creation fails.
+//	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
 func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 
 	var (
@@ -145,9 +152,11 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS] = []string{} // initialize Google Ads Accounts field
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
-	tUserInfo[ctv.FN_LINKEDIN_PAGE_IDS] = []string{} // initialize LinkedIn pages ids field
-	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{}    // initialize SaaS Providers field
-	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY     // initialize Stripe Key field
+	tUserInfo[ctv.FN_LINKEDIN_PAGE_IDS] = []string{}       // initialize LinkedIn pages ids field
+	tUserInfo[ctv.FN_PAYPAL_CLIENT_ID] = ctv.VAL_EMPTY     // initialize LinkedIn pages ids field
+	tUserInfo[ctv.FN_PAYPAL_CLIENT_SECRET] = ctv.VAL_EMPTY // initialize LinkedIn pages ids field
+	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{}          // initialize SaaS Providers field
+	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY           // initialize Stripe Key field
 	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
 	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
 	tUserInfo[ctv.FN_STYH_USER_ID] = newUser.STYHUserId
