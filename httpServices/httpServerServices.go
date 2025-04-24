@@ -1,21 +1,13 @@
 package sharedServices
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
 	"strings"
-	// "net/httpServices"
-	// "os"
-	// "time"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
-	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
-	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
