@@ -34,7 +34,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 		clientPtr: &http.Client{},
 	}
 
-	if errorInfo = tServicePtr.parseURL(fmt.Sprintf("%s%s", PAYPAL_API_BASE_URL, myURL)); errorInfo.Error != nil {
+	if errorInfo = tServicePtr.parseURL(myURL); errorInfo.Error != nil {
 		return
 	}
 

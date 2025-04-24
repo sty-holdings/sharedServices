@@ -9,7 +9,6 @@ import (
 
 //goland:noinspection ALL
 const (
-	PAYPAL_API_BASE_URL = "https://api-m.paypal.com"
 	//
 	//  HTTP Ports
 	HTTP_PORT_SECURE     = 8443
