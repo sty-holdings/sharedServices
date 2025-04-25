@@ -237,23 +237,23 @@ func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
 	databaseName string,
 	insertSQL string,
 	updateSQL string,
-) (rowsAffected int64, sqltype string, errorInfo errs.ErrorInfo) {
+) (rowsAffected uint64, sqlType string, errorInfo errs.ErrorInfo) {
 
-	sqltype = ctv.LBL_PSQL_INSERT
-	if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, sqltype); errorInfo.Error != nil {
+	sqlType = ctv.LBL_PSQL_INSERT
+	if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, sqlType); errorInfo.Error != nil {
 		if strings.Contains(errorInfo.Error.Error(), errs.PSQL_ERROR_DUPLICATE_KEY) {
-			sqltype = ctv.LBL_PSQL_UPDATE
-			if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, sqltype); errorInfo.Error != nil {
+			sqlType = ctv.LBL_PSQL_UPDATE
+			if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, sqlType); errorInfo.Error != nil {
 				errorInfo = errs.NewErrorInfo(
 					errorInfo.Error,
-					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqltype, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqlType, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 				)
 				return
 			}
 		} else {
 			errorInfo = errs.NewErrorInfo(
 				errorInfo.Error,
-				errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqltype, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+				errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqlType, ctv.VAL_EMPTY, ctv.TXT_FAILED),
 			)
 		}
 	}
