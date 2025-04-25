@@ -188,7 +188,7 @@ func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, t
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatement string, sqlType string) (rowsAffected int64, errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatement string, sqlType string) (rowsAffected uint64, errorInfo errs.ErrorInfo) {
 
 	var (
 		tFunction, _, _, _ = runtime.Caller(0)
@@ -211,7 +211,7 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 		}
 		return
 	}
-	rowsAffected = tResultPtr.RowsAffected
+	rowsAffected = uint64(tResultPtr.RowsAffected)
 	if tResultPtr = tTransactionPtr.Commit(); tResultPtr.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
