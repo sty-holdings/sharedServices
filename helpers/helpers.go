@@ -271,6 +271,24 @@ func ConvertStringDateToTime(dateStringFormat string) (dateTimeFormat time.Time,
 	return
 }
 
+// ConvertStringMoneyToFloat - converts a string representation of money to a float value.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrorInfo returned if the string cannot be parsed.
+//	Verifications: None
+func ConvertStringMoneyToFloat(moneyString string) (money float64, errorInfo errs.ErrorInfo) {
+
+	if moneyString == "" {
+		return
+	}
+
+	if money, errorInfo.Error = strconv.ParseFloat(moneyString, 64); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HELPERS, ctv.LBL_MONEY, moneyString, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
 // ConvertIntArrayToPSQLInList - takes an array of integers and returns a string for using by PSQL IN LIST
 // with a space.
 //

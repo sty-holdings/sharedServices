@@ -79,7 +79,7 @@ func BuildLabelValue(extensionName string, label string, value string) (addition
 	return fmt.Sprintf("%s %s %s.", extensionName, label, value)
 }
 
-// BuildLabelValueMessage - builds a string using the label, value amd message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildLabelValueMessage - builds a string using the label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
@@ -99,7 +99,7 @@ func BuildLabelSubLabelValue(extensionName string, label string, subLabel string
 	return fmt.Sprintf("%s %s %s %s.", extensionName, label, subLabel, value)
 }
 
-// BuildLabelSubLabelValueMessage - builds a string using the label, sub-label, value and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildLabelSubLabelValueMessage - builds a string using the label, sub-label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None

@@ -154,6 +154,7 @@ const (
 	FN_MESSAGE_REGISTRY                         = "message_registry"
 	FN_MINIMUM_FLAG                             = "minimum"
 	FN_MIN_ALLOCATION                           = "min_allocation"
+	FN_MONEY                                    = "money"
 	FN_MONTH                                    = "month"
 	FN_MONTH_OVER_MONTH                         = "month_over_month"
 	FN_MONTH_TO_DATE                            = "month_to_date"
