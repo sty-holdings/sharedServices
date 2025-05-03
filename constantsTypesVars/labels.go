@@ -2,6 +2,7 @@ package sharedServices
 
 //goland:noinspection ALL
 const (
+	LBL_ACCOUNT_TYPE                = "ACCOUNT TYPE:"
 	LBL_AI_CANDIDATE_TOKEN_COUNT    = "CANDIDATE TOKEN COUNT:"
 	LBL_AI_INSTANCE_POINTER         = "AI INSTANCE POINTER:"
 	LBL_AI_MAX_OUTPUT_TOKENS        = "AI MAX OUTPUT TOKENS:"
