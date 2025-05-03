@@ -168,3 +168,30 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 
 	return
 }
+
+// ProcessSaaSProviderList - builds saas_provers list for users record in Firestore.
+//
+//	Customer Messages: None
+//	Errors: errs.Err if Firestore document creation fails.
+//	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
+func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhClientId string, styhUserId string, saasProviders map[string]bool) {
+
+	var (
+		errorInfo      errs.ErrorInfo
+		tUserInfo      = make(map[any]interface{})
+		tSaasProviders []string
+	)
+
+	for provider, checked := range saasProviders {
+		if checked {
+			tSaasProviders = append(tSaasProviders, provider)
+		}
+	}
+	tUserInfo[ctv.FN_SAAS_PROVIDERS] = tSaasProviders
+
+	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_USERS, styhUserId, tUserInfo); errorInfo.Error != nil {
+		errs.PrintErrorInfo(errorInfo)
+	}
+
+	return
+}
