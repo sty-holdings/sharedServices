@@ -72,6 +72,8 @@ const (
 	EXISTS_STYH_USER_NAME_ALREADY           = "The STYH user name already exists in the system."
 	FAILED_DECODE_STRING                    = "Unable to decode the string."
 	FAILED_EXTENSION_DIGITS                 = "DIGITS Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_DK_CLIENT              = "DK Client Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_DK_SIGNAL              = "DK Signal Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_HAL                    = "HAL Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_QTESTER                = "QTESTER Extension has failed. Investigate right away!"
 	FAILED_FUNCTION_ANALYZE_QUESTION        = "The analyze question function has failed."
@@ -276,6 +278,8 @@ var (
 	ErrExistsStyhUserNameAlready          = errors.New(EXISTS_STYH_USER_NAME_ALREADY)
 	ErrFailedDecodeString                 = errors.New(FAILED_DECODE_STRING)
 	ErrFailedExtensionDigits              = errors.New(FAILED_EXTENSION_DIGITS)
+	ErrFailedExtensionDKClient            = errors.New(FAILED_EXTENSION_DK_CLIENT)
+	ErrFailedExtensionDKSignal            = errors.New(FAILED_EXTENSION_DK_SIGNAL)
 	ErrFailedExtensionHal                 = errors.New(FAILED_EXTENSION_HAL)
 	ErrFailedExtensionQtester             = errors.New(FAILED_EXTENSION_QTESTER)
 	ErrFailedFunctionAnalyzeQuestion      = errors.New(FAILED_FUNCTION_ANALYZE_QUESTION)

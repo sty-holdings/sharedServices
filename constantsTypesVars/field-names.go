@@ -244,6 +244,7 @@ const (
 	FN_STRIPE_KEY                               = "stripe_key"
 	FN_STYH_CLIENT_ID                           = "styh_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY                   = "custom:secret_key"
+	FN_STYH_STRIPE_CONNECT_KEY                  = "styh_stripe_connect_key"
 	FN_STYH_USER_ID                             = "styh_user_id"
 	FN_SUB                                      = "sub"
 	FN_SUBJECT                                  = "subject"

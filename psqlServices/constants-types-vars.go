@@ -51,6 +51,7 @@ type PSQLConfig struct {
 	Timeout        int          `json:"psql_timeout" yaml:"psql_timeout"`
 	UserName       string       `json:"psql_user_name" yaml:"psql_user_name"`
 }
+
 type PSQLService struct {
 	DebugOn            bool
 	ConnectionPoolPtrs map[string]*pgxpool.Pool

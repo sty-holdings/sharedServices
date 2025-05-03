@@ -100,6 +100,7 @@ const (
 	VAL_EXTENSION_ADMIN     = "admin"
 	VAL_EXTENSION_DIGITS    = "digits"
 	VAL_EXTENSION_DK_CLIENT = "dk-client"
+	VAL_EXTENSION_DK_SIGNAL = "dk-signal"
 	VAL_EXTENSION_HAL       = "hal"
 	VAL_EXTENSION_QTESTER   = "qtester"
 )
@@ -142,8 +143,8 @@ var (
 		VAL_EXTENSION_ADMIN,
 		VAL_EXTENSION_DIGITS,
 		VAL_EXTENSION_DK_CLIENT,
+		VAL_EXTENSION_DK_SIGNAL,
 		VAL_EXTENSION_HAL,
-		VAL_EXTENSION_QTESTER,
 	}
 
 	ServiceList = []string{
@@ -154,6 +155,7 @@ var (
 		VAL_SERVICE_GRPC_CLIENT,
 		VAL_SERVICE_PSQL,
 		VAL_SERVICE_SENDGRID,
+		VAL_SERVICE_STRIPE,
 	}
 
 	SupportedSaaSProviders = []string{
