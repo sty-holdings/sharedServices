@@ -28,6 +28,7 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 
 	if value, ok = userInfo[ctv.FN_COMPANY_NAME]; ok {
 		clientStruct.CompanyName = value.(string)
+		clientStruct.AccountType = ctv.VAL_BUSINESS
 	}
 
 	if value, ok = userInfo[ctv.FN_EMAIL]; ok {
@@ -64,10 +65,6 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_ON_BOARDED]; ok {
-		clientStruct.OnBoarded = value.(bool)
-	}
-
 	if value, ok = userInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
 		clientStruct.PayPalClientId = value.(string)
 	}
@@ -83,6 +80,9 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
 			return
+		}
+		if len(clientStruct.SaasProviders) > ctv.VAL_ZERO {
+			clientStruct.OnBoarded = true
 		}
 	}
 
@@ -146,21 +146,19 @@ func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUs
 		tUserInfo = make(map[any]interface{})
 	)
 
-	tUserInfo[ctv.FN_COMPANY_NAME] = newUser.CompanyName
+	if newUser.CompanyName == ctv.VAL_EMPTY {
+		tUserInfo[ctv.FN_ACCOUNT_TYPE] = ctv.VAL_INDIVIDUAL
+	} else {
+		tUserInfo[ctv.FN_ACCOUNT_TYPE] = ctv.VAL_BUSINESS
+		tUserInfo[ctv.FN_COMPANY_NAME] = newUser.CompanyName
+	}
 	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
 	tUserInfo[ctv.FN_EMAIL] = newUser.Email
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
-	tUserInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS] = []string{} // initialize Google Ads Accounts field
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
-	tUserInfo[ctv.FN_LINKEDIN_PAGE_IDS] = []string{}       // initialize LinkedIn pages ids field
-	tUserInfo[ctv.FN_PAYPAL_CLIENT_ID] = ctv.VAL_EMPTY     // initialize LinkedIn pages ids field
-	tUserInfo[ctv.FN_PAYPAL_CLIENT_SECRET] = ctv.VAL_EMPTY // initialize LinkedIn pages ids field
-	tUserInfo[ctv.FN_SAAS_PROVIDERS] = []string{}          // initialize SaaS Providers field
-	tUserInfo[ctv.FN_STRIPE_KEY] = ctv.VAL_EMPTY           // initialize Stripe Key field
 	tUserInfo[ctv.FN_STYH_CLIENT_ID] = hlp.GenerateUUIDType1(false)
 	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
 	tUserInfo[ctv.FN_STYH_USER_ID] = newUser.STYHUserId
-	tUserInfo[ctv.FN_ON_BOARDED] = false
 
 	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.STYHUserId, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)

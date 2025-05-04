@@ -5,10 +5,12 @@ package sharedServices
 //goland:noinspection All
 const (
 	VAL_ALL                      = "all"
+	VAL_BUSINESS                 = "business"
 	VAL_CHARGE                   = "charge"
 	VAL_DETERMINE_SUBJECTS       = "determine-subjects"
 	VAL_EMPTY                    = ""
 	VAL_END_DAY                  = "23:59:59"
+	VAL_INDIVIDUAL               = "individual"
 	VAL_INVALID_FLAG_SETTING     = "00000"
 	VAL_MID_NIGHT                = "23:59:59"
 	VAL_NA                       = "N/A"

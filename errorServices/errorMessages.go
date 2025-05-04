@@ -185,6 +185,7 @@ const (
 	NO_FOUND_STORAGE_BUCKET                 = "The storage bucket was not found."
 	NO_SUPPORT_TIMEZONE                     = "The timezone is not supported."
 	NO_DATA_FOUND                           = "No data found."
+	NOT_ONBOARDED                           = "You have not onboarded your providers to DaveKnows."
 	OS_DIRECTORY_DOESNT_EXIST               = "The directory doesn't exist."
 	OS_DIRECTORY_NOT_FULLY_QUALIFIED        = "The directory doesn't start and end with slash."
 	OS_EMPTY_BUFFER                         = "The buffer is empty"
@@ -391,6 +392,7 @@ var (
 	ErrNoFoundStorageBucket               = errors.New(NO_FOUND_STORAGE_BUCKET)
 	ErrNoSupportTimezone                  = errors.New(NO_SUPPORT_TIMEZONE)
 	ErrNoDataFound                        = errors.New(NO_DATA_FOUND)
+	ErrNotOnboarded                       = errors.New(NOT_ONBOARDED)
 	ErrOSDirectoryDoesntExist             = errors.New(OS_DIRECTORY_DOESNT_EXIST)
 	ErrOSDirectoryNotFullyQualified       = errors.New(OS_DIRECTORY_NOT_FULLY_QUALIFIED)
 	ErrOSEmptyBuffer                      = errors.New(OS_EMPTY_BUFFER)

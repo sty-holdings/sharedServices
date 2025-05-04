@@ -164,7 +164,6 @@ const (
 	FN_NEXT_FLAG                                = "next"
 	FN_NICKNAME                                 = "nickname"
 	FN_OFFICIAL_NAME                            = "official_name"
-	FN_ON_BOARDED                               = "on_boarded"
 	FN_PARAMETER_TYPE                           = "parameterType"
 	FN_PASSWORD                                 = "password"
 	FN_PAYPAL_ACCESS_TOKEN                      = "paypal_access_token"

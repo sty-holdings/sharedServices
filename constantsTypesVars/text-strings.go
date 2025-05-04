@@ -89,7 +89,6 @@ const (
 	TXT_NO_LABEL_PROVIDED            = "no label provided"
 	TXT_NULL                         = "null"
 	TXT_ON                           = "on"
-	TXT_ONBOARDING_INCOMPLETE        = "onboarding is incomplete"
 	TXT_OUTOF                        = "out of"
 	TXT_PHONE                        = "phone"
 	TXT_POINTER_IS_NIL               = "pointer is nil"
