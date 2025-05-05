@@ -242,6 +242,7 @@ const (
 	FN_STATUS                                   = "status"
 	FN_STREET_ADDRESS                           = "street_address"
 	FN_STRIPE_KEY                               = "stripe_key"
+	FN_STRIPE_CONNECT_ACCOUNT_ID                = "stripe_connect_account_id"
 	FN_STYH_CLIENT_ID                           = "styh_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY                   = "custom:secret_key"
 	FN_STYH_STRIPE_CONNECT_KEY                  = "styh_stripe_connect_key"
