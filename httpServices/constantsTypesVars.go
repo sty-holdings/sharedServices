@@ -39,9 +39,9 @@ type RouteInfo struct {
 }
 
 type HTTPServerService struct {
-	Config        HTTPConfiguration
-	HTTPServerPtr *gin.Engine
-	Secure        bool
+	Config       HTTPConfiguration
+	GinEnginePtr *gin.Engine
+	Secure       bool
 }
 
 type HTTPRequestService struct {

@@ -35,9 +35,8 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 
 	gin.SetMode(tConfig.GinMode)
 	servicePtr = &HTTPServerService{
-		Config:        tConfig,
-		HTTPServerPtr: gin.Default(),
-		Secure:        false,
+		Config:       tConfig,
+		GinEnginePtr: gin.Default(),
 	}
 	servicePtr.Config = tConfig
 	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
@@ -47,7 +46,7 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	} else {
 		servicePtr.Secure = true
 	}
-	servicePtr.HTTPServerPtr.LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
+	servicePtr.GinEnginePtr.LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
 
 	return
 }
