@@ -2,11 +2,8 @@ package sharedServices
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-yaml"
