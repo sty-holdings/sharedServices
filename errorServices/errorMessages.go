@@ -98,6 +98,10 @@ const (
 	FAILED_SERVICE_COGNITO                  = "COGNITO service has failed. Investigate right away!"
 	FAILED_SERVICE_FIREBASE                 = "FIREBASE service has failed. Investigate right away!"
 	FAILED_SERVICE_FIRESTORE                = "FIRESTORE service has failed. Investigate right away!"
+	FAILED_SERVICE_GCP                      = "GCP service has failed. Investigate right away!"
+	FAILED_SERVICE_GRPC_CLIENT              = "GRPC client service has failed. Investigate right away!"
+	FAILED_SERVICE_GRPC_SERVER              = "GRPC server service has failed. Investigate right away!"
+	FAILED_SERVICE_HTTP_SERVER              = "HTTP service has failed, Investigate rigth away!"
 	FAILED_SERVICE_NATS                     = "NATS Connect service has failed. Investigate right away!"
 	FAILED_SERVICE_PAYPAL                   = "PAYPAL service has failed. Investigate right away!"
 	FAILED_SERVICE_PLAID                    = "PLAID service has failed. Investigate right away!"
@@ -305,6 +309,10 @@ var (
 	ErrFailedServiceCognito               = errors.New(FAILED_SERVICE_COGNITO)
 	ErrFailedServiceFirebase              = errors.New(FAILED_SERVICE_FIREBASE)
 	ErrFailedServiceFirestore             = errors.New(FAILED_SERVICE_FIRESTORE)
+	ErrFailedServiceGCP                   = errors.New(FAILED_SERVICE_GCP)
+	ErrFailedServiceGRPCClient            = errors.New(FAILED_SERVICE_GRPC_CLIENT)
+	ErrFailedServiceGRPCServer            = errors.New(FAILED_SERVICE_GRPC_SERVER)
+	ErrFailedServiceHTTPServer            = errors.New(FAILED_SERVICE_HTTP_SERVER)
 	ErrFailedServiceNats                  = errors.New(FAILED_SERVICE_NATS)
 	ErrFailedServicePayPal                = errors.New(FAILED_SERVICE_PAYPAL)
 	ErrFailedServicePlaid                 = errors.New(FAILED_SERVICE_PLAID)
