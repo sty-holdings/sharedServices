@@ -26,7 +26,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 		tServicePtr      *HTTPRequestService
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP, myURL, errs.ErrEmptyRequiredParameter, ctv.FN_URL); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_CLIENT, myURL, errs.ErrEmptyRequiredParameter, ctv.FN_URL); errorInfo.Error != nil {
 		return
 	}
 
@@ -41,7 +41,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 	tServicePtr.buildRawQuery(querySettings)
 
 	if tHTTPRequestPtr, errorInfo.Error = http.NewRequestWithContext(context.Background(), HTTP_GET, tServicePtr.urlPtr.String(), nil); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), ctv.VAL_EMPTY, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), ctv.VAL_EMPTY, ctv.TXT_FAILED))
 		return
 	}
 
@@ -50,13 +50,13 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 	}
 
 	if tHTTPResponsePtr, errorInfo.Error = tServicePtr.clientPtr.Do(tHTTPRequestPtr); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), "Do()", ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), "Do()", ctv.TXT_FAILED))
 		return
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), "close()", ctv.TXT_FAILED))
+			errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), "close()", ctv.TXT_FAILED))
 			return
 		}
 	}(tHTTPResponsePtr.Body)
@@ -64,13 +64,13 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 	if tHTTPResponsePtr.StatusCode != http.StatusOK {
 		errorInfo = errs.NewErrorInfo(
 			errs.ErrFailedHttpRequest,
-			errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), fmt.Sprintf("Status Code: %d", tHTTPResponsePtr.StatusCode), ctv.TXT_FAILED),
+			errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), fmt.Sprintf("Status Code: %d", tHTTPResponsePtr.StatusCode), ctv.TXT_FAILED),
 		)
 		return
 	}
 
 	if body, errorInfo.Error = io.ReadAll(tHTTPResponsePtr.Body); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), "ReadAll()", ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), "ReadAll()", ctv.TXT_FAILED))
 	}
 
 	return
@@ -107,7 +107,7 @@ func (servicePtr *HTTPRequestService) buildRawQuery(nameValues map[string]string
 func (servicePtr *HTTPRequestService) parseURL(myURL string) (errorInfo errs.ErrorInfo) {
 
 	if servicePtr.urlPtr, errorInfo.Error = url.Parse(myURL); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP, pis.GetMyFunctionName(true), ctv.VAL_EMPTY, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.LBL_SERVICE_HTTP_CLIENT, pis.GetMyFunctionName(true), ctv.VAL_EMPTY, ctv.TXT_FAILED))
 	}
 
 	return
