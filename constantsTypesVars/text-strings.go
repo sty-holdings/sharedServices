@@ -109,6 +109,7 @@ const (
 	TXT_SERVICE_FIREBASE             = "Firebase"
 	TXT_SERVICE_FIREBASE_AUTH        = "Firebase Auth"
 	TXT_SERVICE_FIRESTORE            = "Firestore"
+	TXT_SERVICE_HTTP_SERVER          = "HTTP Server"
 	TXT_SERVICE_PSQL                 = "PSQL"
 	TXT_SERVICE_SENDGRID             = "SendGrid"
 	TXT_SERVICE_STRIPE               = "Stripe"
