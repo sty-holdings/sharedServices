@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/gin-gonic/gin"
+
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 )
 
@@ -20,14 +22,14 @@ const (
 )
 
 type HTTPConfiguration struct {
-	CredentialsFilename string       `json:"credentials_filename"`
-	GinMode             string       `json:"gin_mode"`
-	HTTPDomain          string       `json:"http_domain"`
-	MessageEnvironment  string       `json:"message_environment"`
-	Port                int          `json:"port"`
-	RequestedThreads    uint         `json:"requested_threads"`
-	RouteRegistry       []RouteInfo  `json:"route_registry"`
-	TLSInfo             jwts.TLSInfo `json:"tls_info"`
+	DebugModeOn       bool         `json:"debug_mode_on" yaml:"debug_mode_on"`
+	DeepLinks         []string     `json:"deep_links" yaml:"deep_links"`
+	GinMode           string       `json:"gin_mode" yaml:"gin_mode"`
+	HTTPDomain        string       `json:"http_domain" yaml:"http_domain"`
+	Port              int          `json:"port" yaml:"port"`
+	RouteRegistry     []RouteInfo  `json:"route_registry" yaml:"route_registry"`
+	TemplateDirectory string       `json:"template_directory" yaml:"template_directory"`
+	TLSInfo           jwts.TLSInfo `json:"tls_info" yaml:"tls_info"`
 }
 
 type RouteInfo struct {
@@ -37,10 +39,9 @@ type RouteInfo struct {
 }
 
 type HTTPServerService struct {
-	Config         HTTPConfiguration
-	CredentialsFQN string
-	HTTPServerPtr  *http.Server
-	Secure         bool
+	Config        HTTPConfiguration
+	HTTPServerPtr *gin.Engine
+	Secure        bool
 }
 
 type HTTPRequestService struct {

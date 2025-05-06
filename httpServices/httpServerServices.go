@@ -1,13 +1,19 @@
 package sharedServices
 
 import (
-	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/goccy/go-yaml"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
@@ -16,20 +22,13 @@ import (
 //	Customer Messages: None
 //	Errors: error returned by validateConfiguration
 //	Verifications: validateConfiguration
-func NewHTTPServer(configFilename string) (httpServicePtr *HTTPServerService, errorInfo errs.ErrorInfo) {
+func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tAdditionalInfo = fmt.Sprintf("%v%v", ctv.LBL_FILENAME, configFilename)
-		tConfig         HTTPConfiguration
-		tConfigData     []byte
+		tConfig HTTPConfiguration
 	)
 
-	// if tConfigData, errorInfo = config.ReadConfigFile(hlp.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
-	//	return
-	// }
-
-	if errorInfo.Error = json.Unmarshal(tConfigData, &tConfig); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, tAdditionalInfo)
+	if tConfig, errorInfo = loadHTTPServerConfig(configFilename); errorInfo.Error != nil {
 		return
 	}
 
@@ -37,16 +36,21 @@ func NewHTTPServer(configFilename string) (httpServicePtr *HTTPServerService, er
 		return
 	}
 
-	httpServicePtr.Config = tConfig
-	httpServicePtr.CredentialsFQN = hlp.PrependWorkingDirectory(tConfig.CredentialsFilename)
-
+	gin.SetMode(tConfig.GinMode)
+	servicePtr = &HTTPServerService{
+		Config:        tConfig,
+		HTTPServerPtr: gin.Default(),
+		Secure:        false,
+	}
+	servicePtr.Config = tConfig
 	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
 		tConfig.TLSInfo.TLSPrivateKey == ctv.VAL_EMPTY ||
 		tConfig.TLSInfo.TLSCABundle == ctv.VAL_EMPTY {
-		httpServicePtr.Secure = false
+		servicePtr.Secure = false
 	} else {
-		httpServicePtr.Secure = true
+		servicePtr.Secure = true
 	}
+	servicePtr.HTTPServerPtr.LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
 
 	return
 }
@@ -55,33 +59,52 @@ func NewHTTPServer(configFilename string) (httpServicePtr *HTTPServerService, er
 
 //  Private Functions
 
-// validateConfiguration - checks the NATS service configuration is valid.
+// loadHTTPServerConfig - loads and parses an HTTP server configuration file.
 //
 //	Customer Messages: None
-//	Errors: ErrEnvironmentInvalid, ErrMessageNamespaceInvalid, ErrDomainInvalid, error returned from DoesFileExistsAndReadable, ErrSubjectsMissing
+//	Errors: errs.Err if a config file is missing, empty, or contains invalid YAML.
 //	Verifications: None
-func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
+func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, errorInfo errs.ErrorInfo) {
 
-	if errorInfo = vals.DoesFileExistsAndReadable(config.CredentialsFilename, ctv.LBL_FILENAME); errorInfo.Error != nil {
-		errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
+	var (
+		tConfigData []byte
+	)
+
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_SERVER, configFilename, errs.ErrEmptyRequiredParameter, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if vals.IsBase64Encode(config.CredentialsFilename) == false {
-		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
+
+	if tConfigData, errorInfo.Error = os.ReadFile(hlps.PrependWorkingDirectory(configFilename)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HTTP_SERVER, ctv.LBL_CONFIG_HTTP_SERVER_FILENAME, configFilename))
+		return
+	}
+
+	if errorInfo.Error = yaml.Unmarshal(tConfigData, &config); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HTTP_SERVER, ctv.LBL_CONFIG_HTTP_SERVER_FILENAME, configFilename))
+		return
+	}
+
+	return
+}
+
+// validateConfiguration - validates the HTTP server configuration values.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrInvalidBase64, errs.ErrOSFileDoesntExist, errs.ErrOSFileUnreadable
+//	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
+func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
+
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.RouteRegistry, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) == false {
-		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.CredentialsFilename))
+		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.GinMode))
 		return
 	}
-	if vals.IsEnvironmentValid(config.MessageEnvironment) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEnvirnoment, fmt.Sprintf("%v%v", ctv.LBL_ENVIRONMENT, config.MessageEnvironment))
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, strconv.Itoa(config.Port), errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
-	if vals.IsGinModeValid(config.GinMode) {
-		config.GinMode = strings.ToLower(config.GinMode)
-	} else {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGinMode, fmt.Sprintf("%v%v", ctv.LBL_GIN_MODE, config.GinMode))
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.RouteRegistry, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
 	if config.TLSInfo.TLSCert != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKey != ctv.VAL_EMPTY && config.TLSInfo.TLSCABundle != ctv.VAL_EMPTY {
@@ -95,11 +118,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		}
 		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCABundle, ctv.LBL_FILENAME); errorInfo.Error != nil {
 			errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.TLSInfo.TLSCABundle))
-			return
 		}
-	}
-	if len(config.RouteRegistry) == ctv.VAL_ZERO {
-		// errs.NewErrorInfo(errs.ErrSubjectsMissing, ctv.VAL_EMPTY)
 	}
 
 	return
