@@ -40,8 +40,8 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 		Secure:       false,
 	}
 	servicePtr.Config = tConfig
-	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
-		tConfig.TLSInfo.TLSPrivateKey == ctv.VAL_EMPTY {
+	if tConfig.TLSInfo.TLSCertFQN == ctv.VAL_EMPTY ||
+		tConfig.TLSInfo.TLSPrivateKeyFQN == ctv.VAL_EMPTY {
 		servicePtr.Secure = false
 	} else {
 		servicePtr.Secure = true
@@ -105,17 +105,12 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, strconv.Itoa(config.Port), errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
-	if config.TLSInfo.TLSCert != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKey != ctv.VAL_EMPTY && config.TLSInfo.TLSCABundle != ctv.VAL_EMPTY {
-		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCert, ctv.LBL_FILENAME); errorInfo.Error != nil {
-			errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.TLSInfo.TLSCert))
+	if config.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {
+		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSPrivateKey, ctv.LBL_FILENAME); errorInfo.Error != nil {
-			errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.TLSInfo.TLSPrivateKey))
+		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 			return
-		}
-		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCABundle, ctv.LBL_FILENAME); errorInfo.Error != nil {
-			errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.TLSInfo.TLSCABundle))
 		}
 	}
 
