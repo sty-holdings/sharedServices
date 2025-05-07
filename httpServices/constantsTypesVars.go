@@ -27,14 +27,8 @@ type HTTPConfiguration struct {
 	GinMode           string       `json:"gin_mode" yaml:"gin_mode"`
 	HTTPDomain        string       `json:"http_domain" yaml:"http_domain"`
 	Port              int          `json:"port" yaml:"port"`
-	RouteRegistry     []RouteInfo  `json:"route_registry" yaml:"route_registry"`
 	TemplateDirectory string       `json:"template_directory" yaml:"template_directory"`
 	TLSInfo           jwts.TLSInfo `json:"tls_info" yaml:"tls_info"`
-}
-
-type RouteInfo struct {
-	Method string `json:"method" yaml:"method"`
-	Path   string `json:"path" yaml:"path"`
 }
 
 type HTTPServerService struct {

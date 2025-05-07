@@ -37,6 +37,7 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	servicePtr = &HTTPServerService{
 		Config:       tConfig,
 		GinEnginePtr: gin.Default(),
+		Secure:       false,
 	}
 	servicePtr.Config = tConfig
 	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
@@ -90,7 +91,7 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 //	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
 func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.RouteRegistry, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) == false {
