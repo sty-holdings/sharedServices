@@ -52,6 +52,11 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	return
 }
 
+func (servicePtr *HTTPServerService) GenerateAddressWithPort(dnsOrIP string, port uint) string {
+
+	return fmt.Sprintf("%s:%d", dnsOrIP, port)
+}
+
 // Private methods
 
 //  Private Functions
