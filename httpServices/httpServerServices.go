@@ -106,9 +106,6 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, strconv.Itoa(config.Port), errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.RouteRegistry, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
-		return
-	}
 	if config.TLSInfo.TLSCert != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKey != ctv.VAL_EMPTY && config.TLSInfo.TLSCABundle != ctv.VAL_EMPTY {
 		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCert, ctv.LBL_FILENAME); errorInfo.Error != nil {
 			errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.TLSInfo.TLSCert))
