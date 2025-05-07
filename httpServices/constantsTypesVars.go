@@ -33,9 +33,8 @@ type HTTPConfiguration struct {
 }
 
 type RouteInfo struct {
-	Namespace   string `json:"namespace"`
-	Subject     string `json:"subject"`
-	Description string `json:"description"`
+	Method string `json:"method" yaml:"method"`
+	Path   string `json:"path" yaml:"path"`
 }
 
 type HTTPServerService struct {
