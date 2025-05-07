@@ -41,8 +41,7 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	}
 	servicePtr.Config = tConfig
 	if tConfig.TLSInfo.TLSCert == ctv.VAL_EMPTY ||
-		tConfig.TLSInfo.TLSPrivateKey == ctv.VAL_EMPTY ||
-		tConfig.TLSInfo.TLSCABundle == ctv.VAL_EMPTY {
+		tConfig.TLSInfo.TLSPrivateKey == ctv.VAL_EMPTY {
 		servicePtr.Secure = false
 	} else {
 		servicePtr.Secure = true
