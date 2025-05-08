@@ -247,6 +247,7 @@ const (
 	FN_STRIPE_KEY                               = "stripe_key"
 	FN_STRIPE_CONNECT_ACCOUNT_ID                = "stripe_connect_account_id"
 	FN_STYH_CLIENT_ID                           = "styh_client_id"
+	FN_STYH_OATH_CLIENT_ID                      = "styh_oath_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY                   = "custom:secret_key"
 	FN_STYH_STRIPE_CONNECT_KEY                  = "styh_stripe_connect_key"
 	FN_STYH_USER_ID                             = "styh_user_id"
