@@ -36,7 +36,6 @@ const (
 	DEFAULT_VERSION         = "9999.9999.9999"
 	ENVIRONMENT_LOCAL       = "local"
 	ENVIRONMENT_DEVELOPMENT = "development"
-	ENVIRONMENT_DEMO        = "demo"
 	ENVIRONMENT_PRODUCTION  = "production"
 	IDP_FIREBASE            = "firebase"
 	IDP_COGNITO             = "cognito"

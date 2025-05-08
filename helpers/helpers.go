@@ -576,6 +576,25 @@ func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo 
 	return
 }
 
+// getEnvironmentShortCode - returns a short code representation of the given environment.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getEnvironmentShortCode(environment string) string {
+
+	switch environment {
+	case ctv.ENVIRONMENT_PRODUCTION:
+		return ctv.VAL_ENVIRONMENT_SHORT_PROD
+	case ctv.ENVIRONMENT_DEVELOPMENT:
+		return ctv.VAL_ENVIRONMENT_SHORT_DEV
+	case ctv.ENVIRONMENT_LOCAL:
+		return ctv.ENVIRONMENT_LOCAL
+	}
+
+	return ctv.TXT_UNKNOWN
+}
+
 // getMonthFromDateString takes date parts and returns the month as an integer.
 // It returns an error if the input string is not in the expected format or month is invalid.
 //

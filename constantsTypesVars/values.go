@@ -11,6 +11,8 @@ const (
 	VAL_DETERMINE_SUBJECTS       = "determine-subjects"
 	VAL_EMPTY                    = ""
 	VAL_END_DAY                  = "23:59:59"
+	VAL_ENVIRONMENT_SHORT_DEV    = "dev"
+	VAL_ENVIRONMENT_SHORT_PROD   = "prod"
 	VAL_INDIVIDUAL               = "individual"
 	VAL_INVALID_FLAG_SETTING     = "00000"
 	VAL_LOGIN                    = "login"

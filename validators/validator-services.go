@@ -341,7 +341,6 @@ func IsEnvironmentValid(environment string) bool {
 	switch environment {
 	case ctv.ENVIRONMENT_LOCAL:
 	case ctv.ENVIRONMENT_DEVELOPMENT:
-	case ctv.ENVIRONMENT_DEMO:
 	case ctv.ENVIRONMENT_PRODUCTION:
 	default:
 		return false
