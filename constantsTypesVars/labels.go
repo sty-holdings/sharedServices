@@ -95,6 +95,7 @@ const (
 	LBL_EMAIL_BODY                  = "EMAIL BODY:"
 	LBL_END_DATE                    = "END DATE:"
 	LBL_ENVIRONMENT                 = "ENVIRONMENT:"
+	LBL_ENVIRONMENT_SHORT_CODE      = "ENVIRONMENT SHORT CODE:"
 	LBL_ERROR_MESSAGE               = "ERROR MESSAGE:"
 	LBL_EXTENSION                   = "EXTENSION:"
 	LBL_EXTENSION_DEBUG_MODE        = "EXTENSION DEBUG MODE:"
