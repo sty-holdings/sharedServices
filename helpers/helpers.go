@@ -576,12 +576,12 @@ func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo 
 	return
 }
 
-// getEnvironmentShortCode - returns a short code representation of the given environment.
+// GetEnvironmentShortCode - returns a short code representation of the given environment.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func getEnvironmentShortCode(environment string) string {
+func GetEnvironmentShortCode(environment string) string {
 
 	switch environment {
 	case ctv.ENVIRONMENT_PRODUCTION:
