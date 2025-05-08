@@ -68,7 +68,6 @@ const (
 	TXT_IS_OK                        = "is ok"
 	TXT_IS_UNREADABLE                = "is unreadable"
 	TXT_KEY_SET_MISSING              = "Key Set has no keys"
-	TXT_LINE_SEPARATOR               = "----------------"
 	TXT_MARSHAL_FAILED               = "marshaling failed"
 	TXT_MESSAGE_NAMESPACE            = "message_namespace"
 	TXT_MISSING                      = "MISSING"

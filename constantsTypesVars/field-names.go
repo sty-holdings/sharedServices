@@ -100,6 +100,7 @@ const (
 	FN_DETAIL_FLAG                              = "detail"
 	FN_DISPUTE                                  = "dispute"
 	FN_DOCUMENT_ID                              = "document_id"
+	FN_DOMAIN                                   = "domain"
 	FN_DURATION                                 = "Duration"
 	FN_ELASPE_TIME_SECONDS                      = "elaspe_time_seconds"
 	FN_EMAIL                                    = "email"

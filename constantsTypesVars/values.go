@@ -41,6 +41,7 @@ const (
 
 //goland:noinspection All
 const (
+	VAL_DAVEKNOWS_NET = "daveknows.net"
 	VAL_GRPC_MAX_PORT = 50151
 	VAL_GRPC_MIN_PORT = 50051
 	VAL_LOCAL_HOST    = "localhost"

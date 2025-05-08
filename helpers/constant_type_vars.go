@@ -21,7 +21,6 @@ var (
 
 //goland:noinspection GoSnakeCaseUsage
 const (
-	TEST_DOMAIN               = "savup.com"
 	TEST_FILE_EXISTS_FILENAME = "file_exists.txt"
 	TEST_FILE_UNREADABLE      = "unreadable_file.txt"
 	TEST_INVALID_DOMAIN       = "tmp"
