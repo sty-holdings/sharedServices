@@ -546,6 +546,25 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
+// GetDaveKnowsNetDomain - determines which daveknows.net domain based on the provided environment string.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetDaveKnowsNetDomain(environment string) (domain string) {
+
+	switch environment {
+	case ctv.VAL_ENVIRONMENT_LOCAL:
+		domain = ctv.VAL_LOCAL_HOST
+	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
+		domain = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_DEV, ctv.VAL_DAVEKNOWS_NET)
+	case ctv.VAL_ENVIRONMENT_PRODUCTION:
+		domain = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_PROD, ctv.VAL_DAVEKNOWS_NET)
+	}
+
+	return
+}
+
 // GetMonth - returns the current month as an integer
 //
 //	Customer Messages: None
@@ -556,26 +575,6 @@ func GetMonth() int {
 	return int(time.Now().Month())
 }
 
-// getDayFromDateParts takes date parts and returns the day as an integer.
-// It returns an error if the input string is not in the expected format or day is invalid for the given month and year.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo errs.ErrorInfo) {
-
-	if day, errorInfo.Error = strconv.Atoi(dayIn); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
-		return
-	}
-
-	if vals.IsDayValid(year, month, day) == false {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
-	}
-
-	return
-}
-
 // GetEnvironmentShortCode - returns a short code representation of the given environment.
 //
 //	Customer Messages: None
@@ -584,12 +583,12 @@ func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo 
 func GetEnvironmentShortCode(environment string) string {
 
 	switch environment {
-	case ctv.ENVIRONMENT_PRODUCTION:
+	case ctv.VAL_ENVIRONMENT_PRODUCTION:
 		return ctv.VAL_ENVIRONMENT_SHORT_PROD
-	case ctv.ENVIRONMENT_DEVELOPMENT:
+	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
 		return ctv.VAL_ENVIRONMENT_SHORT_DEV
-	case ctv.ENVIRONMENT_LOCAL:
-		return ctv.ENVIRONMENT_LOCAL
+	case ctv.VAL_ENVIRONMENT_LOCAL:
+		return ctv.VAL_ENVIRONMENT_LOCAL
 	}
 
 	return ctv.TXT_UNKNOWN
@@ -979,9 +978,9 @@ func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
 // 		url = formatURL(ctv.HTTP_PROTOCOL_SECURE, ctv.HTTP_DOMAIN_API_DEV, ctv.HTTP_PORT_SECURE)
 // 	case fmt.Sprintf("%v,%v", ctv.ENVIRONMENT_DEVELOPMENT, false):
 // 		url = formatURL(ctv.HTTP_PROTOCOL_NON_SECURE, ctv.HTTP_DOMAIN_API_DEV, ctv.HTTP_PORT_NON_SECURE)
-// 	case fmt.Sprintf("%v,%v", ctv.ENVIRONMENT_PRODUCTION, true):
+// 	case fmt.Sprintf("%v,%v", ctv.VAL_ENVIRONMENT_PRODUCTION, true):
 // 		url = formatURL(ctv.HTTP_PROTOCOL_SECURE, ctv.HTTP_DOMAIN_API_PROD, ctv.HTTP_PORT_SECURE)
-// 	case fmt.Sprintf("%v,%v", ctv.ENVIRONMENT_PRODUCTION, false):
+// 	case fmt.Sprintf("%v,%v", ctv.VAL_ENVIRONMENT_PRODUCTION, false):
 // 		url = formatURL(ctv.HTTP_PROTOCOL_NON_SECURE, ctv.HTTP_DOMAIN_API_PROD, ctv.HTTP_PORT_NON_SECURE)
 // 	}
 //
@@ -1001,31 +1000,31 @@ func GetLastWeekStartDateTime(weekStartDay int, today time.Time) time.Time {
 //		Customer Messages: None
 //		Errors: None
 //		Verifications: None
-func CalculateTimePeriodWordsFlagCombination() string {
+// func CalculateTimePeriodWordsFlagCombination() string {
 
-	// var (
-	//	tFlagCombination uint8
-	// )
-	//
-	// if wordsPresent.Year {
-	//	tFlagCombination |= 1 << ctv.FLAG_YEARS
-	// }
-	// if wordsPresent.Quarter {
-	//	tFlagCombination |= 1 << ctv.FLAG_QUARTERS
-	// }
-	// if wordsPresent.Month {
-	//	tFlagCombination |= 1 << ctv.FLAG_MONTHS
-	// }
-	// if wordsPresent.Week {
-	//	tFlagCombination |= 1 << ctv.FLAG_WEEKS
-	// }
-	// if wordsPresent.Day {
-	//	tFlagCombination |= 1 << ctv.FLAG_DAYS
-	// }
-
-	return fmt.Sprintf("%05b")
-
-}
+// var (
+//	tFlagCombination uint8
+// )
+//
+// if wordsPresent.Year {
+//	tFlagCombination |= 1 << ctv.FLAG_YEARS
+// }
+// if wordsPresent.Quarter {
+//	tFlagCombination |= 1 << ctv.FLAG_QUARTERS
+// }
+// if wordsPresent.Month {
+//	tFlagCombination |= 1 << ctv.FLAG_MONTHS
+// }
+// if wordsPresent.Week {
+//	tFlagCombination |= 1 << ctv.FLAG_WEEKS
+// }
+// if wordsPresent.Day {
+//	tFlagCombination |= 1 << ctv.FLAG_DAYS
+// }
+//
+// return fmt.Sprintf("%05b")
+//
+// }
 
 // FixFloat64ToDecimalPlaces - takes a float and truncates it to the number of places.
 //
@@ -1356,34 +1355,6 @@ func PrependWorkingDirectoryWithEndingSlash(directory string) string {
 	return fmt.Sprintf("%v/%v/", tWorkingDirectory, directory)
 }
 
-// printDashLine - will output a given number of dashed lines based on the outputMode.
-// The default is to output to the log
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-// func printDashLines(lines int, outputMode string) {
-//
-// 	for i := 0; i < lines; i++ {
-// 		if strings.ToLower(outputMode) == ctv.MODE_OUTPUT_DISPLAY {
-// 			fmt.Println("------------------------------------------")
-// 		} else {
-// 			log.Println("------------------------------------------")
-// 		}
-// 	}
-// }
-
-// PrintLinesAtStartOfRequest - will output dashed lines when a new request arrives.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-// func PrintLinesAtStartOfRequest(lines int, outputMode string) {
-//
-// 	printDashLines(lines, outputMode)
-//
-// }
-
 // RedirectLogOutput - will redirect log output based on the redirectTo value, [MODE_OUTPUT_LOG | MODE_OUTPUT_LOG_DISPLAY].
 //
 //	Customer Messages: None
@@ -1551,17 +1522,25 @@ func createLogFile(logFQD string) (
 	return
 }
 
-// getType
-// func getType(myVar interface{}) (myType string) {
+// getDayFromDateParts takes date parts and returns the day as an integer.
+// It returns an error if the input string is not in the expected format or day is invalid for the given month and year.
 //
-// 	if t := reflect.TypeOf(myVar); t.Kind() == reflect.Ptr {
-// 		myType = "*" + t.Elem().Name()
-// 	} else {
-// 		myType = t.Name()
-// 	}
-//
-// 	return
-// }
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo errs.ErrorInfo) {
+
+	if day, errorInfo.Error = strconv.Atoi(dayIn); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
+		return
+	}
+
+	if vals.IsDayValid(year, month, day) == false {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
 
 // getUTCOffsetSeconds - Helper function to convert UTC offset string to seconds.
 //
@@ -1584,3 +1563,15 @@ func getUTCOffsetSeconds(userUTCOffsetting string) (utcOffset int, errorInfo err
 
 	return
 }
+
+// getType
+// func getType(myVar interface{}) (myType string) {
+//
+// 	if t := reflect.TypeOf(myVar); t.Kind() == reflect.Ptr {
+// 		myType = "*" + t.Elem().Name()
+// 	} else {
+// 		myType = t.Name()
+// 	}
+//
+// 	return
+// }
