@@ -339,9 +339,9 @@ func IsEmailAddressValid(emailAddress string) (errorInfo errs.ErrorInfo) {
 func IsEnvironmentValid(environment string) bool {
 
 	switch environment {
-	case ctv.ENVIRONMENT_LOCAL:
-	case ctv.ENVIRONMENT_DEVELOPMENT:
-	case ctv.ENVIRONMENT_PRODUCTION:
+	case ctv.VAL_ENVIRONMENT_LOCAL:
+	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
+	case ctv.VAL_ENVIRONMENT_PRODUCTION:
 	default:
 		return false
 	}

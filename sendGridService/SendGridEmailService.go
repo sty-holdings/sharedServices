@@ -113,7 +113,7 @@ func NewSendGridServer(defaultSenderAddress, defaultSenderName, environment, sen
 						ProviderKeyFQN: sendgridKeyFQN,
 					}
 					switch strings.ToUpper(environment) {
-					case constants.ENVIRONMENT_PRODUCTION:
+					case constants.VAL_ENVIRONMENT_PRODUCTION:
 						tEmailServerPtr.emailInfo.DefaultSender.Name = defaultSenderName
 						if errorInfo = validateEmailAddress(defaultSenderAddress); errorInfo.Error == nil {
 							tEmailServerPtr.emailInfo.DefaultSender.Address = defaultSenderAddress

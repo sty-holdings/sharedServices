@@ -41,13 +41,19 @@ const (
 
 //goland:noinspection All
 const (
-	VAL_DAVEKNOWS_NET = "daveknows.net"
-	VAL_GRPC_MAX_PORT = 50151
-	VAL_GRPC_MIN_PORT = 50051
-	VAL_LOCAL_HOST    = "localhost"
-	VAL_NATS          = "nats"
-	VAL_PSQL_PORT     = 5432
-	VAL_TCP           = "tcp"
+	VAL_DAVEKNOWS_NET                = "daveknows.net"
+	VAL_ENVIRONMENT_LOCAL            = "local"
+	VAL_ENVIRONMENT_DEVELOPMENT      = "development"
+	VAL_ENVIRONMENT_PRODUCTION       = "production"
+	VAL_ENVIRONMENT_SHORT_CODE_LOCAL = "local'"
+	VAL_ENVIRONMENT_SHORT_CODE_DEV   = "dev'"
+	VAL_ENVIRONMENT_SHORT_CODE_PROD  = "prod'"
+	VAL_GRPC_MAX_PORT                = 50151
+	VAL_GRPC_MIN_PORT                = 50051
+	VAL_LOCAL_HOST                   = "localhost"
+	VAL_NATS                         = "nats"
+	VAL_PSQL_PORT                    = 5432
+	VAL_TCP                          = "tcp"
 )
 
 //goland:noinspection All

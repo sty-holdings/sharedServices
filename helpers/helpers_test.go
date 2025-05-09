@@ -414,14 +414,14 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 		{
 // 			name: "Positive Case: Successful production and secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      true,
 // 			},
 // 		},
 // 		{
 // 			name: "Positive Case: Successful production and non-secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      false,
 // 			},
 // 		},
@@ -479,14 +479,14 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 		{
 // 			name: "Positive Case: Successful production and secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      true,
 // 			},
 // 		},
 // 		{
 // 			name: "Positive Case: Successful production and non-secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      false,
 // 			},
 // 		},
@@ -544,14 +544,14 @@ func TestConvertSliceToSliceOfPtrs(tPtr *testing.T) {
 // 		{
 // 			name: "Positive Case: Successful production and secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      true,
 // 			},
 // 		},
 // 		{
 // 			name: "Positive Case: Successful production and non-secure",
 // 			arguments: arguments{
-// 				environment: ctv.ENVIRONMENT_PRODUCTION,
+// 				environment: ctv.VAL_ENVIRONMENT_PRODUCTION,
 // 				secure:      false,
 // 			},
 // 		},

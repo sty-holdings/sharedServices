@@ -492,21 +492,21 @@ func TestIsEnvironmentValid(tPtr *testing.T) {
 		{
 			name: ctv.TEST_POSITIVE_SUCCESS + "development environment",
 			arguments: arguments{
-				environment: strings.ToLower(ctv.ENVIRONMENT_DEVELOPMENT),
+				environment: strings.ToLower(ctv.VAL_ENVIRONMENT_DEVELOPMENT),
 			},
 			wantError: false,
 		},
 		{
 			name: ctv.TEST_POSITIVE_SUCCESS + "PRODUCTION environment",
 			arguments: arguments{
-				environment: strings.ToUpper(ctv.ENVIRONMENT_PRODUCTION),
+				environment: strings.ToUpper(ctv.VAL_ENVIRONMENT_PRODUCTION),
 			},
 			wantError: false,
 		},
 		{
 			name: ctv.TEST_POSITIVE_SUCCESS + "production environment",
 			arguments: arguments{
-				environment: strings.ToLower(ctv.ENVIRONMENT_PRODUCTION),
+				environment: strings.ToLower(ctv.VAL_ENVIRONMENT_PRODUCTION),
 			},
 			wantError: false,
 		},

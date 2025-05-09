@@ -295,11 +295,11 @@ func LoadAWSCustomerSettings(
 ) {
 
 	switch strings.ToLower(strings.Trim(environment, ctv.SPACES_ONE)) {
-	case ctv.ENVIRONMENT_PRODUCTION:
+	case ctv.VAL_ENVIRONMENT_PRODUCTION:
 		awsSettings.STYHCognitoIdentityInfo = styConfigProduction
-	case ctv.ENVIRONMENT_DEVELOPMENT:
+	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
 		awsSettings.STYHCognitoIdentityInfo = styConfigDevelopment
-	case ctv.ENVIRONMENT_LOCAL:
+	case ctv.VAL_ENVIRONMENT_LOCAL:
 		awsSettings.STYHCognitoIdentityInfo = styConfigLocal
 	default:
 		if environment == ctv.VAL_EMPTY {
