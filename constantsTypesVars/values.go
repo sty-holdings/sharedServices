@@ -45,9 +45,9 @@ const (
 	VAL_ENVIRONMENT_LOCAL            = "local"
 	VAL_ENVIRONMENT_DEVELOPMENT      = "development"
 	VAL_ENVIRONMENT_PRODUCTION       = "production"
-	VAL_ENVIRONMENT_SHORT_CODE_LOCAL = "local'"
-	VAL_ENVIRONMENT_SHORT_CODE_DEV   = "dev'"
-	VAL_ENVIRONMENT_SHORT_CODE_PROD  = "prod'"
+	VAL_ENVIRONMENT_SHORT_CODE_LOCAL = "local"
+	VAL_ENVIRONMENT_SHORT_CODE_DEV   = "dev"
+	VAL_ENVIRONMENT_SHORT_CODE_PROD  = "prod"
 	VAL_GRPC_MAX_PORT                = 50151
 	VAL_GRPC_MIN_PORT                = 50051
 	VAL_LOCAL_HOST                   = "localhost"
