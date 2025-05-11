@@ -25,7 +25,7 @@ type HTTPConfiguration struct {
 	DebugModeOn       bool         `json:"debug_mode_on" yaml:"debug_mode_on"`
 	DeepLinks         []string     `json:"deep_links" yaml:"deep_links"`
 	GinMode           string       `json:"gin_mode" yaml:"gin_mode"`
-	HTTPDomain        string       `json:"http_domain" yaml:"http_domain"`
+	Host              string       `json:"host" yaml:"host"`
 	Port              int          `json:"port" yaml:"port"`
 	TemplateDirectory string       `json:"template_directory" yaml:"template_directory"`
 	TLSInfo           jwts.TLSInfo `json:"tls_info" yaml:"tls_info"`

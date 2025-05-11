@@ -102,6 +102,9 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.GinMode))
 		return
 	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, errs.ErrEmptyRequiredParameter, ctv.LBL_HOST); errorInfo.Error != nil {
+		return
+	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, strconv.Itoa(config.Port), errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}

@@ -36,7 +36,6 @@ const (
 	DEFAULT_VERSION         = "9999.9999.9999"
 	IDP_FIREBASE            = "firebase"
 	IDP_COGNITO             = "cognito"
-	LOCAL_HOST              = "localhost"
 	NATS_NON_TLS_CONNECTION = "NON-TLS"
 	NATS_TLS_CONNECTION     = "TLS"
 	OPER_DOUBE_EQUAL_SIGN   = "=="
