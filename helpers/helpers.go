@@ -546,20 +546,22 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
-// GetDaveKnowsNetDomain - determines which daveknows.net domain based on the provided environment string.
+// GetDaveKnowsNetDomain - returns the host and port for the given environment.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetDaveKnowsNetDomain(environment string) (domain string) {
+func GetDaveKnowsNetDomain(environment string, port uint) (host string) {
 
 	switch environment {
 	case ctv.VAL_ENVIRONMENT_LOCAL:
-		domain = ctv.VAL_LOCAL_HOST
+		host = fmt.Sprintf("%s:%d", ctv.VAL_LOCAL_HOST, port)
+		return
 	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
-		domain = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_DEV, ctv.VAL_DAVEKNOWS_NET)
+		host = fmt.Sprintf("%s.%s:%d", ctv.VAL_ENVIRONMENT_SHORT_CODE_DEV, ctv.VAL_DAVEKNOWS_NET, port)
+		return
 	case ctv.VAL_ENVIRONMENT_PRODUCTION:
-		domain = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_PROD, ctv.VAL_DAVEKNOWS_NET)
+		host = fmt.Sprintf("%s.%s:%d", ctv.VAL_ENVIRONMENT_SHORT_CODE_PROD, ctv.VAL_DAVEKNOWS_NET, port)
 	}
 
 	return
