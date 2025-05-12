@@ -211,6 +211,7 @@ const (
 	FN_SAAS_PROVIDER                            = "saas_provider"
 	FN_SAAS_PROVIDERS                           = "saas_providers"
 	FN_SAAS_PROVIDER_ACCESS_TOKEN               = "saas_provider_access_token"
+	FN_SAAS_PROVIDER_CODE                       = "saas_provider_code"
 	FN_SAAS_PROVIDER_CODE_DETAILS               = "saas_provider_code_details"
 	FN_SAAS_PROVIDER_REFRESH_TOKEN              = "saas_provider_refresh_token"
 	FN_SAAS_PROVIDER_SELECTED                   = "saas_provider_selected"
