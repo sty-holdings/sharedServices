@@ -24,7 +24,7 @@ type GRPCService struct {
 	GRPCServerPtr   *grpc.Server
 	GRPCClientPtr   *grpc.ClientConn
 	Host            string
-	Port            int
+	Port            uint
 	Secure          SecureSettings
 	Timeout         time.Duration
 }

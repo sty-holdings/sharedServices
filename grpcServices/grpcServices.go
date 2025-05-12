@@ -57,7 +57,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 			Mutual:     tConfig.GRPCSecure.Mutual,
 		},
 		Host: tConfig.GRPCHost,
-		Port: tConfig.GRPCPort,
+		Port: uint(tConfig.GRPCPort),
 	}
 
 	if tConfig.GRPCDebug {
@@ -121,7 +121,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 			Mutual:     tConfig.GRPCSecure.Mutual,
 		},
 		Host:    tConfig.GRPCHost,
-		Port:    tConfig.GRPCPort,
+		Port:    uint(tConfig.GRPCPort),
 		Timeout: time.Duration(tConfig.GRPCTimeout) * time.Second,
 	}
 
