@@ -54,6 +54,7 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		clientStruct.LastName = value.(string)
 	}
 
+	clientStruct.OnBoarded = false // Default unless reset by the userInfo[ctv.FN_SAAS_PROVIDERS] code below. DO NOT REMOVE
 	if value, ok = userInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.FN_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
