@@ -16,7 +16,7 @@ type STYHClient struct {
 	LastName           string   `firebase:"last_name" json:"last_name"`
 	LinkedinPageIdList []int64  `firebase:"linkedin_page_ids" json:"linkedin_page_ids"`
 	LocationPtr        *time.Location
-	OnBoarded          bool     `json:"on_boarded"`
+	OnBoarded          bool     `firebase:"onboarded" json:"onboarded"`
 	PayPalClientId     string   `firebase:"paypal_client_id" json:"paypal_client_id"`
 	PayPalClientSecret string   `firebase:"paypal_client_secret" json:"paypal_client_secret"`
 	SaasProviders      []string `firestore:"saas_providers,array"json:"saas_providers"`
