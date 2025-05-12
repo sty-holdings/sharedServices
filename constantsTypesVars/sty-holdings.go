@@ -89,6 +89,7 @@ type AnalyzedQuestion struct {
 }
 
 type CategorySentence struct {
+	AIPrompt       string   `json:"ai_prompt"`
 	Categories     []string `json:"categories"`
 	CountBySubject []struct {
 		Subject string `json:"subject"`
