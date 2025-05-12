@@ -138,6 +138,7 @@ func (aiServicePtr *AIService) GenerateContent(
 	locationPtr *time.Location,
 	prompt string,
 	promptData map[string]string,
+	saasProviders []string,
 	systemInstructionTopic string,
 	systemInstructionKey string,
 	additionalInstructions string,
@@ -154,7 +155,10 @@ func (aiServicePtr *AIService) GenerateContent(
 		tPromptData += fmt.Sprintf("%s %s ", source, data)
 	}
 
-	if tInstruction, aiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(extensionName, locationPtr, systemInstructionTopic, systemInstructionKey); aiResponse.ErrorInfo.Error != nil {
+	if tInstruction, aiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(
+		extensionName, systemInstructionKey, locationPtr,
+		saasProviders, systemInstructionTopic,
+	); aiResponse.ErrorInfo.Error != nil {
 		return
 	}
 	tInstruction = fmt.Sprintf("%s %s", tInstruction, additionalInstructions)
@@ -193,18 +197,24 @@ func (aiServicePtr *AIService) GenerateContent(
 //	Customer Messages: None
 //	Errors: ErrSystemInstructionKeyInvalid, ErrSystemInstructionTopicInvalid
 //	Verifications: None
-func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, locationPtr *time.Location, topic string, key string) (systemInstruction string, errorInfo errs.ErrorInfo) {
+func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, key string, locationPtr *time.Location, saasProviders []string, topic string) (
+	systemInstruction string,
+	errorInfo errs.ErrorInfo,
+) {
 
 	var (
-		tSetDate      bool
-		tOutputFormat string
+		tSetDate       bool
+		tOutputFormat  string
+		tSaasProviders string
 	)
+
+	tSaasProviders = strings.Join(saasProviders, ",")
 
 	switch topic {
 	case SI_TOPIC_ANALYZE_QUESTION:
 		switch key {
 		case SI_KEY_CATEGORY_SENTENCE:
-			systemInstruction = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction
+			systemInstruction = fmt.Sprintf(aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction, tSaasProviders)
 			tOutputFormat = aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.OutputFormat
 			tSetDate, _ = strconv.ParseBool(aiServicePtr.config.SystemInstructions.AnalyzeQuestions.CategorySentence.SetDate)
 		case SI_KEY_SPECIAL_WORDS:
