@@ -546,22 +546,34 @@ func GetDay() int {
 	return int(time.Now().Day())
 }
 
-// GetDaveKnowsNetDomain - returns the host and port for the given environment.
+// GetEnvironmentBasedHost - determines the host based on the given domain and environment.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetDaveKnowsNetDomain(environment string, port uint) (host string) {
+func GetEnvironmentBasedHost(domain string, environment string) (host string) {
+
+	return GetEnvironmentBasedHostPort(domain, environment, 0)
+}
+
+// GetEnvironmentBasedHostPort - determines the host and port based on the given domain, environment, and port.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func GetEnvironmentBasedHostPort(domain string, environment string, port uint) (host string) {
 
 	switch environment {
 	case ctv.VAL_ENVIRONMENT_LOCAL:
-		host = fmt.Sprintf("%s:%d", ctv.VAL_LOCAL_HOST, port)
-		return
+		host = ctv.VAL_LOCAL_HOST
 	case ctv.VAL_ENVIRONMENT_DEVELOPMENT:
-		host = fmt.Sprintf("%s.%s:%d", ctv.VAL_ENVIRONMENT_SHORT_CODE_DEV, ctv.VAL_DAVEKNOWS_NET, port)
-		return
+		host = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_DEV, domain)
 	case ctv.VAL_ENVIRONMENT_PRODUCTION:
-		host = fmt.Sprintf("%s.%s:%d", ctv.VAL_ENVIRONMENT_SHORT_CODE_PROD, ctv.VAL_DAVEKNOWS_NET, port)
+		host = fmt.Sprintf("%s.%s", ctv.VAL_ENVIRONMENT_SHORT_CODE_PROD, domain)
+	}
+
+	if port > ctv.VAL_ZERO {
+		host = fmt.Sprintf("%s:%d", host, port)
 	}
 
 	return
