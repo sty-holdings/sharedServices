@@ -166,6 +166,7 @@ const (
 	INVALID_SYSTEM_INSTRUCTION_TOPIC        = "The system instruction topic is invalid."
 	INVALID_ID_TOKEN                        = "The ID token is invalid."
 	INVALID_ACCESS_TOKEN                    = "The access token is invalid."
+	INVALID_REDIRECT_PORT                   = "The redirect port is invalid."
 	INVALID_REFRESH_TOKEN                   = "The refresh token is invalid."
 	INVALID_TOKEN_CLAIMS                    = "The token claims are invalid."
 	INVALID_TRANSFER_AMOUNT                 = "The transfer amount is not support for this transfer method!"
@@ -332,6 +333,7 @@ var (
 	ErrInvalidBase64                      = errors.New(INVALID_BASE64)
 	ErrInvalidCognitoSecretBlock          = errors.New(INVALID_COGNITO_SECRET_BLOCK)
 	ErrInvalidCognitoUserpoolID           = errors.New(INVALID_COGNITO_USERPOOL_ID)
+	ErrInvalidConfigurationSettings       = errors.New(INVALID_CONFIGURATION_SETTINGS)
 	ErrInvalidCount                       = errors.New(INVALID_COUNT)
 	ErrInvalidCurrency                    = errors.New(INVALID_CURRENCY)
 	ErrInvalidDataType                    = errors.New(INVALID_DATA_TYPE)
@@ -368,7 +370,6 @@ var (
 	ErrInvalidPSQLTimeout                 = errors.New(INVALID_PSQL_TIMEOUT)
 	ErrInvalidRecipienttype               = errors.New(INVALID_RECIPIENTTYPE)
 	ErrInvalidRedirectMode                = errors.New(INVALID_REDIRECT_MODE)
-	ErrInvalidConfigurationSettings       = errors.New(INVALID_CONFIGURATION_SETTINGS)
 	ErrInvalidStruct                      = errors.New(INVALID_STRUCT)
 	ErrInvalidStyhClientID                = errors.New(INVALID_STYH_CLIENT_ID)
 	ErrInvalidStyhUserID                  = errors.New(INVALID_STYH_USER_ID)
@@ -377,6 +378,7 @@ var (
 	ErrInvalidSystemInstructionTopic      = errors.New(INVALID_SYSTEM_INSTRUCTION_TOPIC)
 	ErrInvalidIDToken                     = errors.New(INVALID_ID_TOKEN)
 	ErrInvalidAccessToken                 = errors.New(INVALID_ACCESS_TOKEN)
+	ErrInvalidRedirectPort                = errors.New(INVALID_REDIRECT_PORT)
 	ErrInvalidRefreshToken                = errors.New(INVALID_REFRESH_TOKEN)
 	ErrInvalidTokenClaims                 = errors.New(INVALID_TOKEN_CLAIMS)
 	ErrInvalidTransferAmount              = errors.New(INVALID_TRANSFER_AMOUNT)
