@@ -2,6 +2,7 @@ package sharedServices
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 
@@ -35,9 +36,8 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 
 	gin.SetMode(tConfig.GinMode)
 	servicePtr = &HTTPServerService{
-		Config:       tConfig,
-		GinEnginePtr: gin.Default(),
-		Secure:       false,
+		Config: tConfig,
+		Secure: false,
 	}
 	servicePtr.Config = tConfig
 	if tConfig.TLSInfo.TLSCertFQN == ctv.VAL_EMPTY ||
@@ -46,7 +46,14 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	} else {
 		servicePtr.Secure = true
 	}
-	servicePtr.GinEnginePtr.LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
+
+	for _, port := range tConfig.Ports {
+		if port < ctv.VAL_ZERO {
+			port = int(math.Abs(float64(port)))
+		}
+		servicePtr.GinEnginePtr[uint(port)] = gin.Default()
+		servicePtr.GinEnginePtr[uint(port)].LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
+	}
 
 	return
 }

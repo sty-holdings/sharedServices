@@ -26,14 +26,14 @@ type HTTPConfiguration struct {
 	DeepLinks         []string     `json:"deep_links" yaml:"deep_links"`
 	GinMode           string       `json:"gin_mode" yaml:"gin_mode"`
 	Host              string       `json:"host" yaml:"host"`
-	Port              int          `json:"port" yaml:"port"`
+	Ports             []int        `json:"ports" yaml:"ports"`
 	TemplateDirectory string       `json:"template_directory" yaml:"template_directory"`
 	TLSInfo           jwts.TLSInfo `json:"tls_info" yaml:"tls_info"`
 }
 
 type HTTPServerService struct {
 	Config       HTTPConfiguration
-	GinEnginePtr *gin.Engine
+	GinEnginePtr map[uint]*gin.Engine
 	Secure       bool
 }
 
