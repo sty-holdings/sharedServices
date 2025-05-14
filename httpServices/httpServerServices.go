@@ -46,6 +46,7 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 		servicePtr.Secure = true
 	}
 
+	servicePtr.GinEnginePtr = make(map[uint]*gin.Engine)
 	for _, port := range tConfig.Ports {
 		if port != ctv.VAL_ZERO {
 			if port < ctv.VAL_ZERO {
