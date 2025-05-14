@@ -204,6 +204,7 @@ const (
 	FN_QUESTION                                 = "question"
 	FN_RECOMMEND                                = "recommend"
 	FN_RECORD_NUMBER                            = "record_number"
+	FN_REDIRECT_PORT                            = "redirect_port"
 	FN_REFUND                                   = "refund"
 	FN_RELATIVE_TIME                            = "relative_time"
 	FN_RELEASE_STATUS                           = "release_status"
