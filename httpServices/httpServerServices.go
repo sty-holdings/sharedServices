@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-yaml"
@@ -48,11 +47,14 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 	}
 
 	for _, port := range tConfig.Ports {
-		if port < ctv.VAL_ZERO {
-			port = int(math.Abs(float64(port)))
+		if port != ctv.VAL_ZERO {
+			if port < ctv.VAL_ZERO {
+				port = int(math.Abs(float64(port)))
+			}
+			servicePtr.Ports = append(servicePtr.Ports, uint(port))
+			servicePtr.GinEnginePtr[uint(port)] = gin.Default()
+			servicePtr.GinEnginePtr[uint(port)].LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
 		}
-		servicePtr.GinEnginePtr[uint(port)] = gin.Default()
-		servicePtr.GinEnginePtr[uint(port)].LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
 	}
 
 	return
@@ -112,7 +114,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, errs.ErrEmptyRequiredParameter, ctv.LBL_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, strconv.Itoa(config.Port), errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
 	if config.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {

@@ -34,6 +34,7 @@ type HTTPConfiguration struct {
 type HTTPServerService struct {
 	Config       HTTPConfiguration
 	GinEnginePtr map[uint]*gin.Engine
+	Ports        []uint
 	Secure       bool
 }
 
