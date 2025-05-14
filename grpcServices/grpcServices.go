@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -18,6 +19,7 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
+	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 // NewGRPCServer - builds a reusable gRPC Server that creates an instance name and builds a connection.
@@ -76,7 +78,11 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		}
 		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
 		errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, errs.ErrEmptyPointer, ctv.FN_GRPC_SERVER_POINTER)
+		return
 	}
+
+	servicePtr.GRPCServerPtr = grpc.NewServer()
+	errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, errs.ErrEmptyPointer, ctv.FN_GRPC_SERVER_POINTER)
 
 	return
 }
@@ -225,9 +231,15 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 	}
 
 	if tServerCert, errorInfo.Error = tls.LoadX509KeyPair(tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN); errorInfo.Error != nil {
+		if strings.Contains(errorInfo.Error.Error(), "tls: private key") {
+			errorInfo = errs.NewErrorInfo(
+				errorInfo.Error, errs.BuildLabelSubLabelValueMessage(creator, pis.GetMyFunctionInfo(true).Name, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, tlsConfig.TLSPrivateKeyFQN, ctv.TXT_FAILED),
+			)
+			return
+		}
 		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, errs.BuildLabelSubLabelValueMessage(creator, ctv.LBL_TLS_CERTIFICATE_FILENAME, ctv.LBL_TLS_PRIVATE_KEY_FILENAME, ctv.VAL_EMPTY, ctv.TXT_FAILED),
-		) // // The tlsConfig.TLSCertFQN, tlsConfig.TLSPrivateKeyFQN values are not output for security.
+			errorInfo.Error, errs.BuildLabelValueMessage(creator, pis.GetMyFunctionInfo(true).Name, ctv.VAL_EMPTY, ctv.TXT_FAILED),
+		)
 	}
 
 	config := &tls.Config{
