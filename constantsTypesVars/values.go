@@ -58,6 +58,16 @@ const (
 
 //goland:noinspection All
 const (
+	VAL_PULL_DAILY      = "daily"
+	VAL_PULL_HOURLY     = "hourly"
+	VAL_PULL_30_MINUTES = "30-mins"
+	VAL_PULL_15_MINUTES = "15-mins"
+	VAL_PULL_10_MINUTES = "10-mins"
+	VAL_PULL_5_MINUTES  = "5-mins"
+)
+
+//goland:noinspection All
+const (
 	VAL_ZERO         = 0
 	VAL_ONE          = 1
 	VAL_TWO          = 2
