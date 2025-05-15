@@ -71,7 +71,7 @@ const (
 	EXISTS_SHORT_URL_ALREADY                = "The short URL already exists in the system."
 	EXISTS_STYH_USER_NAME_ALREADY           = "The STYH user name already exists in the system."
 	FAILED_DECODE_STRING                    = "Unable to decode the string."
-	FAILED_EXTENSION_DIGITS                 = "DIGITS Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_DISCOVERY              = "DISCOVERY Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_DK_CLIENT              = "DK Client Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_DK_SIGNAL              = "DK Signal Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_HAL                    = "HAL Extension has failed. Investigate right away!"
@@ -283,7 +283,7 @@ var (
 	ErrExistsShortUrlAlready              = errors.New(EXISTS_SHORT_URL_ALREADY)
 	ErrExistsStyhUserNameAlready          = errors.New(EXISTS_STYH_USER_NAME_ALREADY)
 	ErrFailedDecodeString                 = errors.New(FAILED_DECODE_STRING)
-	ErrFailedExtensionDigits              = errors.New(FAILED_EXTENSION_DIGITS)
+	ErrFailedExtensionDigits              = errors.New(FAILED_EXTENSION_DISCOVERY)
 	ErrFailedExtensionDKClient            = errors.New(FAILED_EXTENSION_DK_CLIENT)
 	ErrFailedExtensionDKSignal            = errors.New(FAILED_EXTENSION_DK_SIGNAL)
 	ErrFailedExtensionHal                 = errors.New(FAILED_EXTENSION_HAL)

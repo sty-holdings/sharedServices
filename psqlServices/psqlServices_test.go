@@ -278,7 +278,8 @@ func TestBatchInsert(tPtr *testing.T) {
 		},
 	}
 
-	if tPSQLServicePtr, errorInfo = NewPSQLServer("/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/connect-server/config/digits/run-on-mac/local-psql-config.yaml"); errorInfo.Error != nil {
+	if tPSQLServicePtr, errorInfo = NewPSQLServer("/Users/syacko/workspace/sty-holdings/GriesPikeThomp/servers/connect-server/config/discovery/run-on-mac/local-psql-config.yaml"); errorInfo.
+		Error != nil {
 		tPtr.Error(errorInfo.Error)
 		tPtr.FailNow()
 	}
