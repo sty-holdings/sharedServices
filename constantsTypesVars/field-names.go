@@ -253,7 +253,6 @@ const (
 	FN_STATUS                                   = "status"
 	FN_STREET_ADDRESS                           = "street_address"
 	FN_STRIPE_ACCESS_TOKEN                      = "stripe_access_token:"
-	FN_STRIPE_KEY                               = "stripe_key"
 	FN_STRIPE_CONNECT_ACCOUNT_ID                = "stripe_connect_account_id"
 	FN_STRIPE_LAST_PULL_DATE                    = "stripe_last_pull_date"
 	FN_STRIPE_PULL_DATA_STATUS                  = "stripe_pull_data_status"
