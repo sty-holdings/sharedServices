@@ -255,6 +255,7 @@ const (
 	FN_STRIPE_ACCESS_TOKEN                      = "stripe_access_token:"
 	FN_STRIPE_KEY                               = "stripe_key"
 	FN_STRIPE_CONNECT_ACCOUNT_ID                = "stripe_connect_account_id"
+	FN_STRIPE_LAST_PULL_DATE                    = "stripe_last_pull_date"
 	FN_STRIPE_PULL_DATA_STATUS                  = "stripe_pull_data_status"
 	FN_STRIPE_PULL_FREQUENCY                    = "stripe_pull_frequency"
 	FN_STRIPE_REFRESH_TOKEN                     = "stripe_refresh_token:"
