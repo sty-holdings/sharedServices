@@ -180,6 +180,7 @@ const (
 	LBL_NATS_PORT                   = "NATS PORT:"
 	LBL_NATS_SUBJECT                = "NATS SUBJECT:"
 	LBL_NATS_URL                    = "NATS URL:"
+	LBL_ONBOARDING                  = "ONBOARDING:"
 	LBL_PASSWORD                    = "PASSWORD:"
 	LBL_PAYPAL_ACCESS_TOKEN         = "PAYPAL ACCESS TOKEN:"
 	LBL_PAYPAL_CLIENT_ID            = "PAYPAL CLIENT ID:"

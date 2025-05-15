@@ -199,6 +199,7 @@ const (
 	FN_PSQL_TIMESOUT                            = "psql_timeout"
 	FN_PSQL_USER_NAME                           = "psql_user_name"
 	FN_PURPOSE                                  = "purpose"
+	FN_ONBOARDED                                = "onboarded"
 	FN_QUARTER                                  = "quarter"
 	FN_QUARTER_VALUES                           = "quarter_values"
 	FN_QUESTION                                 = "question"
