@@ -422,6 +422,7 @@ var (
 	ErrSecurityUnconfirmedEmail           = errors.New(SECURITY_UNCONFIRMED_EMAIL)
 	ErrSecurityUserAlreadyConfirmedEmail  = errors.New(SECURITY_USER_ALREADY_CONFIRMED_EMAIL)
 	ErrSecurityUserAlreadyConfirmedPhone  = errors.New(SECURITY_USER_ALREADY_CONFIRMED_PHONE)
+	ErrGRPCShutdown                       = errors.New(GRPC_SHUTDOWN)
 	ErrTestFalseShouldBeTrue              = errors.New(TEST_FALSE_SHOULD_BE_TRUE)
 	ErrTestTrueShouldBeFalse              = errors.New(TEST_TRUE_SHOULD_BE_FALSE)
 	ErrTimeoutReached                     = errors.New(TIMEOUT_REACHED)

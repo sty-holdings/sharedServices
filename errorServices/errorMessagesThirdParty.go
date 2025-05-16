@@ -8,6 +8,8 @@ const (
 	// FIREBASE
 	FIREBASE_AUTH_3P_BAD_CREDENTIALS = "cannot read credentials"
 	FIREBASE_AUTH_3P_USER_NOT_FOUND  = "cannot find user from UID:"
+	// GRPC
+	GRPC_SHUTDOWN = "use of closed network connection"
 	// JWT
 	JWT_3P_TOKEN_SIGNATURE_INVALID = "token signature is invalid: crypto/rsa: verification error"
 	// NATS
