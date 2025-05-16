@@ -125,10 +125,10 @@ func CheckArrayLengthGTZero[T any](extensionName string, value []T, label string
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
 	}
 
 	return
