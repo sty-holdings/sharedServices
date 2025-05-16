@@ -81,7 +81,7 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_SERVER, configFilename, errs.ErrEmptyRequiredParameter, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_SERVER, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -105,17 +105,17 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 //	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
 func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) == false {
 		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.GinMode))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, errs.ErrEmptyRequiredParameter, ctv.LBL_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, ctv.LBL_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, errs.ErrEmptyRequiredParameter, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
 	if config.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {

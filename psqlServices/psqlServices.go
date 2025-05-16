@@ -39,7 +39,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 		tConfig PSQLConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -87,16 +87,16 @@ func (psqlServicePtr *PSQLService) BatchInsert(
 		tQueueString       string
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, errs.ErrEmptyRequiredParameter, ctv.LBL_DATABASE); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, database, ctv.LBL_DATABASE); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, batchName, errs.ErrEmptyRequiredParameter, ctv.LBL_PSQL_BATCH); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, batchName, ctv.LBL_PSQL_BATCH); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, insertStatement, errs.ErrEmptyRequiredParameter, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, insertStatement, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, values, errs.ErrEmptyRequiredParameter, ctv.LBL_VALUE); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, values, ctv.LBL_VALUE); errorInfo.Error != nil {
 		return
 	}
 	if len(values) > ctv.VAL_ONE_HUNDRED {
@@ -416,7 +416,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, configFilename, errs.ErrEmptyRequiredParameter, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -441,17 +441,17 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 //	Verifications: None
 func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, errs.ErrEmptyPsqlDatabaseName, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, errs.ErrEmptyServerHostName, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
 		return
 	}
 	if config.MaxConnections <= ctv.VAL_ZERO && config.MaxConnections >= ctv.VAL_ONE_HUNDRED {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidPSQLMaxConnections, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_MAX_CONNECTIONS, strconv.Itoa(config.Port)))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, errs.ErrEmptyPassword, ctv.LBL_PSQL_PASSWORD); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, ctv.LBL_PSQL_PASSWORD); errorInfo.Error != nil {
 		return
 	}
 	if config.Port != ctv.VAL_PSQL_PORT {
@@ -471,13 +471,13 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 		errorInfo = errs.NewErrorInfo(errs.ErrPSQLSSLModeNotAllowed, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_SSL_MODE, config.SSLMode))
 		return
 	case PSQL_SSL_MODE_VERIFY_FULL:
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCertFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSPrivateKeyFQN, errs.ErrEmptyRequiredParameter, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.PSQLTLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 			return
 		}
 	default:

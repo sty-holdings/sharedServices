@@ -87,26 +87,26 @@ func AreMapKeysValuesPopulated(myMap map[any]interface{}) (finding string) {
 //	Customer Messages: None
 //	Errors: ErrFileMissing, ErrFileUnreadable
 //	Verifications: None
-func DoesFileExistsAndReadable(filename, fileLabel string) (errorInfo errs.ErrorInfo) {
+func DoesFileExistsAndReadable(filename, label string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		fqn = PrependWorkingDirectory(filename)
 	)
 
-	if fileLabel == ctv.VAL_EMPTY {
-		fileLabel = ctv.TXT_NO_LABEL_PROVIDED
+	if label == ctv.VAL_EMPTY {
+		label = ctv.TXT_NO_LABEL_PROVIDED
 	}
 
 	if filename == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, label, ctv.TXT_IS_EMPTY))
 		return
 	}
 	if DoesFileExist(fqn) == false {
-		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileDoesntExist, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, label, filename))
 		return
 	}
 	if IsFileReadable(fqn) == false { // File is not readable
-		errorInfo = errs.NewErrorInfo(errs.ErrOSFileUnreadable, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, fileLabel, filename))
+		errorInfo = errs.NewErrorInfo(errs.ErrOSFileUnreadable, errs.BuildLabelValue(ctv.LBL_SERVICE_VALIDATORS, label, filename))
 	}
 
 	return

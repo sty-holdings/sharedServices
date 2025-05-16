@@ -436,13 +436,13 @@ func RemoveTLSTemporaryFiles(
 //	Verifications: None
 func checkEncryptDecryptParameters(styhUserId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, styhUserId, errs.ErrEmptyRequiredParameter, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, styhUserId, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, errs.ErrEmptyRequiredParameter, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, ctv.FN_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, value, errs.ErrEmptyRequiredParameter, ctv.FN_VALUE_B64)
+	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, value, ctv.FN_VALUE_B64)
 
 	return
 }

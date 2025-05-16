@@ -26,7 +26,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 		tServicePtr      *HTTPRequestService
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_CLIENT, myURL, errs.ErrEmptyRequiredParameter, ctv.FN_URL); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_CLIENT, myURL, ctv.FN_URL); errorInfo.Error != nil {
 		return
 	}
 
