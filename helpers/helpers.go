@@ -172,7 +172,35 @@ func CheckPointerNotNil(extensionName string, value interface{}, err error, fiel
 func CheckValueNotEmpty(extensionName string, value string, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(err, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// CheckValueGreatZero - checks if a given value is greater than zero and returns an error if not.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrGreaterThanZero
+//	Verifications: ctv.
+func CheckValueGreatZero(extensionName string, value int, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if value <= ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", fieldLabel), strconv.Itoa(value)))
+	}
+
+	return
+}
+
+// CheckValueGreatEqualZero - validates if the value is greater than or equal to zero and returns an error if not.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrGreaterThanEqualZero
+//	Verifications: ctv.VAL_ZERO
+func CheckValueGreatEqualZero(extensionName string, value int, err error, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if value < ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanEqualZero, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", fieldLabel), strconv.Itoa(value)))
 	}
 
 	return

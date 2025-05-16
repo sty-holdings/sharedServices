@@ -118,6 +118,7 @@ const (
 	FAILED_TLS_ROOT_CA_LOADING              = "The Root CA failed to load."
 	FAILED_UNMARSHAL                        = "Unable to unmarshal data"
 	GREATER_THAN_ZERO                       = "The value must be greater than zero."
+	GREATER_THAN_EQUAL_ZERO                 = "The value must be greater than or equal to zero."
 	INVALID_BASE64                          = "The base64 string is invalid."
 	INVALID_COGNITO_SECRET_BLOCK            = "Unable to decode challenge parameter 'SECRET_BLOCK'."
 	INVALID_COGNITO_USERPOOL_ID             = "User Pool ID must be in format: '<region>_<pool name>'"
@@ -184,6 +185,7 @@ const (
 	JWT_ACCESS_TOKEN_EXPIRED                = "The access token has expired."
 	JWT_REFRESH_TOKEN_EXPIRED               = "The refresh token has expired."
 	LESS_THAN_ZERO                          = "The value must be less than zero."
+	LESS_THAN_EQUAL_ZERO                    = "The value must be less than or equal to zero."
 	MISSING_TIME_FRAME                      = "In order to answer your question, it must have a timeframe, such as the year, month, today, a date, etc."
 	NO_FOUND_DOCUMENT                       = "No document was not found."
 	NO_FOUND_SHORT_URL                      = "The short URL was not found."
@@ -330,6 +332,7 @@ var (
 	ErrFailedTlsRootCaLoading             = errors.New(FAILED_TLS_ROOT_CA_LOADING)
 	ErrFailedUnmarshal                    = errors.New(FAILED_UNMARSHAL)
 	ErrGreaterThanZero                    = errors.New(GREATER_THAN_ZERO)
+	ErrGreaterThanEqualZero               = errors.New(GREATER_THAN_EQUAL_ZERO)
 	ErrInvalidBase64                      = errors.New(INVALID_BASE64)
 	ErrInvalidCognitoSecretBlock          = errors.New(INVALID_COGNITO_SECRET_BLOCK)
 	ErrInvalidCognitoUserpoolID           = errors.New(INVALID_COGNITO_USERPOOL_ID)
@@ -396,6 +399,7 @@ var (
 	ErrJwtAccessTokenExpired              = errors.New(JWT_ACCESS_TOKEN_EXPIRED)
 	ErrJwtRefreshTokenExpired             = errors.New(JWT_REFRESH_TOKEN_EXPIRED)
 	ErrLessThanZero                       = errors.New(LESS_THAN_ZERO)
+	ErrLessThanEqualZero                  = errors.New(LESS_THAN_EQUAL_ZERO)
 	ErrMissingTimeFrame                   = errors.New(MISSING_TIME_FRAME)
 	ErrNoFoundDocument                    = errors.New(NO_FOUND_DOCUMENT)
 	ErrNoFoundShortURL                    = errors.New(NO_FOUND_SHORT_URL)
