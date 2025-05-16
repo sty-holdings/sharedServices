@@ -104,7 +104,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		tDailOption  grpc.DialOption
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_EXTENSION_QTESTER, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_GRPC_CLIENT_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_GRPC_CLIENT, configFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_GRPC_CLIENT_FILENAME); errorInfo.Error != nil {
 		return
 	}
 

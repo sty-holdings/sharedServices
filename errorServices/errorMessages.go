@@ -75,7 +75,6 @@ const (
 	FAILED_EXTENSION_DK_CLIENT              = "DK Client Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_DK_SIGNAL              = "DK Signal Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_HAL                    = "HAL Extension has failed. Investigate right away!"
-	FAILED_EXTENSION_QTESTER                = "QTESTER Extension has failed. Investigate right away!"
 	FAILED_FUNCTION_ANALYZE_QUESTION        = "The analyze question function has failed."
 	FAILED_FUNCTION_CONNECTION              = "The connection failed."
 	FAILED_FUNCTION_GENERATE_ANSWER         = "The generate answer function has failed."
@@ -289,7 +288,6 @@ var (
 	ErrFailedExtensionDKClient            = errors.New(FAILED_EXTENSION_DK_CLIENT)
 	ErrFailedExtensionDKSignal            = errors.New(FAILED_EXTENSION_DK_SIGNAL)
 	ErrFailedExtensionHal                 = errors.New(FAILED_EXTENSION_HAL)
-	ErrFailedExtensionQtester             = errors.New(FAILED_EXTENSION_QTESTER)
 	ErrFailedFunctionAnalyzeQuestion      = errors.New(FAILED_FUNCTION_ANALYZE_QUESTION)
 	ErrFailedFunctionConnection           = errors.New(FAILED_FUNCTION_CONNECTION)
 	ErrFailedFunctionGenerateAnswer       = errors.New(FAILED_FUNCTION_GENERATE_ANSWER)

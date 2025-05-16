@@ -125,7 +125,6 @@ const (
 	VAL_EXTENSION_DK_CLIENT = "dk-client"
 	VAL_EXTENSION_DK_SIGNAL = "dk-signal"
 	VAL_EXTENSION_HAL       = "hal"
-	VAL_EXTENSION_QTESTER   = "qtester"
 )
 
 //goland:noinspection ALL
@@ -138,17 +137,27 @@ const (
 //goland:noinspection All
 const (
 	// Extensions
-	VAL_SERVICE_GCP         = "gcp"
-	VAL_SERVICE_AI          = "ai"
-	VAL_SERVICE_GOOGLE_ADS  = "google-ads"
-	VAL_SERVICE_GRPC_SERVER = "grpc-server"
-	VAL_SERVICE_GRPC_CLIENT = "grpc-client"
-	VAL_SERVICE_HTTP_SERVER = "http-server"
-	VAL_SERVICE_LINKEDIN    = "linkedin"
-	VAL_SERVICE_PAYPAL      = "paypal"
-	VAL_SERVICE_PSQL        = "psql"
-	VAL_SERVICE_SENDGRID    = "sendgrid"
-	VAL_SERVICE_STRIPE      = "stripe"
+	VAL_SERVICE_AI           = "ai"
+	VAL_SERVICE_CLIENT       = "client"
+	VAL_SERVICE_DEBUG        = "debug"
+	VAL_SERVICE_ERROR        = "error"
+	VAL_SERVICE_FIREBASE     = "firebase"
+	VAL_SERVICE_FIRESTORE    = "firestore"
+	VAL_SERVICE_GCP          = "gcp"
+	VAL_SERVICE_GOOGLE_ADS   = "google-ads"
+	VAL_SERVICE_GRPC_SERVER  = "grpc-server"
+	VAL_SERVICE_GRPC_CLIENT  = "grpc-client"
+	VAL_SERVICE_HELPERS      = "helpers"
+	VAL_SERVICE_HTTP_SERVER  = "http-server"
+	VAL_SERVICE_JWT          = "jwt"
+	VAL_SERVICE_LINKEDIN     = "linkedin"
+	VAL_SERVICE_OS           = "operating-system"
+	VAL_SERVICE_PAYPAL       = "paypal"
+	VAL_SERVICE_PROGRAM_INFO = "program-info"
+	VAL_SERVICE_PSQL         = "psql"
+	VAL_SERVICE_SENDGRID     = "sendgrid"
+	VAL_SERVICE_STRIPE       = "stripe"
+	VAL_SERVICE_VALIDATORS   = "validators"
 )
 
 //goland:noinspection All
@@ -172,15 +181,27 @@ var (
 	}
 
 	ServiceList = []string{
-		VAL_SERVICE_GCP,
 		VAL_SERVICE_AI,
+		VAL_SERVICE_CLIENT,
+		VAL_SERVICE_DEBUG,
+		VAL_SERVICE_ERROR,
+		VAL_SERVICE_FIREBASE,
+		VAL_SERVICE_FIRESTORE,
+		VAL_SERVICE_GCP,
 		VAL_SERVICE_GOOGLE_ADS,
 		VAL_SERVICE_GRPC_SERVER,
 		VAL_SERVICE_GRPC_CLIENT,
+		VAL_SERVICE_HELPERS,
 		VAL_SERVICE_HTTP_SERVER,
+		VAL_SERVICE_JWT,
+		VAL_SERVICE_LINKEDIN,
+		VAL_SERVICE_OS,
+		VAL_SERVICE_PAYPAL,
+		VAL_SERVICE_PROGRAM_INFO,
 		VAL_SERVICE_PSQL,
 		VAL_SERVICE_SENDGRID,
 		VAL_SERVICE_STRIPE,
+		VAL_SERVICE_VALIDATORS,
 	}
 
 	SupportedSaaSProviders = []string{

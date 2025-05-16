@@ -107,7 +107,6 @@ const (
 	LBL_EXTENSION_DK_SIGNAL         = "DK SIGNAL:"
 	LBL_EXTENSION_HAL               = "HAL:"
 	LBL_EXTENSION_NAME              = "EXTENSION NAME:"
-	LBL_EXTENSION_QTESTER           = "QTESTER:"
 	LBL_FILENAME                    = "FILENAME:"
 	LBL_FIREBASE_APP                = "FIREBASE APP:"
 	LBL_FIREBASE_AUTH               = "FIREBASE AUTH:"
