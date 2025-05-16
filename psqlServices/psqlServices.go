@@ -486,7 +486,7 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	if config.Timeout < ctv.VAL_ONE && config.Timeout >= ctv.VAL_FIVE {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TIMEOUT, strconv.Itoa(config.Timeout)))
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.UserName, errs.ErrEmptyUserName, ctv.LBL_PSQL_USER_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.UserName, ctv.LBL_PSQL_USER_NAME); errorInfo.Error != nil {
 		return
 	}
 
