@@ -125,6 +125,8 @@ const (
 	VAL_EXTENSION_DK_CLIENT = "dk-client"
 	VAL_EXTENSION_DK_SIGNAL = "dk-signal"
 	VAL_EXTENSION_HAL       = "hal"
+	// Not an extension, but the owner of the extension.
+	VAL_SERVER = "server"
 )
 
 //goland:noinspection ALL
@@ -136,7 +138,7 @@ const (
 
 //goland:noinspection All
 const (
-	// Extensions
+	// Services
 	VAL_SERVICE_AI           = "ai"
 	VAL_SERVICE_CLIENT       = "client"
 	VAL_SERVICE_DEBUG        = "debug"

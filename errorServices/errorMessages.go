@@ -25,7 +25,7 @@ const (
 	EMPTY_KEY_PRIVATE                       = "The private key  is empty."
 	EMPTY_KEY_PUBLIC                        = "The public key  is empty."
 	EMPTY_KEY_SAAS_PROVIDER                 = "The SaaS Provider key is empty."
-	EMPTY_LOAD_EXTENSIONS                   = "There must be at least one extension entry in the configuration file."
+	EMPTY_LOAD_EXTENSION                    = "There must have one extension entry in the configuration file."
 	EMPTY_NAME_FIRST                        = "The first name is empty."
 	EMPTY_NAME_FIRST_LAST                   = "Either the first last name field is empty."
 	EMPTY_NAME_LAST                         = "The last name is empty."
@@ -238,7 +238,7 @@ var (
 	ErrEmptyKeyPrivate                    = errors.New(EMPTY_KEY_PRIVATE)
 	ErrEmptyKeyPublic                     = errors.New(EMPTY_KEY_PUBLIC)
 	ErrEmptyKeySaaSProvider               = errors.New(EMPTY_KEY_SAAS_PROVIDER)
-	ErrEmptyLoadExtensions                = errors.New(EMPTY_LOAD_EXTENSIONS)
+	ErrEmptyLoadExtension                 = errors.New(EMPTY_LOAD_EXTENSION)
 	ErrEmptyNameFirst                     = errors.New(EMPTY_NAME_FIRST)
 	ErrEmptyNameFirstLast                 = errors.New(EMPTY_NAME_FIRST_LAST)
 	ErrEmptyNameLast                      = errors.New(EMPTY_NAME_LAST)
