@@ -33,10 +33,10 @@ func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocatio
 		tAIConfig AIConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, gcpCredentialsFilename, errs.ErrEmptyRequiredParameter, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, gcpCredentialsFilename, ctv.LBL_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, ctv.LBL_AI_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -280,7 +280,7 @@ func loadAIConfig(aiConfigFilename string) (aiConfig AIConfig, errorInfo errs.Er
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, errs.ErrEmptyRequiredParameter, ctv.LBL_CONFIG_AI_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfigFilename, ctv.LBL_CONFIG_AI_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -310,64 +310,58 @@ func loadAIConfig(aiConfigFilename string) (aiConfig AIConfig, errorInfo errs.Er
 //	Verifications: validateConfiguration
 func validateAIConfig(aiConfig AIConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.MaxOutputTokens, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.MaxOutputTokens, ctv.LBL_AI_MAX_OUTPUT_TOKENS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.ModelName, errs.ErrEmptyRequiredParameter, ctv.FN_AI_MODEL_NAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.ModelName, ctv.LBL_AI_MODEL_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.SetTopProbability, errs.ErrEmptyRequiredParameter, ctv.FN_AI_SET_TOP_K); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.SetTopProbability, ctv.LBL_AI_SET_TOP_K); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.AnalyzeQuestions.CategorySentence.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.AnalyzeQuestions.SpecialWords.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.AnalyzeQuestions.TimePeriodValues.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.GenerateAnswer.FinancialAnalyst.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.GenerateAnswer.MarketingAnalyst.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(
 		ctv.LBL_SERVICE_AI,
 		aiConfig.SystemInstructions.GenerateAnswer.NotSupported.Instruction,
-		errs.ErrEmptyRequiredParameter,
-		ctv.FN_AI_SYSTEM_INSTRUCTION,
+		ctv.LBL_AI_SYSTEM_INSTRUCTION,
 	); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.Temperature, errs.ErrEmptyRequiredParameter, ctv.FN_AI_TEMPERATURE)
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_AI, aiConfig.Temperature, ctv.LBL_AI_TEMPERATURE)
 
 	return
 }
