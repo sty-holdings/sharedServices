@@ -3,6 +3,7 @@ package sharedServices
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -14,11 +15,11 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-// NewHTTPServer - creates a new httpServices service using the provided extension values.
+// NewHTTPServer - creates and initializes an HTTPServerService instance.
 //
 //	Customer Messages: None
-//	Errors: error returned by validateConfiguration
-//	Verifications: validateConfiguration
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrInvalidBase64, errs.ErrOSFileDoesntExist, errs.ErrOSFileUnreadable
+//	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
 func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -35,29 +36,32 @@ func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorI
 
 	gin.SetMode(tConfig.GinMode)
 	servicePtr = &HTTPServerService{
-		Config: tConfig,
-		Secure: false,
+		Config:         tConfig,
+		GinEnginePtrs:  make(map[uint]*gin.Engine),
+		HTTPServerPtrs: make(map[uint]*http.Server),
+		Secure:         false,
 	}
-	servicePtr.Config = tConfig
-	if tConfig.TLSInfo.TLSCertFQN == ctv.VAL_EMPTY ||
-		tConfig.TLSInfo.TLSPrivateKeyFQN == ctv.VAL_EMPTY {
-		servicePtr.Secure = false
-	} else {
+	if tConfig.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY ||
+		tConfig.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {
 		servicePtr.Secure = true
 	}
 
-	servicePtr.GinEnginePtr = make(map[uint]*gin.Engine)
 	for _, port := range tConfig.Ports {
 		if port != ctv.VAL_ZERO {
 			if port < ctv.VAL_ZERO {
 				port = int(math.Abs(float64(port)))
 			}
 			servicePtr.Ports = append(servicePtr.Ports, uint(port))
-			servicePtr.GinEnginePtr[uint(port)] = gin.Default()
-			servicePtr.GinEnginePtr[uint(port)].LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
+			servicePtr.GinEnginePtrs[uint(port)] = gin.Default()
+			if tConfig.TemplateDirectory != ctv.VAL_EMPTY {
+				servicePtr.GinEnginePtrs[uint(port)].LoadHTMLGlob(fmt.Sprintf("%s/*", tConfig.TemplateDirectory))
+			}
+			servicePtr.HTTPServerPtrs[uint(port)] = &http.Server{
+				Addr:    servicePtr.GenerateAddressWithPort(tConfig.Host, uint(port)),
+				Handler: servicePtr.GinEnginePtrs[uint(port)],
+			}
 		}
 	}
-
 	return
 }
 

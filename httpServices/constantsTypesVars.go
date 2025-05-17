@@ -32,10 +32,11 @@ type HTTPConfiguration struct {
 }
 
 type HTTPServerService struct {
-	Config       HTTPConfiguration
-	GinEnginePtr map[uint]*gin.Engine
-	Ports        []uint
-	Secure       bool
+	Config         HTTPConfiguration
+	GinEnginePtrs  map[uint]*gin.Engine
+	HTTPServerPtrs map[uint]*http.Server
+	Ports          []uint
+	Secure         bool
 }
 
 type HTTPRequestService struct {
