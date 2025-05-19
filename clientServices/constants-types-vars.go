@@ -25,6 +25,7 @@ type STYHClient struct {
 	StripePullDataStatus   string   `firebase:"stripe_pull_data_status" json:"stripe_pull_data_status" yaml:"stripe_pull_data_status"`
 	StripePullFrequency    string   `firebase:"stripe_pull_frequency" json:"stripe_pull_frequency" yaml:"stripe_pull_frequency"`
 	StripeRefreshToken     string   `firebase:"stripe_refresh_token" json:"stripe_refresh_token" yaml:"stripe_refresh_token"`
+	StripeStartDate        string   `firebase:"stripe_start_date" json:"stripe_start_date" yaml:"stripe_start_date"`
 	STYHClientId           string   `firebase:"styh_client_id" json:"styh_client_id"`
 	STYHUserId             string   `firebase:"sty_user_id" json:"sty_user_id"`
 	Timezone               string   `firebase:"timezone" json:"timezone"`
