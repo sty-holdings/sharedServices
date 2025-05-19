@@ -302,5 +302,6 @@ const (
 	LBL_UTC_OFFSET                  = "UTC OFFSET:"
 	LBL_VALUE                       = "VALUE:"
 	LBL_VALUE_B64                   = "VALUE (Base64):"
+	LBL_WORKER_POLL_INTERVAL        = "WORKER POLL INTERVAL:"
 	LBL_WORKING_DIRECTORY           = "WORK DIRECTORY:"
 )

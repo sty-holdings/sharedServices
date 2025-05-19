@@ -316,6 +316,7 @@ const (
 	FN_WEEK_STARTING                            = "week_starting"
 	FN_WEEK_TO_DATE                             = "week_to_date"
 	FN_WEEK_VALUES                              = "week_values"
+	FN_WORKER_POLL_INTERVAL                     = "worker_poll_interval"
 	FN_YEAR                                     = "year"
 	FN_YEAR_OVER_YEAR                           = "year_over_year"
 	FN_YEAR_TO_DATE                             = "year_to_date"
