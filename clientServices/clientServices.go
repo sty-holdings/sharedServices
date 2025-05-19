@@ -91,6 +91,22 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		clientStruct.StripeAccessToken = value.(string)
 	}
 
+	if value, ok = userInfo[ctv.FN_STRIPE_CONNECT_ACCOUNT_ID]; ok {
+		clientStruct.StripeConnectAccountId = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_STRIPE_PULL_DATA_STATUS]; ok {
+		clientStruct.StripePullDataStatus = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_STRIPE_PULL_FREQUENCY]; ok {
+		clientStruct.StripePullFrequency = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_STRIPE_REFRESH_TOKEN]; ok {
+		clientStruct.StripeRefreshToken = value.(string)
+	}
+
 	if value, ok = userInfo[ctv.FN_STYH_CLIENT_ID]; ok {
 		clientStruct.STYHClientId = value.(string)
 	}
