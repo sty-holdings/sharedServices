@@ -260,6 +260,7 @@ const (
 	FN_STRIPE_PULL_DATA_STATUS                  = "stripe_pull_data_status"
 	FN_STRIPE_PULL_FREQUENCY                    = "stripe_pull_frequency"
 	FN_STRIPE_REFRESH_TOKEN                     = "stripe_refresh_token:"
+	FN_STRIPE_START_DATE                        = "stripe_start_date"
 	FN_STYH_CLIENT_ID                           = "styh_client_id"
 	FN_STYH_OATH_CLIENT_ID                      = "styh_oath_client_id"
 	FN_STYH_CUSTOM_SECRET_KEY                   = "custom:secret_key"
