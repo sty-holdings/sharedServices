@@ -3,6 +3,7 @@ package sharedServices
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -155,6 +156,24 @@ func (psqlServicePtr *PSQLService) Close() {
 	for _, connectionPtr := range psqlServicePtr.ConnectionPoolPtrs {
 		connectionPtr.Close()
 	}
+}
+
+// ConvertErrorCode - extracts and returns the PostgreSQL error code from a GORM error.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: vals.ctv.VAL_EMPTY
+func (psqlServicePtr *PSQLService) ConvertErrorCode(error gorm.DB) string {
+
+	var (
+		pgError *pgconn.PgError
+	)
+
+	if errors.As(error.Error, &pgError) {
+		return pgError.Code
+	}
+
+	return ctv.VAL_EMPTY
 }
 
 // CommitRollbackTransaction - handles the commit or rollback of a GORM transaction based on the presence of errors in the transaction. Returns detailed error info on failure.
