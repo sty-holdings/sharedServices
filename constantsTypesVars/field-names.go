@@ -199,6 +199,7 @@ const (
 	FN_PSQL_SSL_MODE                            = "psql_ssl_mode"
 	FN_PSQL_TIMESOUT                            = "psql_timeout"
 	FN_PSQL_USER_NAME                           = "psql_user_name"
+	FN_PULL_DATA_QUEUE_INTERVAL                 = "pull_data_queue_interval"
 	FN_PURPOSE                                  = "purpose"
 	FN_ONBOARDED                                = "onboarded"
 	FN_QUARTER                                  = "quarter"
