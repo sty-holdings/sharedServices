@@ -168,6 +168,7 @@ const (
 	VAL_SYSTEM_ACTION_CONFIG_NEW_USER = "config-new-user"
 	VAL_SYSTEM_ACTION_GET_MY_ANSWERS  = "get-my-answers"
 	VAL_SYSTEM_ACTION_PING            = "ping"
+	VAL_SYSTEM_ACTION_PULL_DATA       = "pull-data"
 	VAL_SYSTEM_ACTION_TURN_DEBUG_OFF  = "turn-debug-off"
 	VAL_SYSTEM_ACTION_TURN_DEBUG_ON   = "turn-debug-on"
 	//
