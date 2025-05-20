@@ -146,6 +146,15 @@ func (psqlServicePtr *PSQLService) BatchInsert(
 	return
 }
 
+func (psqlServicePtr *PSQLService) CheckDuplicateKeyError(pResultsPtr *gorm.DB) bool {
+
+	if psqlServicePtr.ConvertErrorCode(pResultsPtr) == errs.PSQL_DUPLICATE_KEY {
+		return true
+	}
+
+	return false
+}
+
 // Close - shuts down all active connections in the ConnectionPoolPtrs, releasing resources.
 //
 //	Customer Messages: None
@@ -163,13 +172,13 @@ func (psqlServicePtr *PSQLService) Close() {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: vals.ctv.VAL_EMPTY
-func (psqlServicePtr *PSQLService) ConvertErrorCode(error gorm.DB) string {
+func (psqlServicePtr *PSQLService) ConvertErrorCode(pResultsPtr *gorm.DB) string {
 
 	var (
 		pgError *pgconn.PgError
 	)
 
-	if errors.As(error.Error, &pgError) {
+	if errors.As(pResultsPtr.Error, &pgError) {
 		return pgError.Code
 	}
 
