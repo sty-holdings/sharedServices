@@ -434,8 +434,6 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 		}
 
 		errorInfo = isGORMConnectionActive(gormPoolPtr)
-
-		return
 	}
 
 	if tConfigPtr, errorInfo.Error = pgxpool.ParseConfig(tConnectionString); errorInfo.Error != nil {
