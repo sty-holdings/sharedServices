@@ -216,21 +216,20 @@ func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, t
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatement string, sqlType string) (rowsAffected uint64, errorInfo errs.ErrorInfo) {
+func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatement string, sqlType string) (rowsAffected uint64, errorInfo errs.ErrorInfo, resultPtr *gorm.DB) {
 
 	var (
 		tFunction, _, _, _ = runtime.Caller(0)
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
-		tResultPtr         *gorm.DB
 		tTransactionPtr    *gorm.DB
 	)
 
 	if tTransactionPtr, errorInfo = psqlServicePtr.StartTransaction(ctv.VAL_EMPTY, database); errorInfo.Error != nil {
 		return
 	}
-	if tResultPtr = tTransactionPtr.Exec(sqlStatement); tResultPtr.Error != nil {
-		errorInfo = errs.NewErrorInfo(tResultPtr.Error, errs.BuildLabelSubLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqlType, ctv.LBL_FUNCTION_NAME, tFunctionName, ctv.TXT_FAILED))
-		if tResultPtr = tTransactionPtr.Rollback(); tResultPtr.Error != nil {
+	if resultPtr = tTransactionPtr.Exec(sqlStatement); resultPtr.Error != nil {
+		errorInfo = errs.NewErrorInfo(resultPtr.Error, errs.BuildLabelSubLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqlType, ctv.LBL_FUNCTION_NAME, tFunctionName, ctv.TXT_FAILED))
+		if resultPtr = tTransactionPtr.Rollback(); resultPtr.Error != nil {
 			errorInfo = errs.NewErrorInfo(
 				errorInfo.Error,
 				errs.BuildLabelSubLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_ROLLBACK, ctv.LBL_FUNCTION_NAME, tFunctionName, ctv.TXT_FAILED),
@@ -239,8 +238,8 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 		}
 		return
 	}
-	rowsAffected = uint64(tResultPtr.RowsAffected)
-	if tResultPtr = tTransactionPtr.Commit(); tResultPtr.Error != nil {
+	rowsAffected = uint64(resultPtr.RowsAffected)
+	if resultPtr = tTransactionPtr.Commit(); resultPtr.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
 			errs.BuildLabelSubLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), ctv.LBL_PSQL_COMMIT, ctv.LBL_FUNCTION_NAME, tFunctionName, ctv.TXT_FAILED),
@@ -265,13 +264,13 @@ func (psqlServicePtr *PSQLService) InsertUpdateUsingStaticSQL(
 	databaseName string,
 	insertSQL string,
 	updateSQL string,
-) (rowsAffected uint64, sqlType string, errorInfo errs.ErrorInfo) {
+) (rowsAffected uint64, sqlType string, errorInfo errs.ErrorInfo, resultPtr *gorm.DB) {
 
 	sqlType = ctv.LBL_PSQL_INSERT
-	if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, sqlType); errorInfo.Error != nil {
-		if strings.Contains(errorInfo.Error.Error(), errs.PSQL_ERROR_DUPLICATE_KEY) {
+	if rowsAffected, errorInfo, resultPtr = psqlServicePtr.ExecuteStaticSQL(databaseName, insertSQL, sqlType); errorInfo.Error != nil {
+		if psqlServicePtr.CheckDuplicateKeyError(resultPtr) {
 			sqlType = ctv.LBL_PSQL_UPDATE
-			if rowsAffected, errorInfo = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, sqlType); errorInfo.Error != nil {
+			if rowsAffected, errorInfo, resultPtr = psqlServicePtr.ExecuteStaticSQL(databaseName, updateSQL, sqlType); errorInfo.Error != nil {
 				errorInfo = errs.NewErrorInfo(
 					errorInfo.Error,
 					errs.BuildLabelValueMessage(strings.ToUpper(ctv.VAL_SERVICE_PSQL), sqlType, ctv.VAL_EMPTY, ctv.TXT_FAILED),
