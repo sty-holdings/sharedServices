@@ -211,6 +211,27 @@ func (psqlServicePtr *PSQLService) CommitRollbackTransaction(batchName string, t
 	return
 }
 
+func (psqlServicePtr *PSQLService) ExecuteSelectExist(database string, sqlStatement string) (exists bool, errorInfo errs.ErrorInfo) {
+
+	errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].QueryRow(context.Background(), sqlStatement).Scan(&exists)
+
+	return
+}
+
+func (psqlServicePtr *PSQLService) ExecuteSelectSingleRowInt(database string, sqlStatement string) (result int, errorInfo errs.ErrorInfo) {
+
+	errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].QueryRow(context.Background(), sqlStatement).Scan(&result)
+
+	return
+}
+
+func (psqlServicePtr *PSQLService) ExecuteSelectSingleRowText(database string, sqlStatement string) (result string, errorInfo errs.ErrorInfo) {
+
+	errorInfo.Error = psqlServicePtr.ConnectionPoolPtrs[database].QueryRow(context.Background(), sqlStatement).Scan(&result)
+
+	return
+}
+
 // ExecuteStaticSQL - will execute a static SQL statement in a transaction.
 //
 //	Customer Messages: None
