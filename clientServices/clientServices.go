@@ -107,6 +107,10 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		clientStruct.StripeRefreshToken = value.(string)
 	}
 
+	if value, ok = userInfo[ctv.FN_STRIPE_START_DATE]; ok {
+		clientStruct.StripeStartDate = value.(string)
+	}
+
 	if value, ok = userInfo[ctv.FN_STYH_CLIENT_ID]; ok {
 		clientStruct.STYHClientId = value.(string)
 	}
