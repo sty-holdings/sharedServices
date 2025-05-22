@@ -71,7 +71,7 @@ func NewSendGridServer(configFilename string) (servicePtr *PSQLService, errorInf
 	}
 
 	servicePtr = &PSQLService{
-		DebugOn: tConfig.Debug,
+		debugModeOn: tConfig.Debug,
 	}
 	servicePtr.GORMPoolPtrs = make(map[string]*gorm.DB)
 	servicePtr.ConnectionPoolPtrs = make(map[string]*pgxpool.Pool)

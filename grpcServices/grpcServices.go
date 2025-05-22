@@ -53,7 +53,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	servicePtr = &GRPCService{
-		DebugOn: tConfig.GRPCDebug,
+		debugModeOn: tConfig.GRPCDebug,
 		Secure: SecureSettings{
 			ServerSide: tConfig.GRPCSecure.ServerSide,
 			Mutual:     tConfig.GRPCSecure.Mutual,
@@ -121,7 +121,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	}
 
 	gRPCServicePtr = &GRPCService{
-		DebugOn: tConfig.GRPCDebug,
+		debugModeOn: tConfig.GRPCDebug,
 		Secure: SecureSettings{
 			ServerSide: tConfig.GRPCSecure.ServerSide,
 			Mutual:     tConfig.GRPCSecure.Mutual,

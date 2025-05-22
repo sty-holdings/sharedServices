@@ -41,10 +41,10 @@ type AIResponse struct {
 }
 
 type AIService struct {
-	clientPtr *genai.Client
-	debugOn   bool
-	modelPtrs map[string]*genai.GenerativeModel
-	config    AIConfig
+	clientPtr   *genai.Client
+	debugModeOn bool
+	modelPtrs   map[string]*genai.GenerativeModel
+	config      AIConfig
 }
 
 type AnalyzeQuestions struct {

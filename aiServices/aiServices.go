@@ -49,8 +49,8 @@ func NewAIService(gcpCredentialsFilename string, gcpProjectId string, gcpLocatio
 	}
 
 	aiServicePtr = &AIService{
-		config:  tAIConfig,
-		debugOn: tAIConfig.DebugModeOn,
+		config:      tAIConfig,
+		debugModeOn: tAIConfig.DebugModeOn,
 	}
 
 	if aiServicePtr.clientPtr, errorInfo.Error = genai.NewClient(
@@ -180,7 +180,7 @@ func (aiServicePtr *AIService) GenerateContent(
 	aiResponse.SIKey = systemInstructionKey
 	aiResponse.TokenCount = *tGenerateContentResponsePtr.UsageMetadata
 
-	if aiServicePtr.debugOn {
+	if aiServicePtr.debugModeOn {
 		log.Printf("Pool: %s\n", tPool)
 		log.Printf("SI Key: %s\n", aiResponse.SIKey)
 		log.Printf("Response: %s\n", aiResponse.Response)

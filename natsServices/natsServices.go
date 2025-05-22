@@ -107,17 +107,17 @@ func (natsServicePtr *NATSService) HandleRequestWithHeader(
 func (natsServicePtr *NATSService) MakeRequestReplyWithHeader(
 	dkRequest []byte,
 	keyB64 string,
-	styhClientId string,
+	styhInternalClientID string,
 	subject string,
-	styhUserId string,
+	styhInternalUserID string,
 	timeOutInSec int,
 ) (
 	dkReply DKReply,
 	errorInfo errs.ErrorInfo,
 ) {
 
-	natsServicePtr.userInfo.STYHUserId = styhUserId
-	natsServicePtr.userInfo.STYHClientId = styhClientId
+	natsServicePtr.userInfo.styhInternalUserID = styhInternalUserID
+	natsServicePtr.userInfo.styhInternalClientID = styhInternalClientID
 	natsServicePtr.userInfo.KeyB64 = keyB64
 	dkReply, errorInfo = makeRequestReplyWithHeader(dkRequest, natsServicePtr, subject, timeOutInSec)
 
@@ -440,13 +440,16 @@ func makeRequestReplyNoHeaderInsecure(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+		)
 		return
 	}
 
@@ -495,9 +498,9 @@ func makeRequestReplyWithHeader(
 		Header:  make(nats.Header),
 		Subject: subject,
 	}
-	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.STYHUserId)
-	tRequestMessagePtr.Header.Add(ctv.FN_STYH_CLIENT_ID, natsServicePtr.userInfo.STYHClientId)
-	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.STYHUserId, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
+	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.styhInternalUserID)
+	tRequestMessagePtr.Header.Add(ctv.FN_STYH_INTERNAL_CLIENT_ID, natsServicePtr.userInfo.styhInternalClientID)
+	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.styhInternalUserID, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
 		return
 	}
 
@@ -513,13 +516,16 @@ func makeRequestReplyWithHeader(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, tRequestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+		)
 		return
 	}
 
@@ -580,13 +586,16 @@ func makeRequestReplyWithMessage(
 		)
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), natsServicePtr.instanceName, ctv.TXT_SECURE_CONNECTION_FAILED),
 		)
 		return
 	}
 
 	if errorInfo.Error = json.Unmarshal(tReplyMessagePtr.Data, &dkReply); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED))
+		errorInfo = errs.NewErrorInfo(
+			errorInfo.Error,
+			errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), ctv.LBL_MESSAGE_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+		)
 		return
 	}
 
@@ -644,7 +653,7 @@ func sendReplyWithHeader(
 	if tReplyJSON, errorInfo.Error = json.Marshal(dkReply); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(
 			errorInfo.Error,
-			errs.BuildSystemActionSTYHUserIdLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED),
+			errs.BuildSystemActionstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_DK_REPLY, ctv.TXT_UNMARSHAL_FAILED),
 		)
 		return
 	}
@@ -660,7 +669,7 @@ func sendReplyWithHeader(
 			requestMessagePtr.Subject,
 		)
 		errorInfo = errs.NewErrorInfo(
-			errorInfo.Error, errs.BuildSystemActionSTYHUserIdLabelValue(
+			errorInfo.Error, errs.BuildSystemActionstyhInternalUserIDLabelValue(
 				ctv.LBL_SERVICE_NATS, requestMessagePtr.Header.Get(ctv.FN_UID), requestMessagePtr.Subject, ctv.LBL_SERVICE_NATS,
 				ctv.TXT_FAILED,
 			),

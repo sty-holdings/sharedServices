@@ -53,7 +53,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 	}
 
 	servicePtr = &PSQLService{
-		DebugOn: tConfig.Debug,
+		debugModeOn: tConfig.Debug,
 	}
 	servicePtr.GORMPoolPtrs = make(map[string]*gorm.DB)
 	servicePtr.ConnectionPoolPtrs = make(map[string]*pgxpool.Pool)
@@ -139,7 +139,7 @@ func (psqlServicePtr *PSQLService) BatchInsert(
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_COMMIT, ctv.LBL_PSQL_BATCH, batchName, ctv.TXT_FAILED))
 	}
 
-	if psqlServicePtr.DebugOn {
+	if psqlServicePtr.debugModeOn {
 		fmt.Printf("%s function %s inserted %d records.\r", strings.ToUpper(ctv.VAL_SERVICE_PSQL), tFunctionName, len(values))
 	}
 
@@ -268,7 +268,7 @@ func (psqlServicePtr *PSQLService) ExecuteStaticSQL(database string, sqlStatemen
 		return
 	}
 
-	if psqlServicePtr.DebugOn {
+	if psqlServicePtr.debugModeOn {
 		fmt.Printf("%s function %s %s %d records.\r", strings.ToUpper(ctv.VAL_SERVICE_PSQL), tFunctionName, sqlType, rowsAffected)
 	}
 
@@ -341,7 +341,7 @@ func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string,
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelSubLabelValueMessage(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TRUNCATE, schema, tableName, ctv.TXT_FAILED))
 	}
 
-	if psqlServicePtr.DebugOn {
+	if psqlServicePtr.debugModeOn {
 		fmt.Printf("%s function %s truncated database %s table %s.%s.\r", strings.ToUpper(ctv.VAL_SERVICE_PSQL), tFunctionName, database, schema, tableName)
 	}
 

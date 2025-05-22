@@ -54,8 +54,8 @@ const (
 	EMPTY_STRIPE_PAYMENT_INTENT_ID          = "An empty payment intent id is not allowed. See https://docs.stripe.com/api/payment_intents."
 	EMPTY_STRIPE_PAYMENT_METHOD             = "An empty payment method is not allowed. See https://docs.stripe.com/testing?testing-method=payment-methods#cards."
 	EMPTY_STRIPE_PAYMENT_METHOD_TYPE        = "An empty payment method type is not allowed. See https://docs.stripe.com/api/payment_methods/object#payment_method_object-type."
-	EMPTY_STYH_CLIENT_ID                    = "The STYH Client Id is empty"
-	EMPTY_STYH_USER_ID                      = "The STYH User Id is empty."
+	EMPTY_STYH_INTERNAL_CLIENT_ID           = "The STYH Internal Client Id is empty"
+	EMPTY_STYH_INTERNAL_USER_ID             = "The STYH Internal User Id is empty."
 	EMPTY_STYH_USER_NAME                    = "You must provide a user name."
 	EMPTY_SYSTEM_ACTION                     = "The system action is empty."
 	EMPTY_TLS_CERTIFICATE_FILENAME          = "The TLS certificate filename is empty."
@@ -108,7 +108,7 @@ const (
 	FAILED_SERVICE_SENDGRID                 = "SENDGRID service has failed. Investigate right away!"
 	FAILED_SERVICE_STRIPE                   = "STRIPE service has failed. Investigate right away!"
 	FAILED_SUBJECT_SUBSCRIPTION             = "Unable to subscribe to the subject."
-	FAILED_SYSTEM_ACTION_CONFIGURE_NEW_USER = "The system action 'Configure New STYH User' has failed. Investigate right away!"
+	FAILED_SYSTEM_ACTION_CONFIGURE_NEW_USER = "The system action 'Configure New STYH Internal User' has failed. Investigate right away!"
 	FAILED_SYSTEM_ACTION_GET_MY_ANSWER      = "The service action 'Get My Answer' has failed. Investigate right away!"
 	FAILED_SYSTEM_ACTION_PING               = "The service action 'Ping/Pong' has failed. Investigate right away!"
 	FAILED_SYSTEM_ACTION_TURN_DEBUG_OFF     = "The service action 'Turn Debug Off' has failed. Investigate right away!"
@@ -159,8 +159,8 @@ const (
 	INVALID_REDIRECT_MODE                   = "The redirect mode is invalid."
 	INVALID_CONFIGURATION_SETTINGS          = "The setting in the configuration file are inconsistant."
 	INVALID_STRUCT                          = "Provided object is not a struct."
-	INVALID_STYH_CLIENT_ID                  = "The STYH Client Id is invalid"
-	INVALID_STYH_USER_ID                    = "The STYH User Id is invalid."
+	INVALID_STYH_INTERNAL_CLIENT_ID         = "The STYH Internal Client Id is invalid"
+	INVALID_STYH_INTERNAL_USER_ID           = "The STYH Internal User Id is invalid."
 	INVALID_SUBJECT                         = "At this time, we are not gathering information for this type of question."
 	INVALID_SYSTEM_INSTRUCTION_KEY          = "The system instruction key is invalid."
 	INVALID_SYSTEM_INSTRUCTION_TOPIC        = "The system instruction topic is invalid."
@@ -267,8 +267,8 @@ var (
 	ErrEmptyStripePaymentIntentId         = errors.New(EMPTY_STRIPE_PAYMENT_INTENT_ID)
 	ErrEmptyStripePaymentMethod           = errors.New(EMPTY_STRIPE_PAYMENT_METHOD)
 	ErrEmptyStripePaymentMethodType       = errors.New(EMPTY_STRIPE_PAYMENT_METHOD_TYPE)
-	ErrEmptyStyhClientId                  = errors.New(EMPTY_STYH_CLIENT_ID)
-	ErrEmptyStyhUserId                    = errors.New(EMPTY_STYH_USER_ID)
+	ErrEmptystyhInternalClientID          = errors.New(EMPTY_STYH_INTERNAL_CLIENT_ID)
+	ErrEmptystyhInternalUserID            = errors.New(EMPTY_STYH_INTERNAL_USER_ID)
 	ErrEmptyStyhUserName                  = errors.New(EMPTY_STYH_USER_NAME)
 	ErrEmptySystemAction                  = errors.New(EMPTY_SYSTEM_ACTION)
 	ErrEmptyTlsCertificateFilename        = errors.New(EMPTY_TLS_CERTIFICATE_FILENAME)
@@ -325,7 +325,7 @@ var (
 	ErrFailedSystemActionGetMyAnswer      = errors.New(FAILED_SYSTEM_ACTION_GET_MY_ANSWER)
 	ErrFailedSystemActionPing             = errors.New(FAILED_SYSTEM_ACTION_PING)
 	ErrFailedSystemActionTurnDebugOff     = errors.New(FAILED_SYSTEM_ACTION_TURN_DEBUG_OFF)
-	ErrFailedSystemActionTurnDebugOn      = errors.New(FAILED_SYSTEM_ACTION_TURN_DEBUG_ON)
+	ErrFailedSystemActionTurndebugModeOn  = errors.New(FAILED_SYSTEM_ACTION_TURN_DEBUG_ON)
 	ErrFailedTlsCertPrivateKeyLoading     = errors.New(FAILED_TLS_CERT_PRIVATE_KEY_LOADING)
 	ErrFailedTlsRootCaLoading             = errors.New(FAILED_TLS_ROOT_CA_LOADING)
 	ErrFailedUnmarshal                    = errors.New(FAILED_UNMARSHAL)
@@ -372,8 +372,8 @@ var (
 	ErrInvalidRecipienttype               = errors.New(INVALID_RECIPIENTTYPE)
 	ErrInvalidRedirectMode                = errors.New(INVALID_REDIRECT_MODE)
 	ErrInvalidStruct                      = errors.New(INVALID_STRUCT)
-	ErrInvalidStyhClientID                = errors.New(INVALID_STYH_CLIENT_ID)
-	ErrInvalidStyhUserID                  = errors.New(INVALID_STYH_USER_ID)
+	ErrInvalidstyhInternalClientID        = errors.New(INVALID_STYH_INTERNAL_CLIENT_ID)
+	ErrInvalidstyhInternalUserID          = errors.New(INVALID_STYH_INTERNAL_USER_ID)
 	ErrInvalidSubject                     = errors.New(INVALID_SUBJECT)
 	ErrInvalidSystemInstructionKey        = errors.New(INVALID_SYSTEM_INSTRUCTION_KEY)
 	ErrInvalidSystemInstructionTopic      = errors.New(INVALID_SYSTEM_INSTRUCTION_TOPIC)

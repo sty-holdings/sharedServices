@@ -32,7 +32,7 @@ import (
 // - ErrDecryption: If the ciphertext could not be decrypted.
 // Verifications: None
 func Decrypt(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	valueB64 string,
 ) (
@@ -50,7 +50,7 @@ func Decrypt(
 		tPlaintext  []byte
 	)
 
-	if errorInfo = checkEncryptDecryptParameters(styhUserId, keyB64, valueB64); errorInfo.Error != nil {
+	if errorInfo = checkEncryptDecryptParameters(styhInternalUserID, keyB64, valueB64); errorInfo.Error != nil {
 		return
 	}
 
@@ -63,12 +63,12 @@ func Decrypt(
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhInternalUserID))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, styhInternalUserID))
 		return
 	}
 
@@ -76,7 +76,7 @@ func Decrypt(
 	tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
 
 	if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_STYH_USER_ID, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_STYH_INTERNAL_USER_ID, styhInternalUserID))
 		return
 	}
 
@@ -91,7 +91,7 @@ func Decrypt(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptToByte(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	valueB64 string,
 ) (
@@ -103,7 +103,7 @@ func DecryptToByte(
 		tDecryptedValue string
 	)
 
-	if tDecryptedValue, errorInfo = Decrypt(styhUserId, keyB64, valueB64); errorInfo.Error == nil {
+	if tDecryptedValue, errorInfo = Decrypt(styhInternalUserID, keyB64, valueB64); errorInfo.Error == nil {
 		decryptedValue = []byte(tDecryptedValue)
 	}
 
@@ -116,7 +116,7 @@ func DecryptToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptByteToByte(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	valueB64 []byte,
 ) (
@@ -124,7 +124,7 @@ func DecryptByteToByte(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedValue, errorInfo = DecryptToByte(styhUserId, keyB64, string(valueB64))
+	decryptedValue, errorInfo = DecryptToByte(styhInternalUserID, keyB64, string(valueB64))
 
 	return
 }
@@ -135,7 +135,7 @@ func DecryptByteToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func DecryptByteToString(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	valueB64 []byte,
 ) (
@@ -143,7 +143,7 @@ func DecryptByteToString(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Decrypt(styhUserId, keyB64, string(valueB64))
+	decryptedMessage, errorInfo = Decrypt(styhInternalUserID, keyB64, string(valueB64))
 
 	return
 }
@@ -163,7 +163,7 @@ func DecryptByteToString(
 // - ErrDecryption: If the ciphertext could not be decrypted.
 // Verifications: None
 func Encrypt(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	value string,
 ) (
@@ -179,22 +179,22 @@ func Encrypt(
 		tNonce      []byte
 	)
 
-	if errorInfo = checkEncryptDecryptParameters(styhUserId, keyB64, value); errorInfo.Error != nil {
+	if errorInfo = checkEncryptDecryptParameters(styhInternalUserID, keyB64, value); errorInfo.Error != nil {
 		return
 	}
 
 	if tDecodedKey, errorInfo.Error = base64.StdEncoding.DecodeString(keyB64); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_B64, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_B64, styhInternalUserID))
 		return
 	}
 
 	if tBlock, errorInfo.Error = aes.NewCipher(tDecodedKey); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_KEY_DECODED, styhInternalUserID))
 		return
 	}
 
 	if tAESGCM, errorInfo.Error = cipher.NewGCM(tBlock); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, styhUserId))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.LBL_DECIPHER_BLOCK, styhInternalUserID))
 		return
 	}
 
@@ -214,7 +214,7 @@ func Encrypt(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptToByte(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	value string,
 ) (
@@ -226,7 +226,7 @@ func EncryptToByte(
 		tEncryptedMessageB64 string
 	)
 
-	if tEncryptedMessageB64, errorInfo = Encrypt(styhUserId, keyB64, value); errorInfo.Error == nil {
+	if tEncryptedMessageB64, errorInfo = Encrypt(styhInternalUserID, keyB64, value); errorInfo.Error == nil {
 		encryptedValueB64 = []byte(tEncryptedMessageB64)
 	}
 
@@ -239,7 +239,7 @@ func EncryptToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptByteToByte(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	value []byte,
 ) (
@@ -247,7 +247,7 @@ func EncryptByteToByte(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	encryptedValueB64, errorInfo = EncryptToByte(styhUserId, keyB64, string(value))
+	encryptedValueB64, errorInfo = EncryptToByte(styhInternalUserID, keyB64, string(value))
 
 	return
 }
@@ -258,7 +258,7 @@ func EncryptByteToByte(
 //	Errors: returned by Decrypt
 //	Verifications: None
 func EncryptByteToString(
-	styhUserId string,
+	styhInternalUserID string,
 	keyB64 string,
 	encryptedValueB64 []byte,
 ) (
@@ -266,7 +266,7 @@ func EncryptByteToString(
 	errorInfo errs.ErrorInfo,
 ) {
 
-	decryptedMessage, errorInfo = Encrypt(styhUserId, keyB64, string(encryptedValueB64))
+	decryptedMessage, errorInfo = Encrypt(styhInternalUserID, keyB64, string(encryptedValueB64))
 
 	return
 }
@@ -434,9 +434,9 @@ func RemoveTLSTemporaryFiles(
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func checkEncryptDecryptParameters(styhUserId string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
+func checkEncryptDecryptParameters(styhInternalUserID string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, styhUserId, ctv.FN_STYH_USER_ID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, styhInternalUserID, ctv.FN_STYH_INTERNAL_USER_ID); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, ctv.FN_KEY_B64); errorInfo.Error != nil {

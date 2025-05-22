@@ -19,7 +19,7 @@ type GRPCConfig struct {
 }
 
 type GRPCService struct {
-	DebugOn         bool
+	debugModeOn     bool
 	GRPCListenerPtr *net.Listener
 	GRPCServerPtr   *grpc.Server
 	GRPCClientPtr   *grpc.ClientConn
