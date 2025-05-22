@@ -290,6 +290,8 @@ const (
 	LBL_TASK_BATCH_SIZE                 = "TASK BATCH SIZE:"
 	LBL_TEMPLATE_DIRECTORY              = "TEMPLATE DIRECTORY:"
 	LBL_TIMEZONE                        = "TIMEZONE:"
+	LBL_TIMEZONE_HQ                     = "TIMEZONE HQ:"
+	LBL_TIMEZONE_USER                   = "TIMEZONE USER:"
 	LBL_TIMEZONE_LOCATION               = "TIMEZONE LOCATION:"
 	LBL_TIME_PERIOD                     = "TIME PERIOD:"
 	LBL_TLS_CA_BUNDLE_FILENAME          = "TLS CA BUNDLE FILENAME:"

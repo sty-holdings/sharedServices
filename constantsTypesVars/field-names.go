@@ -283,6 +283,8 @@ const (
 	FN_TIME_PERIOD_VALUES_PROMPT_TOKEN_COUNT    = "time_period_values_prompt_token_count"
 	FN_TIME_PERIOD_VALUES_CANDIDATE_TOKEN_COUNT = "time_period_values_candidate_token_count"
 	FN_TIMEZONE                                 = "timezone"
+	FN_TIMEZONE_HQ                              = "timezone_hq"
+	FN_TIMEZONE_USER                            = "timezone_user"
 	FN_TLS_CA_BUNDLE                            = "tls_ca_bundle"
 	FN_TLS_CA_BUNDLE_FILENAME                   = "tls_ca_bundle_filename"
 	FN_TLS_CERTIFICATE                          = "tls_certificate"
