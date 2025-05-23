@@ -10,15 +10,31 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	fbs "github.com/sty-holdings/sharedServices/v2025/firebaseServices"
-	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-// GetClientStruct - constructs an STYHClient instance from the provided map.
+// GetClientUserStruct - retrieves and constructs both client and user structures from the provided user information.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientUserStruct(userInfo map[string]interface{}) (clientStruct STYHClient, userStruct STYHUser, errorInfo errs.ErrorInfo) {
+
+	if clientStruct, errorInfo = GetClientStruct(userInfo); errorInfo.Error != nil {
+		return
+	}
+	userStruct, errorInfo = GetUserStruct(userInfo)
+
+	return
+}
+
+// GetClientStruct - constructs and returns a populated STYHClient struct using data from the provided clientInfo map.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrorInfo for JSON marshal/unmarshal, time location loading, and other data-processing issues.
+//	Verifications: None
+func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData []byte
@@ -26,20 +42,15 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		value    interface{}
 	)
 
-	if value, ok = userInfo[ctv.FN_COMPANY_NAME]; ok {
+	if value, ok = clientInfo[ctv.FN_COMPANY_NAME]; ok {
 		clientStruct.CompanyName = value.(string)
-		clientStruct.AccountType = ctv.VAL_BUSINESS
 	}
 
-	if value, ok = userInfo[ctv.FN_EMAIL]; ok {
-		clientStruct.Email = value.(string)
+	if value, ok = clientInfo[ctv.FN_FORMATION_TYPE]; ok {
+		clientStruct.FormationType = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_FIRST_NAME]; ok {
-		clientStruct.FirstName = value.(string)
-	}
-
-	if value, ok = userInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS]; ok {
+	if value, ok = clientInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
 			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_MARSHAL_FAILED))
 			return
@@ -50,92 +61,192 @@ func GetClientStruct(userInfo map[string]interface{}) (clientStruct STYHClient, 
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_LAST_NAME]; ok {
-		clientStruct.LastName = value.(string)
-	}
-
-	clientStruct.OnBoarded = false // Default unless reset by the userInfo[ctv.FN_SAAS_PROVIDERS] code below. DO NOT REMOVE
-	if value, ok = userInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
+	if value, ok = clientInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.FN_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
 			return
 		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.LinkedinPageIdList); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.FN_LINKEDIN_PAGE_IDS, ctv.TXT_UNMARSHAL_FAILED))
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.LinkedinPageIds); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_UNMARSHAL_FAILED))
 			return
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
+	clientStruct.OnBoarded = false // Default unless reset by the clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] code below. DO NOT REMOVE
+
+	if value, ok = clientInfo[ctv.FN_OWNERS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.Owners); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
 		clientStruct.PayPalClientId = value.(string)
 	}
-	if value, ok = userInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
+
+	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
 		clientStruct.PayPalClientSecret = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_SAAS_PROVIDERS]; ok {
+	if value, ok = clientInfo[ctv.FN_PHONE_COUNTRY_CODE]; ok {
+		clientStruct.PhoneCountryCode = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PHONE_AREA_CODE]; ok {
+		clientStruct.PhoneAreaCode = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PHONE_NUMBER]; ok {
+		clientStruct.PhoneNumber = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_MARSHAL_FAILED))
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_MARSHAL_FAILED))
 			return
 		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaasProviders); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaaSClientProviders); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
 			return
 		}
-		if len(clientStruct.SaasProviders) > ctv.VAL_ZERO {
+		if len(clientStruct.SaaSClientProviders) > ctv.VAL_ZERO {
 			clientStruct.OnBoarded = true
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_STRIPE_ACCESS_TOKEN]; ok {
-		clientStruct.StripeAccessToken = value.(string)
+	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_CONNECT_ACCOUNT_ID]; ok {
+		clientStruct.StripeClientConnectAccountId = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STRIPE_CONNECT_ACCOUNT_ID]; ok {
-		clientStruct.StripeConnectAccountId = value.(string)
+	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_REFRESH_TOKEN]; ok {
+		clientStruct.StripeClientRefreshToken = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STRIPE_INITIAL_PULL_DATA_STATUS]; ok {
+	if value, ok = clientInfo[ctv.FN_STRIPE_INITIAL_PULL_DATA_STATUS]; ok {
 		clientStruct.StripeInitialPullDataStatus = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STRIPE_PULL_FREQUENCY]; ok {
+	if value, ok = clientInfo[ctv.FN_STRIPE_PULL_FREQUENCY]; ok {
 		clientStruct.StripePullFrequency = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STRIPE_REFRESH_TOKEN]; ok {
-		clientStruct.StripeRefreshToken = value.(string)
-	}
-
-	if value, ok = userInfo[ctv.FN_STRIPE_START_DATE]; ok {
+	if value, ok = clientInfo[ctv.FN_STRIPE_START_DATE]; ok {
 		clientStruct.StripeStartDate = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
-		clientStruct.StyhInternalClientID = value.(string)
+	if value, ok = clientInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
+		clientStruct.STYHInternalClientID = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_TIMEZONE]; ok {
-		clientStruct.Timezone = value.(string)
-		if clientStruct.LocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.Timezone); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.Timezone))
+	if value, ok = clientInfo[ctv.FN_TIMEZONE_HQ]; ok {
+		clientStruct.TimezoneHQ = value.(string)
+		if clientStruct.TimezoneHQLocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.TimezoneHQ); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.TimezoneHQ))
 			return
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_USER_ID]; ok {
-		clientStruct.StyhInternalUserID = value.(string)
+	if value, ok = clientInfo[ctv.FN_WEBSITE_URL]; ok {
+		clientStruct.WebsiteURL = value.(string)
 	}
 
 	return
 }
 
-// GetClientStructUsingFirebase - retrieves user's client details from Firebase Auth and Firestore by styhInternalUserID, populating an STYHClient struct or returning an error if any issues occur.
+// GetUserStruct - constructs and returns a populated STYHUser struct using data from the provided userInfo map.
+//
+//	Customer Messages: None
+//	Errors: errs.NewErrorInfo
+//	Verifications: None
+func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorInfo errs.ErrorInfo) {
+
+	var (
+		jsonData []byte
+		ok       bool
+		value    interface{}
+	)
+
+	if value, ok = userInfo[ctv.FN_APPROVED_BY]; ok {
+		userStruct.ApprovedBy = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_APPROVED_BY_DATE]; ok {
+		userStruct.ApprovedByDate = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_EMAIL]; ok {
+		userStruct.ApprovedByDate = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_FIRST_NAME]; ok {
+		userStruct.FirstName = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_LAST_NAME]; ok {
+		userStruct.LastName = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_PERMISSIONS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &userStruct.Permissions); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
+		userStruct.STYHInternalClientID = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_USER_ID]; ok {
+		userStruct.STYHInternalUserID = value.(string)
+	}
+
+	if value, ok = userInfo[ctv.FN_TIMEZONE_USER]; ok {
+		userStruct.TimezoneUser = value.(string)
+		if userStruct.TimezoneUserLocationPtr, errorInfo.Error = time.LoadLocation(userStruct.TimezoneUser); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE_USER, userStruct.TimezoneUser))
+			return
+		}
+	}
+
+	return
+}
+
+// GetClientInfo - retrieves client details from Clients datastore, populating an STYHClient struct or returning an error if any issues occur.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientUsingFirebase(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhInternalUserID string) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientInfo(firestoreClientPtr *firestore.Client, styhInternalClientID string) (clientInfo STYHClient, errorInfo errs.ErrorInfo) {
+
+	var (
+		tDocumentSnapshotPtr *firestore.DocumentSnapshot
+	)
+
+	if tDocumentSnapshotPtr, errorInfo = fbs.GetDocumentById(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientID); errorInfo.Error != nil {
+		return
+	}
+
+	clientInfo, errorInfo = GetClientStruct(tDocumentSnapshotPtr.Data())
+
+	return
+}
+
+// GetUserInfo - retrieves user information from Firebase and Firestore and constructs a STYHUser object.
+//
+//	Customer Messages: None
+//	Errors: errs.NewErrorInfo
+//	Verifications: None
+func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhInternalUserID string) (userInfo STYHUser, errorInfo errs.ErrorInfo) {
 
 	var (
 		tUserInfo map[string]interface{}
@@ -150,65 +261,158 @@ func GetClientUsingFirebase(firebaseAuthPtr *auth.Client, firestoreClientPtr *fi
 		return
 	}
 
-	clientStruct, errorInfo = GetClientStruct(tUserInfo)
+	userInfo, errorInfo = GetUserStruct(tUserInfo)
 
 	return
 }
 
-// ProcessConfigureNewUser - configures and saves a new user record in Firestore.
+// CheckClientExists - verifies if a client already exists in the datastore based on provided parameters. if so, returns the STYHInternalClientID populated.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument, errs.ErrFailedServiceFirestore
+//	Verifications: None
+func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string, phoneAreaCode string, phoneNumber string, userEmail string, websiteURL string) (styhInternalClientID string) {
+
+	var (
+		errorInfo            errs.ErrorInfo
+		found                bool
+		tConfirmedCount      uint
+		tDocumentSnapshotPtr *firestore.DocumentSnapshot
+	)
+
+	if vals.DoesWebsiteEmailMatch(userEmail, websiteURL) {
+		if found, tDocumentSnapshotPtr, errorInfo = fbs.FindDocument(
+			firestoreClientPtr, fbs.DATASTORE_CLIENTS, fbs.NameValueQuery{
+				FieldName:  ctv.FN_WEBSITE_URL,
+				FieldValue: websiteURL,
+			},
+		); errorInfo.Error != nil {
+			return
+		}
+		styhInternalClientID = tDocumentSnapshotPtr.Ref.ID
+		return
+	}
+
+	// Company Name Match
+	if found, tDocumentSnapshotPtr, errorInfo = fbs.FindDocument(
+		firestoreClientPtr, fbs.DATASTORE_CLIENTS, fbs.NameValueQuery{
+			FieldName:  ctv.FN_COMPANY_NAME,
+			FieldValue: companyName,
+		},
+	); errorInfo.Error != nil {
+		return
+	}
+	if found {
+		tConfirmedCount++
+	}
+
+	// Company Phone Match
+	if found, tDocumentSnapshotPtr, errorInfo = fbs.FindDocument(
+		firestoreClientPtr, fbs.DATASTORE_CLIENTS, fbs.NameValueQuery{
+			FieldName:  ctv.FN_PHONE_AREA_CODE,
+			FieldValue: phoneAreaCode,
+		},
+		fbs.NameValueQuery{
+			FieldName:  ctv.FN_PHONE_NUMBER,
+			FieldValue: phoneNumber,
+		},
+	); errorInfo.Error != nil {
+		return
+	}
+	if found {
+		tConfirmedCount++
+	}
+
+	if tConfirmedCount > ctv.VAL_ZERO {
+		styhInternalClientID = tDocumentSnapshotPtr.Ref.ID
+	}
+
+	return
+}
+
+// ProcessNewClient - processes the creation of a new client in the datastore.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument, errs.ErrFailedServiceFirestore
+//	Verifications: vals.
+func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient, userEmail string) (styhInternalClientId string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tClientInfo = make(map[any]interface{})
+	)
+
+	if styhInternalClientId = CheckClientExists(
+		firestoreClientPtr,
+		newClient.CompanyName,
+		newClient.PhoneAreaCode,
+		newClient.PhoneNumber,
+		newClient.WebSiteURL,
+		userEmail,
+	); styhInternalClientId == ctv.VAL_EMPTY {
+		styhInternalClientId = hlps.GenerateUUIDType1(true)
+		//
+		tClientInfo[ctv.FN_COMPANY_NAME] = newClient.CompanyName
+		tClientInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+		tClientInfo[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCodee
+		tClientInfo[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
+		tClientInfo[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
+		tClientInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId
+		tClientInfo[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
+		tClientInfo[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
+		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientId, tClientInfo)
+	}
+
+	return
+}
+
+// ProcessNewUser - configures and saves a new user record in the Users datastore.
 //
 //	Customer Messages: None
 //	Errors: errs.Err if Firestore document creation fails.
 //	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
-func ProcessConfigureNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
+func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser, styhInternalClientId string) {
 
 	var (
 		errorInfo errs.ErrorInfo
 		tUserInfo = make(map[any]interface{})
 	)
 
-	if newUser.CompanyName == ctv.VAL_EMPTY {
-		tUserInfo[ctv.FN_ACCOUNT_TYPE] = ctv.VAL_INDIVIDUAL
-	} else {
-		tUserInfo[ctv.FN_ACCOUNT_TYPE] = ctv.VAL_BUSINESS
-		tUserInfo[ctv.FN_COMPANY_NAME] = newUser.CompanyName
-	}
 	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
 	tUserInfo[ctv.FN_EMAIL] = newUser.Email
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
-	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = hlp.GenerateUUIDType1(false)
-	tUserInfo[ctv.FN_TIMEZONE] = newUser.Timezone
-	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.styhInternalUserID
+	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
+	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.STYHInternalUserID // This is provided by the frontend application.
+	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId     // This is provided by ProcessNewClient.
 
-	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.styhInternalUserID, tUserInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.STYHInternalUserID, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 
 	return
 }
 
-// ProcessSaaSProviderList - builds saas_provers list for users record in Firestore.
+// ProcessSaaSProviderList - builds saas_client_providers list for clients record in Firestore.
 //
 //	Customer Messages: None
 //	Errors: errs.Err if Firestore document creation fails.
 //	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
-func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhInternalClientID string, styhInternalUserID string, saasProviders map[string]bool) {
+func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhInternalClientID string, saasClientProviders map[string]bool) {
 
 	var (
-		errorInfo      errs.ErrorInfo
-		tUserInfo      = make(map[any]interface{})
-		tSaasProviders []string
+		errorInfo            errs.ErrorInfo
+		tClientInfo          = make(map[any]interface{})
+		tSaasClientProviders []string
 	)
 
-	for provider, checked := range saasProviders {
+	for provider, checked := range saasClientProviders {
 		if checked {
-			tSaasProviders = append(tSaasProviders, provider)
+			tSaasClientProviders = append(tSaasClientProviders, provider)
 		}
 	}
-	tUserInfo[ctv.FN_SAAS_PROVIDERS] = tSaasProviders
+	tClientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] = tSaasClientProviders
 
-	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_USERS, styhInternalUserID, tUserInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_USERS, styhInternalClientID, tClientInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 

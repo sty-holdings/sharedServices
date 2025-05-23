@@ -121,6 +121,32 @@ func GetFirebaseIdTokenPayload(
 	return
 }
 
+// GetFirebaseClientInfo - retrieves client information from the Firestore database using the client ID.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrNoFoundDocument, errs.ErrorInfo
+//	Verifications: None
+func GetFirebaseClientInfo(
+	firestoreClientPtr *firestore.Client,
+	styhClientID string,
+) (
+	clientInfo map[string]interface{},
+	errorInfo errs.ErrorInfo,
+) {
+
+	var (
+		tUserDocumentSnapshotPtr *firestore.DocumentSnapshot
+	)
+
+	if tUserDocumentSnapshotPtr, errorInfo = GetDocumentById(firestoreClientPtr, DATASTORE_CLIENTS, styhClientID); errorInfo.Error != nil {
+		return
+	}
+
+	clientInfo = tUserDocumentSnapshotPtr.Data()
+
+	return
+}
+
 // GetFirebaseUserInfo - checks if the use exists and returns the user database record when found.
 //
 //	Customer Messages: None
@@ -149,15 +175,6 @@ func GetFirebaseUserInfo(
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
-
-	// Todo Added insert into data collection table
-	// This can not use the Timing service.
-	// go func(startTime time.Time, functionName string, firestoreClientPtr *firestore.Client) {
-	//
-	//	var (
-	//		tFields = make(map[any]interface{})
-	//	)
-	// }(xStartTime, tFunctionName, firestoreClientPtr)
 
 	return
 }

@@ -164,6 +164,31 @@ func DoesFileExist(fileName string) bool {
 	return false
 }
 
+// DoesWebsiteEmailMatch - checks if the email domain matches the website URL.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: ctv.VAL_EMPTY
+func DoesWebsiteEmailMatch(email string, websiteURL string) bool {
+
+	var (
+		emailParts = strings.Split(email, "@")
+	)
+
+	if websiteURL == ctv.VAL_EMPTY || email == ctv.VAL_EMPTY {
+		return false
+	}
+
+	if len(emailParts) == 2 {
+		emailDomain := emailParts[1]
+		if strings.Contains(websiteURL, emailDomain) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // IsBase64Encode - will check if string is a valid base64 string.
 //
 //	Customer Messages: None
