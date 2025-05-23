@@ -241,6 +241,22 @@ func GetClientInfo(firestoreClientPtr *firestore.Client, styhInternalClientID st
 	return
 }
 
+// GetClientUserInfo - retrieves combined client and user details based on the provided STYHInternalUserID, using Firebase and Firestore services.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrorInfo
+//	Verifications: None
+func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhInternalUserID string) (clientUserInfo STYHClientUser, errorInfo errs.ErrorInfo) {
+
+	if clientUserInfo.MySTYHUser, errorInfo = GetUserInfo(firebaseAuthPtr, firestoreClientPtr, styhInternalUserID); errorInfo.Error != nil {
+		return
+	}
+
+	clientUserInfo.MySTYHClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MySTYHUser.STYHInternalClientID)
+
+	return
+}
+
 // GetUserInfo - retrieves user information from Firebase and Firestore and constructs a STYHUser object.
 //
 //	Customer Messages: None
