@@ -338,7 +338,7 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient, userEmail string) (styhInternalClientId string, errorInfo errs.ErrorInfo) {
 
 	var (
-		tClientInfo = make(map[any]interface{})
+		tClientStruct = make(map[any]interface{})
 	)
 
 	if styhInternalClientId = CheckClientExists(
@@ -351,15 +351,16 @@ func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient,
 	); styhInternalClientId == ctv.VAL_EMPTY {
 		styhInternalClientId = hlps.GenerateUUIDType1(true)
 		//
-		tClientInfo[ctv.FN_COMPANY_NAME] = newClient.CompanyName
-		tClientInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-		tClientInfo[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCodee
-		tClientInfo[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
-		tClientInfo[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-		tClientInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId
-		tClientInfo[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
-		tClientInfo[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
-		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientId, tClientInfo)
+		tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
+		tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+		tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
+		tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
+		tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
+		tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
+		tClientStruct[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId
+		tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
+		tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
+		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientId, tClientStruct)
 	}
 
 	return
@@ -370,7 +371,7 @@ func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient,
 //	Customer Messages: None
 //	Errors: errs.Err if Firestore document creation fails.
 //	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
-func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser, styhInternalClientId string) {
+func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 
 	var (
 		errorInfo errs.ErrorInfo
@@ -382,8 +383,8 @@ func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser, styhI
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
 	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
-	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.STYHInternalUserID // This is provided by the frontend application.
-	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId     // This is provided by ProcessNewClient.
+	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.STYHInternalUserID
+	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = newUser.STYHInternalClientID
 
 	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.STYHInternalUserID, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
