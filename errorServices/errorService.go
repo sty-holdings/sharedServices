@@ -109,22 +109,22 @@ func BuildLabelSubLabelValueMessage(extensionName string, label string, subLabel
 	return fmt.Sprintf("%s %s %s %s %s.", extensionName, label, subLabel, value, message)
 }
 
-// BuildstyhInternalUserIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildSTYHInternalUserIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildstyhInternalUserIDLabelValue(extensionName string, styhInternalUserID string, label string, value string) (additionalInfo string) {
+func BuildSTYHInternalUserIDLabelValue(extensionName string, styhInternalUserID string, label string, value string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s.", extensionName, styhInternalUserID, label, value)
 }
 
-// BuildstyhInternalUserIDLabelValueMessage - builds a string using the UID, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildSTYHInternalUserIDLabelValueMessage - builds a string using the UID, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildstyhInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, label string, value string, message string) (additionalInfo string) {
+func BuildSTYHInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, label string, value string, message string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s %s.", extensionName, styhInternalUserID, label, value, message)
 }
@@ -149,30 +149,30 @@ func BuildSystemActionLabelValueMessage(extensionName string, systemAction strin
 	return fmt.Sprintf("%s System Action: %s %s %s %s.", extensionName, systemAction, label, value, message)
 }
 
-// BuildSystemActionstyhInternalUserIDLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildSystemActionSTYHInternalUserIDLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSystemActionstyhInternalUserIDLabelValue(extensionName string, styhInternalUserID string, systemAction string, label string, value string) (additionalInfo string) {
+func BuildSystemActionSTYHInternalUserIDLabelValue(extensionName string, styhInternalUserID string, systemAction string, label string, value string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s.", extensionName, styhInternalUserID, systemAction, label, value)
 }
 
-// BuildSystemActionstyhInternalUserIDLabelValueMessage - builds a string using the UID, system action, label, value, and message.
+// BuildSystemActionSTYHInternalUserIDLabelValueMessage - builds a string using the UID, system action, label, value, and message.
 // This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s", ...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSystemActionstyhInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, systemAction string, label string, value string, message string) (additionalInfo string) {
+func BuildSystemActionSTYHInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, systemAction string, label string, value string, message string) (additionalInfo string) {
 
 	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s %s.", extensionName, systemAction, styhInternalUserID, label, value, message)
 }
 
 // PrintError - will output error information using this format:
 // "[ERROR] {Error Message} Additional Info: '{Additional Info}' File: {Filename} Near Line Number: {Line Number}\n"
-// If the outputMode is display, the color will be red. The default is to output to the log.
+// If the outputMode is displayed, the color will be red. The default is to output to the log.
 //
 //	Customer Messages: None
 //	Errors: Missing values will be filled with 'MISSING'.

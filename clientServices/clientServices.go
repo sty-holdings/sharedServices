@@ -257,7 +257,7 @@ func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Cli
 		firestoreClientPtr,
 		styhInternalUserID,
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildstyhInternalUserIDLabelValue(ctv.LBL_SERVICE_CLIENT, styhInternalUserID, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHInternalUserIDLabelValue(ctv.LBL_SERVICE_CLIENT, styhInternalUserID, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
 		return
 	}
 
