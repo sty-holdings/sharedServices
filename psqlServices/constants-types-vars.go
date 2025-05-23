@@ -53,7 +53,7 @@ type PSQLConfig struct {
 }
 
 type PSQLService struct {
-	DebugModeOn        bool
+	debugModeOn        bool
 	ConnectionPoolPtrs map[string]*pgxpool.Pool
 	GORMPoolPtrs       map[string]*gorm.DB
 }
