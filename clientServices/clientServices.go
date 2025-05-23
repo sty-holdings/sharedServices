@@ -14,14 +14,14 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-// GetClientUserStruct - retrieves and constructs both client and user structures from the provided user information.
+// GetClientUserStruct - retrieves and constructs both client/user structures from the provided client/user information.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientUserStruct(userInfo map[string]interface{}) (clientUserStruct STYHClientUser, errorInfo errs.ErrorInfo) {
+func GetClientUserStruct(clientInfo map[string]interface{}, userInfo map[string]interface{}) (clientUserStruct STYHClientUser, errorInfo errs.ErrorInfo) {
 
-	if clientUserStruct.MySTYHClient, errorInfo = GetClientStruct(userInfo); errorInfo.Error != nil {
+	if clientUserStruct.MySTYHClient, errorInfo = GetClientStruct(clientInfo); errorInfo.Error != nil {
 		return
 	}
 	clientUserStruct.MySTYHUser, errorInfo = GetUserStruct(userInfo)
