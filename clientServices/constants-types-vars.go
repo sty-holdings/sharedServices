@@ -68,5 +68,6 @@ type NewUser struct {
 	LastName                string `firebase:"lastName" json:"lastName,omitempty" yaml:"lastName,omitempty"`
 	TimezoneUser            string `firebase:"timezone_user" json:"timezone_user,omitempty" yaml:"timezone_user,omitempty"`
 	TimezoneUserLocationPtr *time.Location
+	STYHInternalClientID    string `firebase:"styh_internal_client_id" json:"styh_internal_client_id,omitempty" yaml:"styh_internal_client_id,omitempty"`
 	STYHInternalUserID      string `firebase:"styh_internal_user_id" json:"styh_internal_user_id,omitempty" yaml:"styh_internal_user_id,omitempty"`
 }
