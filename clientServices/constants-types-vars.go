@@ -54,7 +54,8 @@ type STYHUser struct {
 
 type NewClient struct {
 	CompanyName           string `firebase:"company_name" json:"company_name,omitempty" yaml:"company_name,omitempty"`
-	PhoneCountryCodee     string `firebase:"phone_country_code" json:"phone_country_code,omitempty" yaml:"phone_country_code,omitempty"`
+	FormationType         string `firebase:"formation_type" json:"formation_type,omitempty" yaml:"formation_type,omitempty"`
+	PhoneCountryCode      string `firebase:"phone_country_code" json:"phone_country_code,omitempty" yaml:"phone_country_code,omitempty"`
 	PhoneAreaCode         string `firebase:"phone_area_code" json:"phone_area_code,omitempty" yaml:"phone_area_code,omitempty"`
 	PhoneNumber           string `firebase:"phone_number" json:"phone_number,omitempty" yaml:"phone_number,omitempty"`
 	TimezoneHQ            string `firebase:"timezone_hq" json:"timezone_hq,omitempty" yaml:"timezone_hq,omitempty"`
