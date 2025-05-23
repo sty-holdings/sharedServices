@@ -19,12 +19,12 @@ import (
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientUserStruct(userInfo map[string]interface{}) (clientStruct STYHClient, userStruct STYHUser, errorInfo errs.ErrorInfo) {
+func GetClientUserStruct(userInfo map[string]interface{}) (clientUserStruct STYHClientUser, errorInfo errs.ErrorInfo) {
 
-	if clientStruct, errorInfo = GetClientStruct(userInfo); errorInfo.Error != nil {
+	if clientUserStruct.MySTYHClient, errorInfo = GetClientStruct(userInfo); errorInfo.Error != nil {
 		return
 	}
-	userStruct, errorInfo = GetUserStruct(userInfo)
+	clientUserStruct.MySTYHUser, errorInfo = GetUserStruct(userInfo)
 
 	return
 }

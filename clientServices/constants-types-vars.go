@@ -4,6 +4,11 @@ import (
 	"time"
 )
 
+type STYHClientUser struct {
+	MySTYHClient STYHClient
+	MySTYHUser   STYHUser
+}
+
 type STYHClient struct {
 	CompanyName     string `firebase:"company_name" json:"company_name" yaml:"company_name"`
 	CreateTimestamp struct {
