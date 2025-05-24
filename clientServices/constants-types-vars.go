@@ -19,8 +19,9 @@ type STYHClient struct {
 	LinkedinPageIds              []int64  `firebase:"linkedin_page_ids" json:"linkedin_page_ids" yaml:"linkedin_page_ids"`
 	OnBoarded                    bool     `firebase:"onboarded" json:"onboarded" yaml:"onboarded"`
 	Owners                       []string `firebase:"owners" json:"owners" yaml:"owners"`
-	PayPalClientId               string   `firebase:"paypal_client_id" json:"paypal_client_id" yaml:"paypal_client_id"`
+	PayPalClientID               string   `firebase:"paypal_client_id" json:"paypal_client_id" yaml:"paypal_client_id"`
 	PayPalClientSecret           string   `firebase:"paypal_client_secret" json:"paypal_client_secret" yaml:"paypal_client_secret"`
+	PayPalClientRefreshToken     string   `firebase:"paypal_client_refresh_token" json:"paypal_client_refresh_token" yaml:"paypal_client_refresh_token"`
 	PhoneCountryCode             string   `firebase:"phone_country_code" json:"phone_country_code" yaml:"phone_country_code"`
 	PhoneAreaCode                string   `firebase:"phone_area_code" json:"phone_area_code" yaml:"phone_area_code"`
 	PhoneNumber                  string   `firebase:"phone_number" json:"phone_number" yaml:"phone_number"`
