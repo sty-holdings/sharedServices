@@ -362,8 +362,8 @@ func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient,
 		newClient.CompanyName,
 		newClient.PhoneAreaCode,
 		newClient.PhoneNumber,
-		newClient.WebSiteURL,
 		userEmail,
+		newClient.WebSiteURL,
 	); styhInternalClientId == ctv.VAL_EMPTY {
 		styhInternalClientId = hlps.GenerateUUIDType1(true)
 		//
