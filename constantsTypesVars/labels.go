@@ -238,6 +238,8 @@ const (
 	LBL_RECIPIENT_NAME                  = "RECIPIENT_NAME:"
 	LBL_RECORD_NUMBER                   = "RECORD NUMBER:"
 	LBL_REDIRECT                        = "REDIRECT:"
+	LBL_REDIRECT_URI                    = "REDIRECT URI:"
+	LBL_REDIRECT_URL                    = "REDIRECT URL:"
 	LBL_REDIRECT_PORT                   = "REDIRECT PORT:"
 	LBL_REPLY_TYPE                      = "REPLY TYPE:"
 	LBL_REQUEST                         = "REQUEST:"

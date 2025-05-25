@@ -215,6 +215,7 @@ const (
 	FN_RECOMMEND                                = "recommend"
 	FN_RECORD_NUMBER                            = "record_number"
 	FN_REDIRECT_PORT                            = "redirect_port"
+	FN_REDIRECT_URI                             = "redirect_uri"
 	FN_REDIRECT_URL                             = "redirect_url"
 	FN_REFUND                                   = "refund"
 	FN_RELATIVE_TIME                            = "relative_time"
