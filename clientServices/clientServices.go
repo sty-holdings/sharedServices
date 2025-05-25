@@ -296,6 +296,25 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 		tDocumentSnapshotPtr *firestore.DocumentSnapshot
 	)
 
+	if errorInfo = hlps.CheckPointerNotNil(ctv.VAL_SERVICE_CLIENT, firestoreClientPtr, ctv.LBL_SERVICE_FIREBASE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_CLIENT, companyName, ctv.LBL_COMPANY_NAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_CLIENT, phoneAreaCode, ctv.LBL_PHONE_AREA_CODE); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_CLIENT, phoneNumber, ctv.LBL_PHONE_NUMBER); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_CLIENT, userEmail, ctv.LBL_EMAIL); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_CLIENT, websiteURL, ctv.LBL_WEBSITE_URL); errorInfo.Error != nil {
+		return
+	}
+
 	if vals.DoesWebsiteEmailMatch(userEmail, websiteURL) {
 		if found, tDocumentSnapshotPtr, errorInfo = fbs.FindDocument(
 			firestoreClientPtr, fbs.DATASTORE_CLIENTS, fbs.NameValueQuery{

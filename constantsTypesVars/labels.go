@@ -44,6 +44,7 @@ const (
 	LBL_CIPHER_MAC                      = "CIPHER MAC:"
 	LBL_CIPHER_NONCE                    = "CIPHER NONCE:"
 	LBL_COLUMN_NUMBER                   = "COLUMN NUMBER:"
+	LBL_COMPANY_NAME                    = "COMPANY NAME:"
 	LBL_CONFIG_AI                       = "AI CONFIG:"
 	LBL_CONFIG_AI_FILENAME              = "AI CONFIG FILENAME:"
 	LBL_CONFIG_BASE                     = "BASE CONFIG:"
