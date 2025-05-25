@@ -88,7 +88,7 @@ func FindDocument(firestoreClientPtr *firestore.Client, datastore string, queryP
 				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, ctv.VAL_EMPTY)
 				break
 			} else {
-				tQuery = tQuery.Where(parameter.FieldName, ctv.OPER_EQUAL_SIGN, parameter.FieldValue)
+				tQuery = tQuery.Where(parameter.FieldName, ctv.OPER_DOUBE_EQUAL_SIGN, parameter.FieldValue)
 			}
 		}
 	}
