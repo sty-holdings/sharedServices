@@ -448,7 +448,7 @@ func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhInternalC
 	}
 	tClientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] = tSaasClientProviders
 
-	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_USERS, styhInternalClientID, tClientInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientID, tClientInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 
