@@ -86,7 +86,7 @@ func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient
 	}
 
 	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
-		clientStruct.PayPalClientId = value.(string)
+		clientStruct.PayPalClientID = value.(string)
 	}
 
 	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
