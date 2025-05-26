@@ -140,7 +140,7 @@ func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient
 	}
 
 	if value, ok = clientInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
-		clientStruct.STYHInternalClientID = value.(string)
+		clientStruct.InternalClientID = value.(string)
 	}
 
 	if value, ok = clientInfo[ctv.FN_TIMEZONE_HQ]; ok {
@@ -203,11 +203,11 @@ func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorI
 	}
 
 	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
-		userStruct.STYHInternalClientID = value.(string)
+		userStruct.InternalClientID = value.(string)
 	}
 
 	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_USER_ID]; ok {
-		userStruct.STYHInternalUserID = value.(string)
+		userStruct.InternalUserID = value.(string)
 	}
 
 	if value, ok = userInfo[ctv.FN_TIMEZONE_USER]; ok {
@@ -226,13 +226,13 @@ func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorI
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientInfo(firestoreClientPtr *firestore.Client, styhInternalClientID string) (clientInfo STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientInfo(firestoreClientPtr *firestore.Client, internalClientID string) (clientInfo STYHClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		tDocumentSnapshotPtr *firestore.DocumentSnapshot
 	)
 
-	if tDocumentSnapshotPtr, errorInfo = fbs.GetDocumentById(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientID); errorInfo.Error != nil {
+	if tDocumentSnapshotPtr, errorInfo = fbs.GetDocumentById(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientID); errorInfo.Error != nil {
 		return
 	}
 
@@ -241,18 +241,18 @@ func GetClientInfo(firestoreClientPtr *firestore.Client, styhInternalClientID st
 	return
 }
 
-// GetClientUserInfo - retrieves combined client and user details based on the provided STYHInternalUserID, using Firebase and Firestore services.
+// GetClientUserInfo - retrieves combined client and user details based on the provided InternalUserID, using Firebase and Firestore services.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhInternalUserID string) (clientUserInfo STYHClientUser, errorInfo errs.ErrorInfo) {
+func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (clientUserInfo STYHClientUser, errorInfo errs.ErrorInfo) {
 
-	if clientUserInfo.MySTYHUser, errorInfo = GetUserInfo(firebaseAuthPtr, firestoreClientPtr, styhInternalUserID); errorInfo.Error != nil {
+	if clientUserInfo.MySTYHUser, errorInfo = GetUserInfo(firebaseAuthPtr, firestoreClientPtr, internalUserID); errorInfo.Error != nil {
 		return
 	}
 
-	clientUserInfo.MySTYHClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MySTYHUser.STYHInternalClientID)
+	clientUserInfo.MySTYHClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MySTYHUser.InternalClientID)
 
 	return
 }
@@ -262,7 +262,7 @@ func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firesto
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, styhInternalUserID string) (userInfo STYHUser, errorInfo errs.ErrorInfo) {
+func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (userInfo STYHUser, errorInfo errs.ErrorInfo) {
 
 	var (
 		tUserInfo map[string]interface{}
@@ -271,9 +271,9 @@ func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Cli
 	if tUserInfo, errorInfo = fbs.GetFirebaseUserInfo(
 		firebaseAuthPtr,
 		firestoreClientPtr,
-		styhInternalUserID,
+		internalUserID,
 	); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildSTYHInternalUserIDLabelValue(ctv.LBL_SERVICE_CLIENT, styhInternalUserID, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildInternalUserIDLabelValue(ctv.LBL_SERVICE_CLIENT, internalUserID, ctv.LBL_FIREBASE_AUTH, ctv.TXT_FAILED))
 		return
 	}
 
@@ -282,12 +282,12 @@ func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Cli
 	return
 }
 
-// CheckClientExists - verifies if a client already exists in the datastore based on provided parameters. if so, returns the STYHInternalClientID populated.
+// CheckClientExists - verifies if a client already exists in the datastore based on provided parameters. if so, returns the InternalClientID populated.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument, errs.ErrFailedServiceFirestore
 //	Verifications: None
-func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string, phoneAreaCode string, phoneNumber string, userEmail string, websiteURL string) (styhInternalClientID string) {
+func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string, phoneAreaCode string, phoneNumber string, userEmail string, websiteURL string) (internalClientID string) {
 
 	var (
 		errorInfo            errs.ErrorInfo
@@ -324,7 +324,7 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 		); errorInfo.Error != nil {
 			return
 		}
-		styhInternalClientID = tDocumentSnapshotPtr.Ref.ID
+		internalClientID = tDocumentSnapshotPtr.Ref.ID
 		return
 	}
 
@@ -359,7 +359,7 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 	}
 
 	if tConfirmedCount > ctv.VAL_ZERO {
-		styhInternalClientID = tDocumentSnapshotPtr.Ref.ID
+		internalClientID = tDocumentSnapshotPtr.Ref.ID
 	}
 
 	return
@@ -370,21 +370,21 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument, errs.ErrFailedServiceFirestore
 //	Verifications: vals.
-func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient, userEmail string) (styhInternalClientId string, errorInfo errs.ErrorInfo) {
+func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
 
 	var (
 		tClientStruct = make(map[any]interface{})
 	)
 
-	if styhInternalClientId = CheckClientExists(
+	if internalClientId = CheckClientExists(
 		firestoreClientPtr,
 		newClient.CompanyName,
 		newClient.PhoneAreaCode,
 		newClient.PhoneNumber,
 		userEmail,
 		newClient.WebSiteURL,
-	); styhInternalClientId == ctv.VAL_EMPTY {
-		styhInternalClientId = hlps.GenerateUUIDType1(true)
+	); internalClientId == ctv.VAL_EMPTY {
+		internalClientId = hlps.GenerateUUIDType1(true)
 		//
 		tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
 		tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
@@ -392,10 +392,10 @@ func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient,
 		tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
 		tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
 		tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-		tClientStruct[ctv.FN_STYH_INTERNAL_CLIENT_ID] = styhInternalClientId
+		tClientStruct[ctv.FN_STYH_INTERNAL_CLIENT_ID] = internalClientId
 		tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
 		tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
-		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientId, tClientStruct)
+		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
 	}
 
 	return
@@ -418,10 +418,10 @@ func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
 	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
-	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.STYHInternalUserID
-	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = newUser.STYHInternalClientID
+	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.InternalUserID
+	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = newUser.InternalClientID
 
-	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.STYHInternalUserID, tUserInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.InternalUserID, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 
@@ -433,7 +433,7 @@ func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 //	Customer Messages: None
 //	Errors: errs.Err if Firestore document creation fails.
 //	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
-func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhInternalClientID string, saasClientProviders map[string]bool) {
+func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, internalClientID string, saasClientProviders map[string]bool) {
 
 	var (
 		errorInfo            errs.ErrorInfo
@@ -448,7 +448,7 @@ func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, styhInternalC
 	}
 	tClientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] = tSaasClientProviders
 
-	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, styhInternalClientID, tClientInfo); errorInfo.Error != nil {
+	if errorInfo = fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientID, tClientInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
 

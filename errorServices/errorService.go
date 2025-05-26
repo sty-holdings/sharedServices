@@ -109,24 +109,24 @@ func BuildLabelSubLabelValueMessage(extensionName string, label string, subLabel
 	return fmt.Sprintf("%s %s %s %s %s.", extensionName, label, subLabel, value, message)
 }
 
-// BuildSTYHInternalUserIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildInternalUserIDLabelValue - builds a string using the UID, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSTYHInternalUserIDLabelValue(extensionName string, styhInternalUserID string, label string, value string) (additionalInfo string) {
+func BuildInternalUserIDLabelValue(extensionName string, internalUserID string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s.", extensionName, styhInternalUserID, label, value)
+	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s.", extensionName, internalUserID, label, value)
 }
 
-// BuildSTYHInternalUserIDLabelValueMessage - builds a string using the UID, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildInternalUserIDLabelValueMessage - builds a string using the UID, label, value, and message. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSTYHInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, label string, value string, message string) (additionalInfo string) {
+func BuildInternalUserIDLabelValueMessage(extensionName string, internalUserID string, label string, value string, message string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s %s.", extensionName, styhInternalUserID, label, value, message)
+	return fmt.Sprintf("%s STYH Internal User Id: %s %s %s %s.", extensionName, internalUserID, label, value, message)
 }
 
 // BuildSystemActionLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
@@ -149,25 +149,25 @@ func BuildSystemActionLabelValueMessage(extensionName string, systemAction strin
 	return fmt.Sprintf("%s System Action: %s %s %s %s.", extensionName, systemAction, label, value, message)
 }
 
-// BuildSystemActionSTYHInternalUserIDLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
+// BuildSystemActionInternalUserIDLabelValue - builds a string using the UID, system action, label, and value. This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s",...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSystemActionSTYHInternalUserIDLabelValue(extensionName string, styhInternalUserID string, systemAction string, label string, value string) (additionalInfo string) {
+func BuildSystemActionInternalUserIDLabelValue(extensionName string, internalUserID string, systemAction string, label string, value string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s.", extensionName, styhInternalUserID, systemAction, label, value)
+	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s.", extensionName, internalUserID, systemAction, label, value)
 }
 
-// BuildSystemActionSTYHInternalUserIDLabelValueMessage - builds a string using the UID, system action, label, value, and message.
+// BuildSystemActionInternalUserIDLabelValueMessage - builds a string using the UID, system action, label, value, and message.
 // This can be used for ErrorInfo additional Info field. fmt.Sprintf("%s%s", ...).
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func BuildSystemActionSTYHInternalUserIDLabelValueMessage(extensionName string, styhInternalUserID string, systemAction string, label string, value string, message string) (additionalInfo string) {
+func BuildSystemActionInternalUserIDLabelValueMessage(extensionName string, internalUserID string, systemAction string, label string, value string, message string) (additionalInfo string) {
 
-	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s %s.", extensionName, systemAction, styhInternalUserID, label, value, message)
+	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s %s.", extensionName, systemAction, internalUserID, label, value, message)
 }
 
 // PrintError - will output error information using this format:
