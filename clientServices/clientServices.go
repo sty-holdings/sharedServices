@@ -19,22 +19,22 @@ import (
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientUserStruct(clientInfo map[string]interface{}, userInfo map[string]interface{}) (clientUserStruct STYHClientUser, errorInfo errs.ErrorInfo) {
+func GetClientUserStruct(clientInfo map[string]interface{}, userInfo map[string]interface{}) (clientUserStruct InternalClientUser, errorInfo errs.ErrorInfo) {
 
-	if clientUserStruct.MySTYHClient, errorInfo = GetClientStruct(clientInfo); errorInfo.Error != nil {
+	if clientUserStruct.MyInternalClient, errorInfo = GetClientStruct(clientInfo); errorInfo.Error != nil {
 		return
 	}
-	clientUserStruct.MySTYHUser, errorInfo = GetUserStruct(userInfo)
+	clientUserStruct.MyInternalUser, errorInfo = GetUserStruct(userInfo)
 
 	return
 }
 
-// GetClientStruct - constructs and returns a populated STYHClient struct using data from the provided clientInfo map.
+// GetClientStruct - constructs and returns a populated InternalClient struct using data from the provided clientInfo map.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo for JSON marshal/unmarshal, time location loading, and other data-processing issues.
 //	Verifications: None
-func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientStruct(clientInfo map[string]interface{}) (clientStruct InternalClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData []byte
@@ -139,10 +139,6 @@ func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient
 		clientStruct.StripeStartDate = value.(string)
 	}
 
-	if value, ok = clientInfo[ctv.FN_INTERNAL_CLIENT_ID]; ok {
-		clientStruct.InternalClientID = value.(string)
-	}
-
 	if value, ok = clientInfo[ctv.FN_TIMEZONE_HQ]; ok {
 		clientStruct.TimezoneHQ = value.(string)
 		if clientStruct.TimezoneHQLocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.TimezoneHQ); errorInfo.Error != nil {
@@ -158,12 +154,12 @@ func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient
 	return
 }
 
-// GetUserStruct - constructs and returns a populated STYHUser struct using data from the provided userInfo map.
+// GetUserStruct - constructs and returns a populated InternalUser struct using data from the provided userInfo map.
 //
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorInfo errs.ErrorInfo) {
+func GetUserStruct(userInfo map[string]interface{}) (userStruct InternalUser, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData []byte
@@ -221,12 +217,12 @@ func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorI
 	return
 }
 
-// GetClientInfo - retrieves client details from Clients datastore, populating an STYHClient struct or returning an error if any issues occur.
+// GetClientInfo - retrieves client details from Clients datastore, populating an InternalClient struct or returning an error if any issues occur.
 //
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetClientInfo(firestoreClientPtr *firestore.Client, internalClientID string) (clientInfo STYHClient, errorInfo errs.ErrorInfo) {
+func GetClientInfo(firestoreClientPtr *firestore.Client, internalClientID string) (clientInfo InternalClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		tDocumentSnapshotPtr *firestore.DocumentSnapshot
@@ -246,23 +242,23 @@ func GetClientInfo(firestoreClientPtr *firestore.Client, internalClientID string
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
 //	Verifications: None
-func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (clientUserInfo STYHClientUser, errorInfo errs.ErrorInfo) {
+func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (clientUserInfo InternalClientUser, errorInfo errs.ErrorInfo) {
 
-	if clientUserInfo.MySTYHUser, errorInfo = GetUserInfo(firebaseAuthPtr, firestoreClientPtr, internalUserID); errorInfo.Error != nil {
+	if clientUserInfo.MyInternalUser, errorInfo = GetUserInfo(firebaseAuthPtr, firestoreClientPtr, internalUserID); errorInfo.Error != nil {
 		return
 	}
 
-	clientUserInfo.MySTYHClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MySTYHUser.InternalClientID)
+	clientUserInfo.MyInternalClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MyInternalUser.InternalClientID)
 
 	return
 }
 
-// GetUserInfo - retrieves user information from Firebase and Firestore and constructs a STYHUser object.
+// GetUserInfo - retrieves user information from Firebase and Firestore and constructs a InternalUser object.
 //
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (userInfo STYHUser, errorInfo errs.ErrorInfo) {
+func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (userInfo InternalUser, errorInfo errs.ErrorInfo) {
 
 	var (
 		tUserInfo map[string]interface{}

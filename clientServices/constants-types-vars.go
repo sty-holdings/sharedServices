@@ -4,12 +4,12 @@ import (
 	"time"
 )
 
-type STYHClientUser struct {
-	MySTYHClient STYHClient
-	MySTYHUser   STYHUser
+type InternalClientUser struct {
+	MyInternalClient InternalClient
+	MyInternalUser   InternalUser
 }
 
-type STYHClient struct {
+type InternalClient struct {
 	CompanyName     string `firebase:"company_name" json:"company_name" yaml:"company_name"`
 	CreateTimestamp struct {
 		Time time.Time `json:"__time__"`
@@ -31,13 +31,12 @@ type STYHClient struct {
 	StripeInitialPullDataStatus  string   `firebase:"stripe_pull_data_status" json:"stripe_pull_data_status" yaml:"stripe_pull_data_status"`
 	StripePullFrequency          string   `firebase:"stripe_pull_frequency" json:"stripe_pull_frequency" yaml:"stripe_pull_frequency"`
 	StripeStartDate              string   `firebase:"stripe_start_date" json:"stripe_start_date" yaml:"stripe_start_date"`
-	InternalClientID             string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
 	TimezoneHQ                   string   `firebase:"timezone_hq" json:"timezone_hq" yaml:"timezone_hq"`
 	TimezoneHQLocationPtr        *time.Location
 	WebsiteURL                   string `firebase:"website_url" json:"website_url" yaml:"website_url"`
 }
 
-type STYHUser struct {
+type InternalUser struct {
 	ApprovedBy      string `firebase:"approved_by" json:"approved_by" yaml:"approved_by"`
 	ApprovedByDate  string `firebase:"approved_by_date" json:"approved_by_date" yaml:"approved_by_date"`
 	CreateTimestamp struct {

@@ -59,7 +59,7 @@ type PSQLService struct {
 }
 
 type DKCGACampaignPerformanceConsolidate struct {
-	InternalClientID            string  `db:"styh_client_id" json:"styh_client_id,omitempty" yaml:"styh_client_id"`
+	InternalClientID            string  `db:"internal_client_id" json:"internal_client_id,omitempty" yaml:"internal_client_id"`
 	AccountName                 string  `db:"account_name" json:"account_name,omitempty" yaml:"account_name"`
 	CampaignName                string  `db:"campaign_name" json:"campaign_name,omitempty" yaml:"campaign_name"`
 	AccountID                   string  `db:"account_id" json:"account_id,omitempty" yaml:"account_id"`
@@ -142,7 +142,7 @@ type GenerateAnswersResults struct {
 }
 
 type Campaigns struct {
-	internalClientID       string    `db:"styh_client_id"` // UUID as string
+	internalClientID       string    `db:"internal_client_id"` // UUID as string
 	AccountAccountName     string    `db:"account_account_name"`
 	CampaignCampaignName   string    `db:"campaign_campaign_name"`
 	AccountAccountID       string    `db:"account_account_id"`
@@ -153,7 +153,7 @@ type Campaigns struct {
 	CampaignBudgetAmount   float64   `db:"campaign_budget_amount"`
 }
 type DKCGACampaignPerformanceDailyRow struct {
-	internalClientID       string  `db:"styh_client_id"`
+	internalClientID       string  `db:"internal_client_id"`
 	AccountName            string  `db:"account_name"`
 	CampaignName           string  `db:"campaign_name"`
 	ReportDate             string  `db:"report_date"`
@@ -171,7 +171,7 @@ type DKCGACampaignPerformanceDailyRow struct {
 }
 
 type DKCGACampaignPerformanceMonthlyRow struct {
-	internalClientID            string  `db:"styh_client_id"`
+	internalClientID            string  `db:"internal_client_id"`
 	AccountName                 string  `db:"account_name"`
 	CampaignName                string  `db:"campaign_name"`
 	dkYear                      int     `db:"dk_year"`
@@ -190,7 +190,7 @@ type DKCGACampaignPerformanceMonthlyRow struct {
 }
 
 type DKCGACampaignPerformanceQuarterlyRow struct {
-	internalClientID            string  `db:"styh_client_id"`
+	internalClientID            string  `db:"internal_client_id"`
 	AccountName                 string  `db:"account_name"`
 	CampaignName                string  `db:"campaign_name"`
 	dkYear                      int     `db:"dk_year"`
@@ -209,7 +209,7 @@ type DKCGACampaignPerformanceQuarterlyRow struct {
 }
 
 type DKCGACampaignPerformanceWeeklyRow struct {
-	internalClientID            string  `db:"styh_client_id"`
+	internalClientID            string  `db:"internal_client_id"`
 	AccountName                 string  `db:"account_name"`
 	CampaignName                string  `db:"campaign_name"`
 	WeekOfDate                  string  `db:"week_of_date"`
@@ -227,7 +227,7 @@ type DKCGACampaignPerformanceWeeklyRow struct {
 }
 
 type DKCGACampaignPerformanceYearlyRow struct {
-	internalClientID            string  `db:"styh_client_id"`
+	internalClientID            string  `db:"internal_client_id"`
 	AccountName                 string  `db:"account_name"`
 	CampaignName                string  `db:"campaign_name"`
 	dkYear                      int     `db:"dk_year"`
