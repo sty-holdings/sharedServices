@@ -76,7 +76,7 @@ func Decrypt(
 	tNonce, tCiphertext = tCiphertext[:tNonceSize], tCiphertext[tNonceSize:]
 
 	if tPlaintext, errorInfo.Error = tAESGCM.Open(nil, tNonce, tCiphertext, nil); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_STYH_INTERNAL_USER_ID, internalUserID))
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, fmt.Sprintf("%v%v", ctv.FN_INTERNAL_USER_ID, internalUserID))
 		return
 	}
 
@@ -436,7 +436,7 @@ func RemoveTLSTemporaryFiles(
 //	Verifications: None
 func checkEncryptDecryptParameters(internalUserID string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, internalUserID, ctv.FN_STYH_INTERNAL_USER_ID); errorInfo.Error != nil {
+	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, internalUserID, ctv.FN_INTERNAL_USER_ID); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, ctv.FN_KEY_B64); errorInfo.Error != nil {

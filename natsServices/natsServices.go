@@ -499,7 +499,7 @@ func makeRequestReplyWithHeader(
 		Subject: subject,
 	}
 	tRequestMessagePtr.Header.Add(ctv.FN_UID, natsServicePtr.userInfo.internalUserID)
-	tRequestMessagePtr.Header.Add(ctv.FN_STYH_INTERNAL_CLIENT_ID, natsServicePtr.userInfo.internalClientID)
+	tRequestMessagePtr.Header.Add(ctv.FN_INTERNAL_CLIENT_ID, natsServicePtr.userInfo.internalClientID)
 	if tRequestMessagePtr.Data, errorInfo = jwts.EncryptByteToByte(natsServicePtr.userInfo.internalUserID, natsServicePtr.userInfo.KeyB64, dkRequest); errorInfo.Error != nil {
 		return
 	}

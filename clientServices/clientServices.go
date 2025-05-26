@@ -139,7 +139,7 @@ func GetClientStruct(clientInfo map[string]interface{}) (clientStruct STYHClient
 		clientStruct.StripeStartDate = value.(string)
 	}
 
-	if value, ok = clientInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
+	if value, ok = clientInfo[ctv.FN_INTERNAL_CLIENT_ID]; ok {
 		clientStruct.InternalClientID = value.(string)
 	}
 
@@ -202,11 +202,11 @@ func GetUserStruct(userInfo map[string]interface{}) (userStruct STYHUser, errorI
 		}
 	}
 
-	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID]; ok {
+	if value, ok = userInfo[ctv.FN_INTERNAL_CLIENT_ID]; ok {
 		userStruct.InternalClientID = value.(string)
 	}
 
-	if value, ok = userInfo[ctv.FN_STYH_INTERNAL_USER_ID]; ok {
+	if value, ok = userInfo[ctv.FN_INTERNAL_USER_ID]; ok {
 		userStruct.InternalUserID = value.(string)
 	}
 
@@ -392,7 +392,7 @@ func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient,
 		tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
 		tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
 		tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-		tClientStruct[ctv.FN_STYH_INTERNAL_CLIENT_ID] = internalClientId
+		tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
 		tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
 		tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
 		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
@@ -418,8 +418,8 @@ func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
 	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
 	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
 	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
-	tUserInfo[ctv.FN_STYH_INTERNAL_USER_ID] = newUser.InternalUserID
-	tUserInfo[ctv.FN_STYH_INTERNAL_CLIENT_ID] = newUser.InternalClientID
+	tUserInfo[ctv.FN_INTERNAL_USER_ID] = newUser.InternalUserID
+	tUserInfo[ctv.FN_INTERNAL_CLIENT_ID] = newUser.InternalClientID
 
 	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.InternalUserID, tUserInfo); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)

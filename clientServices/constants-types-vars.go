@@ -31,7 +31,7 @@ type STYHClient struct {
 	StripeInitialPullDataStatus  string   `firebase:"stripe_pull_data_status" json:"stripe_pull_data_status" yaml:"stripe_pull_data_status"`
 	StripePullFrequency          string   `firebase:"stripe_pull_frequency" json:"stripe_pull_frequency" yaml:"stripe_pull_frequency"`
 	StripeStartDate              string   `firebase:"stripe_start_date" json:"stripe_start_date" yaml:"stripe_start_date"`
-	InternalClientID             string   `firebase:"styh_internal_client_id" json:"styh_internal_client_id" yaml:"styh_internal_client_id"`
+	InternalClientID             string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
 	TimezoneHQ                   string   `firebase:"timezone_hq" json:"timezone_hq" yaml:"timezone_hq"`
 	TimezoneHQLocationPtr        *time.Location
 	WebsiteURL                   string `firebase:"website_url" json:"website_url" yaml:"website_url"`
@@ -47,8 +47,8 @@ type STYHUser struct {
 	FirstName               string   `firebase:"first_name" json:"first_name" yaml:"first_name"`
 	LastName                string   `firebase:"last_name" json:"last_name" yaml:"last_name"`
 	Permissions             []string `firebase:"permissions" json:"permissions" yaml:"permissions"`
-	InternalClientID        string   `firebase:"styh_internal_client_id" json:"styh_internal_client_id" yaml:"styh_internal_client_id"`
-	InternalUserID          string   `firebase:"styh_internal_user_id" json:"styh_user_id"yaml:"styh_internal_user_id"`
+	InternalClientID        string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
+	InternalUserID          string   `firebase:"internal_user_id" json:"styh_user_id"yaml:"internal_user_id"`
 	TimezoneUser            string   `firebase:"timezone_user" json:"user_timezone_user" yaml:"user_timezone_user"`
 	TimezoneUserLocationPtr *time.Location
 }
@@ -70,6 +70,6 @@ type NewUser struct {
 	LastName                string `firebase:"lastName" json:"lastName,omitempty" yaml:"lastName,omitempty"`
 	TimezoneUser            string `firebase:"timezone_user" json:"timezone_user,omitempty" yaml:"timezone_user,omitempty"`
 	TimezoneUserLocationPtr *time.Location
-	InternalClientID        string `firebase:"styh_internal_client_id" json:"styh_internal_client_id,omitempty" yaml:"styh_internal_client_id,omitempty"`
-	InternalUserID          string `firebase:"styh_internal_user_id" json:"styh_internal_user_id,omitempty" yaml:"styh_internal_user_id,omitempty"`
+	InternalClientID        string `firebase:"internal_client_id" json:"internal_client_id,omitempty" yaml:"internal_client_id,omitempty"`
+	InternalUserID          string `firebase:"internal_user_id" json:"internal_user_id,omitempty" yaml:"internal_user_id,omitempty"`
 }
