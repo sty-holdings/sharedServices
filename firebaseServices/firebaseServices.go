@@ -158,6 +158,7 @@ func GetFirebaseUserInfo(
 	username string,
 ) (
 	userInfo map[string]interface{},
+	userRefID string,
 	errorInfo errs.ErrorInfo,
 ) {
 
@@ -175,7 +176,7 @@ func GetFirebaseUserInfo(
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
-	userInfo[ctv.FN_INTERNAL_USER_ID] = tUserDocumentSnapshotPtr.Ref.ID
+	userRefID = tUserDocumentSnapshotPtr.Ref.ID
 
 	return
 }

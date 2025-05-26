@@ -14,19 +14,61 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-// GetAllUsers - retrieves all user documents from the users datastore.
+// GetAllClientsInfo - retrieves and constructs a list of all client details from the datastore.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrNoDataFound, errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument
+//	Errors: errs.ErrNoDataFound
 //	Verifications: None
-func GetAllUsers(firestoreClientPtr *firestore.Client) (documents []*firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+func GetAllClientsInfo(firestoreClientPtr *firestore.Client) (internalClientsInfo []InternalClient, errorInfo errs.ErrorInfo) {
 
-	if documents, errorInfo = fbs.GetAllDocuments(firestoreClientPtr, fbs.DATASTORE_USERS); errorInfo.Error != nil {
+	var (
+		tDocumentSnapshotsPtrs []*firestore.DocumentSnapshot
+		tInternalClient        InternalClient
+	)
+
+	if tDocumentSnapshotsPtrs, errorInfo = fbs.GetAllDocuments(firestoreClientPtr, fbs.DATASTORE_CLIENTS); errorInfo.Error != nil {
 		return
 	}
-	if len(documents) == 0 {
+	if len(tDocumentSnapshotsPtrs) == 0 {
 		errorInfo = errs.NewErrorInfo(errs.ErrNoDataFound, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_CLIENT, ctv.LBL_DOCUMENT_ID, ctv.TXT_ARE_EMPTY, ctv.TXT_NO_DATA_FOUND))
 		return
+	}
+
+	for _, document := range tDocumentSnapshotsPtrs {
+		if tInternalClient, errorInfo = getClientStruct(document.Data(), document.Ref.ID); errorInfo.Error != nil {
+			return
+		}
+		internalClientsInfo = append(internalClientsInfo, tInternalClient)
+	}
+
+	return
+}
+
+// GetAllUsersInfo - retrieves and constructs a list of all user details from the datastore.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrNoDataFound
+//	Verifications: None
+func GetAllUsersInfo(firestoreClientPtr *firestore.Client) (internalUsersInfo []InternalUser, errorInfo errs.ErrorInfo) {
+
+	var (
+		tDocumentSnapshotsPtrs []*firestore.DocumentSnapshot
+		tInternalUser          InternalUser
+	)
+
+	if tDocumentSnapshotsPtrs, errorInfo = fbs.GetAllDocuments(firestoreClientPtr, fbs.DATASTORE_USERS); errorInfo.Error != nil {
+		return
+	}
+	if len(tDocumentSnapshotsPtrs) == 0 {
+		errorInfo = errs.NewErrorInfo(errs.ErrNoDataFound, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_CLIENT, ctv.LBL_DOCUMENT_ID, ctv.TXT_ARE_EMPTY, ctv.TXT_NO_DATA_FOUND))
+		return
+	}
+
+	for _, document := range tDocumentSnapshotsPtrs {
+		if tInternalUser, errorInfo = getUserStruct(document.Data(), document.Ref.ID); errorInfo.Error != nil {
+			return
+		}
+		internalUsersInfo = append(internalUsersInfo, tInternalUser)
 	}
 
 	return
@@ -76,10 +118,11 @@ func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firesto
 func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Client, internalUserID string) (userInfo InternalUser, errorInfo errs.ErrorInfo) {
 
 	var (
-		tUserInfo map[string]interface{}
+		tUserInfo  map[string]interface{}
+		tUserRefID string
 	)
 
-	if tUserInfo, errorInfo = fbs.GetFirebaseUserInfo(
+	if tUserInfo, tUserRefID, errorInfo = fbs.GetFirebaseUserInfo(
 		firebaseAuthPtr,
 		firestoreClientPtr,
 		internalUserID,
@@ -88,7 +131,7 @@ func GetUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firestore.Cli
 		return
 	}
 
-	userInfo, errorInfo = getUserStruct(tUserInfo)
+	userInfo, errorInfo = getUserStruct(tUserInfo, tUserRefID)
 
 	return
 }
@@ -273,7 +316,7 @@ func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, internalClien
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo for JSON marshal/unmarshal, time location loading, and other data-processing issues.
 //	Verifications: None
-func getClientStruct(clientInfo map[string]interface{}, clientInfoRefId string) (clientStruct InternalClient, errorInfo errs.ErrorInfo) {
+func getClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) (clientStruct InternalClient, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData []byte
@@ -281,7 +324,7 @@ func getClientStruct(clientInfo map[string]interface{}, clientInfoRefId string) 
 		value    interface{}
 	)
 
-	clientStruct.InternalClientID = clientInfoRefId
+	clientStruct.InternalClientID = clientInfoRefID
 
 	if value, ok = clientInfo[ctv.FN_COMPANY_NAME]; ok {
 		clientStruct.CompanyName = value.(string)
@@ -400,13 +443,15 @@ func getClientStruct(clientInfo map[string]interface{}, clientInfoRefId string) 
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func getUserStruct(userInfo map[string]interface{}) (userStruct InternalUser, errorInfo errs.ErrorInfo) {
+func getUserStruct(userInfo map[string]interface{}, userInfoRefID string) (userStruct InternalUser, errorInfo errs.ErrorInfo) {
 
 	var (
 		jsonData []byte
 		ok       bool
 		value    interface{}
 	)
+
+	userStruct.InternalUserID = userInfoRefID
 
 	if value, ok = userInfo[ctv.FN_APPROVED_BY]; ok {
 		userStruct.ApprovedBy = value.(string)
@@ -441,10 +486,6 @@ func getUserStruct(userInfo map[string]interface{}) (userStruct InternalUser, er
 
 	if value, ok = userInfo[ctv.FN_INTERNAL_CLIENT_ID]; ok {
 		userStruct.InternalClientID = value.(string)
-	}
-
-	if value, ok = userInfo[ctv.FN_INTERNAL_USER_ID]; ok {
-		userStruct.InternalUserID = value.(string)
 	}
 
 	if value, ok = userInfo[ctv.FN_TIMEZONE_USER]; ok {
