@@ -16,6 +16,7 @@ type InternalClient struct {
 	} `firebase:"create_timestamp" json:"create_timestamp" yaml:"create_timestamp"`
 	FormationType                string   `firestore:"formation_type" json:"formation_type" yaml:"formation_type"`
 	GoogleAdsAccounts            []string `firebase:"google_ads_accounts" json:"google_ads_accounts" yaml:"google_ads_accounts"`
+	InternalClientID             string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
 	LinkedinPageIds              []int64  `firebase:"linkedin_page_ids" json:"linkedin_page_ids" yaml:"linkedin_page_ids"`
 	OnBoarded                    bool     `firebase:"onboarded" json:"onboarded" yaml:"onboarded"`
 	Owners                       []string `firebase:"owners" json:"owners" yaml:"owners"`

@@ -175,6 +175,7 @@ func GetFirebaseUserInfo(
 	}
 
 	userInfo = tUserDocumentSnapshotPtr.Data()
+	userInfo[ctv.FN_INTERNAL_USER_ID] = tUserDocumentSnapshotPtr.Ref.ID
 
 	return
 }
