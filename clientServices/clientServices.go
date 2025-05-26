@@ -14,6 +14,24 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
+// GetAllUsers - retrieves all user documents from the users datastore.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrNoDataFound, errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument
+//	Verifications: None
+func GetAllUsers(firestoreClientPtr *firestore.Client) (documents []*firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
+
+	if documents, errorInfo = fbs.GetAllDocuments(firestoreClientPtr, fbs.DATASTORE_USERS); errorInfo.Error != nil {
+		return
+	}
+	if len(documents) == 0 {
+		errorInfo = errs.NewErrorInfo(errs.ErrNoDataFound, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_CLIENT, ctv.LBL_DOCUMENT_ID, ctv.TXT_ARE_EMPTY, ctv.TXT_NO_DATA_FOUND))
+		return
+	}
+
+	return
+}
+
 // GetClientInfo - retrieves client details from Clients datastore, populating an InternalClient struct or returning an error if any issues occur.
 //
 //	Customer Messages: None
