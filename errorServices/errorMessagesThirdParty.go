@@ -16,8 +16,9 @@ const (
 	NATS_3P_NOT_CONNECTED      = "nats: message is not bound to subscription/connection"
 	NATS_3P_INVALID_CONNECTION = "nats: invalid connection"
 	// STRIPE
-	STRIPE_3P_INVALID_API_KEY = "Invalid API Key provided"
-	STRIPE_NO_SUCH_RESOURCE   = "no such resource"
+	STRIPE_3P_INVALID_API_KEY     = "Invalid API Key provided"
+	STRIPE_NO_SUCH_RESOURCE       = "no such resource"
+	STRIPE_NO_SUCH_PAYMENT_METHOD = "no such paymentMethod"
 )
 
 // POSTGRESQL
