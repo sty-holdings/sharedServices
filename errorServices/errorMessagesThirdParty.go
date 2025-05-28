@@ -17,6 +17,7 @@ const (
 	NATS_3P_INVALID_CONNECTION = "nats: invalid connection"
 	// STRIPE
 	STRIPE_3P_INVALID_API_KEY = "Invalid API Key provided"
+	STRIPE_NO_SUCH_RESOURCE   = "no such resource"
 )
 
 // POSTGRESQL

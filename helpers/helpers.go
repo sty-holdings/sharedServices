@@ -523,6 +523,19 @@ func DollarsToPennies(amount float64) (pennies int64) {
 	return int64(amount * 100)
 }
 
+func ExtractBeforeUnderscore(s string) string {
+
+	var (
+		index = strings.Index(s, "_")
+	)
+
+	if index != -1 {
+		return s[:index]
+	}
+
+	return s
+}
+
 // formatURL - will return a formatted url with the protocol, domain, and port.
 //
 //	Validation: none
@@ -634,26 +647,6 @@ func GetEnvironmentShortCode(environment string) string {
 	}
 
 	return ctv.TXT_UNKNOWN
-}
-
-// getMonthFromDateString takes date parts and returns the month as an integer.
-// It returns an error if the input string is not in the expected format or month is invalid.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func getMonthFromDateParts(dateParts []string) (month int, errorInfo errs.ErrorInfo) {
-
-	if month, errorInfo.Error = strconv.Atoi(dateParts[1]); errorInfo.Error != nil {
-		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_NOT_CONVERTIBLE))
-		return
-	}
-
-	if month < 1 || month > 12 {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_IS_INVALID))
-	}
-
-	return
 }
 
 // GetQuarter determines the quarter of the year based on the provided month (1-12).
@@ -1579,6 +1572,26 @@ func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo 
 
 	if vals.IsDayValid(year, month, day) == false {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
+	}
+
+	return
+}
+
+// getMonthFromDateString takes date parts and returns the month as an integer.
+// It returns an error if the input string is not in the expected format or month is invalid.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func getMonthFromDateParts(dateParts []string) (month int, errorInfo errs.ErrorInfo) {
+
+	if month, errorInfo.Error = strconv.Atoi(dateParts[1]); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_NOT_CONVERTIBLE))
+		return
+	}
+
+	if month < 1 || month > 12 {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidDate, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dateParts[1], ctv.TXT_IS_INVALID))
 	}
 
 	return
