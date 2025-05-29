@@ -1,6 +1,8 @@
 package sharedServices
 
 import (
+	"time"
+
 	"cloud.google.com/go/vertexai/genai"
 )
 
@@ -102,6 +104,20 @@ type CategorySentence struct {
 		Adverb  string `json:"adverb"`
 	} `json:"sentence_subjects_adverb"`
 	TokenCount genai.UsageMetadata `json:"-"`
+}
+
+type ExtractDateParts struct {
+	DateString             string
+	Day                    int
+	StartDateTime          time.Time
+	EndDateTime            time.Time
+	GreaterThanDateTimeInt int64 // Unix epoch using the process date minus one day with timezone
+	LesserThanDateTimeInt  int64 // Unix epoch using the process date plus one day with timezone
+	Month                  int
+	Quarter                int
+	WeekStart              string
+	WeekEnd                string
+	Year                   int
 }
 
 type SpecialWords struct {

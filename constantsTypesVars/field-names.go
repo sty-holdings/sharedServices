@@ -116,6 +116,7 @@ const (
 	FN_EXTENSION_DECLARATION_NAME               = "extension_declaration_name"
 	FN_EXTENSION_FILENAME                       = "extension_name"
 	FN_EXTENSION_NAME                           = "extension_name"
+	FN_EXTRACT_DATE                             = "extract_date"
 	FN_EXTRACT_DATA_INTERVAL_SEC                = "extract_data_interval_sec"
 	FN_FAMILY_NAME                              = "family_name"
 	FN_FEDERAL_TAX_ID                           = "federal_tax_id"

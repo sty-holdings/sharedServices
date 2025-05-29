@@ -36,7 +36,7 @@ func AddMonths(year int, month int, monthsToAdd int) (int, int) {
 	return year, month
 }
 
-// AdjustDateAdjustDateByDays - will modify the year, month and day when adding days
+// AdjustDateAdjustDateByDays - will modify the year, month, and day when adding days
 //
 //	Customer Messages: None
 //	Errors: None
@@ -795,7 +795,7 @@ func GetSundayDateWeeksAgo(weeksAgo int) (year, month, day int) {
 }
 
 // GetUnixDateFromValues - takes year, month, day, hour, minute, and second as integers and returns the corresponding Unix timestamp (seconds since epoch).
-// For epoch date, hours, minutes and seconds must be zero.
+// For epoch date, hours, minutes, and seconds must be zero.
 //
 //	Customer Messages: None
 //	Errors: None
@@ -841,35 +841,42 @@ func getYearFromDateParts(dateParts []string) (year int, errorInfo errs.ErrorInf
 	return
 }
 
-// GetYearQuarterMonthWeekDayFromString takes a date string in "yyyy-mm-dd" format and returns the year, quarter, month,
-// and day as integers. The function returns the date for Sunday for that week. It returns an error if the input string is not in the expected format or year/month is invalid.
+// GetExtractDateParts - extracts detailed date parts from a date string in the format "YYYY-MM-DD".
+//
+//	GreaterThanDateTimeInt and LesserThanDateTimeInt are not populated because they are location-specific.
 //
 //	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func GetYearQuarterMonthWeekDayFromString(dateString string) (year int, quarter int, month int, weekStart string, weekEnd string, day int, errorInfo errs.ErrorInfo) {
+//	Errors: errs.Err if any part of the date is invalid or cannot be processed.
+//	Verifications: vals.IsDayValid if the day is valid for the given month and year.
+func GetExtractDateParts(dateString string) (extractDateParts ctv.ExtractDateParts, errorInfo errs.ErrorInfo) {
 
 	var (
 		tParts []string
 	)
 
+	extractDateParts.DateString = dateString
+
 	if tParts, errorInfo = GetDateParts(dateString); errorInfo.Error != nil {
 		return
 	}
 
-	if year, errorInfo = getYearFromDateParts(tParts); errorInfo.Error != nil {
+	if extractDateParts.Year, errorInfo = getYearFromDateParts(tParts); errorInfo.Error != nil {
 		return
 	}
-	if month, errorInfo = getMonthFromDateParts(tParts); errorInfo.Error != nil {
+	if extractDateParts.Month, errorInfo = getMonthFromDateParts(tParts); errorInfo.Error != nil {
 		return
 	}
-	if day, errorInfo = getDayFromDateParts(year, month, tParts[2]); errorInfo.Error != nil {
+	if extractDateParts.Day, errorInfo = getDayFromDateParts(extractDateParts.Year, extractDateParts.Month, tParts[2]); errorInfo.Error != nil {
 		return
 	}
-	if quarter, errorInfo = GetQuarter(month); errorInfo.Error != nil {
+	if extractDateParts.Quarter, errorInfo = GetQuarter(extractDateParts.Month); errorInfo.Error != nil {
 		return
 	}
-	if weekStart, weekEnd, errorInfo = GetSundaySaturdayFromYearMonthDay(year, month, day); errorInfo.Error != nil {
+	if extractDateParts.WeekStart, extractDateParts.WeekEnd, errorInfo = GetSundaySaturdayFromYearMonthDay(
+		extractDateParts.Year,
+		extractDateParts.Month,
+		extractDateParts.Day,
+	); errorInfo.Error != nil {
 		return
 	}
 
