@@ -1,6 +1,7 @@
 package sharedServices
 
-// Entries are for comparison or setting arguments, parameters, and variables. If the file gets to large, split out larger sections to topic specific files.
+// Entries are for comparison or setting arguments, parameters, and variables. If the file gets too large, split
+// out larger sections to topic-specific files.
 
 //goland:noinspection All
 const (
@@ -126,13 +127,13 @@ const (
 //goland:noinspection All
 const (
 	// Extensions
-	VAL_EXTENSION_ADMIN        = "admin"
-	VAL_EXTENTION_AGGREGATE    = "aggregate"
-	VAL_EXTENSION_DISCOVERY    = "discovery"
-	VAL_EXTENSION_DK_CLIENT    = "dk-client"
-	VAL_EXTENSION_DK_SIGNAL    = "dk-signal"
-	VAL_EXTENSION_EXTRACT_DATA = "extract-data"
-	VAL_EXTENSION_HAL          = "hal"
+	VAL_EXTENSION_ADMIN      = "admin"
+	VAL_EXTENTION_AGGREGATOR = "aggregator"
+	VAL_EXTENSION_DISCOVERY  = "discovery"
+	VAL_EXTENSION_DK_CLIENT  = "dk-client"
+	VAL_EXTENSION_DK_SIGNAL  = "dk-signal"
+	VAL_EXTENSION_EXTRACTOR  = "extractor"
+	VAL_EXTENSION_HAL        = "hal"
 
 	// Not an extension, but the owner of the extension.
 	VAL_SERVER = "server"
@@ -186,11 +187,11 @@ const (
 var (
 	ExtensionList = []string{
 		VAL_EXTENSION_ADMIN,
-		VAL_EXTENTION_AGGREGATE,
+		VAL_EXTENTION_AGGREGATOR,
 		VAL_EXTENSION_DISCOVERY,
 		VAL_EXTENSION_DK_CLIENT,
 		VAL_EXTENSION_DK_SIGNAL,
-		VAL_EXTENSION_EXTRACT_DATA,
+		VAL_EXTENSION_EXTRACTOR,
 		VAL_EXTENSION_HAL,
 	}
 
