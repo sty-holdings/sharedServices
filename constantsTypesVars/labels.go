@@ -103,6 +103,7 @@ const (
 	LBL_END_DATE                             = "END DATE:"
 	LBL_ENVIRONMENT                          = "ENVIRONMENT:"
 	LBL_ENVIRONMENT_SHORT_CODE               = "ENVIRONMENT SHORT CODE:"
+	LBL_ERROR_DETAILS                        = "ERROR DETAILS:"
 	LBL_ERROR_MESSAGE                        = "ERROR MESSAGE:"
 	LBL_EXTENSION                            = "EXTENSION:"
 	LBL_EXTENSION_AGGREGATOR                 = "AGGREGATOR:"

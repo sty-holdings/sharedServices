@@ -111,6 +111,7 @@ const (
 	FN_END_DATE                                 = "endDate"
 	FN_ENVIRONMENT                              = "environment"
 	FN_ENVIRONMENT_SHORT_CODE                   = "environment_short_code"
+	FN_ERROR_DETAILS                            = "error_details"
 	FN_EXPIRY_TIMESTAMP                         = "expiry_timestamp"
 	FN_EXTENSION_DECLARATION                    = "extension_declaration"
 	FN_EXTENSION_DECLARATION_NAME               = "extension_declaration_name"
