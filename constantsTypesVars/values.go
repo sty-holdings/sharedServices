@@ -134,6 +134,7 @@ const (
 	VAL_EXTENSION_DK_SIGNAL  = "dk-signal"
 	VAL_EXTENSION_EXTRACTOR  = "extractor"
 	VAL_EXTENSION_HAL        = "hal"
+	VAL_EXTENSION_UTILITY    = "utility"
 
 	// Not an extension, but the owner of the extension.
 	VAL_SERVER = "server"
@@ -193,6 +194,7 @@ var (
 		VAL_EXTENSION_DK_SIGNAL,
 		VAL_EXTENSION_EXTRACTOR,
 		VAL_EXTENSION_HAL,
+		VAL_EXTENSION_UTILITY,
 	}
 
 	ServiceList = []string{
