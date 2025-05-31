@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/keepalive"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -24,7 +25,7 @@ import (
 )
 
 // NewGRPCServer - builds a reusable gRPC Server that creates an instance name and builds a connection.
-// The GRPCPort must be at or above 50051. This will not register the server or execute the serve command.
+// The Port must be at or above 50051. This will not register the server or execute the serve command.
 // Here are examples for reference:
 //
 //		protos_def.RegisterHalServicesServer(gRPCServer.GRPCServerPtr, &Server{})
@@ -54,16 +55,16 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	servicePtr = &GRPCService{
-		debugModeOn: tConfig.GRPCDebug,
+		debugModeOn: tConfig.DebugModeOn,
 		Secure: SecureSettings{
-			ServerSide: tConfig.GRPCSecure.ServerSide,
-			Mutual:     tConfig.GRPCSecure.Mutual,
+			ServerSide: tConfig.Secure.ServerSide,
+			Mutual:     tConfig.Secure.Mutual,
 		},
-		Host: tConfig.GRPCHost,
-		Port: uint(tConfig.GRPCPort),
+		Host: tConfig.Host,
+		Port: uint(tConfig.Port),
 	}
 
-	if tConfig.GRPCDebug {
+	if tConfig.DebugModeOn {
 		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
 	}
 
@@ -74,7 +75,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	servicePtr.GRPCListenerPtr = &tListener
 
 	if servicePtr.Secure.ServerSide {
-		if tCreds, errorInfo = LoadTLSCredentialsCACertKey(ctv.LBL_SERVICE_GRPC_SERVER, tConfig.GRPCTLSInfo); errorInfo.Error != nil {
+		if tCreds, errorInfo = LoadTLSCredentialsCACertKey(ctv.LBL_SERVICE_GRPC_SERVER, tConfig.TLSInfo); errorInfo.Error != nil {
 			return
 		}
 		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
@@ -88,7 +89,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	return
 }
 
-// NewGRPCClient - builds a reusable gRPC Client. The GRPCHost and GRPCPort must match the server. This will not create the message client or
+// NewGRPCClient - builds a reusable gRPC Client. The Host and Port must match the server. This will not create the message client or
 // execute any services. Here are examples for reference:
 //
 //		d := protos_def.NewHalServicesClient(gRPCServicePtr.GRPCClientPtr)
@@ -100,8 +101,10 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
+		ok           bool
 		tConfig      GRPCConfig
 		tGRPCAddress string
+		tDailOptions []grpc.DialOption
 		tDailOption  grpc.DialOption
 	)
 
@@ -118,31 +121,43 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	}
 
 	gRPCServicePtr = &GRPCService{
-		debugModeOn: tConfig.GRPCDebug,
+		debugModeOn: tConfig.DebugModeOn,
+		Host:        tConfig.Host,
+		Port:        uint(tConfig.Port),
 		Secure: SecureSettings{
-			ServerSide: tConfig.GRPCSecure.ServerSide,
-			Mutual:     tConfig.GRPCSecure.Mutual,
+			ServerSide: tConfig.Secure.ServerSide,
+			Mutual:     tConfig.Secure.Mutual,
 		},
-		Host:    tConfig.GRPCHost,
-		Port:    uint(tConfig.GRPCPort),
-		Timeout: time.Duration(tConfig.GRPCTimeout) * time.Second,
+		Timeout: time.Duration(tConfig.Timeout) * time.Second,
 	}
 
-	if tConfig.GRPCDebug {
+	if tConfig.DebugModeOn {
 		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
 	}
 
-	tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.GRPCHost, strconv.Itoa(tConfig.GRPCPort)) // Localhost in the host file must point to 127.0.0.1 only.
+	tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.Host, strconv.Itoa(tConfig.Port)) // Localhost in the host file must point to 127.0.0.1 only.
 
 	if gRPCServicePtr.Secure.ServerSide {
-		if tDailOption, errorInfo = LoadTLSCABundle(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig.GRPCTLSInfo); errorInfo.Error != nil {
+		if tDailOption, errorInfo = LoadTLSCABundle(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig.TLSInfo); errorInfo.Error != nil {
 			return
 		}
 	} else {
 		tDailOption = grpc.WithTransportCredentials(insecure.NewCredentials())
 	}
+	tDailOptions = append(tDailOptions, tDailOption)
 
-	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(tGRPCAddress, tDailOption); errorInfo.Error != nil {
+	if tConfig.KeepAlive != (KeepAlive{}) {
+		tDailOption = grpc.WithKeepaliveParams(
+			keepalive.ClientParameters{
+				Time:                time.Duration(tConfig.KeepAlive.PingInternalSec) * time.Second, // Ping interval.
+				Timeout:             time.Duration(tConfig.KeepAlive.PingTimeoutSec) * time.Second,
+				PermitWithoutStream: tConfig.KeepAlive.PermitWithoutStream,
+			},
+		)
+		tDailOptions = append(tDailOptions, tDailOption)
+	}
+
+	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(tGRPCAddress, tDailOptions...); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC_CLIENT, ctv.LBL_GRPC_CLIENT, ctv.TXT_FAILED))
 	}
 
@@ -260,24 +275,24 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 
 func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.GRPCHost, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
-	if config.GRPCPort < ctv.VAL_GRPC_MIN_PORT {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(creator, ctv.LBL_GRPC_PORT, strconv.Itoa(config.GRPCPort)))
+	if config.Port < ctv.VAL_GRPC_MIN_PORT {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(creator, ctv.LBL_GRPC_PORT, strconv.Itoa(config.Port)))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.GRPCTLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.GRPCTLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.GRPCTLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if config.GRPCTimeout < ctv.VAL_ONE {
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(creator, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.GRPCTimeout)))
+	if config.Timeout < ctv.VAL_ONE {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(creator, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.Timeout)))
 	}
 
 	return

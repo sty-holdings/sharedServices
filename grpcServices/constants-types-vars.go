@@ -10,12 +10,19 @@ import (
 )
 
 type GRPCConfig struct {
-	GRPCDebug   bool           `json:"grpc_debug" yaml:"grpc_debug"`
-	GRPCHost    string         `json:"grpc_host,omitempty" yaml:"grpc_host,omitempty"` // This is only used on the client side. The server side is set to 0.0.0.0.
-	GRPCPort    int            `json:"grpc_port" yaml:"grpc_port"`
-	GRPCSecure  SecureSettings `json:"grpc_secure" yaml:"grpc_secure"` // These settings must match for client and server.
-	GRPCTLSInfo jwts.TLSInfo   `json:"grpc_tls_info" yaml:"grpc_tls_info"`
-	GRPCTimeout int            `json:"grpc_timeout" yaml:"grpc_timeout"`
+	DebugModeOn bool           `json:"debug_mode_on" yaml:"debug_mode_on"`
+	Host        string         `json:"host,omitempty" yaml:"host,omitempty"`             // This is only used on the client side. The server side is set to 0.0.0.0.
+	KeepAlive   KeepAlive      `json:"keep_alive,omitempty" yaml:"keep_alive,omitempty"` // This is only used on the client side.
+	Port        int            `json:"port" yaml:"port"`
+	Secure      SecureSettings `json:"secure" yaml:"secure"` // These settings must match for client and server.
+	TLSInfo     jwts.TLSInfo   `json:"tls_info" yaml:"tls_info"`
+	Timeout     int            `json:"timeout" yaml:"timeout"`
+}
+
+type KeepAlive struct {
+	PingInternalSec     int  `json:"ping_internal_sec" yaml:"ping_internal_sec"`
+	PingTimeoutSec      int  `json:"ping_timeout_sec" yaml:"ping_timeout_sec"`
+	PermitWithoutStream bool `json:"permit_without_stream" yaml:"permit_without_stream"`
 }
 
 type GRPCService struct {
