@@ -106,7 +106,6 @@ const (
 	LBL_ERROR_DETAILS                        = "ERROR DETAILS:"
 	LBL_ERROR_MESSAGE                        = "ERROR MESSAGE:"
 	LBL_EXTENSION                            = "EXTENSION:"
-	LBL_EXTENSION_AGGREGATOR                 = "AGGREGATOR:"
 	LBL_EXTENSION_DEBUG_MODE                 = "EXTENSION DEBUG MODE:"
 	LBL_EXTENSION_DECLARATION                = "EXTENSIONS DECLARATION:"
 	LBL_EXTENSION_DISCOVERY                  = "DISCOVERY:"

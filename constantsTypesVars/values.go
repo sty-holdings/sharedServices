@@ -127,14 +127,13 @@ const (
 //goland:noinspection All
 const (
 	// Extensions
-	VAL_EXTENSION_ADMIN      = "admin"
-	VAL_EXTENTION_AGGREGATOR = "aggregator"
-	VAL_EXTENSION_DISCOVERY  = "discovery"
-	VAL_EXTENSION_DK_CLIENT  = "dk-client"
-	VAL_EXTENSION_DK_SIGNAL  = "dk-signal"
-	VAL_EXTENSION_EXTRACTOR  = "extractor"
-	VAL_EXTENSION_HAL        = "hal"
-	VAL_EXTENSION_UTILITY    = "utility"
+	VAL_EXTENSION_ADMIN     = "admin"
+	VAL_EXTENSION_DISCOVERY = "discovery"
+	VAL_EXTENSION_DK_CLIENT = "dk-client"
+	VAL_EXTENSION_DK_SIGNAL = "dk-signal"
+	VAL_EXTENSION_EXTRACTOR = "extractor"
+	VAL_EXTENSION_HAL       = "hal"
+	VAL_EXTENSION_UTILITY   = "utility"
 
 	// Not an extension, but the owner of the extension.
 	VAL_SERVER = "server"
@@ -188,7 +187,6 @@ const (
 var (
 	ExtensionList = []string{
 		VAL_EXTENSION_ADMIN,
-		VAL_EXTENTION_AGGREGATOR,
 		VAL_EXTENSION_DISCOVERY,
 		VAL_EXTENSION_DK_CLIENT,
 		VAL_EXTENSION_DK_SIGNAL,

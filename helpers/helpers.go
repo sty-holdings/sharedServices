@@ -268,6 +268,21 @@ func ConvertMapStringToString(mapIn map[string]string) (mapString string) {
 	return
 }
 
+// ConvertSliceToMap - converts a slice of comparable elements to a map.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func ConvertSliceToMap[T comparable](slice []T) map[T]T {
+
+	resultMap := make(map[T]T)
+	for _, item := range slice {
+		resultMap[item] = item
+	}
+
+	return resultMap
+}
+
 // ConvertStringArrayToPSQLInList - takes an array of strings and returns a string for using by PSQL IN LIST
 // with a space.
 //
