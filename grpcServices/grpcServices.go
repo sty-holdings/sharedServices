@@ -101,7 +101,6 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		ok           bool
 		tConfig      GRPCConfig
 		tGRPCAddress string
 		tDailOptions []grpc.DialOption
