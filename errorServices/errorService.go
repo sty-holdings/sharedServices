@@ -21,23 +21,14 @@ func NewErrorInfo(
 	additionalInfo string,
 ) (errorInfo ErrorInfo) {
 
-	var (
-		buf = make([]byte, 2048)
-	)
-
 	if myError == nil {
 		return
-	} else {
-		runtime.Stack(buf, false)
-		errorInfo = newError(buf, myError)
 	}
 
-	if additionalInfo == ctv.VAL_EMPTY {
-		errorInfo.AdditionalInfo = ctv.TXT_EMPTY
-	} else {
-		errorInfo.AdditionalInfo = additionalInfo
-	}
+	errorInfo.AdditionalInfo = additionalInfo
+	errorInfo.Error = myError
 	errorInfo.Message = myError.Error()
+	errorInfo.StackTrace = string(getStackTrace())
 
 	return
 }
