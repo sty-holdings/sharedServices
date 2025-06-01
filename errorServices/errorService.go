@@ -173,6 +173,7 @@ func GetErrorInfoString(errorInfo ErrorInfo) string {
 //	Verifications: None
 func PrintError(
 	myError error,
+	additionalInfo string,
 ) {
 
 	var (
@@ -185,6 +186,8 @@ func PrintError(
 		errorInfo = newErrorInfoFromError(getStackTrace(), myError)
 	}
 
+	errorInfo.AdditionalInfo = additionalInfo
+	
 	outputError(errorInfo)
 }
 
