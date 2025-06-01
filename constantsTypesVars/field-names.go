@@ -25,6 +25,7 @@ const (
 	FN_APPROVED_BY                              = "approved_by"
 	FN_APPROVED_BY_DATE                         = "approved_by_date"
 	FN_AREA_CODE                                = "area_code"
+	FN_ATTEMPT_COUNT                            = "attempt_count"
 	FN_AUDIENCE_CAP                             = "AUDIENCE"
 	FN_AUTHOR                                   = "author"
 	FN_AVERAGE_FLAG                             = "average"

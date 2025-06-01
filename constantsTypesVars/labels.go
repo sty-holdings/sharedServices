@@ -25,6 +25,7 @@ const (
 	LBL__APPROVED_BY                         = "APPROVED BY:"
 	LBL__APPROVED_BY_DATE                    = "APPROVED BY DATE:"
 	LBL_ARRAY_ELEMENT                        = "ARRAY ELEMENT:"
+	LBL_ATTEMPT_COUNT                        = "ATTEMPT COUNT:"
 	LBL_AUTHOR                               = "AUTHOR:"
 	LBL_AWS_ACCESS_KEY_ID                    = "AWS ACCESS KEY ID:"
 	LBL_AWS_ACCOUNT_INFO_FILENAME            = "AWS ACCOUNT INFO FILENAME:"
