@@ -170,33 +170,28 @@ func BuildSystemActionInternalUserIDLabelValueMessage(extensionName string, inte
 	return fmt.Sprintf("%s System Action: %s STYH Internal User Id: %s %s %s %s.", extensionName, systemAction, internalUserID, label, value, message)
 }
 
-// PrintError - will output error information using this format:
-// "[ERROR] {Error Message} Additional Info: '{Additional Info}' File: {Filename} Near Line Number: {Line Number}\n"
-// If the outputMode is displayed, the color will be red. The default is to output to the log.
+func GetErrorInfoString(errorInfo ErrorInfo) string {
+
+	return fmt.Sprintf("Error: %s Additional Info: '%s' \nStackTrace: %s\n", errorInfo.Error.Error(), errorInfo.AdditionalInfo, string(getStackTrace()))
+}
+
+// PrintError - processes and outputs error information with stack trace.
 //
 //	Customer Messages: None
-//	Errors: Missing values will be filled with 'MISSING'.
+//	Errors: errs.ErrEmptyError if myError is nil
 //	Verifications: None
 func PrintError(
 	myError error,
-	additionalInfo string,
 ) {
 
 	var (
-		buf       = make([]byte, 2048)
 		errorInfo ErrorInfo
 	)
 
-	runtime.Stack(buf, false)
 	if myError == nil {
-		errorInfo = newError(buf, ErrEmptyError)
+		errorInfo = newErrorInfoFromError(getStackTrace(), ErrEmptyError)
 	} else {
-		errorInfo = newError(buf, myError)
-	}
-	if additionalInfo == ctv.VAL_EMPTY {
-		errorInfo.AdditionalInfo = ctv.TXT_EMPTY
-	} else {
-		errorInfo.AdditionalInfo = additionalInfo
+		errorInfo = newErrorInfoFromError(getStackTrace(), myError)
 	}
 
 	outputError(errorInfo)
@@ -209,21 +204,31 @@ func PrintError(
 //	Customer Messages: None
 //	Errors: ErrEmptyError
 //	Verifications: None
-func PrintErrorInfo(errorInfo ErrorInfo) {
+func PrintErrorInfo(myErrorInfo ErrorInfo) {
 
 	var (
-		buf = make([]byte, 2048)
+		errorInfo ErrorInfo
 	)
 
-	runtime.Stack(buf, false)
-	if errorInfo.Error == nil {
-		errorInfo = newError(buf, ErrEmptyError)
-	}
+	errorInfo.AdditionalInfo = myErrorInfo.AdditionalInfo
+	errorInfo.Error = myErrorInfo.Error
+	errorInfo.Message = myErrorInfo.Message
+	errorInfo.StackTrace = string(getStackTrace())
 
 	outputError(errorInfo)
 }
 
 // Private Functions
+
+func getStackTrace() (stackTrace []byte) {
+
+	stackTrace = make([]byte, 2048)
+
+	runtime.Stack(stackTrace, false)
+
+	return
+}
+
 func outputError(errorInfo ErrorInfo) {
 
 	log.Printf(
@@ -234,7 +239,7 @@ func outputError(errorInfo ErrorInfo) {
 	)
 }
 
-func newError(stackTrace []byte, myError error) (errorInfo ErrorInfo) {
+func newErrorInfoFromError(stackTrace []byte, myError error) (errorInfo ErrorInfo) {
 
 	errorInfo.StackTrace = string(stackTrace)
 	errorInfo.Error = myError
