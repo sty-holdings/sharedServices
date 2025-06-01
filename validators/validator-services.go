@@ -189,6 +189,44 @@ func DoesWebsiteEmailMatch(email string, websiteURL string) bool {
 	return false
 }
 
+// DoSlicesMatch100Percent - checks whether two slices match 100% in terms of elements and their counts.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: vals.
+func DoSlicesMatch100Percent[T comparable](slice1, slice2 []T) bool {
+
+	if len(slice1) != len(slice2) {
+		return false
+	}
+
+	if len(slice1) == 0 {
+		return false
+	}
+
+	counts1 := make(map[T]int)
+	for _, val := range slice1 {
+		counts1[val]++
+	}
+
+	counts2 := make(map[T]int)
+	for _, val := range slice2 {
+		counts2[val]++
+	}
+
+	if len(counts1) != len(counts2) {
+		return false
+	}
+
+	for val, count := range counts1 {
+		if counts2[val] != count {
+			return false
+		}
+	}
+
+	return true
+}
+
 // IsBase64Encode - will check if string is a valid base64 string.
 //
 //	Customer Messages: None
