@@ -3,6 +3,7 @@ package sharedServices
 //goland:noinspection ALL
 const (
 	LBL_ACCOUNT_TYPE                         = "ACCOUNT TYPE:"
+	LBL_AGGREGATE_DATE                       = "AGGREGATED DATE:"
 	LBL_AI_CANDIDATE_TOKEN_COUNT             = "CANDIDATE TOKEN COUNT:"
 	LBL_AI_CONFIG_FILENAME                   = "AI CONFIG FILENAME:"
 	LBL_AI_INSTANCE_POINTER                  = "AI INSTANCE POINTER:"

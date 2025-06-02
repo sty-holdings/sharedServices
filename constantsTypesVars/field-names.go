@@ -8,6 +8,7 @@ const (
 	FN_ACCOUNT_ID                               = "account_id"
 	FN_ACCOUNT_NAME                             = "account_name"
 	FN_ACCOUNT_TYPE                             = "account_type"
+	FN_AGGREGATE_DATE                           = "aggregated_date"
 	FN_AI_MAX_OUTPUT_TOKENS                     = "ai_max_output_tokens"
 	FN_AI_MODEL_NAME                            = "ai_model_name"
 	FN_AI_OUTPUT_FORMAT                         = "ai_output_format"

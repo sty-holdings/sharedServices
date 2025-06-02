@@ -187,13 +187,13 @@ func PrintError(
 	}
 
 	errorInfo.AdditionalInfo = additionalInfo
-	
+
 	outputError(errorInfo)
 }
 
 // PrintErrorInfo - will output error information using this format:
 // "[ERROR] {Error Message} Additional Info: '{Additional Info}' File: {Filename} Near Line Number: {Line Number}\n"
-// If the outputMode is display, the color will be red. The default is to output to the log.
+// If the outputMode is displayed, the color will be red. The default is to output to the log.
 //
 //	Customer Messages: None
 //	Errors: ErrEmptyError
