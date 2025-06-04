@@ -110,9 +110,6 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		return
 	}
 
-	servicePtr.GRPCServerPtr = grpc.NewServer()
-	errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, ctv.LBL_POINTER)
-
 	return
 }
 
