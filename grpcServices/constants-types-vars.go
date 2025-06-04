@@ -48,7 +48,7 @@ type ServerParameters struct {
 	MaxConnectionAgeSec      int `json:"max_connection_age_sec,omitempty" yaml:"max_connection_age_sec,omitempty"`             // Maximum time that a channel may exist. Default: Infinite Recommended: Infinite (MaxConnectionAge)
 	MaxConnectionAgeGraceSec int `json:"max_connection_age_grace_sec,omitempty" yaml:"max_connection_age_grace_sec,omitempty"` // Grace period after the channel reaches its max age.
 	// Default: Infinite Recommended: Infinite (MaxConnectionAgeGrace)
-	PingInternalSec int `json:"ping_internal_sec" yaml:"ping_internal_sec"` // The interval in seconds between PING frames. The recommended value is 120 secs. The Go default property name is Time.
+	PingIntervalSec int `json:"ping_interval_sec" yaml:"ping_interval_sec"` // The interval in seconds between PING frames. The recommended value is 120 secs. The Go default property name is Time.
 	PingTimeoutSec  int `json:"ping_timeout_sec" yaml:"ping_timeout_sec"`   // The timeout in seconds for a PING frame to be acknowledged. The Go default property name is Timeout.
 }
 
