@@ -509,7 +509,7 @@ func validateConfig(config PSQLConfig, environment string) (errorInfo errs.Error
 		fallthrough
 	case PSQL_SSL_MODE_DISABLE:
 		if environment == ctv.VAL_ENVIRONMENT_LOCAL {
-			return
+			break
 		}
 		fallthrough
 	case PSQL_SSL_MODE_PREFER:
