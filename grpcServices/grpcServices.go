@@ -69,7 +69,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	if tConfig.DebugModeOn {
-		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
+		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, ERRORS))
 	}
 
 	// Configure keepalive enforcement policy

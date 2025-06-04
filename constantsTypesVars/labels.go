@@ -93,6 +93,7 @@ const (
 	LBL_DAVEKNOWS_NET                        = "DAVEKNOWS.NET:"
 	LBL_DEBUG_MESSAGE                        = "DEBUG MESSAGE:"
 	LBL_DEBUG_MODE                           = "DEBUG MODE:"
+	LBL_DEBUG_LEVEL                          = "DEBUG LEVEL:"
 	LBL_DECIPHER_BLOCK                       = "DECIPHER BLOCK:"
 	LBL_DIRECTORY                            = "DIRECTORY:"
 	LBL_DK_REPLY                             = "DK REPLY:"

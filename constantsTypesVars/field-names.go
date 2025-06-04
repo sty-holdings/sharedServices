@@ -100,6 +100,7 @@ const (
 	FN_DATATYPE_UINT8                           = "uint8"
 	FN_DATATYPE_UINTPTR                         = "uintptr"
 	FN_DAY_VALUES                               = "day_values"
+	FN_DEBUG_LEVEL                              = "debug_level"
 	FN_DEBUG_MODE_ON                            = "debug_mode_on"
 	FN_DESCRIPTION                              = "description"
 	FN_DETAIL_FLAG                              = "detail"

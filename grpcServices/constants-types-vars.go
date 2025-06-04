@@ -6,7 +6,16 @@ import (
 
 	"google.golang.org/grpc"
 
+	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
+)
+
+//goland:noinspection ALL
+const (
+	ONLY_FATAL    = ctv.VAL_ZERO
+	ERRORS        = ctv.VAL_ONE
+	WARNING_INFO  = ctv.VAL_TWO
+	DEBUG_VERBOSE = ctv.VAL_THREE
 )
 
 // For Reference: https://pkg.go.dev/google.golang.org/grpc/keepalive@v1.71.0#pkg-types
