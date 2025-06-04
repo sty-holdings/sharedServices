@@ -19,7 +19,8 @@ const (
 	PSQL_SSL_MODE_VERIFY      = "verify-ca"
 	PSQL_SSL_MODE_VERIFY_FULL = "verify-full"
 	//
-	PSQL_CONN_STRING = "dbname=%s host=%s password=%s port=%d sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s connect_timeout=%d user=%s"
+	PSQL_CONN_STRING         = "dbname=%s host=%s password=%s port=%d sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s connect_timeout=%d user=%s"
+	PSQL_CONN_STRING_DISABLE = "dbname=%s host=%s password=%s port=%d sslmode=%s connect_timeout=%d user=%s"
 	//
 	SET_ROLE       = "SET ROLE %s;"
 	TRUNCATE_TABLE = "TRUNCATE TABLE %s.%s;"

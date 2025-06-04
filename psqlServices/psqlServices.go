@@ -356,7 +356,20 @@ func (psqlServicePtr *PSQLService) TruncateTable(database string, schema string,
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func buildConnectionString(config PSQLConfig, databaseName string) string {
+func buildConnectionString(config PSQLConfig, databaseName string, environment string) string {
+
+	if environment == ctv.VAL_ENVIRONMENT_LOCAL {
+		return fmt.Sprintf(
+			PSQL_CONN_STRING_DISABLE,
+			databaseName,
+			config.Host,
+			config.Password,
+			config.Port,
+			config.SSLMode,
+			config.Timeout,
+			config.UserName,
+		)
+	}
 
 	return fmt.Sprintf(
 		PSQL_CONN_STRING,
