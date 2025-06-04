@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"strconv"
@@ -69,7 +70,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	if tConfig.DebugModeOn {
-		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, ERRORS))
+		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(io.Discard, os.Stdout, os.Stdout, ctv.VAL_ONE))
 	}
 
 	// Configure keepalive enforcement policy
