@@ -116,6 +116,7 @@ const (
 	LBL_EXTENSION_EXTRACTOR                  = "EXTRACTOR:"
 	LBL_EXTENSION_HAL                        = "HAL:"
 	LBL_EXTENSION_NAME                       = "EXTENSION NAME:"
+	LBL_EXTENSION_STARGATE                   = "STARGATE:"
 	LBL_EXTENSION_UTILITY                    = "UTILITY:"
 	LBL_EXTRACT_DATE                         = "EXTRACT DATE:"
 	LBL_EXTRACT_DATA_INTERVAL_SEC            = "EXTRACT DATA INTERVAL SEC:"
