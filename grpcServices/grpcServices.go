@@ -86,7 +86,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	tGRPCServerOptions = append(
 		tGRPCServerOptions, grpc.KeepaliveParams(
 			keepalive.ServerParameters{
-				Time:    time.Duration(tConfig.ServerKeepAlive.ServerParameters.PingInternalSec) * time.Second,
+				Time:    time.Duration(tConfig.ServerKeepAlive.ServerParameters.PingIntervalSec) * time.Second,
 				Timeout: time.Duration(tConfig.ServerKeepAlive.ServerParameters.PingTimeoutSec) * time.Second,
 			},
 		),
@@ -313,7 +313,7 @@ func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo
 	// The config.ServerKeepAlive.ServerParameters.MaxConnectionIdleSec uses the default setting and is optional.
 	// The config.ServerKeepAlive.ServerParameters.MaxConnectionAgeSec uses the default setting and is optional.
 	// Then config.ServerKeepAlive.ServerParameters.MaxConnectionAgeGraceSec uses the default setting and is optional.
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingInternalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
