@@ -59,7 +59,7 @@ func NewPSQLServer(configFilename string, environment string) (servicePtr *PSQLS
 	servicePtr.ConnectionPoolPtrs = make(map[string]*pgxpool.Pool)
 
 	for _, databaseName := range tConfig.DBNames {
-		if servicePtr.ConnectionPoolPtrs[databaseName], servicePtr.GORMPoolPtrs[databaseName], errorInfo = getConnection(tConfig, databaseName); errorInfo.Error != nil {
+		if servicePtr.ConnectionPoolPtrs[databaseName], servicePtr.GORMPoolPtrs[databaseName], errorInfo = getConnection(tConfig, databaseName, environment); errorInfo.Error != nil {
 			return
 		}
 	}
@@ -404,7 +404,7 @@ func buildConnectionString(config PSQLConfig, databaseName string, environment s
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *pgxpool.Pool, gormPoolPtr *gorm.DB, errorInfo errs.ErrorInfo) {
+func getConnection(config PSQLConfig, databaseName string, environment string) (connectionPoolPtr *pgxpool.Pool, gormPoolPtr *gorm.DB, errorInfo errs.ErrorInfo) {
 
 	var (
 		newLogger         logger.Interface
@@ -413,7 +413,7 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 		tDialector        gorm.Dialector
 	)
 
-	tConnectionString = buildConnectionString(config, databaseName)
+	tConnectionString = buildConnectionString(config, databaseName, environment)
 
 	if config.GORM.UseGorm {
 		tDialector = postgres.New(
