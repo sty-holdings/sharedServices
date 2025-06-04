@@ -406,7 +406,7 @@ func getConnection(config PSQLConfig, databaseName string) (connectionPoolPtr *p
 		tDialector = postgres.New(
 			postgres.Config{
 				DSN:                  tConnectionString,
-				PreferSimpleProtocol: false, // This is the default and provided here for documentation. Only change to true is there are issues.
+				PreferSimpleProtocol: false, // This is the default and provided here for documentation. Only change this to true is there are issues.
 			},
 		)
 
@@ -506,11 +506,11 @@ func validateConfig(config PSQLConfig, environment string) (errorInfo errs.Error
 	}
 	switch config.SSLMode {
 	case PSQL_SSL_MODE_ALLOW:
+		fallthrough
+	case PSQL_SSL_MODE_DISABLE:
 		if environment == ctv.VAL_ENVIRONMENT_LOCAL {
 			return
 		}
-		fallthrough
-	case PSQL_SSL_MODE_DISABLE:
 		fallthrough
 	case PSQL_SSL_MODE_PREFER:
 		fallthrough
