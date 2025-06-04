@@ -272,9 +272,17 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 	return
 }
 
+// validateConfig - validates the provided GRPC configuration and its individual parameters.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrGreaterThanZero, errs.ErrInvalidGRPCPort, errs.ErrInvalidGRPCTimeout
+//	Verifications: ctv.
 func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.KeepAlive.ServerMinPingTime, ctv.LBL_SERVER_MIN_PING_TIME); errorInfo.Error != nil {
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {

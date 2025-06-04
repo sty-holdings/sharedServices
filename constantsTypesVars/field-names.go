@@ -239,6 +239,7 @@ const (
 	FN_SERVER_DEBUG_MODE_ON                     = "server_debug_mode_on"
 	FN_SERVER_INSTANCE_NUMBER                   = "server_instance_number"
 	FN_SERVER_NAME                              = "server_name"
+	FN_SERVER_MIN_PING_TIME                     = "server_min_ping_time"
 	FN_SERVER_VERSION                           = "server_version"
 	FN_SERVICE_CONFIG_FILENAME                  = "service_config_filename"
 	FN_SERVICE_CONFIG_FILENAMES                 = "service_config_filenames"

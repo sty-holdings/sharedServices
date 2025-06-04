@@ -23,17 +23,19 @@ type KeepAlive struct {
 	PingInternalSec     int  `json:"ping_internal_sec" yaml:"ping_internal_sec"`
 	PingTimeoutSec      int  `json:"ping_timeout_sec" yaml:"ping_timeout_sec"`
 	PermitWithoutStream bool `json:"permit_without_stream" yaml:"permit_without_stream"`
+	ServerMinPingTime   int  `json:"server_min_ping_time,omitempty" yaml:"server_min_ping_time,omitempty"`
 }
 
 type GRPCService struct {
-	debugModeOn     bool
-	GRPCListenerPtr *net.Listener
-	GRPCServerPtr   *grpc.Server
-	GRPCClientPtr   *grpc.ClientConn
-	Host            string
-	Port            uint
-	Secure          SecureSettings
-	Timeout         time.Duration
+	debugModeOn       bool
+	GRPCListenerPtr   *net.Listener
+	GRPCServerPtr     *grpc.Server
+	GRPCClientPtr     *grpc.ClientConn
+	Host              string
+	Port              uint
+	Secure            SecureSettings
+	ServerMinPingTime uint
+	Timeout           time.Duration
 }
 
 // If both ServerSide and Mutual are false, then it is the default NoClient.

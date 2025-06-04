@@ -263,6 +263,7 @@ const (
 	LBL_SENTENCE_SUBJECT_ADVERB              = "SENTENCE SUBJECT ADVERB:"
 	LBL_SERVER_DEBUG_MODE                    = "SERVER DEBUG MODE:"
 	LBL_SERVER_INSTANCE_NUMBER               = "SERVER INSTANCE NUMBER:"
+	LBL_SERVER_MIN_PING_TIME                 = "SERVER MIN PING TIME:"
 	LBL_SERVER_NAME                          = "SERVER_NAME:"
 	LBL_SERVER_VERSION                       = "SERVER VERSION:"
 	LBL_SERVICE_AI                           = "AI SERVICE:"
