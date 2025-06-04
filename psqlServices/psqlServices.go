@@ -34,7 +34,7 @@ var (
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo errs.ErrorInfo) {
+func NewPSQLServer(configFilename string, environment string) (servicePtr *PSQLService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfig PSQLConfig
@@ -48,7 +48,7 @@ func NewPSQLServer(configFilename string) (servicePtr *PSQLService, errorInfo er
 		return
 	}
 
-	if errorInfo = validateConfig(tConfig); errorInfo.Error != nil {
+	if errorInfo = validateConfig(tConfig, environment); errorInfo.Error != nil {
 		return
 	}
 
@@ -374,12 +374,12 @@ func buildConnectionString(config PSQLConfig, databaseName string) string {
 }
 
 // getConnection - will create a connection pool and connect to a database.
-// DBName   		Name of the Postgres database
-// Host     		Internet DNS or IP address of the server running the instance of Postgres
-// Max Connections 	Must be greater than 0 and less than 100 across all instances.
-// Password 		Encrypted password for authentication
-// Port     		Interface the connection communicates with Postgres
-// SSL Mode 		Which mode will be used to connect to the PSQL server.
+// DBName:   		Name of the Postgres database
+// Host:     		Internet DNS or IP address of the server running the instance of Postgres
+// Max Connections:	Must be greater than 0 and less than 100 across all instances.
+// Password:        Encrypted password for authentication
+// Port:            Interface the connection communicates with Postgres
+// SSL Mode:        Which mode will be used to connect to the PSQL server.
 //
 //						Blocked: See PSQL_SSL_MODE_DISABLE, PSQL_SSL_MODE_ALLOW, PSQL_SSL_MODE_PREFER, PSQL_SSL_MODE_REQUIRED
 //						Supported: PSQL_SSL_MODE_VERIFY, PSQL_SSL_MODE_VERIFY_FULL
@@ -485,7 +485,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
+func validateConfig(config PSQLConfig, environment string) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
@@ -506,6 +506,9 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	}
 	switch config.SSLMode {
 	case PSQL_SSL_MODE_ALLOW:
+		if environment == ctv.VAL_ENVIRONMENT_LOCAL {
+			return
+		}
 		fallthrough
 	case PSQL_SSL_MODE_DISABLE:
 		fallthrough
@@ -532,9 +535,7 @@ func validateConfig(config PSQLConfig) (errorInfo errs.ErrorInfo) {
 	if config.Timeout < ctv.VAL_ONE && config.Timeout >= ctv.VAL_FIVE {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(ctv.LBL_SERVICE_PSQL, ctv.LBL_PSQL_TIMEOUT, strconv.Itoa(config.Timeout)))
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.UserName, ctv.LBL_PSQL_USER_NAME); errorInfo.Error != nil {
-		return
-	}
+	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.UserName, ctv.LBL_PSQL_USER_NAME)
 
 	return
 }
