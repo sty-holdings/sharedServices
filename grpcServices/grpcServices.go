@@ -37,9 +37,10 @@ import (
 func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
-		tCreds    credentials.TransportCredentials
-		tListener net.Listener
-		tConfig   GRPCConfig
+		tCreds             credentials.TransportCredentials
+		tListener          net.Listener
+		tConfig            GRPCConfig
+		tGRPCServerOptions []grpc.ServerOption
 	)
 
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC_SERVER, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
@@ -55,18 +56,41 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	servicePtr = &GRPCService{
-		debugModeOn: tConfig.DebugModeOn,
+		debugModeOn:   tConfig.DebugModeOn,
+		GRPCClientPtr: nil,
+		Host:          tConfig.Host,
+		Port:          uint(tConfig.Port),
 		Secure: SecureSettings{
 			ServerSide: tConfig.Secure.ServerSide,
 			Mutual:     tConfig.Secure.Mutual,
 		},
-		Host: tConfig.Host,
-		Port: uint(tConfig.Port),
+		ServerMinPingTime: 0,
+		Timeout:           0,
 	}
 
 	if tConfig.DebugModeOn {
 		grpclog.SetLoggerV2(grpclog.NewLoggerV2WithVerbosity(os.Stdout, os.Stdout, os.Stdout, 2))
 	}
+
+	// Configure keepalive enforcement policy
+	tGRPCServerOptions = append(
+		tGRPCServerOptions, grpc.KeepaliveEnforcementPolicy(
+			keepalive.EnforcementPolicy{
+				MinTime:             time.Duration(tConfig.ServerKeepAlive.ServerEnforcementPolicy.MinTimeClientPingsSec) * time.Second,
+				PermitWithoutStream: tConfig.ServerKeepAlive.ServerEnforcementPolicy.PermitWithoutStream,
+			},
+		),
+	)
+
+	// Configure keepalive parameters
+	tGRPCServerOptions = append(
+		tGRPCServerOptions, grpc.KeepaliveParams(
+			keepalive.ServerParameters{
+				Time:    time.Duration(tConfig.ServerKeepAlive.ServerParameters.PingInternalSec) * time.Second,
+				Timeout: time.Duration(tConfig.ServerKeepAlive.ServerParameters.PingTimeoutSec) * time.Second,
+			},
+		),
+	)
 
 	if tListener, errorInfo.Error = net.Listen(ctv.VAL_TCP, fmt.Sprintf("%s:%d", servicePtr.Host, servicePtr.Port)); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC_SERVER, ctv.LBL_GRPC_LISTENER, ctv.TXT_FAILED))
@@ -78,8 +102,11 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		if tCreds, errorInfo = LoadTLSCredentialsCACertKey(ctv.LBL_SERVICE_GRPC_SERVER, tConfig.TLSInfo); errorInfo.Error != nil {
 			return
 		}
-		servicePtr.GRPCServerPtr = grpc.NewServer(grpc.Creds(tCreds))
-		errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, ctv.LBL_POINTER)
+		tGRPCServerOptions = append(tGRPCServerOptions, grpc.Creds(tCreds))
+	}
+
+	servicePtr.GRPCServerPtr = grpc.NewServer(tGRPCServerOptions...)
+	if errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, ctv.LBL_POINTER); errorInfo.Error != nil {
 		return
 	}
 
@@ -89,15 +116,11 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	return
 }
 
-// NewGRPCClient - builds a reusable gRPC Client. The Host and Port must match the server. This will not create the message client or
-// execute any services. Here are examples for reference:
-//
-//		d := protos_def.NewHalServicesClient(gRPCServicePtr.GRPCClientPtr)
-//		myPongReplyPtr, err = d.PingPong(gRPCServicePtr.timeoutContext, &protos_def.PingRequest{Email: "scott-DK@yackofamily.com"},
+// NewGRPCClient - initializes and returns a Client GRPCService pointer along with error details.
 //
 //	Customer Messages: None
-//	Errors: None
-//	Verifications: None
+//	Errors: errs.ErrorInfo
+//	Verifications: validateConfig, hlps.CheckValueNotEmpty
 func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -145,12 +168,12 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	}
 	tDailOptions = append(tDailOptions, tDailOption)
 
-	if tConfig.KeepAlive != (KeepAlive{}) {
+	if tConfig.ClientKeepAlive != (ClientKeepAlive{}) {
 		tDailOption = grpc.WithKeepaliveParams(
 			keepalive.ClientParameters{
-				Time:                time.Duration(tConfig.KeepAlive.PingInternalSec) * time.Second, // Ping interval.
-				Timeout:             time.Duration(tConfig.KeepAlive.PingTimeoutSec) * time.Second,
-				PermitWithoutStream: tConfig.KeepAlive.PermitWithoutStream,
+				Time:                time.Duration(tConfig.ClientKeepAlive.PingIntervalSec) * time.Second,
+				Timeout:             time.Duration(tConfig.ClientKeepAlive.PingTimeoutSec) * time.Second,
+				PermitWithoutStream: tConfig.ClientKeepAlive.PermitWithoutStream,
 			},
 		)
 		tDailOptions = append(tDailOptions, tDailOption)
@@ -279,16 +302,29 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 //	Verifications: ctv.
 func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
+	// The config.DebugModeOn is either true or false. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.KeepAlive.ServerMinPingTime, ctv.LBL_SERVER_MIN_PING_TIME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerEnforcementPolicy.MinTimeClientPingsSec, ctv.LBL_MIN_TIME_CLIENT_PINGS_SEC); errorInfo.Error != nil {
+		return
+	}
+	// The config.ServerKeepAlive.ServerEnforcementPolicy.PermitWithoutStream is either true or false. No need to check the value.
+	// The config.ServerKeepAlive.ServerParameters.MaxConnectionIdleSec uses the default setting and is optional.
+	// The config.ServerKeepAlive.ServerParameters.MaxConnectionAgeSec uses the default setting and is optional.
+	// Then config.ServerKeepAlive.ServerParameters.MaxConnectionAgeGraceSec uses the default setting and is optional.
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingInternalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(creator, ctv.LBL_GRPC_PORT, strconv.Itoa(config.Port)))
 		return
 	}
+	// The config.Secure.ServerSide is either true or false. No need to check the value.
+	// The config.Secure.Mutual is either true or false and is optional. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
