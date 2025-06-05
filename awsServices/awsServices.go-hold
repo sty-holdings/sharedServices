@@ -735,7 +735,7 @@ func PullCognitoUserInfo(
 // 	return
 // }
 
-// Private functions below here
+// Private Functions
 
 // areAWSClaimsValid - Checks if email is verified and token is either an Id or Access token.
 // func areAWSClaimsValid(
