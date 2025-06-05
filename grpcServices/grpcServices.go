@@ -142,7 +142,8 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		return
 	}
 
-	errs.PrintErrorInfo(errorInfo)
+	log.Printf("tConfig: %v", tConfig)
+	
 	gRPCServicePtr = &GRPCService{
 		debugModeOn: tConfig.DebugModeOn,
 		Host:        tConfig.Host,
