@@ -143,7 +143,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	}
 
 	log.Printf("tConfig: %v", tConfig)
-	
+
 	gRPCServicePtr = &GRPCService{
 		debugModeOn: tConfig.DebugModeOn,
 		Host:        tConfig.Host,
@@ -355,6 +355,8 @@ func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrGreaterThanZero, errs.ErrInvalidGRPCPort, errs.ErrInvalidGRPCTimeout
 //	Verifications: ctv.
 func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
+
+	log.Printf("validateClientConfig: config: %+v", config)
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
