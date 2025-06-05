@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"os"
 	"strconv"
@@ -138,11 +137,8 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 	}
 
 	if errorInfo = validateClientConfig(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
-
-	log.Printf("tConfig: %v", tConfig)
 
 	gRPCServicePtr = &GRPCService{
 		debugModeOn: tConfig.DebugModeOn,
@@ -161,8 +157,6 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 
 	tGRPCAddress = fmt.Sprintf("%s:%s", tConfig.Host, strconv.Itoa(tConfig.Port)) // Localhost in the host file must point to 127.0.0.1 only.
 
-	log.Printf("tGRPCAddress: %s", tGRPCAddress)
-
 	if gRPCServicePtr.Secure.ServerSide {
 		if tDailOption, errorInfo = LoadTLSCABundle(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig.TLSInfo); errorInfo.Error != nil {
 			return
@@ -171,8 +165,6 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		tDailOption = grpc.WithTransportCredentials(insecure.NewCredentials())
 	}
 	tDailOptions = append(tDailOptions, tDailOption)
-
-	log.Printf("tDailOptions: %v", tDailOptions)
 
 	if tConfig.ClientKeepAlive != (ClientKeepAlive{}) {
 		tDailOption = grpc.WithKeepaliveParams(
@@ -184,8 +176,6 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		)
 		tDailOptions = append(tDailOptions, tDailOption)
 	}
-
-	log.Printf("tDailOptions: %v", tDailOptions)
 
 	if gRPCServicePtr.GRPCClientPtr, errorInfo.Error = grpc.NewClient(tGRPCAddress, tDailOptions...); errorInfo.Error != nil {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_GRPC_CLIENT, ctv.LBL_GRPC_CLIENT, ctv.TXT_FAILED))
@@ -356,43 +346,33 @@ func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 //	Verifications: ctv.
 func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
-	log.Printf("validateClientConfig: config: %+v", config)
-
 	// The config.DebugModeOn is either true or false. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(creator, ctv.LBL_GRPC_PORT, strconv.Itoa(config.Port)))
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	// The config.Secure.ServerSide is either true or false. No need to check the value.
 	// The config.Secure.Mutual is either true or false and is optional. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 		return
 	}
 	if config.Timeout < ctv.VAL_ONE {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(creator, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.Timeout)))
-		errs.PrintErrorInfo(errorInfo)
 	}
 
 	return
