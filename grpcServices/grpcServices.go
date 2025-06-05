@@ -52,7 +52,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		return
 	}
 
-	if errorInfo = validateConfig(ctv.LBL_SERVICE_GRPC_SERVER, tConfig); errorInfo.Error != nil {
+	if errorInfo = validateServerConfig(ctv.LBL_SERVICE_GRPC_SERVER, tConfig); errorInfo.Error != nil {
 		return
 	}
 
@@ -136,7 +136,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		return
 	}
 
-	if errorInfo = validateConfig(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig); errorInfo.Error != nil {
+	if errorInfo = validateClientConfig(ctv.LBL_SERVICE_GRPC_CLIENT, tConfig); errorInfo.Error != nil {
 		return
 	}
 
@@ -293,12 +293,12 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 	return
 }
 
-// validateConfig - validates the provided GRPC configuration and its individual parameters.
+// validateServerConfig - validates the server configuration settings.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrGreaterThanZero, errs.ErrInvalidGRPCPort, errs.ErrInvalidGRPCTimeout
-//	Verifications: ctv.
-func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
+//	Errors: errs.Err if validation fails
+//	Verifications: ctv. for label constants, hlps.CheckValueNotEmpty, hlps.CheckValueGreatZero to validate configurations
+func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
 	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
@@ -315,6 +315,45 @@ func validateConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
+		return
+	}
+	if config.Port < ctv.VAL_GRPC_MIN_PORT {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCPort, errs.BuildLabelValue(creator, ctv.LBL_GRPC_PORT, strconv.Itoa(config.Port)))
+		return
+	}
+	// The config.Secure.ServerSide is either true or false. No need to check the value.
+	// The config.Secure.Mutual is either true or false and is optional. No need to check the value.
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if config.Timeout < ctv.VAL_ONE {
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidGRPCTimeout, errs.BuildLabelValue(creator, ctv.LBL_GRPC_TIMEOUT, strconv.Itoa(config.Timeout)))
+	}
+
+	return
+}
+
+// validateClientConfig - validates the configuration for a gRPC client.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrGreaterThanZero, errs.ErrInvalidGRPCPort, errs.ErrInvalidGRPCTimeout
+//	Verifications: ctv.
+func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
+
+	// The config.DebugModeOn is either true or false. No need to check the value.
+	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {
