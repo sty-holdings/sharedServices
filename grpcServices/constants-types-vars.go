@@ -23,7 +23,7 @@ type GRPCConfig struct {
 
 // If you are using Keep Alive, both the client and server must have keep alive enabled.
 type ClientKeepAlive struct {
-	PingIntervalSec     int  `json:"ping_internal_sec" yaml:"ping_internal_sec"`         // The Go default property name is Time. Default: none Recommended: 120 secs
+	PingIntervalSec     int  `json:"ping_interval_sec" yaml:"ping_interval_sec"`         // The Go default property name is Time. Default: none Recommended: 120 secs
 	PingTimeoutSec      int  `json:"ping_timeout_sec" yaml:"ping_timeout_sec"`           // The Go default property name is Timeout.
 	PermitWithoutStream bool `json:"permit_without_stream" yaml:"permit_without_stream"` // The Go default property name is PermitWithoutStream. Default: false Recommended: true
 }
