@@ -330,6 +330,10 @@ func getClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) 
 		clientStruct.CompanyName = value.(string)
 	}
 
+	if value, ok = clientInfo[ctv.FN_DEMO_ACCOUNT]; ok {
+		clientStruct.DemoAccount = value.(bool)
+	}
+
 	if value, ok = clientInfo[ctv.FN_FORMATION_TYPE]; ok {
 		clientStruct.FormationType = value.(string)
 	}

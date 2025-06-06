@@ -104,6 +104,7 @@ const (
 	FN_DEBUG_MODE_ON                            = "debug_mode_on"
 	FN_DEFAULT_SENDER_ADDRESS                   = "default_sender_address"
 	FN_DEFAULT_SENDER_NAME                      = "default_sender_name"
+	FN_DEMO_ACCOUNT                             = "demo_account"
 	FN_DESCRIPTION                              = "description"
 	FN_DETAIL_FLAG                              = "detail"
 	FN_DISPUTE                                  = "dispute"

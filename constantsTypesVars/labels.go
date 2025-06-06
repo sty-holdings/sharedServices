@@ -97,6 +97,7 @@ const (
 	LBL_DECIPHER_BLOCK                       = "DECIPHER BLOCK:"
 	LBL_DEFAULT_SENDER_ADDRESS               = "DEFAULT_SENDER_ADDRESS:"
 	LBL_DEFAULT_SENDER_NAME                  = "DEFAULT_SENDER_NAME:"
+	LBL_DEMO_ACCOUNT                         = "DEMO ACCOUNT:"
 	LBL_DIRECTORY                            = "DIRECTORY:"
 	LBL_DK_REPLY                             = "DK REPLY:"
 	LBL_DK_REQEST                            = "DK REQUEST:"

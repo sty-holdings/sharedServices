@@ -14,6 +14,7 @@ type InternalClient struct {
 	CreateTimestamp struct {
 		Time time.Time `json:"__time__"`
 	} `firebase:"create_timestamp" json:"create_timestamp" yaml:"create_timestamp"`
+	DemoAccount                  bool     `firebase:"demo_account" json:"demo_account" yaml:"demo_account"`
 	FormationType                string   `firestore:"formation_type" json:"formation_type" yaml:"formation_type"`
 	GoogleAdsAccounts            []string `firebase:"google_ads_accounts" json:"google_ads_accounts" yaml:"google_ads_accounts"`
 	InternalClientID             string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
