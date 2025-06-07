@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"math"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -712,6 +713,14 @@ func GetQuarterStartEndDate(year int, quarter int) (quarterStart string, quarter
 	}
 
 	return
+}
+
+func GetRandomNumber(min int, max int) int {
+
+	tSourcePtr := rand.NewSource(time.Now().UnixNano())
+	tRandomPtr := rand.New(tSourcePtr)
+
+	return tRandomPtr.Intn(max-min) + min
 }
 
 // GetSundaySaturdayFromYearMonthDay takes the year, month, and day as int values
