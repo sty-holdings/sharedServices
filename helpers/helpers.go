@@ -8,6 +8,7 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"net/url"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -591,6 +592,29 @@ func GetDateParts(dateString string) (dateParts []string, errorInfo errs.ErrorIn
 	}
 
 	return
+}
+
+// GetDomain - extracts the domain name from the given website URL.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrorInfo if the URL is invalid.
+//	Verifications: None
+func GetDomain(website string) (domain string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tURL *url.URL
+	)
+
+	if strings.Contains(website, "://") == false {
+		website = fmt.Sprintf("http://%s", website)
+	}
+
+	if tURL, errorInfo.Error = url.Parse(website); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, website, ctv.TXT_IS_INVALID))
+		return
+	}
+
+	return strings.TrimPrefix(tURL.Hostname(), "www."), errs.ErrorInfo{}
 }
 
 // GetDay - returns the current day of the month as an integer
