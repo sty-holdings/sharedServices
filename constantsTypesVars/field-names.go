@@ -252,6 +252,7 @@ const (
 	FN_SERVER_VERSION                           = "server_version"
 	FN_SERVICE_CONFIG_FILENAME                  = "service_config_filename"
 	FN_SERVICE_CONFIG_FILENAMES                 = "service_config_filenames"
+	FN_SESSION_ID                               = "session_id"
 	FN_SHORT_URL                                = "short_URL"
 	FN_SIGNAL                                   = "signal"
 	FN_SKELETON_DIRECTORY                       = "skeleton_config_directory"
