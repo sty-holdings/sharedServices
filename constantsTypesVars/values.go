@@ -43,6 +43,7 @@ const (
 //goland:noinspection All
 const (
 	VAL_DAVEKNOWS_NET                = "daveknows.net"
+	VAL_DAVEKNOWS_NET_DEFAULT_PORT   = 8443
 	VAL_ENVIRONMENT_LOCAL            = "local"
 	VAL_ENVIRONMENT_DEVELOPMENT      = "development"
 	VAL_ENVIRONMENT_PRODUCTION       = "production"
