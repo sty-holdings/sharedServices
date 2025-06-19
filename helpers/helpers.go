@@ -1146,12 +1146,13 @@ func GenerateUUIDType1(removeDashes bool) (myUUID string) {
 	return
 }
 
-// GenerateUUIDType4 - generates a 128-bit random UUID. It is highly likely to be unique but not guaranteed. If uniqueness is needed
-// used UUID type 1 (GenerateUUIDType1)
+// GenerateUUIDType4 - generates a 128-bit random UUID. It is highly likely to be unique but not guaranteed. If uniqueness is needed, use
 //
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
+//	 UUID type 1 (GenerateUUIDType1)
+//
+//		Customer Messages: None
+//		Errors: None
+//		Verifications: None
 func GenerateUUIDType4(removeDashes bool) (myUUID string) {
 
 	_UUID, _ := uuid.NewRandom()

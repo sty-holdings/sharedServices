@@ -15,6 +15,7 @@ const (
 
 //goland:noinspection All
 const (
-	DATASTORE_USERS   = "users"
-	DATASTORE_CLIENTS = "clients"
+	DATASTORE_ACCESS_CODE = "access"
+	DATASTORE_CLIENTS     = "clients"
+	DATASTORE_USERS       = "users"
 )

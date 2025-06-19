@@ -35,7 +35,7 @@ func GetAllClientsInfo(firestoreClientPtr *firestore.Client) (internalClientsInf
 	}
 
 	for _, document := range tDocumentSnapshotsPtrs {
-		if tInternalClient, errorInfo = getClientStruct(document.Data(), document.Ref.ID); errorInfo.Error != nil {
+		if tInternalClient, errorInfo = GetClientStruct(document.Data(), document.Ref.ID); errorInfo.Error != nil {
 			return
 		}
 		internalClientsInfo = append(internalClientsInfo, tInternalClient)
@@ -89,7 +89,7 @@ func GetClientInfo(firestoreClientPtr *firestore.Client, internalClientID string
 		return
 	}
 
-	clientInfo, errorInfo = getClientStruct(tDocumentSnapshotPtr.Data(), tDocumentSnapshotPtr.Ref.ID)
+	clientInfo, errorInfo = GetClientStruct(tDocumentSnapshotPtr.Data(), tDocumentSnapshotPtr.Ref.ID)
 
 	return
 }
@@ -106,6 +106,132 @@ func GetClientUserInfo(firebaseAuthPtr *auth.Client, firestoreClientPtr *firesto
 	}
 
 	clientUserInfo.MyInternalClient, errorInfo = GetClientInfo(firestoreClientPtr, clientUserInfo.MyInternalUser.InternalClientID)
+
+	return
+}
+
+func GetClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) (clientStruct InternalClient, errorInfo errs.ErrorInfo) {
+
+	var (
+		jsonData []byte
+		ok       bool
+		value    interface{}
+	)
+
+	clientStruct.InternalClientID = clientInfoRefID
+
+	if value, ok = clientInfo[ctv.FN_COMPANY_NAME]; ok {
+		clientStruct.CompanyName = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_DEMO_ACCOUNT]; ok {
+		clientStruct.DemoAccount = value.(bool)
+	}
+
+	if value, ok = clientInfo[ctv.FN_FORMATION_TYPE]; ok {
+		clientStruct.FormationType = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.GoogleAdsAccounts); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	if value, ok = clientInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.LinkedinPageIds); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	clientStruct.OnBoarded = false // Default unless reset by the clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] code below. DO NOT REMOVE
+
+	if value, ok = clientInfo[ctv.FN_OWNERS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.Owners); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+	}
+
+	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
+		clientStruct.PayPalClientID = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
+		clientStruct.PayPalClientSecret = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PHONE_COUNTRY_CODE]; ok {
+		clientStruct.PhoneCountryCode = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PHONE_AREA_CODE]; ok {
+		clientStruct.PhoneAreaCode = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_PHONE_NUMBER]; ok {
+		clientStruct.PhoneNumber = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS]; ok {
+		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_MARSHAL_FAILED))
+			return
+		}
+		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaaSClientProviders); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
+			return
+		}
+		if len(clientStruct.SaaSClientProviders) > ctv.VAL_ZERO {
+			clientStruct.OnBoarded = true
+		}
+	}
+
+	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_CONNECT_ACCOUNT_ID]; ok {
+		clientStruct.StripeClientConnectAccountId = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_REFRESH_TOKEN]; ok {
+		clientStruct.StripeClientRefreshToken = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_STRIPE_INITIAL_PULL_DATA_STATUS]; ok {
+		clientStruct.StripeInitialPullDataStatus = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_STRIPE_PULL_FREQUENCY]; ok {
+		clientStruct.StripePullFrequency = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_STRIPE_START_DATE]; ok {
+		clientStruct.StripeStartDate = value.(string)
+	}
+
+	if value, ok = clientInfo[ctv.FN_TIMEZONE_HQ]; ok {
+		clientStruct.TimezoneHQ = value.(string)
+		if clientStruct.TimezoneHQLocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.TimezoneHQ); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.TimezoneHQ))
+			return
+		}
+	}
+
+	if value, ok = clientInfo[ctv.FN_WEBSITE_URL]; ok {
+		clientStruct.WebsiteURL = value.(string)
+	}
 
 	return
 }
@@ -309,6 +435,47 @@ func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, internalClien
 	return
 }
 
+func RedeemAccessCode(firestoreClientPtr *firestore.Client, internalClientID string, accessCode string) (errorInfo errs.ErrorInfo) {
+
+	// var (
+	// 	tDocumentPtr *firestore.DocumentSnapshot
+	// )
+	//
+	// if tDocumentPtr, errorInfo = fbs.GetDocumentById(firestoreClientPtr, fbs.DATASTORE_ACCESS_CODE, accessCode); errorInfo.Error != nil {
+	// 	errs.PrintErrorInfo(errorInfo)
+	// 	return
+	// }
+	//
+	// if errorInfo = fbs.RemoveDocument(
+	// 	firestoreClientPtr, fbs.DATASTORE_ACCESS_CODE, fbs.NameValueQuery{
+	// 		FieldName:  ctv.FN_ACCESS_CODE,
+	// 		FieldValue: accessCode,
+	// 	},
+	// ); errorInfo.Error != nil {
+	// 	errs.PrintErrorInfo(errorInfo)
+	// }
+
+	return
+}
+
+func SetAccessCode(firestoreClientPtr *firestore.Client, internalClientID string) (accessCode string) {
+
+	var (
+		errorInfo             errs.ErrorInfo
+		tAccessCodes          []string
+		tAccessCodeClientInfo = make(map[any]interface{})
+	)
+
+	tAccessCodes = append(tAccessCodes, hlps.GenerateUUIDType1(true))
+	tAccessCodeClientInfo[ctv.FN_INTERNAL_CLIENT_ID] = internalClientID
+
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_ACCESS_CODE, hlps.GenerateUUIDType1(true), tAccessCodeClientInfo); errorInfo.Error != nil {
+		errs.PrintErrorInfo(errorInfo)
+	}
+
+	return
+}
+
 // Private methods below here
 
 // GetClientStruct - constructs and returns a populated InternalClient struct using data from the provided clientInfo map.
@@ -316,132 +483,7 @@ func ProcessSaaSProviderList(firestoreClientPtr *firestore.Client, internalClien
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo for JSON marshal/unmarshal, time location loading, and other data-processing issues.
 //	Verifications: None
-func getClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) (clientStruct InternalClient, errorInfo errs.ErrorInfo) {
-
-	var (
-		jsonData []byte
-		ok       bool
-		value    interface{}
-	)
-
-	clientStruct.InternalClientID = clientInfoRefID
-
-	if value, ok = clientInfo[ctv.FN_COMPANY_NAME]; ok {
-		clientStruct.CompanyName = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_DEMO_ACCOUNT]; ok {
-		clientStruct.DemoAccount = value.(bool)
-	}
-
-	if value, ok = clientInfo[ctv.FN_FORMATION_TYPE]; ok {
-		clientStruct.FormationType = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_GOOGLE_ADS_ACCOUNTS]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.GoogleAdsAccounts); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_GOOGLE_ADS_ACCOUNTS, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-	}
-
-	if value, ok = clientInfo[ctv.FN_LINKEDIN_PAGE_IDS]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.LinkedinPageIds); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_LINKEDIN_PAGE_IDS, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-	}
-
-	clientStruct.OnBoarded = false // Default unless reset by the clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] code below. DO NOT REMOVE
-
-	if value, ok = clientInfo[ctv.FN_OWNERS]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.Owners); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_OWNERS, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-	}
-
-	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_ID]; ok {
-		clientStruct.PayPalClientID = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_PAYPAL_CLIENT_SECRET]; ok {
-		clientStruct.PayPalClientSecret = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_PHONE_COUNTRY_CODE]; ok {
-		clientStruct.PhoneCountryCode = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_PHONE_AREA_CODE]; ok {
-		clientStruct.PhoneAreaCode = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_PHONE_NUMBER]; ok {
-		clientStruct.PhoneNumber = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS]; ok {
-		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_MARSHAL_FAILED))
-			return
-		}
-		if errorInfo.Error = json.Unmarshal(jsonData, &clientStruct.SaaSClientProviders); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_SAAS_CLIENT_PROVIDER, ctv.TXT_UNMARSHAL_FAILED))
-			return
-		}
-		if len(clientStruct.SaaSClientProviders) > ctv.VAL_ZERO {
-			clientStruct.OnBoarded = true
-		}
-	}
-
-	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_CONNECT_ACCOUNT_ID]; ok {
-		clientStruct.StripeClientConnectAccountId = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_STRIPE_CLIENT_REFRESH_TOKEN]; ok {
-		clientStruct.StripeClientRefreshToken = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_STRIPE_INITIAL_PULL_DATA_STATUS]; ok {
-		clientStruct.StripeInitialPullDataStatus = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_STRIPE_PULL_FREQUENCY]; ok {
-		clientStruct.StripePullFrequency = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_STRIPE_START_DATE]; ok {
-		clientStruct.StripeStartDate = value.(string)
-	}
-
-	if value, ok = clientInfo[ctv.FN_TIMEZONE_HQ]; ok {
-		clientStruct.TimezoneHQ = value.(string)
-		if clientStruct.TimezoneHQLocationPtr, errorInfo.Error = time.LoadLocation(clientStruct.TimezoneHQ); errorInfo.Error != nil {
-			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_CLIENT, ctv.LBL_TIMEZONE, clientStruct.TimezoneHQ))
-			return
-		}
-	}
-
-	if value, ok = clientInfo[ctv.FN_WEBSITE_URL]; ok {
-		clientStruct.WebsiteURL = value.(string)
-	}
-
-	return
-}
-
+//
 // GetUserStruct - constructs and returns a populated InternalUser struct using data from the provided userInfo map.
 //
 //	Customer Messages: None

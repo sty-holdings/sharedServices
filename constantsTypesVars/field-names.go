@@ -4,6 +4,8 @@ package sharedServices
 
 //goland:noinspection ALL
 const (
+	FN_ACCESS_CODE                              = "access_code"
+	FN_ACCESS_CODES                             = "access_codes"
 	FN_ACCOUNTS                                 = "accounts"
 	FN_ACCOUNT_ID                               = "account_id"
 	FN_ACCOUNT_NAME                             = "account_name"
