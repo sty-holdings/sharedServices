@@ -14,7 +14,7 @@ import (
 	vals "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
-func FindClient(firestoreClientPtr *firestore.Client, domain string) (clientInfo InternalClient) {
+func FindClientByDomain(firestoreClientPtr *firestore.Client, domain string) (clientInfo InternalClient) {
 
 	var (
 		errorInfo    errs.ErrorInfo
@@ -241,38 +241,44 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 	return
 }
 
-// ProcessNewClient - processes the creation of a new client in the datastore.
+// ProcessNewClient - creates a new client record in the datastore.
 //
 //	Customer Messages: None
-//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrNoFoundDocument, errs.ErrFailedServiceFirestore
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedServiceFirebase
 //	Verifications: vals.
-func ProcessNewClient(firestoreClientPtr *firestore.Client, newClient NewClient, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
+func ProcessNewClient(firestoreClientPtr *firestore.Client, checkExists bool, newClient NewClient, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
 
 	var (
 		tClientStruct = make(map[any]interface{})
 	)
 
-	if internalClientId = CheckClientExists(
-		firestoreClientPtr,
-		newClient.CompanyName,
-		newClient.PhoneAreaCode,
-		newClient.PhoneNumber,
-		userEmail,
-		newClient.WebSiteURL,
-	); internalClientId == ctv.VAL_EMPTY {
-		internalClientId = hlps.GenerateUUIDType1(true)
-		//
-		tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
-		tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-		tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
-		tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
-		tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
-		tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-		tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
-		tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
-		tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
-		errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
+	if checkExists {
+		internalClientId = CheckClientExists(
+			firestoreClientPtr,
+			newClient.CompanyName,
+			newClient.PhoneAreaCode,
+			newClient.PhoneNumber,
+			userEmail,
+			newClient.WebSiteURL,
+		)
+		if internalClientId != ctv.VAL_EMPTY {
+			return
+		}
 	}
+
+	internalClientId = hlps.GenerateUUIDType1(true)
+	//
+	tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
+	tClientStruct[ctv.FN_DOMAIN] = newClient.Domain
+	tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+	tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
+	tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
+	tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
+	tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
+	tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
+	tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
+	tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
+	errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
 
 	return
 }

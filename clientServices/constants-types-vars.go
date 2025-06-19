@@ -14,6 +14,7 @@ type InternalClient struct {
 	CreateTimestamp struct {
 		Time time.Time `json:"__time__"`
 	} `firebase:"create_timestamp" json:"create_timestamp" yaml:"create_timestamp"`
+	Domain                       string   `firebase:"domain" json:"domain" yaml:"domain"`
 	DemoAccount                  bool     `firebase:"demo_account" json:"demo_account" yaml:"demo_account"`
 	FormationType                string   `firestore:"formation_type" json:"formation_type" yaml:"formation_type"`
 	GoogleAdsAccounts            []string `firebase:"google_ads_accounts" json:"google_ads_accounts" yaml:"google_ads_accounts"`
@@ -56,6 +57,7 @@ type InternalUser struct {
 
 type NewClient struct {
 	CompanyName           string `firebase:"company_name" json:"company_name,omitempty" yaml:"company_name,omitempty"`
+	Domain                string `firebase:"domain" json:"domain" yaml:"domain"`
 	FormationType         string `firebase:"formation_type" json:"formation_type,omitempty" yaml:"formation_type,omitempty"`
 	PhoneCountryCode      string `firebase:"phone_country_code" json:"phone_country_code,omitempty" yaml:"phone_country_code,omitempty"`
 	PhoneAreaCode         string `firebase:"phone_area_code" json:"phone_area_code,omitempty" yaml:"phone_area_code,omitempty"`
