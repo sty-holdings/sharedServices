@@ -147,6 +147,7 @@ const (
 	INVALID_NATS_PORT                       = "The port value is zero. This is not allowed. Recommended values are 4222 and 9222."
 	INVALID_NATS_URL                        = "The NATS URL value is invalid."
 	INVALID_OPTION                          = "Option Invalid"
+	INVALID_PHONE_NUMBER                    = "The phone number is invalid. Must be in the format: 12223334444 or 2223334444"
 	INVALID_PLAID_PUBLIC_TOKEN              = "INVALID_PUBLIC_TOKEN" // DO NOT change this, it is used to test a condition
 	INVALID_POINTER                         = "You must pass a pointer. Nil is not valid!"
 	INVALID_POINT_IN_TIME                   = "The Point In Time is Invalid."
@@ -363,6 +364,7 @@ var (
 	ErrInvalidNatsPort                    = errors.New(INVALID_NATS_PORT)
 	ErrInvalidNatsURL                     = errors.New(INVALID_NATS_URL)
 	ErrInvalidOption                      = errors.New(INVALID_OPTION)
+	ErrInvalidPhoneNumber                 = errors.New(INVALID_PHONE_NUMBER)
 	ErrInvalidPlaidPublicToken            = errors.New(INVALID_PLAID_PUBLIC_TOKEN)
 	ErrInvalidPointer                     = errors.New(INVALID_POINTER)
 	ErrInvalidPointInTime                 = errors.New(INVALID_POINT_IN_TIME)

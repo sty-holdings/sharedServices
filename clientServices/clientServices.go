@@ -557,6 +557,10 @@ func getUserStruct(userInfo map[string]interface{}, userInfoRefID string) (userS
 		}
 	}
 
+	if value, ok = userInfo[ctv.FN_POSTAL_CODE]; ok {
+		userStruct.PostalCode = value.(string)
+	}
+
 	if value, ok = userInfo[ctv.FN_INTERNAL_CLIENT_ID]; ok {
 		userStruct.InternalClientID = value.(string)
 	}

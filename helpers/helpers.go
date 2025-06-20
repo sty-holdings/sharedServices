@@ -3,7 +3,6 @@ package sharedServices
 import (
 	b64 "encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -1398,7 +1397,7 @@ func GetFieldsNames(unknownStruct interface{}) (
 // starting with '1' (which might originate from an E.164 format like "+1...").
 //
 // Returns: countryCode, areaCode, localNumber, and an error if the format is invalid.
-func ParseUSAPhoneNumber(rawNumber string) (countryCode, areaCode, localNumber string, err error) {
+func ParseUSAPhoneNumber(rawNumber string) (countryCode, areaCode, localNumber string, errorInfo errs.ErrorInfo) {
 	re := regexp.MustCompile(`[^0-9]`)
 	cleanedNumber := re.ReplaceAllString(rawNumber, "")
 
@@ -1409,13 +1408,14 @@ func ParseUSAPhoneNumber(rawNumber string) (countryCode, areaCode, localNumber s
 		localNumber = cleanedNumber[3:10]
 	case 11:
 		if cleanedNumber[0] != '1' {
-			return "", "", "", errors.New("invalid 11-digit US phone number: must start with '1'")
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidPhoneNumber, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_PHONE_NUMBER, rawNumber))
+			return
 		}
 		countryCode = "1" // Explicitly take the leading '1' as the country code
 		areaCode = cleanedNumber[1:4]
 		localNumber = cleanedNumber[4:11]
 	default:
-		return "", "", "", fmt.Errorf("invalid US phone number length: %d digits (expected 10 or 11)", len(cleanedNumber))
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidPhoneNumber, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_PHONE_NUMBER, rawNumber))
 	}
 
 	return

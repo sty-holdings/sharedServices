@@ -208,6 +208,7 @@ const (
 	FN_POINTER                                  = "any_pointer"
 	FN_POLL_INTERVAL                            = "poll_interval"
 	FN_PORT                                     = "port"
+	FN_POSTAL_CODE                              = "postal_code"
 	FN_PREDICTION                               = "predict"
 	FN_PREVIOUS_FLAG                            = "previous"
 	FN_PING_INTERVAL_SEC                        = "ping_interval_sec"

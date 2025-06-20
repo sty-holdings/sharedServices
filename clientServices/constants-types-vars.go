@@ -53,6 +53,7 @@ type InternalUser struct {
 	InternalUserID          string   `firebase:"internal_user_id" json:"styh_user_id"yaml:"internal_user_id"`
 	TimezoneUser            string   `firebase:"timezone_user" json:"user_timezone_user" yaml:"user_timezone_user"`
 	TimezoneUserLocationPtr *time.Location
+	PostalCode              string `firebase:"postal_code" json:"postal_code" yaml:"postal_code"`
 }
 
 type NewClient struct {
