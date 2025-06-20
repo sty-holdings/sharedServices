@@ -1398,22 +1398,27 @@ func GetFieldsNames(unknownStruct interface{}) (
 //
 // Returns: countryCode, areaCode, localNumber, and an error if the format is invalid.
 func ParseUSAPhoneNumber(rawNumber string) (countryCode, areaCode, localNumber string, errorInfo errs.ErrorInfo) {
-	re := regexp.MustCompile(`[^0-9]`)
-	cleanedNumber := re.ReplaceAllString(rawNumber, "")
 
-	switch len(cleanedNumber) {
+	var (
+		tCleanedNumber string
+		tRegExp        = regexp.MustCompile(`[^0-9]`)
+	)
+
+	tCleanedNumber = tRegExp.ReplaceAllString(rawNumber, "")
+
+	switch len(tCleanedNumber) {
 	case 10:
 		countryCode = "1"
-		areaCode = cleanedNumber[0:3]
-		localNumber = cleanedNumber[3:10]
+		areaCode = tCleanedNumber[0:3]
+		localNumber = tCleanedNumber[3:10]
 	case 11:
-		if cleanedNumber[0] != '1' {
+		if tCleanedNumber[0] != '1' {
 			errorInfo = errs.NewErrorInfo(errs.ErrInvalidPhoneNumber, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_PHONE_NUMBER, rawNumber))
 			return
 		}
 		countryCode = "1" // Explicitly take the leading '1' as the country code
-		areaCode = cleanedNumber[1:4]
-		localNumber = cleanedNumber[4:11]
+		areaCode = tCleanedNumber[1:4]
+		localNumber = tCleanedNumber[4:11]
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidPhoneNumber, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_PHONE_NUMBER, rawNumber))
 	}
