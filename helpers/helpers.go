@@ -3,6 +3,7 @@ package sharedServices
 import (
 	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -1383,6 +1385,37 @@ func GetFieldsNames(unknownStruct interface{}) (
 		if tType.Field(i).IsExported() {
 			fields[tType.Field(i).Name] = tStruct.FieldByName(tType.Field(i).Name).Interface()
 		}
+	}
+
+	return
+}
+
+// ParseUSAPhoneNumber parses a USA phone number string into its components.
+// It handles various input formats, including optional leading '+' for the country code,
+// parentheses, spaces, and hyphens, by stripping all non-digit characters first.
+//
+// Expected input: A string containing a 10-digit US number, or an 11-digit US number
+// starting with '1' (which might originate from an E.164 format like "+1...").
+//
+// Returns: countryCode, areaCode, localNumber, and an error if the format is invalid.
+func ParseUSAPhoneNumber(rawNumber string) (countryCode, areaCode, localNumber string, err error) {
+	re := regexp.MustCompile(`[^0-9]`)
+	cleanedNumber := re.ReplaceAllString(rawNumber, "")
+
+	switch len(cleanedNumber) {
+	case 10:
+		countryCode = "1"
+		areaCode = cleanedNumber[0:3]
+		localNumber = cleanedNumber[3:10]
+	case 11:
+		if cleanedNumber[0] != '1' {
+			return "", "", "", errors.New("invalid 11-digit US phone number: must start with '1'")
+		}
+		countryCode = "1" // Explicitly take the leading '1' as the country code
+		areaCode = cleanedNumber[1:4]
+		localNumber = cleanedNumber[4:11]
+	default:
+		return "", "", "", fmt.Errorf("invalid US phone number length: %d digits (expected 10 or 11)", len(cleanedNumber))
 	}
 
 	return
