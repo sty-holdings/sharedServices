@@ -1,0 +1,7 @@
+debug_mode_on: true
+default_sender_address: "" // Missing default sender address
+default_sender_name: "Local Dave"
+brevo:
+  api_key: "" // Missing API Key
+sendgrid:
+  key_fgn: ""
