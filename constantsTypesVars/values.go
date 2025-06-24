@@ -155,6 +155,7 @@ const (
 	VAL_SERVICE_CLIENT       = "client"
 	VAL_SERVICE_DEBUG        = "debug"
 	VAL_SERVICE_ERROR        = "error"
+	VAL_SERVICE_EMAIL        = "email"
 	VAL_SERVICE_FIREBASE     = "firebase"
 	VAL_SERVICE_FIRESTORE    = "firestore"
 	VAL_SERVICE_GCP          = "gcp"

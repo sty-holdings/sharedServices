@@ -1,7 +1,6 @@
 package sharedServices
 
 import (
-	"fmt"
 	"os"
 
 	brevo "github.com/getbrevo/brevo-go/lib"
@@ -10,6 +9,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
 )
 
 // NewBrevoServer - initializes and returns a new emailService instance.
@@ -42,72 +42,104 @@ func NewBrevoServer(configFilename string, environment string) (servicePtr *Emai
 	}
 
 	cfg := brevo.NewConfiguration()
-	cfg.AddDefaultHeader("api-key", tConfig.Brevo.KeyFQN)
+	cfg.AddDefaultHeader("api-key", tConfig.Brevo.APIKey)
 
-	servicePtr.clientBrevoPtr = brevo.NewAPIClient(cfg)
-
-	return
-}
-
-func (servicePtr *EmailService) BuildSendSMTPEmail(sender EmailSender, toList []EmailToCCBCC, ccList []EmailToCCBCC, bcc []EmailToCCBCC) (sendSMTPEmail brevo.SendSmtpEmail) {
+	servicePtr.brevoClient.clientPtr = brevo.NewAPIClient(cfg)
+	servicePtr.brevoClient.transactionalEmailsApiPtr = servicePtr.brevoClient.clientPtr.TransactionalEmailsApi
 
 	return
 }
 
-func (servicePtr *EmailService) SendEmail() {
+func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo errs.ErrorInfo) {
 
 	var (
-		tSendSMTPEmail brevo.SendSmtpEmail
+		tSendSMTPEmailParams brevo.SendSmtpEmail
 	)
 
-	tSendSMTPEmail = brevo.SendSmtpEmail{}
-	tSendSMTPEmail.Sender = &brevo.SendSmtpEmailSender{
-		Name:  "Your Name",
-		Email: "your.sender@example.com", // Must be a verified sender in Brevo
+	if errorInfo = validateEmailParams(emailParams); errorInfo.Error != nil {
+		return
 	}
-	tSendSMTPEmail.To = []brevo.SendSmtpEmailTo{
-		{
-			Name:  "Recipient Name",
-			Email: "recipient@example.com",
-		},
-	}
-	tSendSMTPEmail.Subject = "Test Email from Go SDK"
-	tSendSMTPEmail.HtmlContent = "<h1>This is a test email!</h1><p>Sent from the Brevo Go SDK.</p>"
 
-	_, emailResp, emailErr := servicePtr.clientBrevoPtr.TransactionalEmailsApi.SendTransacEmail(ctxBackground, tSendSMTPEmail)
-	if emailErr != nil {
-		fmt.Printf("Error sending email: %v\n", emailErr)
-		if emailResp != nil {
-			fmt.Printf("Email send response status: %s\n", emailResp.Status)
-		}
-	} else {
-		fmt.Printf("Email sent successfully! Response status: %s\n", emailResp.Status)
+	if tSendSMTPEmailParams = servicePtr.buildEmailParams(emailParams); errorInfo.Error != nil {
+		return
+	}
+
+	if _, _, errorInfo.Error = servicePtr.brevoClient.transactionalEmailsApiPtr.SendTransacEmail(ctxBackground, tSendSMTPEmailParams); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValueMessage(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.VAL_EMPTY, ctv.TXT_FAILED))
+		return
+	}
+
+	return
+}
+
+// Private Methods
+
+func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendSMTPEmail brevo.SendSmtpEmail) {
+
+	var (
+		tSendAddress string
+		tSenderName  string
+	)
+
+	for _, attachment := range emailParams.Attachments {
+		sendSMTPEmail.Attachment = append(
+			sendSMTPEmail.Attachment, brevo.SendSmtpEmailAttachment{
+				Url:     attachment.URL,
+				Content: attachment.Content,
+				Name:    attachment.Name,
+			},
+		)
+	}
+
+	for _, bccList := range emailParams.BCCList {
+		sendSMTPEmail.Bcc = append(
+			sendSMTPEmail.Bcc, brevo.SendSmtpEmailBcc{
+				Email: bccList.Address,
+				Name:  bccList.Name,
+			},
+		)
+	}
+
+	for _, ccList := range emailParams.CCList {
+		sendSMTPEmail.Cc = append(
+			sendSMTPEmail.Cc, brevo.SendSmtpEmailCc{
+				Email: ccList.Address,
+				Name:  ccList.Name,
+			},
+		)
+	}
+
+	sendSMTPEmail.HtmlContent = emailParams.HTML
+	sendSMTPEmail.TextContent = emailParams.PlainText
+
+	if emailParams.Sender.Address == ctv.VAL_EMPTY || emailParams.Sender.Name == ctv.VAL_EMPTY {
+		tSendAddress = servicePtr.defaultSenderAddress
+		tSenderName = servicePtr.defaultSenderName
+	}
+	sendSMTPEmail.Sender = &brevo.SendSmtpEmailSender{
+		Email: tSendAddress,
+		Name:  tSenderName,
+	}
+
+	sendSMTPEmail.Subject = emailParams.Subject
+	if emailParams.TemplateID != nil {
+		sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
+		sendSMTPEmail.Params = emailParams.TemplateParams
+	}
+
+	for _, toList := range emailParams.ToList {
+		sendSMTPEmail.To = append(
+			sendSMTPEmail.To, brevo.SendSmtpEmailTo{
+				Email: toList.Address,
+				Name:  toList.Name,
+			},
+		)
 	}
 
 	return
 }
 
 // Private Functions
-
-func buildSendSMTPEmail(sender EmailSender) (sendSMTPEmail brevo.SendSmtpEmail) {
-
-	sendSMTPEmail.Sender = &brevo.SendSmtpEmailSender{
-		Name:  "Your Name",
-		Email: "your.sender@example.com", // Must be a verified sender in Brevo
-	}
-
-	sendSMTPEmail.To = []brevo.SendSmtpEmailTo{
-		{
-			Name:  "Recipient Name",
-			Email: "recipient@example.com",
-		},
-	}
-
-	sendSMTPEmail.Subject = "Test Email from Go SDK"
-	sendSMTPEmail.HtmlContent = "<h1>This is a test email!</h1><p>Sent from the Brevo Go SDK.</p>"
-
-	return
-}
 
 // loadBrevoConfig - loads and parses the Brevo configuration file.
 //
@@ -144,7 +176,7 @@ func loadBrevoConfig(configFilename string) (config EmailConfig, errorInfo errs.
 //	Verifications: ctv.
 func validateBrevoConfig(config EmailConfig, environment string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.KeyFQN, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.APIKey, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
@@ -152,6 +184,91 @@ func validateBrevoConfig(config EmailConfig, environment string) (errorInfo errs
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderName, ctv.LBL_DEFAULT_SENDER_NAME); errorInfo.Error != nil {
 		return
+	}
+
+	return
+}
+
+func validateEmailParams(emailParams EmailParams) (errorInfo errs.ErrorInfo) {
+
+	var (
+		dataType interface{}
+	)
+
+	for _, attachment := range emailParams.Attachments {
+		if attachment.URL == ctv.VAL_EMPTY {
+			if attachment.Content == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_CONTENT))
+				return
+			}
+			if attachment.Name == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_NAME))
+				return
+			}
+		}
+	}
+
+	if len(emailParams.BCCList) > ctv.VAL_ZERO {
+		for _, bccList := range emailParams.BCCList {
+			if bccList.Address == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BCC_ADDRESS))
+				return
+			}
+		}
+	}
+
+	if len(emailParams.CCList) > ctv.VAL_ZERO {
+		for _, ccList := range emailParams.CCList {
+			if ccList.Address == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_CC_ADDRESS))
+				return
+			}
+		}
+	}
+
+	if emailParams.HTML == ctv.VAL_EMPTY && emailParams.PlainText == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BODY))
+		return
+	}
+
+	if emailParams.Subject == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_SUBJECT))
+		return
+	}
+
+	if emailParams.TemplateID != nil {
+		switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			if dataType.(int) <= ctv.VAL_ZERO {
+				errorInfo = errs.NewErrorInfo(
+					errs.ErrGreaterThanZero,
+					errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+				)
+				return
+			}
+			break
+		default:
+			errorInfo = errs.NewErrorInfo(
+				errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+			)
+			return
+		}
+		if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
+			return
+		}
+	}
+
+	if emailParams.ToList == nil {
+		errorInfo = errs.NewErrorInfo(
+			errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TO_ADDRESS, dataType.(string)),
+		)
+	}
+	if len(emailParams.ToList) > ctv.VAL_ZERO {
+		for _, toList := range emailParams.ToList {
+			if toList.Address == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_CC_ADDRESS))
+			}
+		}
 	}
 
 	return

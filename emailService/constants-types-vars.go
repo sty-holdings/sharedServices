@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	brevo "github.com/getbrevo/brevo-go/lib"
-	sendgrid "github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go"
 )
 
 //goland:noinspection ALL
@@ -41,41 +41,42 @@ const (
 	TRANSFER_REQUEST_SUBJECT = "Transfer Request"
 )
 
-type Brevo struct {
-	KeyFQN string `json:"key_fqn" yaml:"key_fqn"`
+type BrevoClient struct {
+	clientPtr                 *brevo.APIClient
+	transactionalEmailsApiPtr *brevo.TransactionalEmailsApiService
+}
+
+type BrevoConfig struct {
+	APIKey string `json:"api_key" yaml:"api_key"`
 }
 
 type EmailService struct {
-	clientBrevoPtr       *brevo.APIClient
-	clientSendGridPtr    *sendgrid.Client
+	brevoClient          BrevoClient
+	sendGridClient       SendGridClient
 	debugModeOn          bool
 	defaultSenderAddress string
 	defaultSenderName    string
 }
 
 type EmailConfig struct {
-	Brevo                Brevo    `json:"brevo" yaml:"brevo"`
-	DebugModeOn          bool     `json:"debug_mode_on" yaml:"debug_mode_on"`
-	DefaultSenderName    string   `json:"default_sender_name" yaml:"sender_name"`
-	DefaultSenderAddress string   `json:"default_address" yaml:"sender_address"`
-	SendGrid             SendGrid `json:"sendgrid" yaml:"sendgrid"`
+	Brevo                BrevoConfig    `json:"brevo" yaml:"brevo"`
+	DebugModeOn          bool           `json:"debug_mode_on" yaml:"debug_mode_on"`
+	DefaultSenderName    string         `json:"default_sender_name" yaml:"default_sender_name"`
+	DefaultSenderAddress string         `json:"default_sender_address" yaml:"default_sender_address"`
+	SendGrid             SendGridConfig `json:"sendgrid" yaml:"sendgrid"`
 }
 
-type EmailServer struct {
-	emailInfo Email
-}
-
-type Email struct {
-	DefaultSender  EmailSender
-	ToList         []EmailToCCBCC
-	CCList         []EmailToCCBCC
-	BCCList        []EmailToCCBCC
-	Subject        string
-	PlainText      string
-	HTML           string
+type EmailParams struct {
 	Attachments    []EmailAttachment
-	TemplateID     string
-	TemplateParams map[string]string
+	BCCList        []EmailToCCBCC
+	CCList         []EmailToCCBCC
+	Sender         EmailSender
+	HTML           string
+	PlainText      string
+	Subject        string
+	TemplateID     interface{}
+	TemplateParams map[string]interface{}
+	ToList         []EmailToCCBCC
 }
 
 type EmailSender struct {
@@ -89,13 +90,19 @@ type EmailToCCBCC struct {
 }
 
 type EmailAttachment struct {
-	Filepath    string
-	ContentType string
 	Buffer      []byte
+	Content     string // Base64 encoded check of data
+	ContentType string
+	Name        string // Required with Content is used.
+	URL         string
 }
 
-type SendGrid struct {
-	KeyFQN string `json:"key_fqn" yaml:"key_fqn"`
+type SendGridClient struct {
+	clientPtr *sendgrid.Client
+}
+
+type SendGridConfig struct {
+	APIKey string `json:"api_key" yaml:"api_key"`
 }
 
 var (
