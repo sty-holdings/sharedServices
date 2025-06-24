@@ -81,7 +81,7 @@ func TestNewBrevoServer(t *testing.T) {
 		{
 			name:           "InvalidConfig",
 			configFilename: badConfigFilename,
-			environment:    "production",
+			environment:    "development",
 			mockLoadConfig: func(string) (EmailConfig, errs.ErrorInfo) {
 				return EmailConfig{
 					DebugModeOn:          false,
