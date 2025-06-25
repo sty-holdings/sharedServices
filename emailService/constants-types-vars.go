@@ -90,7 +90,6 @@ type EmailToCCBCC struct {
 }
 
 type EmailAttachment struct {
-	Buffer      []byte
 	Content     string // Base64 encoded check of data
 	ContentType string
 	Name        string // Required with Content is used.
