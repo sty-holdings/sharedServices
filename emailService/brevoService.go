@@ -39,6 +39,7 @@ func NewBrevoServer(configFilename string, environment string) (servicePtr *Emai
 		debugModeOn:          tConfig.DebugModeOn,
 		defaultSenderAddress: tConfig.DefaultSenderAddress,
 		defaultSenderName:    tConfig.DefaultSenderName,
+		emailProvider:        tConfig.EmailProvider,
 	}
 
 	cfg := brevo.NewConfiguration()
@@ -55,10 +56,6 @@ func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo er
 	var (
 		tSendSMTPEmailParams brevo.SendSmtpEmail
 	)
-
-	if errorInfo = validateEmailParams(emailParams); errorInfo.Error != nil {
-		return
-	}
 
 	if tSendSMTPEmailParams = servicePtr.buildEmailParams(emailParams); errorInfo.Error != nil {
 		return
@@ -122,9 +119,17 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 	}
 
 	sendSMTPEmail.Subject = emailParams.Subject
-	if emailParams.TemplateID != nil {
-		sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
-		sendSMTPEmail.Params = emailParams.TemplateParams
+
+	switch servicePtr.emailProvider {
+	case "brevo":
+		if emailParams.TemplateID != nil {
+			sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
+			sendSMTPEmail.Params = emailParams.TemplateParams
+		}
+	case "sendgrid":
+		fallthrough
+	default:
+		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), servicePtr.emailProvider)))
 	}
 
 	for _, toList := range emailParams.ToList {

@@ -52,10 +52,11 @@ type BrevoConfig struct {
 
 type EmailService struct {
 	brevoClient          BrevoClient
-	sendGridClient       SendGridClient
 	debugModeOn          bool
 	defaultSenderAddress string
 	defaultSenderName    string
+	emailProvider        string
+	sendGridClient       SendGridClient
 }
 
 type EmailConfig struct {
@@ -63,6 +64,7 @@ type EmailConfig struct {
 	DebugModeOn          bool           `json:"debug_mode_on" yaml:"debug_mode_on"`
 	DefaultSenderName    string         `json:"default_sender_name" yaml:"default_sender_name"`
 	DefaultSenderAddress string         `json:"default_sender_address" yaml:"default_sender_address"`
+	EmailProvider        string         `json:"email_provider" yaml:"email_provider"`
 	SendGrid             SendGridConfig `json:"sendgrid" yaml:"sendgrid"`
 }
 
@@ -70,9 +72,10 @@ type EmailParams struct {
 	Attachments    []EmailAttachment
 	BCCList        []EmailToCCBCC
 	CCList         []EmailToCCBCC
-	Sender         EmailSender
+	EmailProvider  string
 	HTML           string
 	PlainText      string
+	Sender         EmailSender
 	Subject        string
 	TemplateID     interface{}
 	TemplateParams map[string]interface{}
