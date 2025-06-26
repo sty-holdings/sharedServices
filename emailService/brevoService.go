@@ -2,6 +2,7 @@ package sharedServices
 
 import (
 	"os"
+	"strings"
 
 	brevo "github.com/getbrevo/brevo-go/lib"
 	"github.com/goccy/go-yaml"
@@ -56,6 +57,10 @@ func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo er
 	var (
 		tSendSMTPEmailParams brevo.SendSmtpEmail
 	)
+
+	if errorInfo = validateEmailParams(servicePtr.emailProvider, emailParams); errorInfo.Error != nil {
+		return
+	}
 
 	if tSendSMTPEmailParams = servicePtr.buildEmailParams(emailParams); errorInfo.Error != nil {
 		return
@@ -120,7 +125,7 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 
 	sendSMTPEmail.Subject = emailParams.Subject
 
-	switch servicePtr.emailProvider {
+	switch strings.ToLower(servicePtr.emailProvider) {
 	case "brevo":
 		if emailParams.TemplateID != nil {
 			sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
@@ -194,7 +199,7 @@ func validateBrevoConfig(config EmailConfig, environment string) (errorInfo errs
 	return
 }
 
-func validateEmailParams(emailParams EmailParams) (errorInfo errs.ErrorInfo) {
+func validateEmailParams(emailProvider string, emailParams EmailParams) (errorInfo errs.ErrorInfo) {
 
 	var (
 		dataType interface{}
@@ -241,26 +246,34 @@ func validateEmailParams(emailParams EmailParams) (errorInfo errs.ErrorInfo) {
 		return
 	}
 
-	if emailParams.TemplateID != nil {
-		switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
-		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-			if dataType.(int) <= ctv.VAL_ZERO {
+	switch strings.ToLower(emailProvider) {
+	case "brevo":
+		if emailParams.TemplateID != nil {
+			switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
+			case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+				if dataType.(int) <= ctv.VAL_ZERO {
+					errorInfo = errs.NewErrorInfo(
+						errs.ErrGreaterThanZero,
+						errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+					)
+					return
+				}
+				break
+			default:
 				errorInfo = errs.NewErrorInfo(
-					errs.ErrGreaterThanZero,
-					errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+					errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
 				)
 				return
 			}
-			break
-		default:
-			errorInfo = errs.NewErrorInfo(
-				errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
-			)
-			return
+			if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
+				return
+			}
 		}
-		if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
-			return
-		}
+	case "sendgrid":
+		fallthrough
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailProvider))
+		return
 	}
 
 	if emailParams.ToList == nil {
