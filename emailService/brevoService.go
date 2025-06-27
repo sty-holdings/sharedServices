@@ -38,8 +38,8 @@ func NewBrevoServer(configFilename string, environment string) (servicePtr *Emai
 
 	servicePtr = &EmailService{
 		debugModeOn:          tConfig.DebugModeOn,
-		defaultSenderAddress: tConfig.DefaultSenderAddress,
-		defaultSenderName:    tConfig.DefaultSenderName,
+		DefaultSenderAddress: tConfig.DefaultSenderAddress,
+		DefaultSenderName:    tConfig.DefaultSenderName,
 		emailProvider:        tConfig.EmailProvider,
 	}
 
@@ -115,8 +115,8 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 	sendSMTPEmail.TextContent = emailParams.PlainText
 
 	if emailParams.Sender.Address == ctv.VAL_EMPTY || emailParams.Sender.Name == ctv.VAL_EMPTY {
-		tSendAddress = servicePtr.defaultSenderAddress
-		tSenderName = servicePtr.defaultSenderName
+		tSendAddress = servicePtr.DefaultSenderAddress
+		tSenderName = servicePtr.DefaultSenderName
 	}
 	sendSMTPEmail.Sender = &brevo.SendSmtpEmailSender{
 		Email: tSendAddress,

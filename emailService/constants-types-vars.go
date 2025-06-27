@@ -53,8 +53,8 @@ type BrevoConfig struct {
 type EmailService struct {
 	brevoClient          BrevoClient
 	debugModeOn          bool
-	defaultSenderAddress string
-	defaultSenderName    string
+	DefaultSenderAddress string
+	DefaultSenderName    string
 	emailProvider        string
 	sendGridClient       SendGridClient
 }
