@@ -234,36 +234,30 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		dataType interface{}
 	)
 
-	if emailParams.Attachments != nil {
-		for _, attachment := range emailParams.Attachments {
-			if attachment.URL == ctv.VAL_EMPTY {
-				if attachment.Content == ctv.VAL_EMPTY {
-					errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_CONTENT))
-					return
-				}
-				if attachment.Name == ctv.VAL_EMPTY {
-					errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_NAME))
-					return
-				}
+	for _, attachment := range emailParams.Attachments {
+		if attachment.URL == ctv.VAL_EMPTY {
+			if attachment.Content == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_CONTENT))
+				return
 			}
-		}
-	}
-
-	if len(emailParams.BCCList) > ctv.VAL_ZERO {
-		for _, bccList := range emailParams.BCCList {
-			if bccList.Address == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BCC_ADDRESS))
+			if attachment.Name == ctv.VAL_EMPTY {
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_NAME))
 				return
 			}
 		}
 	}
 
-	if len(emailParams.CCList) > ctv.VAL_ZERO {
-		for _, ccList := range emailParams.CCList {
-			if ccList.Address == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_CC_ADDRESS))
-				return
-			}
+	for _, bccList := range emailParams.BCCList {
+		if bccList.Address == ctv.VAL_EMPTY {
+			errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BCC_ADDRESS))
+			return
+		}
+	}
+
+	for _, ccList := range emailParams.CCList {
+		if ccList.Address == ctv.VAL_EMPTY {
+			errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_CC_ADDRESS))
+			return
 		}
 	}
 
@@ -322,7 +316,6 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		}
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailType, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailParams.EmailType))
-		return
 	}
 
 	return
