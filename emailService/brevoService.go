@@ -159,6 +159,9 @@ func (servicePtr *EmailService) buildBrevoEmailParams(emailParams EmailParams) (
 			if sendSMTPEmail.TemplateId, errorInfo = convertTemplateIDToInt(emailParams.TemplateID); errorInfo.Error != nil {
 				return
 			}
+			for k, v := range emailParams.TemplateParams {
+				sendSMTPEmail.Params[k] = v
+			}
 		case SENDGRID_PROVIDER:
 			fallthrough
 		default:
