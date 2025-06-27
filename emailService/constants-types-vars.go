@@ -84,7 +84,7 @@ type EmailParams struct {
 	PlainText      string
 	Sender         EmailSender
 	Subject        string
-	TemplateID     interface{}
+	TemplateID     string
 	TemplateParams map[string]interface{}
 	ToList         []EmailToCCBCC
 }

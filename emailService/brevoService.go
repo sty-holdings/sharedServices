@@ -2,6 +2,8 @@ package sharedServices
 
 import (
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 
 	brevo "github.com/getbrevo/brevo-go/lib"
@@ -94,6 +96,7 @@ func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo er
 func (servicePtr *EmailService) buildBrevoEmailParams(emailParams EmailParams) (sendSMTPEmail brevo.SendSmtpEmail) {
 
 	var (
+		errorInfo    errs.ErrorInfo
 		tSendAddress string
 		tSenderName  string
 	)
@@ -153,9 +156,8 @@ func (servicePtr *EmailService) buildBrevoEmailParams(emailParams EmailParams) (
 	case TEMPLATE:
 		switch strings.ToLower(servicePtr.emailProvider) {
 		case BREVO_PROVIDER:
-			if emailParams.TemplateID != nil {
-				sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
-				sendSMTPEmail.Params = emailParams.TemplateParams
+			if sendSMTPEmail.TemplateId, errorInfo = convertTemplateIDToInt(emailParams.TemplateID); errorInfo.Error != nil {
+				return
 			}
 		case SENDGRID_PROVIDER:
 			fallthrough
@@ -286,29 +288,11 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		}
 	case TEMPLATE:
 		switch emailProvider {
-		case "brevo":
-			if emailParams.TemplateID != nil {
-				switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
-				case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-					if dataType.(int) <= ctv.VAL_ZERO {
-						errorInfo = errs.NewErrorInfo(
-							errs.ErrGreaterThanZero,
-							errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
-						)
-						return
-					}
-					break
-				default:
-					errorInfo = errs.NewErrorInfo(
-						errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
-					)
-					return
-				}
-				if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
-					return
-				}
+		case BREVO_PROVIDER:
+			if _, errorInfo = convertTemplateIDToInt(emailParams.TemplateID); errorInfo.Error != nil {
+				return
 			}
-		case "sendgrid":
+		case SENDGRID_PROVIDER:
 			fallthrough
 		default:
 			errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailProvider))
@@ -316,6 +300,37 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		}
 	default:
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailType, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailParams.EmailType))
+	}
+
+	return
+}
+
+func convertTemplateIDToInt(templateID string) (brevoTemplateID int64, errorInfo errs.ErrorInfo) {
+
+	var (
+		numericRegex = regexp.MustCompile("^[0-9]*$")
+		tTemplateID  int
+	)
+
+	if templateID != ctv.VAL_EMPTY && numericRegex.MatchString(templateID) {
+		if tTemplateID, errorInfo.Error = strconv.Atoi(templateID); errorInfo.Error != nil {
+			errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID))
+			return
+		}
+		brevoTemplateID = int64(tTemplateID)
+	} else {
+		errorInfo = errs.NewErrorInfo(
+			errs.ErrInvalidDataType,
+			errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, templateID),
+		)
+		return
+	}
+
+	if brevoTemplateID <= ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(
+			errs.ErrGreaterThanZero,
+			errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, templateID),
+		)
 	}
 
 	return
