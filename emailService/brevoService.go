@@ -159,6 +159,7 @@ func (servicePtr *EmailService) buildBrevoEmailParams(emailParams EmailParams) (
 			if sendSMTPEmail.TemplateId, errorInfo = convertTemplateIDToInt(emailParams.TemplateID); errorInfo.Error != nil {
 				return
 			}
+			sendSMTPEmail.Params = make(map[string]interface{})
 			for k, v := range emailParams.TemplateParams {
 				sendSMTPEmail.Params[k] = v
 			}
