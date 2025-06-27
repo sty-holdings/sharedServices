@@ -32,7 +32,7 @@ func NewBrevoServer(configFilename string, environment string) (servicePtr *Emai
 		return
 	}
 
-	if errorInfo = validateBrevoConfig(tConfig, environment); errorInfo.Error != nil {
+	if errorInfo = validateBrevoConfig(tConfig); errorInfo.Error != nil {
 		return
 	}
 
@@ -40,14 +40,22 @@ func NewBrevoServer(configFilename string, environment string) (servicePtr *Emai
 		debugModeOn:          tConfig.DebugModeOn,
 		DefaultSenderAddress: tConfig.DefaultSenderAddress,
 		DefaultSenderName:    tConfig.DefaultSenderName,
-		emailProvider:        tConfig.EmailProvider,
+		emailProvider:        strings.ToLower(tConfig.EmailProvider),
 	}
 
-	cfg := brevo.NewConfiguration()
-	cfg.AddDefaultHeader("api-key", tConfig.Brevo.APIKey)
+	switch servicePtr.emailProvider {
+	case BREVO_PROVIDER:
+		cfg := brevo.NewConfiguration()
+		cfg.AddDefaultHeader("api-key", tConfig.Brevo.APIKey)
 
-	servicePtr.brevoClient.clientPtr = brevo.NewAPIClient(cfg)
-	servicePtr.brevoClient.transactionalEmailsApiPtr = servicePtr.brevoClient.clientPtr.TransactionalEmailsApi
+		servicePtr.brevoClient.clientPtr = brevo.NewAPIClient(cfg)
+		servicePtr.brevoClient.transactionalEmailsApiPtr = servicePtr.brevoClient.clientPtr.TransactionalEmailsApi
+	case SENDGRID_PROVIDER:
+		fallthrough
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.LBL_SERVICE_BREVO, ctv.LBL_EMAIL_PROVIDER, tConfig.EmailProvider))
+		return
+	}
 
 	return
 }
@@ -62,7 +70,14 @@ func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo er
 		return
 	}
 
-	if tSendSMTPEmailParams = servicePtr.buildEmailParams(emailParams); errorInfo.Error != nil {
+	switch servicePtr.emailProvider {
+	case BREVO_PROVIDER:
+		if tSendSMTPEmailParams = servicePtr.buildBrevoEmailParams(emailParams); errorInfo.Error != nil {
+			return
+		}
+	case SENDGRID_PROVIDER:
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.LBL_SERVICE_BREVO, ctv.LBL_EMAIL_PROVIDER, servicePtr.emailProvider))
 		return
 	}
 
@@ -76,7 +91,7 @@ func (servicePtr *EmailService) SendEmail(emailParams EmailParams) (errorInfo er
 
 // Private Methods
 
-func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendSMTPEmail brevo.SendSmtpEmail) {
+func (servicePtr *EmailService) buildBrevoEmailParams(emailParams EmailParams) (sendSMTPEmail brevo.SendSmtpEmail) {
 
 	var (
 		tSendAddress string
@@ -111,9 +126,6 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 		)
 	}
 
-	sendSMTPEmail.HtmlContent = emailParams.HTML
-	sendSMTPEmail.TextContent = emailParams.PlainText
-
 	if emailParams.Sender.Address == ctv.VAL_EMPTY || emailParams.Sender.Name == ctv.VAL_EMPTY {
 		tSendAddress = servicePtr.DefaultSenderAddress
 		tSenderName = servicePtr.DefaultSenderName
@@ -125,18 +137,6 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 
 	sendSMTPEmail.Subject = emailParams.Subject
 
-	switch strings.ToLower(servicePtr.emailProvider) {
-	case "brevo":
-		if emailParams.TemplateID != nil {
-			sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
-			sendSMTPEmail.Params = emailParams.TemplateParams
-		}
-	case "sendgrid":
-		fallthrough
-	default:
-		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), servicePtr.emailProvider)))
-	}
-
 	for _, toList := range emailParams.ToList {
 		sendSMTPEmail.To = append(
 			sendSMTPEmail.To, brevo.SendSmtpEmailTo{
@@ -144,6 +144,27 @@ func (servicePtr *EmailService) buildEmailParams(emailParams EmailParams) (sendS
 				Name:  toList.Name,
 			},
 		)
+	}
+
+	switch emailParams.EmailType {
+	case SINGLE:
+		sendSMTPEmail.HtmlContent = emailParams.HTML
+		sendSMTPEmail.TextContent = emailParams.PlainText
+	case TEMPLATE:
+		switch strings.ToLower(servicePtr.emailProvider) {
+		case BREVO_PROVIDER:
+			if emailParams.TemplateID != nil {
+				sendSMTPEmail.TemplateId = int64(emailParams.TemplateID.(int))
+				sendSMTPEmail.Params = emailParams.TemplateParams
+			}
+		case SENDGRID_PROVIDER:
+			fallthrough
+		default:
+			errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), servicePtr.emailProvider)))
+		}
+	default:
+		errs.PrintErrorInfo(errs.NewErrorInfo(errs.ErrInvalidEmailType, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailParams.EmailType)))
+		return
 	}
 
 	return
@@ -184,9 +205,17 @@ func loadBrevoConfig(configFilename string) (config EmailConfig, errorInfo errs.
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter
 //	Verifications: ctv.
-func validateBrevoConfig(config EmailConfig, environment string) (errorInfo errs.ErrorInfo) {
+func validateBrevoConfig(config EmailConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.APIKey, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
+	switch strings.ToLower(config.EmailProvider) {
+	case BREVO_PROVIDER:
+		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.APIKey, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
+			return
+		}
+	case SENDGRID_PROVIDER:
+		fallthrough
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.LBL_SERVICE_BREVO, ctv.LBL_EMAIL_PROVIDER, config.EmailProvider))
 		return
 	}
 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
@@ -205,15 +234,17 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		dataType interface{}
 	)
 
-	for _, attachment := range emailParams.Attachments {
-		if attachment.URL == ctv.VAL_EMPTY {
-			if attachment.Content == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_CONTENT))
-				return
-			}
-			if attachment.Name == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_NAME))
-				return
+	if emailParams.Attachments != nil {
+		for _, attachment := range emailParams.Attachments {
+			if attachment.URL == ctv.VAL_EMPTY {
+				if attachment.Content == ctv.VAL_EMPTY {
+					errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_CONTENT))
+					return
+				}
+				if attachment.Name == ctv.VAL_EMPTY {
+					errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_ATTACHMENT_NAME))
+					return
+				}
 			}
 		}
 	}
@@ -236,57 +267,62 @@ func validateEmailParams(emailProvider string, emailParams EmailParams) (errorIn
 		}
 	}
 
-	if emailParams.HTML == ctv.VAL_EMPTY && emailParams.PlainText == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BODY))
-		return
-	}
-
 	if emailParams.Subject == ctv.VAL_EMPTY {
 		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_SUBJECT))
 		return
 	}
 
-	switch strings.ToLower(emailProvider) {
-	case "brevo":
-		if emailParams.TemplateID != nil {
-			switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
-			case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-				if dataType.(int) <= ctv.VAL_ZERO {
-					errorInfo = errs.NewErrorInfo(
-						errs.ErrGreaterThanZero,
-						errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
-					)
-					return
-				}
-				break
-			default:
-				errorInfo = errs.NewErrorInfo(
-					errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
-				)
-				return
-			}
-			if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
-				return
-			}
-		}
-	case "sendgrid":
-		fallthrough
-	default:
-		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailProvider))
-		return
-	}
-
-	if emailParams.ToList == nil {
+	if len(emailParams.ToList) == ctv.VAL_ZERO {
 		errorInfo = errs.NewErrorInfo(
 			errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TO_ADDRESS, dataType.(string)),
 		)
-	}
-	if len(emailParams.ToList) > ctv.VAL_ZERO {
+	} else {
 		for _, toList := range emailParams.ToList {
 			if toList.Address == ctv.VAL_EMPTY {
-				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_CC_ADDRESS))
+				errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TO_ADDRESS))
 			}
 		}
+	}
+
+	switch strings.ToLower(emailParams.EmailType) {
+	case SINGLE:
+		if emailParams.HTML == ctv.VAL_EMPTY && emailParams.PlainText == ctv.VAL_EMPTY {
+			errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_BODY))
+			return
+		}
+	case TEMPLATE:
+		switch emailProvider {
+		case "brevo":
+			if emailParams.TemplateID != nil {
+				switch dataType = emailParams.TemplateID; emailParams.TemplateID.(type) {
+				case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+					if dataType.(int) <= ctv.VAL_ZERO {
+						errorInfo = errs.NewErrorInfo(
+							errs.ErrGreaterThanZero,
+							errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+						)
+						return
+					}
+					break
+				default:
+					errorInfo = errs.NewErrorInfo(
+						errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), ctv.FN_EMAIL_TEMPLATE_ID, dataType.(string)),
+					)
+					return
+				}
+				if errorInfo = hlps.CheckMapLengthGTZero(ctv.VAL_SERVICE_EMAIL, emailParams.TemplateParams, ctv.FN_EMAIL_TEMPLATE_PARAMS); errorInfo.Error != nil {
+					return
+				}
+			}
+		case "sendgrid":
+			fallthrough
+		default:
+			errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailProvider))
+			return
+		}
+	default:
+		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailType, errs.BuildLabelValue(ctv.VAL_SERVICE_EMAIL, pis.GetMyFunctionName(true), emailParams.EmailType))
+		return
 	}
 
 	return

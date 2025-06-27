@@ -107,8 +107,8 @@ func TestNewBrevoServer(t *testing.T) {
 				} else {
 					assert.NotNil(t, service)
 					assert.Nil(t, errInfo.Error)
-					assert.Equal(t, "helpdesk@daveknows.ai", service.defaultSenderAddress)
-					assert.Equal(t, "Local Dave", service.defaultSenderName)
+					assert.Equal(t, "helpdesk@daveknows.ai", service.DefaultSenderAddress)
+					assert.Equal(t, "Local Dave", service.DefaultSenderName)
 					assert.NotNil(t, service.brevoClient.clientPtr)
 					assert.NotNil(t, service.brevoClient.transactionalEmailsApiPtr)
 				}
@@ -210,7 +210,7 @@ func TestBuildEmailParams(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				service, _ := NewBrevoServer(configFilename, ctv.VAL_ENVIRONMENT_PRODUCTION)
-				sendSMTPEmail := service.buildEmailParams(tt.emailParams)
+				sendSMTPEmail := service.buildBrevoEmailParams(tt.emailParams)
 				if tt.expectedError == false {
 					assert.NotNil(t, sendSMTPEmail)
 					assert.Equal(t, htmlContent, sendSMTPEmail.HtmlContent)

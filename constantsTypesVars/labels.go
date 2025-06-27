@@ -112,6 +112,7 @@ const (
 	LBL_EMAIL_CONTENT                        = "EMAIL CONTENT:"
 	LBL_EMAIL_CONTENT_TYPE                   = "EMAIL CONTENT TYPE:"
 	LBL_EMAIL_NAME                           = "EMAIL NAME:"
+	LBL_EMAIL_PROVIDER                       = "EMAIL PROVIDER:"
 	LBL_EMAIL_SENDER                         = "EMAIL SENDER:"
 	LBL_EMAIL_SUBJECT                        = "EMAIL SUBJECT:"
 	LBL_EMAIL_TEMPLATE_ID                    = "EMAIL TEMPLATE ID:"

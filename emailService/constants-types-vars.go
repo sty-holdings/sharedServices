@@ -20,6 +20,15 @@ const (
 	VERIFY_ADDRESS         = "verify@sty-holdings.com"
 	VERIFY_NAME            = "SavUp By STY Holdings Verification"
 	//
+	//  Email Type
+	SINGLE     = "single"
+	TEMPLATE   = "template"
+	MASS_EMAIL = "massEmail"
+	//
+	// Email Providers
+	BREVO_PROVIDER    = "brevo"
+	SENDGRID_PROVIDER = "sendgrid"
+	//
 	// Settings
 	MINE_PLAIN_TEXT    = "text/plain"
 	MINE_HTML          = "text/html"
@@ -50,13 +59,11 @@ type BrevoConfig struct {
 	APIKey string `json:"api_key" yaml:"api_key"`
 }
 
-type EmailService struct {
-	brevoClient          BrevoClient
-	debugModeOn          bool
-	DefaultSenderAddress string
-	DefaultSenderName    string
-	emailProvider        string
-	sendGridClient       SendGridClient
+type EmailAttachment struct {
+	Content     string // Base64 encoded check of data
+	ContentType string
+	Name        string // Required with Content is used.
+	URL         string
 }
 
 type EmailConfig struct {
@@ -72,7 +79,7 @@ type EmailParams struct {
 	Attachments    []EmailAttachment
 	BCCList        []EmailToCCBCC
 	CCList         []EmailToCCBCC
-	EmailProvider  string
+	EmailType      string
 	HTML           string
 	PlainText      string
 	Sender         EmailSender
@@ -87,16 +94,18 @@ type EmailSender struct {
 	Address string `json:"address" yaml:"address"`
 }
 
+type EmailService struct {
+	brevoClient          BrevoClient
+	debugModeOn          bool
+	DefaultSenderAddress string
+	DefaultSenderName    string
+	emailProvider        string
+	sendGridClient       SendGridClient
+}
+
 type EmailToCCBCC struct {
 	Name    string `json:"name" yaml:"name"`
 	Address string `json:"address" yaml:"address"`
-}
-
-type EmailAttachment struct {
-	Content     string // Base64 encoded check of data
-	ContentType string
-	Name        string // Required with Content is used.
-	URL         string
 }
 
 type SendGridClient struct {

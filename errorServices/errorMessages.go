@@ -129,7 +129,8 @@ const (
 	INVALID_DATE                            = "The date is invalid."
 	INVALID_DOMAIN                          = "The domain value is invalid."
 	INVALID_EMAIL_ADDRESS_LENGTH            = "The email address length must be greater than 2 and less than 255."
-	INVALID_EMAIL_PROVIDER                  = "The email is not supported."
+	INVALID_EMAIL_PROVIDER                  = "The email provider is not supported."
+	INVALID_EMAIL_TYPE                      = "The email type is not suppported."
 	INVALID_ENVIRNOMENT                     = "The environment value is invalid."
 	INVALID_EXTENSION                       = "The extension name is invalid."
 	INVALID_EXTENSION_SERVICE               = "The extension service name is invalid."
@@ -348,6 +349,7 @@ var (
 	ErrInvalidDomain                      = errors.New(INVALID_DOMAIN)
 	ErrInvalidEmailAddressLength          = errors.New(INVALID_EMAIL_ADDRESS_LENGTH)
 	ErrInvalidEmailProvider               = errors.New(INVALID_EMAIL_PROVIDER)
+	ErrInvalidEmailType                   = errors.New(INVALID_EMAIL_TYPE)
 	ErrInvalidEnvirnoment                 = errors.New(INVALID_ENVIRNOMENT)
 	ErrInvalidExtension                   = errors.New(INVALID_EXTENSION)
 	ErrInvalidExtensionService            = errors.New(INVALID_EXTENSION_SERVICE)
