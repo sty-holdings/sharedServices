@@ -114,6 +114,8 @@ const (
 	LBL_EMAIL_NAME                           = "EMAIL NAME:"
 	LBL_EMAIL_SENDER                         = "EMAIL SENDER:"
 	LBL_EMAIL_SUBJECT                        = "EMAIL SUBJECT:"
+	LBL_EMAIL_TEMPLATE_ID                    = "EMAIL TEMPLATE ID:"
+	LBL_EMAIL_TEMPLATE_PARAMS                = "EMAIL TEMPLATE PARAMS:"
 	LBL_EMAIL_TO_LIST                        = "EMAIL TO LIST:"
 	LBL_END_DATE                             = "END DATE:"
 	LBL_ENVIRONMENT                          = "ENVIRONMENT:"
