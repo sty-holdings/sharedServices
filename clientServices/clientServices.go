@@ -378,9 +378,28 @@ func SetAccessCode(firestoreClientPtr *firestore.Client, internalClientID string
 	return
 }
 
+// UpdateClientStripeCustomerID - updates the Stripe customer ID for a client using Firestore.
+//
+//	Customer Messages: None
+//	Errors: errs.Err if Firestore update or validation fails.
+//	Verifications: None
+func UpdateClientStripeCustomerID(firestoreClientPtr *firestore.Client, internalClientID string, stripeCustomerID string) (errorInfo errs.ErrorInfo) {
+
+	var (
+		nameValues = make(map[any]interface{})
+	)
+
+	nameValues[ctv.FN_STRIPE_CUSTOMER_ID] = stripeCustomerID
+
+	if fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientID, nameValues); errorInfo.Error != nil {
+		errs.PrintErrorInfo(errorInfo)
+	}
+	return
+}
+
 // Private methods below here
 
-// GetClientStruct - constructs and returns a populated InternalClient struct using data from the provided clientInfo map.
+// getClientStruct - constructs and returns a populated InternalClient struct using data from the provided clientInfo map.
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo for JSON marshal/unmarshal, time location loading, and other data-processing issues.

@@ -209,10 +209,10 @@ func GetAllDocuments(firestoreClientPtr *firestore.Client, datastore string) (do
 // 	return
 // }
 
-// GetDocumentById - will return a non-nil documentSnapshotPtr if the document is found.
+// GetDocumentById - will return a non-nil documentSnapshotPtr if the document is found. If the document is not found, it will return the errs.ErrNoFoundDocument.
 //
 //	Customer Messages: None
-//	Errors: None
+//	Errors: errs.ErrNoFoundDocument
 //	Verifications: None
 func GetDocumentById(firestoreClientPtr *firestore.Client, datastore string, documentId string) (documentSnapshotPtr *firestore.DocumentSnapshot, errorInfo errs.ErrorInfo) {
 

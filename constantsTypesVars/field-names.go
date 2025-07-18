@@ -296,6 +296,7 @@ const (
 	FN_STRIPE_CLIENT_ACCESS_TOKEN               = "stripe_client_access_token:"
 	FN_STRIPE_CLIENT_CONNECT_ACCOUNT_ID         = "stripe_client_connect_account_id"
 	FN_STRIPE_CLIENT_REFRESH_TOKEN              = "stripe_client_refresh_token:"
+	FN_STRIPE_CUSTOMER_ID                       = "stripe_customer_id"
 	FN_STRIPE_INITIAL_PULL_DATA_STATUS          = "stripe_initial_pull_data_status"
 	FN_STRIPE_LAST_PULL_DATE                    = "stripe_last_pull_date"
 	FN_STRIPE_PULL_FREQUENCY                    = "stripe_pull_frequency"
