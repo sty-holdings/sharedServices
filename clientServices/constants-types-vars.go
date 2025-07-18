@@ -31,6 +31,7 @@ type InternalClient struct {
 	SaaSClientProviders          []string `firestore:"saas_client_providers,array" json:"saas_client_providers" yaml:"saas_client_providers"`
 	StripeClientConnectAccountId string   `firebase:"stripe_client_connect_account_id" json:"stripe_client_connect_account_id" yaml:"stripe_client_connect_account_id"`
 	StripeClientRefreshToken     string   `firebase:"stripe_client_refresh_token" json:"stripe_client_refresh_token" yaml:"stripe_client_refresh_token"`
+	StripeCustomerID             string   `firebase:"stripe_customer_id" json:"stripe_customer_id" yaml:"stripe_customer_id"`
 	StripeInitialPullDataStatus  string   `firebase:"stripe_pull_data_status" json:"stripe_pull_data_status" yaml:"stripe_pull_data_status"`
 	StripePullFrequency          string   `firebase:"stripe_pull_frequency" json:"stripe_pull_frequency" yaml:"stripe_pull_frequency"`
 	StripeStartDate              string   `firebase:"stripe_start_date" json:"stripe_start_date" yaml:"stripe_start_date"`
