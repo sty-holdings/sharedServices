@@ -110,106 +110,6 @@ func Base64Encode(value string) string {
 	return b64.StdEncoding.EncodeToString([]byte(value))
 }
 
-// CheckArrayLengthGTZero - validates that an array's length is greater than zero.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrGreaterThanZero
-//	Verifications: ctv.VAL_ZERO
-func CheckArrayLengthGTZero[T any](extensionName string, value []T, label string) (errorInfo errs.ErrorInfo) {
-
-	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
-	}
-
-	return
-}
-
-// CheckMapLengthGTZero - validates if a map's length is greater than zero. Returns an ErrorInfo if the map is empty.
-//
-//	Customer Messages: None
-//	Errors: errs.NewErrorInfo
-//	Verifications: None
-func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, fieldLabel string) (errorInfo errs.ErrorInfo) {
-
-	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
-	}
-
-	return
-}
-
-// CheckMissingFieldsInMap - identifies missing or empty fields in a map based on a list of required fields.
-//
-//	Customer Messages: None
-//	Errors: None
-//	Verifications: None
-func CheckMissingFieldsInMap(data map[string]any, requiredFields []string) (missingFields []string) {
-
-	for _, field := range requiredFields {
-		if _, exists := data[field]; !exists || data[field] == nil || data[field] == "" {
-			missingFields = append(missingFields, field)
-		}
-	}
-
-	return missingFields
-}
-
-// CheckPointerNotNil - checks if a provided pointer is nil, and returns an ErrorInfo object if it is.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrEmptyPointer
-//	Verifications: None
-func CheckPointerNotNil(extensionName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
-
-	if value == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyPointer, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
-	}
-
-	return
-}
-
-// CheckValueNotEmpty - verifies that a given value is not empty.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrEmptyRequiredParameter
-//	Verifications: ctv.
-func CheckValueNotEmpty(extensionName string, value string, label string) (errorInfo errs.ErrorInfo) {
-
-	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
-	}
-
-	return
-}
-
-// CheckValueGreatZero - validates that the given value is greater than zero and generates error information if not.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrGreaterThanZero
-//	Verifications: None
-func CheckValueGreatZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
-
-	if value <= ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
-	}
-
-	return
-}
-
-// CheckValueGreatEqualZero - verifies if the provided value is greater than or equal to zero.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrGreaterThanEqualZero
-//	Verifications: ctv.VAL_ZERO
-func CheckValueGreatEqualZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
-
-	if value < ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanEqualZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
-	}
-
-	return
-}
-
 // BuildJSONRequest
 // func BuildJSONRequest(request interface{}) (jsonRequest []byte) {
 //
@@ -1390,17 +1290,23 @@ func GetFieldsNames(unknownStruct interface{}) (
 	return
 }
 
-// LoadYAMLConfig - loads a YAML configuration file into the target object.
+// LoadYAMLConfig - loads a YAML configuration file into the provided target interface.
 //
 //	Customer Messages: None
-//	Errors: errs.NewErrorInfo
-//	Verifications: ctv.
+//	Errors: errs.Err if input validation or file operations fail
+//	Verifications: CheckValueNotEmpty, CheckInterfaceNotNil
 func LoadYAMLConfig(filename string, extensionServiceLabel string, configTarget interface{}) (errorInfo errs.ErrorInfo) {
 	var (
 		configData []byte
 	)
 
+	if errorInfo = CheckValueNotEmpty(extensionServiceLabel, extensionServiceLabel, ctv.LBL_CONFIG_EXTENSION_SERVICE_FILENAME); errorInfo.Error != nil {
+		return
+	}
 	if errorInfo = CheckValueNotEmpty(extensionServiceLabel, filename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+		return
+	}
+	if errorInfo = CheckInterfaceNotNil(extensionServiceLabel, configTarget, ctv.FN_CONFIG_TARGET); errorInfo.Error != nil {
 		return
 	}
 

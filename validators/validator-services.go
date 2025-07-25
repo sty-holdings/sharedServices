@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -76,6 +77,120 @@ func AreMapKeysValuesPopulated(myMap map[any]interface{}) (finding string) {
 		}
 	} else {
 		finding = ctv.TXT_EMPTY
+	}
+
+	return
+}
+
+// CheckArrayLengthGTZero - validates that an array's length is greater than zero.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrGreaterThanZero
+//	Verifications: ctv.VAL_ZERO
+func CheckArrayLengthGTZero[T any](extensionName string, value []T, label string) (errorInfo errs.ErrorInfo) {
+
+	if len(value) == ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// CheckInterfaceNotNil - verifies that the provided interface value is not nil.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyInterface
+//	Verifications: None
+func CheckInterfaceNotNil(extensionName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
+
+	if value == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyInterface, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
+	}
+
+	return
+}
+
+// CheckMapLengthGTZero - validates if a map's length is greater than zero. Returns an ErrorInfo if the map is empty.
+//
+//	Customer Messages: None
+//	Errors: errs.NewErrorInfo
+//	Verifications: None
+func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, fieldLabel string) (errorInfo errs.ErrorInfo) {
+
+	if len(value) == ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// CheckMissingFieldsInMap - identifies missing or empty fields in a map based on a list of required fields.
+//
+//	Customer Messages: None
+//	Errors: None
+//	Verifications: None
+func CheckMissingFieldsInMap(data map[string]any, requiredFields []string) (missingFields []string) {
+
+	for _, field := range requiredFields {
+		if _, exists := data[field]; !exists || data[field] == nil || data[field] == "" {
+			missingFields = append(missingFields, field)
+		}
+	}
+
+	return missingFields
+}
+
+// CheckPointerNotNil - checks if a provided pointer is nil, and returns an ErrorInfo object if it is.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyPointer
+//	Verifications: None
+func CheckPointerNotNil(extensionName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
+
+	if value == nil {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyPointer, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
+	}
+
+	return
+}
+
+// CheckValueNotEmpty - verifies that a given value is not empty.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter
+//	Verifications: ctv.
+func CheckValueNotEmpty(extensionName string, value string, label string) (errorInfo errs.ErrorInfo) {
+
+	if value == ctv.VAL_EMPTY {
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
+	}
+
+	return
+}
+
+// CheckValueGreatZero - validates that the given value is greater than zero and generates error information if not.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrGreaterThanZero
+//	Verifications: None
+func CheckValueGreatZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
+
+	if value <= ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
+	}
+
+	return
+}
+
+// CheckValueGreatEqualZero - verifies if the provided value is greater than or equal to zero.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrGreaterThanEqualZero
+//	Verifications: ctv.VAL_ZERO
+func CheckValueGreatEqualZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
+
+	if value < ctv.VAL_ZERO {
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanEqualZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
 	}
 
 	return

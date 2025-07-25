@@ -19,6 +19,7 @@ const (
 	EMPTY_ERROR                             = "ERROR empty"
 	EMPTY_FIREBASE_PROJECT_ID               = "The Firebase project id is empty."
 	EMPTY_GIN_URL_PORT                      = "The Gin URL & PORT is empty."
+	EMPTY_INTERFACE                         = "The Interface is nil."
 	EMPTY_JWT_ACCESS_TOKEN                  = "The access token is empty."
 	EMPTY_JWT_ID_TOKEN                      = "The ID token is empty."
 	EMPTY_JWT_REFRESH_TOKEN                 = "The refresh token is empty."
@@ -237,6 +238,7 @@ var (
 	ErrEmptyError                         = errors.New(EMPTY_ERROR)
 	ErrEmptyFirebaseProjectId             = errors.New(EMPTY_FIREBASE_PROJECT_ID)
 	ErrEmptyGinUrlPort                    = errors.New(EMPTY_GIN_URL_PORT)
+	ErrEmptyInterface                     = errors.New(EMPTY_INTERFACE)
 	ErrEmptyJwtAccessToken                = errors.New(EMPTY_JWT_ACCESS_TOKEN)
 	ErrEmptyJwtIdToken                    = errors.New(EMPTY_JWT_ID_TOKEN)
 	ErrEmptyJwtRefreshToken               = errors.New(EMPTY_JWT_REFRESH_TOKEN)

@@ -77,6 +77,7 @@ const (
 	FN_COMPOUND_FLAG                            = "compound"
 	FN_COMPOUND_QUESTION                        = "compound_question"
 	FN_CONFIG_FILENAME                          = "config_filename"
+	FN_CONFIG_TARGET                            = "config_target"
 	FN_COUNT_BY_SUBJECT                         = "count_by_subject"
 	FN_COUNT_FLAG                               = "count"
 	FN_CREATE_TIMESTAMP                         = "create_timestamp"
