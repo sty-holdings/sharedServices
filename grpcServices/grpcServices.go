@@ -23,6 +23,7 @@ import (
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
 	pis "github.com/sty-holdings/sharedServices/v2025/programInfo"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // NewGRPCServer - builds a reusable gRPC Server that creates an instance name and builds a connection.
@@ -297,24 +298,24 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 //
 //	Customer Messages: None
 //	Errors: errs.Err if validation fails
-//	Verifications: ctv. for label constants, vldts.CheckValueNotEmpty, hlps.CheckValueGreatZero to validate configurations
+//	Verifications: ctv. for label constants, vldts.CheckValueNotEmpty, vldts.CheckValueGreatZero to validate configurations
 func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
 	if errorInfo = vldts.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerEnforcementPolicy.MinTimeClientPingsSec, ctv.LBL_MIN_TIME_CLIENT_PINGS_SEC); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerEnforcementPolicy.MinTimeClientPingsSec, ctv.LBL_MIN_TIME_CLIENT_PINGS_SEC); errorInfo.Error != nil {
 		return
 	}
 	// The config.ServerKeepAlive.ServerEnforcementPolicy.PermitWithoutStream is either true or false. No need to check the value.
 	// The config.ServerKeepAlive.ServerParameters.MaxConnectionIdleSec uses the default setting and is optional.
 	// The config.ServerKeepAlive.ServerParameters.MaxConnectionAgeSec uses the default setting and is optional.
 	// Then config.ServerKeepAlive.ServerParameters.MaxConnectionAgeGraceSec uses the default setting and is optional.
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerParameters.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {
@@ -350,10 +351,10 @@ func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 	if errorInfo = vldts.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueGreatZero(creator, config.ClientKeepAlive.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueGreatZero(creator, config.ClientKeepAlive.PingTimeoutSec, ctv.LBL_PING_TIMEOUT_SEC); errorInfo.Error != nil {
 		return
 	}
 	if config.Port < ctv.VAL_GRPC_MIN_PORT {

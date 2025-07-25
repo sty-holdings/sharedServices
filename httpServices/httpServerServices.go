@@ -109,7 +109,7 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 //	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
 func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
 	if vals.IsGinModeValid(config.GinMode) == false {
@@ -119,7 +119,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, ctv.LBL_HOST); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {
 		return
 	}
 	if config.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {

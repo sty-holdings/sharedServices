@@ -23,6 +23,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var (
@@ -97,7 +98,7 @@ func (psqlServicePtr *PSQLService) BatchInsert(
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, insertStatement, ctv.LBL_PSQL_INSERT); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, values, ctv.LBL_VALUE); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, values, ctv.LBL_VALUE); errorInfo.Error != nil {
 		return
 	}
 	if len(values) > ctv.VAL_ONE_HUNDRED {
@@ -500,7 +501,7 @@ func loadPSQLConfig(configFilename string) (config PSQLConfig, errorInfo errs.Er
 //	Verifications: None
 func validateConfig(config PSQLConfig, environment string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckArrayLengthGTZero(ctv.LBL_SERVICE_PSQL, config.DBNames, ctv.LBL_PSQL_DBNAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_PSQL, config.Host, ctv.LBL_PSQL_HOST); errorInfo.Error != nil {
