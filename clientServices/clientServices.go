@@ -11,7 +11,7 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	fbs "github.com/sty-holdings/sharedServices/v2025/firebaseServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 func FindClientByDomain(firestoreClientPtr *firestore.Client, domain string) (clientInfo InternalClient) {
@@ -191,7 +191,7 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 		return
 	}
 
-	if vals.DoesWebsiteEmailMatch(userEmail, websiteURL) {
+	if vldts.DoesWebsiteEmailMatch(userEmail, websiteURL) {
 		if found, tDocumentSnapshotPtr, errorInfo = fbs.FindDocument(
 			firestoreClientPtr, fbs.DATASTORE_CLIENTS, fbs.NameValueQuery{
 				FieldName:  ctv.FN_WEBSITE_URL,
