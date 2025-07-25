@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gopkg.in/yaml.v3"
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
@@ -1384,6 +1385,33 @@ func GetFieldsNames(unknownStruct interface{}) (
 		if tType.Field(i).IsExported() {
 			fields[tType.Field(i).Name] = tStruct.FieldByName(tType.Field(i).Name).Interface()
 		}
+	}
+
+	return
+}
+
+// LoadYAMLConfig - loads a YAML configuration file into the target object.
+//
+//	Customer Messages: None
+//	Errors: errs.NewErrorInfo
+//	Verifications: ctv.
+func LoadYAMLConfig(filename string, extensionServiceLabel string, configTarget interface{}) (errorInfo errs.ErrorInfo) {
+	var (
+		configData []byte
+	)
+
+	if errorInfo = CheckValueNotEmpty(extensionServiceLabel, filename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+		return
+	}
+
+	if configData, errorInfo.Error = os.ReadFile(PrependWorkingDirectory(filename)); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(extensionServiceLabel, ctv.LBL_CONFIG_EXTENSION_SERVICE_FILENAME, filename))
+		return
+	}
+
+	if errorInfo.Error = yaml.Unmarshal(configData, configTarget); errorInfo.Error != nil {
+		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(extensionServiceLabel, ctv.LBL_CONFIG_EXTENSION_SERVICE_FILENAME, filename))
+		return
 	}
 
 	return
