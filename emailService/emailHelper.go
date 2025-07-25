@@ -3,7 +3,7 @@ package sharedServices
 import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 func validateEmailConfig(config EmailConfig) (errorInfo errs.ErrorInfo) {

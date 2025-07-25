@@ -12,7 +12,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // NewHTTPServer - creates and initializes an HTTPServerService instance.

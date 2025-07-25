@@ -20,6 +20,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlp "github.com/sty-holdings/sharedServices/v2025/helpers"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // Decrypt - decrypts a Base64 string using AES-GCM mode of operation and returns a string.
@@ -436,13 +437,13 @@ func RemoveTLSTemporaryFiles(
 //	Verifications: None
 func checkEncryptDecryptParameters(internalUserID string, keyB64 string, value string) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, internalUserID, ctv.FN_INTERNAL_USER_ID); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, internalUserID, ctv.FN_INTERNAL_USER_ID); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, keyB64, ctv.FN_KEY_B64); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlp.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, value, ctv.FN_VALUE_B64)
+	errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_JWT, value, ctv.FN_VALUE_B64)
 
 	return
 }

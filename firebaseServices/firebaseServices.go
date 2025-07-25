@@ -14,7 +14,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var (

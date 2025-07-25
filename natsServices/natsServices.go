@@ -15,7 +15,7 @@ import (
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
 	jwts "github.com/sty-holdings/sharedServices/v2025/jwtServices"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // NewNATSService - builds a reusable NATS Service that creates an instance name, builds a connection, and has HandleRequestWithHeader,

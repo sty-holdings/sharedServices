@@ -4,7 +4,7 @@ import (
 	"net"
 	"regexp"
 
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")

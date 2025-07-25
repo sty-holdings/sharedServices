@@ -7,7 +7,7 @@ import (
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
 	hlps "github.com/sty-holdings/sharedServices/v2025/helpers"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // NewGCPService - creates a new GCP Service
@@ -78,7 +78,7 @@ func validateGCPConfig(gcpConfig GCPConfig) (errorInfo errs.ErrorInfo) {
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPCredentialFilename, ctv.LBL_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = vals.DoesFileExistsAndReadable(gcpConfig.GCPCredentialFilename, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.DoesFileExistsAndReadable(gcpConfig.GCPCredentialFilename, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPLocation, ctv.LBL_GCP_LOCATION); errorInfo.Error != nil {
