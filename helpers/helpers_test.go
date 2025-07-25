@@ -1109,11 +1109,11 @@ func TestIsDirectoryFullyQualified(tPtr *testing.T) {
 	tPtr.Run(
 		tFunctionName, func(tPtr *testing.T) {
 			// Adds working directory to file name
-			if vals.IsDirectoryFullyQualified(TEST_DIRECTORY_ENDING_SLASH) == false {
+			if vldts.IsDirectoryFullyQualified(TEST_DIRECTORY_ENDING_SLASH) == false {
 				tPtr.Errorf(errs.FORMAT_EXPECTED_ERROR, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
 			}
 			// Pass working directory and get back working directory
-			if vals.IsDirectoryFullyQualified(TEST_DIRECTORY) {
+			if vldts.IsDirectoryFullyQualified(TEST_DIRECTORY) {
 				tPtr.Errorf(errs.FORMAT_EXPECTING_NO_ERROR, tFunctionName, ctv.TXT_GOT_WRONG_BOOLEAN)
 			}
 		},

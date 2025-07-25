@@ -283,7 +283,7 @@ func ValidateFirebaseJWTPayload(
 		username  string
 	)
 
-	if tFindings = vals.AreMapKeysValuesPopulated(tokenPayload); tFindings != ctv.TXT_YES {
+	if tFindings = vldts.AreMapKeysValuesPopulated(tokenPayload); tFindings != ctv.TXT_YES {
 		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMapValue, ctv.VAL_EMPTY)
 	} else {
 		if audience == ctv.VAL_EMPTY || issuer == ctv.VAL_EMPTY {

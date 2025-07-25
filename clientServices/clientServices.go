@@ -245,7 +245,7 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedServiceFirebase
-//	Verifications: vals.
+//	Verifications: vldts.
 func ProcessNewClient(firestoreClientPtr *firestore.Client, checkExists bool, newClient NewClient, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
 
 	var (

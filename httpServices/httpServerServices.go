@@ -19,7 +19,7 @@ import (
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrInvalidBase64, errs.ErrOSFileDoesntExist, errs.ErrOSFileUnreadable
-//	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
+//	Verifications: vldts.IsGinModeValid, vldts.DoesFileExistsAndReadable
 func NewHTTPServer(configFilename string) (servicePtr *HTTPServerService, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -106,13 +106,13 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrInvalidBase64, errs.ErrOSFileDoesntExist, errs.ErrOSFileUnreadable
-//	Verifications: vals.IsGinModeValid, vals.DoesFileExistsAndReadable
+//	Verifications: vldts.IsGinModeValid, vldts.DoesFileExistsAndReadable
 func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) {
 
 	if errorInfo = vldts.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.DeepLinks, ctv.LBL_HTTP_SERVER_REGISTRY); errorInfo.Error != nil {
 		return
 	}
-	if vals.IsGinModeValid(config.GinMode) == false {
+	if vldts.IsGinModeValid(config.GinMode) == false {
 		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.GinMode))
 		return
 	}
@@ -123,10 +123,10 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		return
 	}
 	if config.TLSInfo.TLSCertFQN != ctv.VAL_EMPTY && config.TLSInfo.TLSPrivateKeyFQN != ctv.VAL_EMPTY {
-		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+		if errorInfo = vldts.DoesFileExistsAndReadable(config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 			return
 		}
-		if errorInfo = vals.DoesFileExistsAndReadable(config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+		if errorInfo = vldts.DoesFileExistsAndReadable(config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 			return
 		}
 	}

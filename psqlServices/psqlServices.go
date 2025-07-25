@@ -172,7 +172,7 @@ func (psqlServicePtr *PSQLService) Close() {
 //
 //	Customer Messages: None
 //	Errors: None
-//	Verifications: vals.ctv.VAL_EMPTY
+//	Verifications: vldts.ctv.VAL_EMPTY
 func (psqlServicePtr *PSQLService) ConvertErrorCode(pResultsPtr *gorm.DB) string {
 
 	var (

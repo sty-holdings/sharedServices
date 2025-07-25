@@ -51,7 +51,7 @@ func GetIPAddresses() (ipList []string) {
 func GetIPv4Addresses() (ipV4List []string) {
 
 	for _, ipAddress := range GetIPAddresses() {
-		if vals.IsIPv4Valid(ipAddress) {
+		if vldts.IsIPv4Valid(ipAddress) {
 			ipV4List = append(ipV4List, ipAddress)
 		}
 	}
@@ -67,7 +67,7 @@ func GetIPv4Addresses() (ipV4List []string) {
 func GetIPv6Addresses() (ipV6List []string) {
 
 	for _, ipAddress := range GetIPAddresses() {
-		if vals.IsIPv6Valid(ipAddress) {
+		if vldts.IsIPv6Valid(ipAddress) {
 			ipV6List = append(ipV6List, ipAddress)
 		}
 	}
