@@ -22,7 +22,7 @@ import (
 
 	ctv "github.com/sty-holdings/sharedServices/v2025/constantsTypesVars"
 	errs "github.com/sty-holdings/sharedServices/v2025/errorServices"
-	vals "github.com/sty-holdings/sharedServices/v2025/validators"
+	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
 // AddMonths - will add the number of months and adjust the year.
@@ -262,7 +262,7 @@ func ConvertMapAnyToMapString(mapIn map[any]interface{}) (mapOut map[string]inte
 
 	mapOut = make(map[string]interface{})
 
-	if vals.IsMapPopulated(mapIn) {
+	if vldts.IsMapPopulated(mapIn) {
 		for key, value := range mapIn {
 			mapOut[key.(string)] = value
 		}
@@ -797,7 +797,7 @@ func getYearFromDateParts(dateParts []string) (year int, errorInfo errs.ErrorInf
 //
 //	Customer Messages: None
 //	Errors: errs.Err if any part of the date is invalid or cannot be processed.
-//	Verifications: vals.IsDayValid if the day is valid for the given month and year.
+//	Verifications: vldts.IsDayValid if the day is valid for the given month and year.
 func GetExtractDateParts(dateString string) (extractDateParts ctv.ExtractDateParts, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -1290,23 +1290,23 @@ func GetFieldsNames(unknownStruct interface{}) (
 	return
 }
 
-// LoadYAMLConfig - loads a YAML configuration file into the provided target interface.
+// LoadYAMLConfig - loads YAML configuration into the provided target struct.
 //
 //	Customer Messages: None
-//	Errors: errs.Err if input validation or file operations fail
-//	Verifications: CheckValueNotEmpty, CheckInterfaceNotNil
-func LoadYAMLConfig(filename string, extensionServiceLabel string, configTarget interface{}) (errorInfo errs.ErrorInfo) {
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrEmptyInterface
+//	Verifications: vldts.CheckValueNotEmpty, vldts.CheckInterfaceNotNil
+func LoadYAMLConfig[T any](filename string, extensionServiceLabel string, configTarget *T) (errorInfo errs.ErrorInfo) {
 	var (
 		configData []byte
 	)
 
-	if errorInfo = CheckValueNotEmpty(extensionServiceLabel, extensionServiceLabel, ctv.LBL_CONFIG_EXTENSION_SERVICE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(extensionServiceLabel, extensionServiceLabel, ctv.LBL_CONFIG_EXTENSION_SERVICE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = CheckValueNotEmpty(extensionServiceLabel, filename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(extensionServiceLabel, filename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = CheckInterfaceNotNil(extensionServiceLabel, configTarget, ctv.FN_CONFIG_TARGET); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckInterfaceNotNil(extensionServiceLabel, configTarget, ctv.FN_CONFIG_TARGET); errorInfo.Error != nil {
 		return
 	}
 
@@ -1562,7 +1562,7 @@ func createLogFile(logFQD string) (
 		tLogFileName string
 	)
 
-	if vals.IsDirectoryFullyQualified(logFQD) == false {
+	if vldts.IsDirectoryFullyQualified(logFQD) == false {
 		errorInfo = errs.NewErrorInfo(errs.ErrOSDirectoryNotFullyQualified, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, ctv.LBL_LOG_DIRECTORY, logFQD))
 		return
 	}
@@ -1598,7 +1598,7 @@ func getDayFromDateParts(year int, month int, dayIn string) (day int, errorInfo 
 		return
 	}
 
-	if vals.IsDayValid(year, month, day) == false {
+	if vldts.IsDayValid(year, month, day) == false {
 		errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(ctv.LBL_SERVICE_HELPERS, dayIn, ctv.TXT_IS_INVALID))
 	}
 
