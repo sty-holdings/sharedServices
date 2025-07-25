@@ -191,6 +191,7 @@ const (
 	JWT_REFRESH_TOKEN_EXPIRED               = "The refresh token has expired."
 	LESS_THAN_ZERO                          = "The value must be less than zero."
 	LESS_THAN_EQUAL_ZERO                    = "The value must be less than or equal to zero."
+	MISSING_FIELD                           = "The field required and is missing."
 	MISSING_TIME_FRAME                      = "In order to answer your question, it must have a timeframe, such as the year, month, today, a date, etc."
 	NO_FOUND_DOCUMENT                       = "No document was not found."
 	NO_FOUND_SHORT_URL                      = "The short URL was not found."
@@ -410,6 +411,7 @@ var (
 	ErrJwtRefreshTokenExpired             = errors.New(JWT_REFRESH_TOKEN_EXPIRED)
 	ErrLessThanZero                       = errors.New(LESS_THAN_ZERO)
 	ErrLessThanEqualZero                  = errors.New(LESS_THAN_EQUAL_ZERO)
+	ErrMissingField                       = errors.New(MISSING_FIELD)
 	ErrMissingTimeFrame                   = errors.New(MISSING_TIME_FRAME)
 	ErrNoFoundDocument                    = errors.New(NO_FOUND_DOCUMENT)
 	ErrNoFoundShortURL                    = errors.New(NO_FOUND_SHORT_URL)
