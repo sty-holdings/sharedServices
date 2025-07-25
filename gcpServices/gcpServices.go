@@ -21,7 +21,7 @@ func NewGCPService(aiConfigFilename string) (gcpServicePtr *GCPService, errorInf
 		tGCPConfig GCPConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, aiConfigFilename, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, aiConfigFilename, ctv.FN_SERVICE_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -51,7 +51,7 @@ func loadGCPConfig(gcpConfigFilename string) (gcpConfig GCPConfig, errorInfo err
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfigFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfigFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -75,16 +75,16 @@ func loadGCPConfig(gcpConfigFilename string) (gcpConfig GCPConfig, errorInfo err
 //	Verifications: validateConfiguration
 func validateGCPConfig(gcpConfig GCPConfig) (errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPCredentialFilename, ctv.LBL_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPCredentialFilename, ctv.LBL_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = vals.DoesFileExistsAndReadable(gcpConfig.GCPCredentialFilename, ctv.FN_GCP_CREDENTIAL_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPLocation, ctv.LBL_GCP_LOCATION); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPLocation, ctv.LBL_GCP_LOCATION); errorInfo.Error != nil {
 		return
 	}
-	errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPProjectID, ctv.LBL_GCP_PROJECT_ID)
+	errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_GCP_SERVER, gcpConfig.GCPProjectID, ctv.LBL_GCP_PROJECT_ID)
 
 	return
 }

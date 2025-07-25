@@ -85,7 +85,7 @@ func loadHTTPServerConfig(configFilename string) (config HTTPConfiguration, erro
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_SERVER, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_SERVER, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -116,7 +116,7 @@ func validateConfiguration(config HTTPConfiguration) (errorInfo errs.ErrorInfo) 
 		errs.NewErrorInfo(errs.ErrInvalidBase64, fmt.Sprintf("%v%v", ctv.LBL_DIRECTORY, config.GinMode))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, ctv.LBL_HOST); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.VAL_SERVICE_HTTP_SERVER, config.Host, ctv.LBL_HOST); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckArrayLengthGTZero(ctv.VAL_SERVICE_HTTP_SERVER, config.Ports, ctv.LBL_HTTP_PORT); errorInfo.Error != nil {

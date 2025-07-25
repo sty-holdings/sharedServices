@@ -9,10 +9,10 @@ import (
 func validateEmailConfig(config EmailConfig) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_EMAIL, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_EMAIL, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_EMAIL, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_EMAIL, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
 		return
 	}
 

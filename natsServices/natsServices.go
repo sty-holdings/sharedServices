@@ -29,10 +29,10 @@ func NewNATSService(
 	config NATSConfiguration,
 ) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, extensionName, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, extensionName, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
 
@@ -210,7 +210,7 @@ func (natsServicePtr *NATSService) Subscribe(
 		tFunctionName      = runtime.FuncForPC(tFunction).Name()
 	)
 
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 	// 	return
 	// }
 
@@ -243,10 +243,10 @@ func buildInstanceName(
 		tHostName string
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, ctv.LBL_INSTANCE_NAME, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, ctv.LBL_INSTANCE_NAME, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, natsURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, natsURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
 
@@ -312,13 +312,13 @@ func getConnection(
 		tURL string
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, instanceName, ctv.LBL_INSTANCE_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, instanceName, ctv.LBL_INSTANCE_NAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSPort, ctv.LBL_NATS_PORT); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSPort, ctv.LBL_NATS_PORT); errorInfo.Error != nil {
 		return
 	}
 	if vals.DoesFileExist(config.NATSCredentialsFilename) == false {
@@ -375,10 +375,10 @@ func getConnection(
 //	Verifications: None
 func handleRequestWithHeader(requestMessagePtr *nats.Msg, keyB64 string) (dkRequest DKRequest, errorInfo errs.ErrorInfo) {
 
-	// if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, errs.ErrEmptyPointer, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(requestMessagePtr, errs.ErrEmptyPointer, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, errs.ErrEmptyPointer, ctv.FN_KEY_B64); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, errs.ErrEmptyPointer, ctv.FN_KEY_B64); errorInfo.Error != nil {
 	// 	return
 	// }
 
@@ -410,16 +410,16 @@ func makeRequestReplyNoHeaderInsecure(
 		tRequestMessagePtr *nats.Msg
 	)
 
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), ctv.LBL_DK_REQEST); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
 	// 	return
 	// }
 
@@ -481,16 +481,16 @@ func makeRequestReplyWithHeader(
 		tRequestMessagePtr *nats.Msg
 	)
 
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), ctv.LBL_DK_REQEST); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkRequest), ctv.LBL_DK_REQEST); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
 	// 	return
 	// }
 
@@ -560,16 +560,16 @@ func makeRequestReplyWithMessage(
 		tReplyMessagePtr *nats.Msg
 	)
 
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr, errs.ErrEmptyPointer, ctv.LBL_SERVICE_NATS); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(natsServicePtr.connPtr, errs.ErrEmptyPointer, ctv.LBL_NATS_CONN_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(requestMessagePtr, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, subject, ctv.VAL_EMPTY); errorInfo.Error != nil {
 	// 	return
 	// }
 
@@ -628,19 +628,19 @@ func sendReplyWithHeader(
 	)
 
 	// if dkReply.ErrorInfo.Error == nil {
-	// 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkReply.Reply), ctv.LBL_DK_REPLY); errorInfo.Error != nil {
+	// 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, string(dkReply.Reply), ctv.LBL_DK_REPLY); errorInfo.Error != nil {
 	// 		return
 	// 	}
 	// }
 	// if dkReply.Reply == nil {
-	// 	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, dkReply.ErrorInfo.Message, ctv.LBL_ERROR_MESSAGE); errorInfo.Error != nil {
+	// 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, dkReply.ErrorInfo.Message, ctv.LBL_ERROR_MESSAGE); errorInfo.Error != nil {
 	// 		return
 	// 	}
 	// }
-	// if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, ctv.LBL_KEY_B64); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, keyB64, ctv.LBL_KEY_B64); errorInfo.Error != nil {
 	// 	return
 	// }
-	// if errorInfo = hlps.CheckPointerNotNil(requestMessagePtr, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
+	// if errorInfo = vldts.CheckPointerNotNil(requestMessagePtr, ctv.LBL_MESSAGE_REQUEST_POINTER); errorInfo.Error != nil {
 	// 	return
 	// }
 

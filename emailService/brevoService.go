@@ -19,14 +19,14 @@ import (
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, error returned by loadConfig, error returned by validateConfig
-//	Verifications: hlps.CheckValueNotEmpty, validateConfig
+//	Verifications: vldts.CheckValueNotEmpty, validateConfig
 func NewBrevoServer(configFilename string, environment string) (servicePtr *EmailService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfig EmailConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -189,7 +189,7 @@ func loadBrevoConfig(configFilename string) (config EmailConfig, errorInfo errs.
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -215,7 +215,7 @@ func validateBrevoConfig(config EmailConfig) (errorInfo errs.ErrorInfo) {
 
 	switch strings.ToLower(config.EmailProvider) {
 	case BREVO_PROVIDER:
-		if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.APIKey, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
+		if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.Brevo.APIKey, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
 			return
 		}
 	case SENDGRID_PROVIDER:
@@ -224,10 +224,10 @@ func validateBrevoConfig(config EmailConfig) (errorInfo errs.ErrorInfo) {
 		errorInfo = errs.NewErrorInfo(errs.ErrInvalidEmailProvider, errs.BuildLabelValue(ctv.LBL_SERVICE_BREVO, ctv.LBL_EMAIL_PROVIDER, config.EmailProvider))
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderName, ctv.LBL_DEFAULT_SENDER_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_BREVO, config.DefaultSenderName, ctv.LBL_DEFAULT_SENDER_NAME); errorInfo.Error != nil {
 		return
 	}
 

@@ -17,7 +17,7 @@ import (
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedHttpRequest, or errors from underlying HTTP functions
-//	Verifications: hlps.CheckValueNotEmpty, HTTPRequestService.parseURL, HTTPRequestService.buildRawQuery
+//	Verifications: vldts.CheckValueNotEmpty, HTTPRequestService.parseURL, HTTPRequestService.buildRawQuery
 func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySettings map[string]string) (body []byte, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -26,7 +26,7 @@ func NewHTTPGetRequest(myURL string, headerSettings map[string]string, querySett
 		tServicePtr      *HTTPRequestService
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_CLIENT, myURL, ctv.FN_URL); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_HTTP_CLIENT, myURL, ctv.FN_URL); errorInfo.Error != nil {
 		return
 	}
 

@@ -24,14 +24,14 @@ import (
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, error returned by loadConfig, error returned by validateConfig
-//	Verifications: hlps.CheckValueNotEmpty, validateConfig
+//	Verifications: vldts.CheckValueNotEmpty, validateConfig
 func NewSendGridServer(configFilename string, environment string) (servicePtr *SendGridService, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfig SendGridConfig
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -481,14 +481,14 @@ func validateSubject(subject string) (errorInfo errs.ErrorInfo) {
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter, errs.NewErrorInfo
-//	Verifications: hlps.CheckValueNotEmpty, yaml.Unmarshal
+//	Verifications: vldts.CheckValueNotEmpty, yaml.Unmarshal
 func loadConfig(configFilename string) (config SendGridConfig, errorInfo errs.ErrorInfo) {
 
 	var (
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -509,17 +509,17 @@ func loadConfig(configFilename string) (config SendGridConfig, errorInfo errs.Er
 //
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter
-//	Verifications: hlps.CheckValueNotEmpty
+//	Verifications: vldts.CheckValueNotEmpty
 func validateSendGridConfig(config SendGridConfig, environment string) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.KeyFQN, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.KeyFQN, ctv.LBL_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.DefaultSenderAddress, ctv.LBL_DEFAULT_SENDER_ADDRESS); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.DefaultSenderName, ctv.LBL_DEFAULT_SENDER_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_SENDGRID, config.DefaultSenderName, ctv.LBL_DEFAULT_SENDER_NAME); errorInfo.Error != nil {
 		return
 	}
 

@@ -44,7 +44,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 		tGRPCServerOptions []grpc.ServerOption
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC_SERVER, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_GRPC_SERVER, configFilename, ctv.LBL_CONFIG_EXTENSION_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -107,7 +107,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 	}
 
 	servicePtr.GRPCServerPtr = grpc.NewServer(tGRPCServerOptions...)
-	if errorInfo = hlps.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, ctv.LBL_POINTER); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckPointerNotNil(ctv.LBL_SERVICE_GRPC_SERVER, servicePtr.GRPCServerPtr, ctv.LBL_POINTER); errorInfo.Error != nil {
 		return
 	}
 
@@ -118,7 +118,7 @@ func NewGRPCServer(configFilename string) (servicePtr *GRPCService, errorInfo er
 //
 //	Customer Messages: None
 //	Errors: errs.ErrorInfo
-//	Verifications: validateConfig, hlps.CheckValueNotEmpty
+//	Verifications: validateConfig, vldts.CheckValueNotEmpty
 func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInfo errs.ErrorInfo) {
 
 	var (
@@ -128,7 +128,7 @@ func NewGRPCClient(configFilename string) (gRPCServicePtr *GRPCService, errorInf
 		tDailOption  grpc.DialOption
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(ctv.VAL_SERVICE_GRPC_CLIENT, configFilename, ctv.LBL_CONFIG_GRPC_CLIENT_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.VAL_SERVICE_GRPC_CLIENT, configFilename, ctv.LBL_CONFIG_GRPC_CLIENT_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -197,7 +197,7 @@ func loadConfig(creator string, configFilename string) (grpcConfig GRPCConfig, e
 		tConfigData []byte
 	)
 
-	if errorInfo = hlps.CheckValueNotEmpty(creator, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, configFilename, ctv.FN_CONFIG_FILENAME); errorInfo.Error != nil {
 		return
 	}
 
@@ -297,11 +297,11 @@ func LoadTLSCredentialsCACertKey(creator string, tlsConfig jwts.TLSInfo) (creds 
 //
 //	Customer Messages: None
 //	Errors: errs.Err if validation fails
-//	Verifications: ctv. for label constants, hlps.CheckValueNotEmpty, hlps.CheckValueGreatZero to validate configurations
+//	Verifications: ctv. for label constants, vldts.CheckValueNotEmpty, hlps.CheckValueGreatZero to validate configurations
 func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ServerKeepAlive.ServerEnforcementPolicy.MinTimeClientPingsSec, ctv.LBL_MIN_TIME_CLIENT_PINGS_SEC); errorInfo.Error != nil {
@@ -323,13 +323,13 @@ func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 	}
 	// The config.Secure.ServerSide is either true or false. No need to check the value.
 	// The config.Secure.Mutual is either true or false and is optional. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if config.Timeout < ctv.VAL_ONE {
@@ -347,7 +347,7 @@ func validateServerConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.ErrorInfo) {
 
 	// The config.DebugModeOn is either true or false. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.Host, ctv.LBL_GRPC_HOST); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = hlps.CheckValueGreatZero(creator, config.ClientKeepAlive.PingIntervalSec, ctv.LBL_PING_INTERVAL_SEC); errorInfo.Error != nil {
@@ -362,13 +362,13 @@ func validateClientConfig(creator string, config GRPCConfig) (errorInfo errs.Err
 	}
 	// The config.Secure.ServerSide is either true or false. No need to check the value.
 	// The config.Secure.Mutual is either true or false and is optional. No need to check the value.
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSCABundleFQN, ctv.LBL_TLS_CA_BUNDLE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSCertFQN, ctv.LBL_TLS_CERTIFICATE_FILENAME); errorInfo.Error != nil {
 		return
 	}
-	if errorInfo = hlps.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(creator, config.TLSInfo.TLSPrivateKeyFQN, ctv.LBL_TLS_PRIVATE_KEY_FILENAME); errorInfo.Error != nil {
 		return
 	}
 	if config.Timeout < ctv.VAL_ONE {
