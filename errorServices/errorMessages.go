@@ -134,7 +134,7 @@ const (
 	INVALID_EMAIL_TYPE                      = "The email type is not suppported."
 	INVALID_ENVIRNOMENT                     = "The environment value is invalid."
 	INVALID_EXTENSION                       = "The extension name is invalid."
-	INVALID_EXTENSION_SERVICE               = "The extension service name is invalid."
+	INVALID_EXTENSION_SERVICE               = "The extension or service name is invalid."
 	INVALID_FLAG_COMBINATION                = "The flag combination is invalid."
 	INVALID_FLOAT                           = "The float64 value is invalid."
 	INVALID_FUTURE_DATE                     = "The date is invalid because it is in the future."
