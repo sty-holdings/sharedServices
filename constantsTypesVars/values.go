@@ -151,28 +151,32 @@ const (
 //goland:noinspection All
 const (
 	// Services
-	VAL_SERVICE_AI           = "ai"
-	VAL_SERVICE_CLIENT       = "client"
-	VAL_SERVICE_DEBUG        = "debug"
-	VAL_SERVICE_ERROR        = "error"
-	VAL_SERVICE_EMAIL        = "email"
-	VAL_SERVICE_FIREBASE     = "firebase"
-	VAL_SERVICE_FIRESTORE    = "firestore"
-	VAL_SERVICE_GCP          = "gcp"
-	VAL_SERVICE_GOOGLE_ADS   = "google-ads"
-	VAL_SERVICE_GRPC_SERVER  = "grpc-server"
-	VAL_SERVICE_GRPC_CLIENT  = "grpc-client"
-	VAL_SERVICE_HELPERS      = "helpers"
-	VAL_SERVICE_HTTP_SERVER  = "http-server"
-	VAL_SERVICE_JWT          = "jwt"
-	VAL_SERVICE_LINKEDIN     = "linkedin"
-	VAL_SERVICE_OS           = "operating-system"
-	VAL_SERVICE_PAYPAL       = "paypal"
-	VAL_SERVICE_PROGRAM_INFO = "program-info"
-	VAL_SERVICE_PSQL         = "psql"
-	VAL_SERVICE_SENDGRID     = "sendgrid"
-	VAL_SERVICE_STRIPE       = "stripe"
-	VAL_SERVICE_VALIDATORS   = "validators"
+	VAL_SERVICE_AI                   = "ai"
+	VAL_SERVICE_CLIENT               = "client"
+	VAL_SERVICE_DEBUG                = "debug"
+	VAL_SERVICE_ERROR                = "error"
+	VAL_SERVICE_EMAIL                = "email"
+	VAL_SERVICE_FIREBASE_AUTH        = "auth"
+	VAL_SERVICE_FIREBASE_DATABASE    = "database"
+	VAL_SERVICE_FIREBASE_FIRESTORE   = "firestore"
+	VAL_SERVICE_FIREBASE_INSTANCE_ID = "instance-id"
+	VAL_SERVICE_FIREBASE_MESSAGING   = "messaging"
+	VAL_SERVICE_FIREBASE_STORAGE     = "storage"
+	VAL_SERVICE_GCP                  = "gcp"
+	VAL_SERVICE_GOOGLE_ADS           = "google-ads"
+	VAL_SERVICE_GRPC_SERVER          = "grpc-server"
+	VAL_SERVICE_GRPC_CLIENT          = "grpc-client"
+	VAL_SERVICE_HELPERS              = "helpers"
+	VAL_SERVICE_HTTP_SERVER          = "http-server"
+	VAL_SERVICE_JWT                  = "jwt"
+	VAL_SERVICE_LINKEDIN             = "linkedin"
+	VAL_SERVICE_OS                   = "operating-system"
+	VAL_SERVICE_PAYPAL               = "paypal"
+	VAL_SERVICE_PROGRAM_INFO         = "program-info"
+	VAL_SERVICE_PSQL                 = "psql"
+	VAL_SERVICE_SENDGRID             = "sendgrid"
+	VAL_SERVICE_STRIPE               = "stripe"
+	VAL_SERVICE_VALIDATORS           = "validators"
 )
 
 //goland:noinspection All
@@ -204,8 +208,12 @@ var (
 		VAL_SERVICE_CLIENT,
 		VAL_SERVICE_DEBUG,
 		VAL_SERVICE_ERROR,
-		VAL_SERVICE_FIREBASE,
-		VAL_SERVICE_FIRESTORE,
+		VAL_SERVICE_FIREBASE_AUTH,
+		VAL_SERVICE_FIREBASE_DATABASE,
+		VAL_SERVICE_FIREBASE_FIRESTORE,
+		VAL_SERVICE_FIREBASE_INSTANCE_ID,
+		VAL_SERVICE_FIREBASE_MESSAGING,
+		VAL_SERVICE_FIREBASE_STORAGE,
 		VAL_SERVICE_GCP,
 		VAL_SERVICE_GOOGLE_ADS,
 		VAL_SERVICE_GRPC_SERVER,
