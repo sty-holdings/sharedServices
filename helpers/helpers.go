@@ -476,9 +476,9 @@ func ExtractBeforeUnderscore(s string) string {
 //	Customer Messages: None
 //	Errors: None
 //	Verifications: None
-func GetBatchName(extensionName string, additionalLabel string) string {
+func GetBatchName(extensionOrServiceName string, additionalLabel string) string {
 
-	return fmt.Sprintf("%s%s %s", extensionName, additionalLabel[strings.Index(additionalLabel, ctv.PARENTHESE_LEFT):], fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
+	return fmt.Sprintf("%s%s %s", extensionOrServiceName, additionalLabel[strings.Index(additionalLabel, ctv.PARENTHESE_LEFT):], fmt.Sprintf("%s", time.Now().Format("2006-01-02T15:04:05Z07:00")))
 }
 
 // GetDateParts splits a date string in "YYYY-MM-DD" format into its individual components; returns an error if the format is invalid.

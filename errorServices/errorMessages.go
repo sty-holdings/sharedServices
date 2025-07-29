@@ -142,6 +142,7 @@ const (
 	INVALID_GRPC_PORT                       = "gRPC port value is invalid. The port value must be greater than 50050."
 	INVALID_GRPC_TIMEOUT                    = "gRPC time value is invalid. The timeout value must be greater than zero."
 	INVALID_IDENTITY_PROVIDER               = "The identity provider is invalid."
+	INVALID_IDENTITY_TOKEN                  = "The identity token is invalid."
 	INVALID_INTEGER                         = "The integer64 value is invalid."
 	INVALID_JSON                            = "The JSON provided is invalid"
 	INVALID_MAX_THREADS                     = "The config file max threads value is less than 1."
@@ -363,6 +364,7 @@ var (
 	ErrInvalidGRPCPort                    = errors.New(INVALID_GRPC_PORT)
 	ErrInvalidGRPCTimeout                 = errors.New(INVALID_GRPC_TIMEOUT)
 	ErrInvalidIdentityProvider            = errors.New(INVALID_IDENTITY_PROVIDER)
+	ErrInvalidIdentityToken               = errors.New(INVALID_IDENTITY_TOKEN)
 	ErrInvalidInteger                     = errors.New(INVALID_INTEGER)
 	ErrInvalidJSON                        = errors.New(INVALID_JSON)
 	ErrInvalidMaxThreads                  = errors.New(INVALID_MAX_THREADS)

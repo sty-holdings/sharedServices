@@ -29,7 +29,7 @@ func NewNATSService(
 	config NATSConfiguration,
 ) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 
-	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, extensionName, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
+	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, extensionOrServiceName, ctv.LBL_EXTENSION_NAME); errorInfo.Error != nil {
 		return
 	}
 	if errorInfo = vldts.CheckValueNotEmpty(ctv.LBL_SERVICE_NATS, config.NATSURL, ctv.LBL_NATS_URL); errorInfo.Error != nil {
@@ -40,7 +40,7 @@ func NewNATSService(
 		secure: true,
 		url:    config.NATSURL,
 	}
-	if natsServicePtr.instanceName, errorInfo = buildInstanceName(extensionName, config.NATSURL); errorInfo.Error != nil {
+	if natsServicePtr.instanceName, errorInfo = buildInstanceName(extensionOrServiceName, config.NATSURL); errorInfo.Error != nil {
 		return
 	}
 	natsServicePtr.connPtr, errorInfo = getConnection(natsServicePtr.instanceName, config)
@@ -252,7 +252,7 @@ func buildInstanceName(
 
 	tHostName, _ = os.Hostname()
 
-	instanceName = fmt.Sprintf("%s-%s-%s", tHostName, extensionName, natsURL)
+	instanceName = fmt.Sprintf("%s-%s-%s", tHostName, extensionOrServiceName, natsURL)
 
 	return
 }

@@ -87,10 +87,10 @@ func AreMapKeysValuesPopulated(myMap map[any]interface{}) (finding string) {
 //	Customer Messages: None
 //	Errors: errs.ErrGreaterThanZero
 //	Verifications: ctv.VAL_ZERO
-func CheckArrayLengthGTZero[T any](extensionName string, value []T, label string) (errorInfo errs.ErrorInfo) {
+func CheckArrayLengthGTZero[T any](extensionOrServiceName string, value []T, label string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -101,10 +101,10 @@ func CheckArrayLengthGTZero[T any](extensionName string, value []T, label string
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyInterface
 //	Verifications: None
-func CheckInterfaceNotNil(extensionName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
+func CheckInterfaceNotNil(extensionOrServiceName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyInterface, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyInterface, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
 	}
 
 	return
@@ -115,10 +115,10 @@ func CheckInterfaceNotNil(extensionName string, value interface{}, label string)
 //	Customer Messages: None
 //	Errors: errs.NewErrorInfo
 //	Verifications: None
-func CheckMapLengthGTZero[K comparable, V any](extensionName string, value map[K]V, fieldLabel string) (errorInfo errs.ErrorInfo) {
+func CheckMapLengthGTZero[K comparable, V any](extensionOrServiceName string, value map[K]V, fieldLabel string) (errorInfo errs.ErrorInfo) {
 
 	if len(value) == ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, errs.BuildLabelValue(extensionName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyVariableMap, errs.BuildLabelValue(extensionOrServiceName, fmt.Sprintf("%s ", fieldLabel), ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -145,10 +145,10 @@ func CheckMissingFieldsInMap(data map[string]any, requiredFields []string) (miss
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyPointer
 //	Verifications: None
-func CheckPointerNotNil(extensionName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
+func CheckPointerNotNil(extensionOrServiceName string, value interface{}, label string) (errorInfo errs.ErrorInfo) {
 
 	if value == nil {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyPointer, errs.BuildLabelSubLabelValue(extensionName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyPointer, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.VAL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_NIL))
 	}
 
 	return
@@ -159,10 +159,10 @@ func CheckPointerNotNil(extensionName string, value interface{}, label string) (
 //	Customer Messages: None
 //	Errors: errs.ErrEmptyRequiredParameter
 //	Verifications: ctv.
-func CheckValueNotEmpty(extensionName string, value string, label string) (errorInfo errs.ErrorInfo) {
+func CheckValueNotEmpty(extensionOrServiceName string, value string, label string) (errorInfo errs.ErrorInfo) {
 
 	if value == ctv.VAL_EMPTY {
-		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
+		errorInfo = errs.NewErrorInfo(errs.ErrEmptyRequiredParameter, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), ctv.TXT_IS_EMPTY))
 	}
 
 	return
@@ -173,10 +173,10 @@ func CheckValueNotEmpty(extensionName string, value string, label string) (error
 //	Customer Messages: None
 //	Errors: errs.ErrGreaterThanZero
 //	Verifications: None
-func CheckValueGreatZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
+func CheckValueGreatZero(extensionOrServiceName string, value int, label string) (errorInfo errs.ErrorInfo) {
 
 	if value <= ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanZero, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
 	}
 
 	return
@@ -187,10 +187,10 @@ func CheckValueGreatZero(extensionName string, value int, label string) (errorIn
 //	Customer Messages: None
 //	Errors: errs.ErrGreaterThanEqualZero
 //	Verifications: ctv.VAL_ZERO
-func CheckValueGreatEqualZero(extensionName string, value int, label string) (errorInfo errs.ErrorInfo) {
+func CheckValueGreatEqualZero(extensionOrServiceName string, value int, label string) (errorInfo errs.ErrorInfo) {
 
 	if value < ctv.VAL_ZERO {
-		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanEqualZero, errs.BuildLabelSubLabelValue(extensionName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
+		errorInfo = errs.NewErrorInfo(errs.ErrGreaterThanEqualZero, errs.BuildLabelSubLabelValue(extensionOrServiceName, ctv.LBL_SERVICE_HELPERS, fmt.Sprintf("%s ", label), strconv.Itoa(value)))
 	}
 
 	return

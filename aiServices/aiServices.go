@@ -157,7 +157,7 @@ func (aiServicePtr *AIService) GenerateContent(
 	}
 
 	if tInstruction, aiResponse.ErrorInfo = aiServicePtr.loadSystemInstruction(
-		extensionName, systemInstructionKey, locationPtr,
+		extensionOrServiceName, systemInstructionKey, locationPtr,
 		saasProviders, systemInstructionTopic,
 	); aiResponse.ErrorInfo.Error != nil {
 		return
@@ -198,7 +198,7 @@ func (aiServicePtr *AIService) GenerateContent(
 //	Customer Messages: None
 //	Errors: ErrSystemInstructionKeyInvalid, ErrSystemInstructionTopicInvalid
 //	Verifications: None
-func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, key string, locationPtr *time.Location, saasProviders []string, topic string) (
+func (aiServicePtr *AIService) loadSystemInstruction(extensionOrServiceName string, key string, locationPtr *time.Location, saasProviders []string, topic string) (
 	systemInstruction string,
 	errorInfo errs.ErrorInfo,
 ) {
@@ -259,7 +259,7 @@ func (aiServicePtr *AIService) loadSystemInstruction(extensionName string, key s
 	if tSetDate {
 		if locationPtr == nil {
 			if locationPtr, errorInfo.Error = time.LoadLocation("America/Los_Angeles"); errorInfo.Error != nil {
-				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(extensionName, ctv.LBL_TIMEZONE_LOCATION, ctv.TXT_FAILED))
+				errorInfo = errs.NewErrorInfo(errorInfo.Error, errs.BuildLabelValue(extensionOrServiceName, ctv.LBL_TIMEZONE_LOCATION, ctv.TXT_FAILED))
 			}
 		}
 		systemInstruction = fmt.Sprintf("%s %v", systemInstruction, fmt.Sprintf("TODAY: %s TIMEZONE: %s", time.Now().In(locationPtr).Format("2006-01-02"), locationPtr.String()))
