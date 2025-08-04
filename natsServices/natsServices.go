@@ -25,7 +25,7 @@ import (
 //	Errors: None
 //	Verifications: None
 func NewNATSService(
-	extensionName string,
+	extensionOrServiceName string,
 	config NATSConfiguration,
 ) (natsServicePtr *NATSService, errorInfo errs.ErrorInfo) {
 

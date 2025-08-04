@@ -135,7 +135,7 @@ func (aiServicePtr *AIService) buildModelPool() (errorInfo errs.ErrorInfo) {
 //	Errors: returned by GenerateContent, returned by loadSystemInstruction
 //	Verifications: None
 func (aiServicePtr *AIService) GenerateContent(
-	extensionName string,
+	extensionOrServiceName string,
 	locationPtr *time.Location,
 	prompt string,
 	promptData map[string]string,
