@@ -41,10 +41,10 @@ func NewClient(firestoreClientPtr *firestore.Client, checkExists bool, newClient
 			tClientStruct[ctv.FN_DOMAIN] = newClient.Domain
 			tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
 			tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
+			tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
 			tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
 			tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
 			tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-			tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
 			tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
 			tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
 			errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
@@ -420,6 +420,10 @@ func getClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) 
 		clientStruct.DemoAccount = value.(bool)
 	}
 
+	if value, ok = clientInfo[ctv.FN_DOMAIN]; ok {
+		clientStruct.Domain = value.(string)
+	}
+
 	if value, ok = clientInfo[ctv.FN_FORMATION_TYPE]; ok {
 		clientStruct.FormationType = value.(string)
 	}
@@ -446,7 +450,9 @@ func getClientStruct(clientInfo map[string]interface{}, clientInfoRefID string) 
 		}
 	}
 
-	clientStruct.OnBoarded = false // Default unless reset by the clientInfo[ctv.FN_SAAS_CLIENT_PROVIDERS] code below. DO NOT REMOVE
+	if value, ok = clientInfo[ctv.FN_ONBOARDED]; ok {
+		clientStruct.OnBoarded = value.(bool)
+	}
 
 	if value, ok = clientInfo[ctv.FN_OWNERS]; ok {
 		if jsonData, errorInfo.Error = json.Marshal(value); errorInfo.Error != nil {
