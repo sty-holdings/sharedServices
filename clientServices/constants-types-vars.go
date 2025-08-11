@@ -48,18 +48,19 @@ type InternalUser struct {
 	} `firebase:"create_timestamp" json:"create_timestamp" yaml:"create_timestamp"`
 	Email                   string   `firebase:"email" json:"email" yaml:"email"`
 	FirstName               string   `firebase:"first_name" json:"first_name" yaml:"first_name"`
-	LastName                string   `firebase:"last_name" json:"last_name" yaml:"last_name"`
-	Permissions             []string `firebase:"permissions" json:"permissions" yaml:"permissions"`
 	InternalClientID        string   `firebase:"internal_client_id" json:"internal_client_id" yaml:"internal_client_id"`
 	InternalUserID          string   `firebase:"internal_user_id" json:"styh_user_id"yaml:"internal_user_id"`
+	IsAdmin                 bool     `firebase:"is_admin" json:"is_admin" yaml:"is_admin"`
+	LastName                string   `firebase:"last_name" json:"last_name" yaml:"last_name"`
+	Permissions             []string `firebase:"permissions" json:"permissions" yaml:"permissions"`
+	PostalCode              string   `firebase:"postal_code" json:"postal_code" yaml:"postal_code"`
 	TimezoneUser            string   `firebase:"timezone_user" json:"user_timezone_user" yaml:"user_timezone_user"`
 	TimezoneUserLocationPtr *time.Location
-	PostalCode              string `firebase:"postal_code" json:"postal_code" yaml:"postal_code"`
 }
 
-type NewClient struct {
+type NewClientInfo struct {
 	CompanyName           string `firebase:"company_name" json:"company_name,omitempty" yaml:"company_name,omitempty"`
-	Domain                string `firebase:"domain" json:"domain" yaml:"domain"`
+	Domain                string `firebase:"domain" json:"domain,omitempty" yaml:"domain,omitempty"`
 	FormationType         string `firebase:"formation_type" json:"formation_type,omitempty" yaml:"formation_type,omitempty"`
 	PhoneCountryCode      string `firebase:"phone_country_code" json:"phone_country_code,omitempty" yaml:"phone_country_code,omitempty"`
 	PhoneAreaCode         string `firebase:"phone_area_code" json:"phone_area_code,omitempty" yaml:"phone_area_code,omitempty"`
@@ -69,7 +70,7 @@ type NewClient struct {
 	WebSiteURL            string `firebase:"web_site_url" json:"web_site_url,omitempty" yaml:"web_site_url,omitempty"`
 }
 
-type NewUser struct {
+type NewUserInfo struct {
 	Email                   string `firebase:"email" json:"email,omitempty" yaml:"email,omitempty"`
 	FirstName               string `firebase:"firstName" json:"firstName,omitempty" yaml:"firstName,omitempty"`
 	LastName                string `firebase:"lastName" json:"lastName,omitempty" yaml:"lastName,omitempty"`

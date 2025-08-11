@@ -14,6 +14,73 @@ import (
 	vldts "github.com/sty-holdings/sharedServices/v2025/validators"
 )
 
+// NewClient - creates a new client record in the datastore.
+//
+//	Customer Messages: None
+//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedServiceFirebase
+//	Verifications: vldts.
+func NewClient(firestoreClientPtr *firestore.Client, checkExists bool, newClient NewClientInfo, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
+
+	var (
+		tClientStruct = make(map[any]interface{})
+	)
+
+	if checkExists {
+		internalClientId = CheckClientExists(
+			firestoreClientPtr,
+			newClient.CompanyName,
+			newClient.PhoneAreaCode,
+			newClient.PhoneNumber,
+			userEmail,
+			newClient.WebSiteURL,
+		)
+		if internalClientId == ctv.VAL_EMPTY {
+			internalClientId = hlps.GenerateUUIDType1(true)
+			//
+			tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
+			tClientStruct[ctv.FN_DOMAIN] = newClient.Domain
+			tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+			tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
+			tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
+			tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
+			tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
+			tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
+			tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
+			tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
+			errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
+		}
+	}
+
+	return
+}
+
+// NewUser - configures and saves a new user record in the Users datastore.
+//
+//	Customer Messages: None
+//	Errors: errs.Err if Firestore document creation fails.
+//	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
+func NewUser(firestoreClientPtr *firestore.Client, newUser NewUserInfo) {
+
+	var (
+		errorInfo errs.ErrorInfo
+		tUserInfo = make(map[any]interface{})
+	)
+
+	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
+	tUserInfo[ctv.FN_EMAIL] = newUser.Email
+	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
+	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
+	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
+	tUserInfo[ctv.FN_INTERNAL_USER_ID] = newUser.InternalUserID
+	tUserInfo[ctv.FN_INTERNAL_CLIENT_ID] = newUser.InternalClientID
+
+	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.InternalUserID, tUserInfo); errorInfo.Error != nil {
+		errs.PrintErrorInfo(errorInfo)
+	}
+
+	return
+}
+
 func FindClientByDomain(firestoreClientPtr *firestore.Client, domain string) (clientInfo InternalClient) {
 
 	var (
@@ -236,75 +303,6 @@ func CheckClientExists(firestoreClientPtr *firestore.Client, companyName string,
 
 	if tConfirmedCount > ctv.VAL_ZERO {
 		internalClientID = tDocumentSnapshotPtr.Ref.ID
-	}
-
-	return
-}
-
-// ProcessNewClient - creates a new client record in the datastore.
-//
-//	Customer Messages: None
-//	Errors: errs.ErrEmptyRequiredParameter, errs.ErrFailedServiceFirebase
-//	Verifications: vldts.
-func ProcessNewClient(firestoreClientPtr *firestore.Client, checkExists bool, newClient NewClient, userEmail string) (internalClientId string, errorInfo errs.ErrorInfo) {
-
-	var (
-		tClientStruct = make(map[any]interface{})
-	)
-
-	if checkExists {
-		internalClientId = CheckClientExists(
-			firestoreClientPtr,
-			newClient.CompanyName,
-			newClient.PhoneAreaCode,
-			newClient.PhoneNumber,
-			userEmail,
-			newClient.WebSiteURL,
-		)
-		if internalClientId != ctv.VAL_EMPTY {
-			return
-		}
-	}
-
-	internalClientId = hlps.GenerateUUIDType1(true)
-	//
-	tClientStruct[ctv.FN_COMPANY_NAME] = newClient.CompanyName
-	tClientStruct[ctv.FN_DOMAIN] = newClient.Domain
-	tClientStruct[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-	tClientStruct[ctv.FN_FORMATION_TYPE] = newClient.FormationType
-	tClientStruct[ctv.FN_PHONE_COUNTRY_CODE] = newClient.PhoneCountryCode
-	tClientStruct[ctv.FN_PHONE_AREA_CODE] = newClient.PhoneAreaCode
-	tClientStruct[ctv.FN_PHONE_NUMBER] = newClient.PhoneNumber
-	tClientStruct[ctv.FN_INTERNAL_CLIENT_ID] = internalClientId
-	tClientStruct[ctv.FN_TIMEZONE_HQ] = newClient.TimezoneHQ
-	tClientStruct[ctv.FN_WEBSITE_URL] = newClient.WebSiteURL
-	errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientId, tClientStruct)
-
-	return
-}
-
-// ProcessNewUser - configures and saves a new user record in the Users datastore.
-//
-//	Customer Messages: None
-//	Errors: errs.Err if Firestore document creation fails.
-//	Verifications: vlds.AreMapKeysPopulated validates map keys' presence.
-func ProcessNewUser(firestoreClientPtr *firestore.Client, newUser NewUser) {
-
-	var (
-		errorInfo errs.ErrorInfo
-		tUserInfo = make(map[any]interface{})
-	)
-
-	tUserInfo[ctv.FN_CREATE_TIMESTAMP] = time.Now()
-	tUserInfo[ctv.FN_EMAIL] = newUser.Email
-	tUserInfo[ctv.FN_FIRST_NAME] = newUser.FirstName
-	tUserInfo[ctv.FN_LAST_NAME] = newUser.LastName
-	tUserInfo[ctv.FN_TIMEZONE_USER] = newUser.TimezoneUser
-	tUserInfo[ctv.FN_INTERNAL_USER_ID] = newUser.InternalUserID
-	tUserInfo[ctv.FN_INTERNAL_CLIENT_ID] = newUser.InternalClientID
-
-	if errorInfo = fbs.SetDocument(firestoreClientPtr, fbs.DATASTORE_USERS, newUser.InternalUserID, tUserInfo); errorInfo.Error != nil {
-		errs.PrintErrorInfo(errorInfo)
 	}
 
 	return
