@@ -395,17 +395,18 @@ func UpdateClientStripeCustomerID(firestoreClientPtr *firestore.Client, internal
 	return
 }
 
-// UpdateClientPhoneNumber - updates the phone number and area code for a client in Firestore.
+// UpdateClientPhoneNumber - updates the client's phone number details in Firestore.
 //
 //	Customer Messages: None
-//	Errors: errs.Err if Firestore update fails or input validation issues occur.
-//	Verifications: CheckMapKeysValuesPopulated, CheckParameterValuesNotEmpty
-func UpdateClientPhoneNumber(firestoreClientPtr *firestore.Client, internalClientID string, areaCode string, phoneNumber string) (errorInfo errs.ErrorInfo) {
+//	Errors: errs.Err if Firestore update fails or nameValues validation errors.
+//	Verifications: None
+func UpdateClientPhoneNumber(firestoreClientPtr *firestore.Client, internalClientID string, countryCode string, areaCode string, phoneNumber string) (errorInfo errs.ErrorInfo) {
 
 	var (
 		nameValues = make(map[any]interface{})
 	)
 
+	nameValues[ctv.FN_PHONE_COUNTRY_CODE] = countryCode
 	nameValues[ctv.FN_PHONE_AREA_CODE] = areaCode
 	nameValues[ctv.FN_PHONE_NUMBER] = phoneNumber
 
