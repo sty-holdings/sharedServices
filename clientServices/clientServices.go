@@ -392,6 +392,7 @@ func UpdateClientStripeCustomerID(firestoreClientPtr *firestore.Client, internal
 	if fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientID, nameValues); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
+	
 	return
 }
 
@@ -413,6 +414,7 @@ func UpdateClientPhoneNumber(firestoreClientPtr *firestore.Client, internalClien
 	if fbs.UpdateDocument(firestoreClientPtr, fbs.DATASTORE_CLIENTS, internalClientID, nameValues); errorInfo.Error != nil {
 		errs.PrintErrorInfo(errorInfo)
 	}
+
 	return
 }
 
