@@ -128,7 +128,7 @@ const (
 	LBL_EXTENSION_DEBUG_MODE                 = "EXTENSION DEBUG MODE:"
 	LBL_EXTENSION_DECLARATION                = "EXTENSIONS DECLARATION:"
 	LBL_EXTENSION_DISCOVERY                  = "DISCOVERY:"
-	LBL_EXTENSION_DK_CLIENT                  = "DK CLIENT:"
+	LBL_EXTENSION_DK_CAM                     = "DK CAM:"
 	LBL_EXTENSION_DK_SIGNAL                  = "DK SIGNAL:"
 	LBL_EXTENSION_EXTRACTOR                  = "EXTRACTOR:"
 	LBL_EXTENSION_HAL                        = "HAL:"

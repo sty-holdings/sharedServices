@@ -73,7 +73,7 @@ const (
 	EXISTS_STYH_USER_NAME_ALREADY           = "The STYH user name already exists in the system."
 	FAILED_DECODE_STRING                    = "Unable to decode the string."
 	FAILED_EXTENSION_DISCOVERY              = "DISCOVERY Extension has failed. Investigate right away!"
-	FAILED_EXTENSION_DK_CLIENT              = "DK Client Extension has failed. Investigate right away!"
+	FAILED_EXTENSION_DK_CAM                 = "DK Client Account Management Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_DK_SIGNAL              = "DK Signal Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_EXTRACTOR              = "EXTRACTOR Extension has failed. Investigate right away!"
 	FAILED_EXTENSION_HAL                    = "HAL Extension has failed. Investigate right away!"
@@ -294,7 +294,7 @@ var (
 	ErrExistsStyhUserNameAlready          = errors.New(EXISTS_STYH_USER_NAME_ALREADY)
 	ErrFailedDecodeString                 = errors.New(FAILED_DECODE_STRING)
 	ErrFailedExtensionDiscovery           = errors.New(FAILED_EXTENSION_DISCOVERY)
-	ErrFailedExtensionDKClient            = errors.New(FAILED_EXTENSION_DK_CLIENT)
+	ErrFailedExtensionDKCAM               = errors.New(FAILED_EXTENSION_DK_CAM)
 	ErrFailedExtensionDKSignal            = errors.New(FAILED_EXTENSION_DK_SIGNAL)
 	ErrFailedExtensionExtractor           = errors.New(FAILED_EXTENSION_EXTRACTOR)
 	ErrFailedExtensionHal                 = errors.New(FAILED_EXTENSION_HAL)
